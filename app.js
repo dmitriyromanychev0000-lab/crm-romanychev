@@ -52,6 +52,7 @@ let data = defaultData();
 let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
 let orderFilter = ["all", "closed", "active", "declined", "archived"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
 let orderPeriod = ["all", "7", "30", "90", "365"].includes(String(initialUiState.orderPeriod)) ? String(initialUiState.orderPeriod) : "all";
+let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(initialUiState.orderVisitFilter)) ? String(initialUiState.orderVisitFilter) : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -67,6 +68,7 @@ function saveUiState(extra = {}) {
       activePage,
       orderFilter,
       orderPeriod,
+      orderVisitFilter,
       searchQuery,
       warehouseSearch,
       clientSearch,
@@ -656,8 +658,15 @@ function ordersPage() {
       ? isArchived
       : !isArchived && (orderFilter === "all" || orderFilter === status);
     const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id].join(" ").toLowerCase();
-    const periodMatch = withinPeriod(order.created, orderPeriod);
-    return filterMatch && periodMatch && (!query || haystack.includes(query));
+    const visitTime = order.nextVisit ? new Date(order.nextVisit).getTime() : NaN;
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const tomorrowStart = todayStart + 86400000;
+    const visitMatch = orderVisitFilter === "all"
+      || (orderVisitFilter === "today" && Number.isFinite(visitTime) && visitTime >= todayStart && visitTime < tomorrowStart)
+      || (orderVisitFilter === "upcoming" && Number.isFinite(visitTime) && visitTime >= Date.now())
+      || (orderVisitFilter === "overdue" && Number.isFinite(visitTime) && visitTime < Date.now() && status === "active");
+    return filterMatch && visitMatch && (!query || haystack.includes(query));
   });
 
   const now = Date.now();
@@ -682,12 +691,11 @@ function ordersPage() {
     </div>
 
     <div class="order-date-filter">
-      <select class="field" id="order-period-select">
-        <option value="all" ${orderPeriod === "all" ? "selected" : ""}>Все даты визита</option>
-        <option value="7" ${orderPeriod === "7" ? "selected" : ""}>Последние 7 дней</option>
-        <option value="30" ${orderPeriod === "30" ? "selected" : ""}>Последние 30 дней</option>
-        <option value="90" ${orderPeriod === "90" ? "selected" : ""}>Последние 90 дней</option>
-        <option value="365" ${orderPeriod === "365" ? "selected" : ""}>Последний год</option>
+      <select class="field" id="order-visit-filter">
+        <option value="all" ${orderVisitFilter === "all" ? "selected" : ""}>Все даты визита</option>
+        <option value="today" ${orderVisitFilter === "today" ? "selected" : ""}>Сегодня</option>
+        <option value="upcoming" ${orderVisitFilter === "upcoming" ? "selected" : ""}>Предстоящие визиты</option>
+        <option value="overdue" ${orderVisitFilter === "overdue" ? "selected" : ""}>Просроченные визиты</option>
       </select>
       <span class="select-chevron">${icon("chevron")}</span>
     </div>
@@ -1937,6 +1945,12 @@ app.addEventListener("submit", async (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  if (event.target.id === "order-visit-filter") {
+    orderVisitFilter = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
   if (event.target.id === "order-period-select") {
     orderPeriod = event.target.value;
     saveUiState();
