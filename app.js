@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.47.1";
-const APP_BUILD = "2026.09.26.21";
+const APP_VERSION = "0.48.0";
+const APP_BUILD = "2026.09.26.22";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финальный мобильный дизайн-проход закреплён; канонический A4 print-layer снова последний в CSS";
+const APP_RELEASE = "Финальная сверка по архиву: восстановлены точные тексты аналитики и меню, добавлена миграция настроек v18";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -263,10 +263,15 @@ function validateBackup(candidate) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
   if (!candidate.settings || typeof candidate.settings !== "object" || Array.isArray(candidate.settings)) candidate.settings = {};
+  const migratedSettings = { ...defaultData().settings, ...candidate.settings };
+  if (!Object.prototype.hasOwnProperty.call(candidate.settings, "catalogApplyWithoutFit")
+      && Object.prototype.hasOwnProperty.call(candidate.settings, "autoPriceAdjust")) {
+    migratedSettings.catalogApplyWithoutFit = !Boolean(candidate.settings.autoPriceAdjust);
+  }
   return {
     ...defaultData(),
     ...candidate,
-    settings: { ...defaultData().settings, ...candidate.settings }
+    settings: migratedSettings
   };
 }
 
@@ -1121,7 +1126,7 @@ function analyticsPage() {
   const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
 
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Главные показатели работы</p></div></div>
+    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
 
     <div class="analytics-period-grid">
       <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">Сегодня</button>
@@ -1141,12 +1146,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong></div>
-        <div class="analytics-kpi"><span>ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong></div>
-        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong></div>
-        <div class="analytics-kpi"><span>ОСТАТОК</span><strong class="green">${money(totalResult)}</strong></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
       </div>
     </section>
 
@@ -1751,17 +1756,17 @@ function shoppingPage() {
 }
 function moreMenu() {
   const workItems = [
-    ["finance", "finance", "Финансы", "Доходы, расходы и результат"],
+    ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
     ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"],
-    ["settings", "settings", "Настройки", "Реквизиты, данные и приложение"]
+    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
+    ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
   const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
   return `<main class="content more-content">
-    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы и настройки</p></div></div>
+    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div>
     <div class="menu-list legacy-more-list">${cards(workItems)}</div>
   </main>`;
 }
