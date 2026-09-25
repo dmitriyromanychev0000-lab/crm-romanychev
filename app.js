@@ -1323,15 +1323,27 @@ app.addEventListener("click", async (event) => {
 });
 
 app.addEventListener("input", (event) => {
+  const liveSearch = async (selector) => {
+    const cursor = event.target.selectionStart;
+    await render();
+    const input = document.querySelector(selector);
+    input?.focus();
+    input?.setSelectionRange(cursor, cursor);
+  };
   if (event.target.id === "order-search") {
     searchQuery = event.target.value;
     saveUiState();
-    const cursor = event.target.selectionStart;
-    render().then(() => {
-      const input = document.querySelector("#order-search");
-      input?.focus();
-      input?.setSelectionRange(cursor, cursor);
-    });
+    return liveSearch("#order-search");
+  }
+  if (event.target.id === "warehouse-search") {
+    warehouseSearch = event.target.value;
+    saveUiState();
+    return liveSearch("#warehouse-search");
+  }
+  if (event.target.id === "client-search") {
+    clientSearch = event.target.value;
+    saveUiState();
+    return liveSearch("#client-search");
   }
 });
 
