@@ -922,14 +922,15 @@ function newOrderModal(existing = null, options = {}) {
   calculateLines();
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
-  formElement.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const next = {
+  const collectOrderForm = ({ asDraft = false } = {}) => {
+    const form = new FormData(formElement);
+    return {
       ...order,
-      id: order.id || String(Date.now()).slice(-6),
+      id: asDraft ? crypto.randomUUID() : (order.id || String(Date.now()).slice(-6)),
       created: order.created || new Date().toISOString(),
-      status: order.status || "В работе",
+      updatedAt: new Date().toISOString(),
+      draft: asDraft || undefined,
+      sourceOrderId: asDraft && order.id ? order.id : (order.sourceOrderId || null),
       name: form.get("name"),
       phone: form.get("phone"),
       tech: form.get("tech"),
@@ -965,6 +966,27 @@ function newOrderModal(existing = null, options = {}) {
       })).filter((item) => item.name.trim()),
       photos: orderPhotos
     };
+  };
+
+  modal.querySelector("#save-order-draft").addEventListener("click", async () => {
+    const draft = collectOrderForm({ asDraft: true });
+    if (Array.isArray(data.draft)) data.draft.push(draft);
+    else if (data.draft && typeof data.draft === "object") data.draft[`draft_${Date.now()}`] = draft;
+    else data.draft = [draft];
+    await saveData();
+    modal.remove();
+    moreSection = "drafts";
+    activePage = "more";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    toast("Черновик сохранён");
+  });
+
+  formElement.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const next = collectOrderForm();
+    delete next.draft;
     const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
     if (!stockSync.ok) return toast(stockSync.message);
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
