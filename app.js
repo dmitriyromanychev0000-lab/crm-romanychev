@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.42.0";
-const APP_BUILD = "2026.09.26.04";
+const APP_VERSION = "0.42.1";
+const APP_BUILD = "2026.09.26.05";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточка заявки упрощена до 5 действий; форма и каталог услуг стали компактнее; добавлена строгая валидация российского телефона";
+const APP_RELEASE = "Проведён полный аудит мобильных форм: устранены горизонтальные вылеты модалок, строк услуг, материалов и товарника";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2627,6 +2627,21 @@ async function adjustStock(id, direction) {
   render();
   toast("Остаток обновлён");
 }
+
+function closeTopModalFromKeyboard() {
+  const backdrops = [...document.querySelectorAll(".modal-backdrop")];
+  const top = backdrops.at(-1);
+  if (!top) return false;
+  const closeButton = top.querySelector(".catalog-close, .order-actions-close, [data-close-modal]");
+  if (closeButton) closeButton.click();
+  else top.remove();
+  return true;
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (closeTopModalFromKeyboard()) event.preventDefault();
+});
 
 app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
