@@ -512,6 +512,30 @@ async function backupSettings() {
 }
 
 
+
+function receiptSummary(item = {}) {
+  const title = item.title || item.name || item.type || item.kind || "Документ";
+  const number = item.number || item.no || item.receiptNumber || item.receipt_no || "";
+  const date = item.date || item.createdAt || item.created || item.timestamp || "";
+  const amount = Number(item.amount ?? item.sum ?? item.total ?? item.price) || 0;
+  const orderId = item.orderId || item.order_id || item.order || "";
+  const note = item.note || item.comment || item.description || "";
+  return { title, number, date, amount, orderId, note };
+}
+
+function receiptsPage() {
+  const receipts = Array.isArray(data.receipts) ? data.receipts : [];
+  const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
+  return `<main class="content">
+    <div class="page-head"><div><h1>Документы и чеки</h1><p class="lead">Старые документы CRM и новые записи</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-receipt">+ Документ</button></div></div>
+    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Документов</div><div class="metric-value">${receipts.length}</div></div><div class="metric"><div class="metric-label">Сумма</div><div class="metric-value blue">${money(total)}</div></div></div></section>
+    ${receipts.length ? `<section class="panel"><div class="goods-list">${receipts.map((item, index) => {
+      const view = receiptSummary(item);
+      const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
+      return `<button class="goods-sheet" data-action="edit-receipt" data-index="${index}"><span><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span><b>${view.amount ? money(view.amount) : ""}</b><span>›</span></button>`;
+    }).join("")}</div></section>` : emptyState("▤", "Документов пока нет", "Добавь документ вручную или импортируй старый бэкап.")}
+  </main>`;
+}
 function toolsPage() {
   const tools = Array.isArray(data.tools) ? data.tools : [];
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
