@@ -1136,12 +1136,50 @@ function actPage() {
     ...(Array.isArray(order.materials) ? order.materials.map((item) => ({ name: item.name, qty: item.qty, price: item.unitCost, actType: "material" })) : [])
   ] : [];
   if (order && !actItems.length) actItems.push({ name: "Ремонт техники", qty: 1, price: Number(order.sum) || 0, actType: "service" });
-  return `<main class="content"><div class="page-head no-print"><div><h1>Акт</h1><p class="lead">Подготовка и печать документа</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel no-print"><label class="form-group"><span class="small">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} · ${escapeHtml(item.name || "Без имени")} · ${money(item.sum)}</option>`).join("")}</select></label><button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>Печать / сохранить PDF</button></section>
-    ${order ? `<article class="act-sheet"><h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2><div class="act-subtitle">от «${new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "long", year: "numeric" }).format(new Date())}»</div><div class="act-fields"><div><b>Исполнитель:</b><span>${escapeHtml(data.settings.companyName || data.settings.name || "—")}</span></div><div><b>Мастер:</b><span>${escapeHtml(data.settings.name || "—")}</span></div><div><b>Телефон исполнителя:</b><span>${escapeHtml(data.settings.phone || "—")}</span></div><div><b>Адрес исполнителя:</b><span>${escapeHtml(data.settings.companyAddress || "—")}</span></div><div><b>ИНН:</b><span>${escapeHtml(data.settings.inn || "—")}</span></div><div><b>Заказчик:</b><span>${escapeHtml(order.name || "—")}${order.phone ? ` · ${escapeHtml(order.phone)}` : ""}</span></div>${order.address ? `<div><b>Адрес заказчика:</b><span>${escapeHtml(order.address)}</span></div>` : ""}<div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div><div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div><div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div><div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div></div><table><thead><tr><th>№</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table><div class="act-total"><b>Итого к оплате:</b><strong>${money(order.sum)}</strong></div>${order.guaranteeNote ? `<div class="act-fields"><div><b>Условия гарантии:</b><span>${escapeHtml(order.guaranteeNote)}</span></div></div>` : ""}<div class="act-acceptance"><h3>АКТ СДАЧИ-ПРИЁМКИ ОКАЗАННЫХ УСЛУГ</h3><p>Исполнитель выполнил работы по обслуживанию указанного оборудования. Заказчик с условиями обслуживания и оплаты ознакомлен, к качеству работ и состоянию оборудования претензий не имеет.</p><div class="act-signatures"><div><b>Исполнитель:</b><br>${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________</div><div><b>Заказчик:</b><br>${escapeHtml(order.name || "________________")}<br>${escapeHtml(order.phone || "")}<br>Подпись: ____________</div></div></div></article>` : emptyState("▤", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
+
+  const date = new Date();
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = new Intl.DateTimeFormat("ru-RU", { month: "long" }).format(date);
+  const year = date.getFullYear();
+
+  return `<main class="content act-content">
+    <div class="page-head no-print"><div><h1>Акт</h1><p class="lead">Подготовка и печать документа</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+
+    <section class="panel no-print act-control-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("printer")}</span> Акт выполненных работ (A4)</div>
+      <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(item.created)})</option>`).join("")}</select></label>
+      <button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / сохранить PDF</span></button>
+    </section>
+
+    ${order ? `<article class="act-sheet">
+      <h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2>
+      <div class="act-contract-line">по договору № ___ от «${day}» ${month} ${year} г.</div>
+
+      <div class="act-main-fields">
+        <div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div>
+        <div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div>
+        <div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div>
+        <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
+      </div>
+
+      <table><thead><tr><th>№</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table>
+
+      <div class="act-total"><b>Итого к оплате:</b><strong>${money(order.sum)}</strong></div>
+      ${order.guaranteeNote ? `<div class="act-warranty"><b>Условия гарантии:</b><span>${escapeHtml(order.guaranteeNote)}</span></div>` : ""}
+
+      <div class="act-party-details">
+        <div><b>Исполнитель:</b><span>${escapeHtml(data.settings.companyName || data.settings.name || "—")}</span></div>
+        <div><b>Мастер:</b><span>${escapeHtml(data.settings.name || "—")}</span></div>
+        <div><b>Телефон:</b><span>${escapeHtml(data.settings.phone || "—")}</span></div>
+        ${data.settings.inn ? `<div><b>ИНН:</b><span>${escapeHtml(data.settings.inn)}</span></div>` : ""}
+        <div><b>Заказчик:</b><span>${escapeHtml(order.name || "—")}${order.phone ? ` · ${escapeHtml(order.phone)}` : ""}</span></div>
+        ${order.address ? `<div><b>Адрес:</b><span>${escapeHtml(order.address)}</span></div>` : ""}
+      </div>
+
+      <div class="act-acceptance"><h3>АКТ СДАЧИ-ПРИЁМКИ ОКАЗАННЫХ УСЛУГ</h3><p>Исполнитель выполнил работы по обслуживанию указанного оборудования. Заказчик с условиями обслуживания и оплаты ознакомлен, к качеству работ и состоянию оборудования претензий не имеет.</p><div class="act-signatures"><div><b>Исполнитель:</b><br>${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________</div><div><b>Заказчик:</b><br>${escapeHtml(order.name || "________________")}<br>${escapeHtml(order.phone || "")}<br>Подпись: ____________</div></div></div>
+    </article>` : emptyState("document", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
   </main>`;
 }
-
 function goodsInlineRow(item = {}) {
   const originalPrice = Number(item.originalPrice ?? item.price) || 0;
   return `<div class="goods-inline-row" data-goods-inline-row data-original-price="${originalPrice}">
