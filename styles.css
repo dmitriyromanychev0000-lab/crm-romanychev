@@ -24,6 +24,17 @@ body { margin: 0; min-width: 320px; background: var(--bg); }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 
+.ui-icon { display: block; width: 1em; height: 1em; flex: 0 0 auto; }
+.logo .ui-icon { width: 31px; height: 31px; }
+.nav-icon { display: grid; place-items: center; min-height: 27px; margin-bottom: 3px; }
+.nav-icon .ui-icon { width: 24px; height: 24px; }
+.menu-icon .ui-icon { width: 27px; height: 27px; }
+.appliance-icon .ui-icon { width: 29px; height: 29px; }
+.action span .ui-icon { width: 21px; height: 21px; margin: 0 auto; }
+.empty-icon { display: grid; place-items: center; min-height: 58px; }
+.empty-icon .ui-icon { width: 52px; height: 52px; }
+.badge-icon .ui-icon { width: 22px; height: 22px; }
+
 .shell {
   width: min(100%, 760px);
   min-height: 100vh;
