@@ -3673,3 +3673,392 @@ h2 { font-size: 21px; }
   .action span .ui-icon { width: 16px; height: 16px; }
   .meta { gap: 5px; font-size: 9px; }
 }
+
+
+/* 0.42.1 · Viewport safety audit — все формы и модалки */
+html,
+body,
+.shell {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.content,
+.panel,
+.modal,
+.modal form,
+.compact-modal,
+.form-grid,
+.form-group,
+.line-list,
+.line-item,
+.catalog-add,
+.modal-actions,
+.goods-adjust,
+.material-card-head,
+.material-card-controls,
+.settings-system-list,
+.settings-profile-panel,
+.settings-system-panel,
+.settings-data-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.modal-backdrop {
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.modal {
+  width: min(calc(100vw - 16px), 700px);
+  max-width: calc(100vw - 16px);
+  margin-right: auto;
+  margin-left: auto;
+  overflow-x: hidden;
+}
+
+.modal.compact-modal {
+  width: min(calc(100vw - 20px), 620px);
+  max-width: calc(100vw - 20px);
+  margin: 6px auto 18px;
+  padding: 14px;
+}
+
+.modal input,
+.modal select,
+.modal textarea,
+.modal button,
+.modal a,
+.modal .field,
+.modal .readonly-field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.modal input,
+.modal select,
+.modal textarea,
+.modal .field {
+  width: 100%;
+}
+
+.modal select,
+.modal input[type="date"],
+.modal input[type="datetime-local"] {
+  max-inline-size: 100%;
+}
+
+.modal h1,
+.modal h2,
+.modal h3,
+.modal label,
+.modal strong,
+.modal small,
+.modal p,
+.modal button,
+.modal a {
+  overflow-wrap: anywhere;
+}
+
+.form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modal-actions {
+  grid-template-columns: repeat(auto-fit, minmax(min(128px, 100%), 1fr));
+  gap: 7px;
+}
+.modal-actions > * {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Строки услуг — без фиксированной ширины */
+.order-editor-modal .legacy-service-row {
+  grid-template-columns: 20px minmax(0, 1fr) minmax(44px, .32fr) minmax(70px, .52fr) 36px;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+.order-editor-modal .legacy-service-row > * { min-width: 0; }
+.order-editor-modal .legacy-service-row .field {
+  width: 100%;
+  min-width: 0;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+  font-size: 12px !important;
+}
+.order-editor-modal .service-price-field {
+  min-width: 0;
+}
+.order-editor-modal .service-price-field .field {
+  padding-right: 18px !important;
+}
+.order-editor-modal .service-price-field > span {
+  right: 5px;
+  font-size: 10px;
+}
+.order-editor-modal .service-remove {
+  width: 34px;
+  height: 34px;
+}
+
+/* Материалы */
+.order-editor-modal .legacy-material-card {
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+}
+.order-editor-modal .material-card-head {
+  grid-template-columns: minmax(0, 1fr) 36px;
+  gap: 6px;
+}
+.order-editor-modal .material-card-head > div { min-width: 0; }
+.order-editor-modal .material-name-field {
+  width: 100%;
+  min-width: 0;
+  font-size: 13px !important;
+}
+.order-editor-modal .material-remove {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+.order-editor-modal .material-card-controls {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 9px;
+}
+.order-editor-modal .material-card-controls label { min-width: 0; }
+.order-editor-modal .material-card-controls label > span {
+  font-size: 8.5px;
+  letter-spacing: .025em;
+}
+.order-editor-modal .material-card-controls .field {
+  min-width: 0;
+  min-height: 42px !important;
+  padding: 0 6px;
+  font-size: 11px;
+}
+
+/* Товарник */
+#goods-form .catalog-add {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+#goods-form .line-item {
+  grid-template-columns: minmax(0, 1fr) 58px 76px 34px;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+#goods-form .line-item > * { min-width: 0; }
+#goods-form .line-item .field {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 6px;
+  font-size: 11px;
+}
+#goods-form .remove-line {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+#goods-form .goods-adjust {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+/* Гарантия и summary-блоки */
+.legacy-guarantee-head {
+  grid-template-columns: 25px minmax(0, 1fr) auto;
+  gap: 7px;
+}
+.guarantee-date {
+  max-width: 100%;
+  padding: 5px 7px;
+  font-size: 9px;
+}
+.order-calculation-summary,
+.calculated-total {
+  min-width: 0;
+  max-width: 100%;
+}
+.order-calculation-summary > div,
+.calculated-total > * { min-width: 0; }
+
+/* Settings / finance / utility rows */
+.legacy-setting-row,
+.finance-row,
+.goods-sheet,
+.receipt-row,
+.tool-row,
+.legacy-goods-sheet {
+  min-width: 0;
+  max-width: 100%;
+}
+.legacy-setting-row > *,
+.finance-row > *,
+.goods-sheet > *,
+.receipt-row > *,
+.tool-row > *,
+.legacy-goods-sheet > * {
+  min-width: 0;
+}
+.legacy-setting-row .secondary-button {
+  max-width: 112px;
+  white-space: normal;
+}
+
+/* Long values never force page width */
+.stock-name,
+.client-name,
+.goods-card-title,
+.receipt-row-copy,
+.finance-copy,
+.menu-copy,
+.small,
+.order-comment,
+.settings-data-copy,
+.settings-check-row {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 520px) {
+  .modal {
+    width: calc(100vw - 10px);
+    max-width: calc(100vw - 10px);
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+  .modal.compact-modal {
+    width: calc(100vw - 12px);
+    max-width: calc(100vw - 12px);
+    margin: 3px auto 14px;
+    padding: 12px;
+  }
+
+  /* Основной редактор заявки остаётся 2 колонки только для простых полей */
+  .order-editor-modal .form-grid,
+  .order-editor-modal .legacy-payment-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .order-editor-modal .form-group.full { grid-column: 1 / -1; }
+
+  /* Остальные компактные формы безопаснее в одну колонку */
+  .compact-modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .compact-modal .form-group.full { grid-column: 1; }
+
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 18px minmax(0, 1fr) 42px 65px 32px;
+    gap: 3px;
+  }
+  .order-editor-modal .service-check .ui-icon { width: 15px; height: 15px; }
+  .order-editor-modal .service-remove { width: 30px; height: 30px; }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #goods-form .catalog-add {
+    grid-template-columns: 1fr;
+  }
+  #goods-form .line-item {
+    grid-template-columns: minmax(0, 1fr) 52px 68px 32px;
+  }
+
+  .legacy-guarantee-head {
+    grid-template-columns: 22px minmax(0,1fr);
+  }
+  .guarantee-date {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .legacy-setting-row {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .legacy-setting-row > .secondary-button,
+  .legacy-setting-row > a.secondary-button {
+    grid-column: 2;
+    justify-self: start;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .modal-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .modal-actions > :only-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 380px) {
+  /* На 320–380 px сложные строки переходят в вертикально безопасную компоновку */
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 18px minmax(0, 1fr) 30px;
+    padding: 6px 0;
+  }
+  .order-editor-modal .legacy-service-row .service-check {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .order-editor-modal .legacy-service-row .service-name-field {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .order-editor-modal .legacy-service-row .service-remove {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .order-editor-modal .legacy-service-row .service-qty-field {
+    grid-column: 2;
+    grid-row: 2;
+    width: 52px;
+    justify-self: start;
+  }
+  .order-editor-modal .legacy-service-row .service-price-field {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    margin-left: 58px;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .order-editor-modal .material-card-controls label:last-child {
+    grid-column: 1 / -1;
+  }
+
+  #goods-form .line-item {
+    grid-template-columns: minmax(0, 1fr) 48px 30px;
+    padding: 7px;
+  }
+  #goods-form .line-item [data-line="name"] {
+    grid-column: 1 / -1;
+  }
+  #goods-form .line-item [data-line="price"] {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  #goods-form .line-item [data-line="qty"] {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  #goods-form .line-item .remove-line {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  #goods-form .goods-adjust {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
