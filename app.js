@@ -468,6 +468,55 @@ const orderMaterialRow = (item = {}) => `<div class="line-item material-line" da
   <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
 </div>`;
 
+function syncOrderStock(previousMaterials = [], nextMaterials = [], orderId) {
+  const totals = (materials) => {
+    const result = new Map();
+    materials.forEach((material) => {
+      if (!material?.warehouseId || !material.writeOff) return;
+      const id = String(material.warehouseId);
+      result.set(id, (result.get(id) || 0) + (Number(material.qty) || 0));
+    });
+    return result;
+  };
+
+  const previous = totals(Array.isArray(previousMaterials) ? previousMaterials : []);
+  const next = totals(Array.isArray(nextMaterials) ? nextMaterials : []);
+  const ids = [...new Set([...previous.keys(), ...next.keys()])];
+  const changes = ids
+    .map((warehouseId) => ({
+      warehouseId,
+      delta: (next.get(warehouseId) || 0) - (previous.get(warehouseId) || 0)
+    }))
+    .filter((change) => Math.abs(change.delta) > 1e-9);
+
+  for (const change of changes) {
+    if (change.delta <= 0) continue;
+    const item = data.warehouse.find((entry) => String(entry.id) === change.warehouseId);
+    if (!item) return { ok: false, message: "Позиция склада больше не найдена" };
+    if ((Number(item.quantity) || 0) < change.delta) {
+      return { ok: false, message: `Недостаточно на складе: ${item.name || "позиция"}` };
+    }
+  }
+
+  const date = new Date().toISOString();
+  changes.forEach((change) => {
+    const item = data.warehouse.find((entry) => String(entry.id) === change.warehouseId);
+    if (!item) return;
+    item.quantity = Math.max(0, (Number(item.quantity) || 0) - change.delta);
+    data.warehouse_movements.push({
+      id: crypto.randomUUID(),
+      warehouseId: item.id,
+      orderId,
+      name: item.name,
+      qty: Math.abs(change.delta),
+      type: change.delta > 0 ? "order_out" : "order_return",
+      date
+    });
+  });
+
+  return { ok: true };
+}
+
 function newOrderModal(existing = null) {
   const order = existing || {};
   const services = Array.isArray(order.services) ? order.services : [];
