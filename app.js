@@ -820,7 +820,7 @@ function warehousePage() {
             <div class="stock-actions legacy-stock-actions">
               <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ &nbsp;Приход</button>
               <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− &nbsp;Списать</button>
-              <button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("archive")}<span>Архив</span></button>
+              <button class="secondary-button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
               <button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
             </div>
           </article>`).join("")}</div>
@@ -2180,6 +2180,15 @@ app.addEventListener("click", async (event) => {
     const index = Number(event.target.closest("[data-action]").dataset.index);
     const item = data.service_custom[index];
     if (item) return customServiceModal(item, index);
+  }
+  if (action === "archive-stock") {
+    const id = event.target.closest("[data-action]").dataset.id;
+    const item = data.warehouse.find((entry) => String(entry.id) === String(id));
+    if (!item) return;
+    item.archived = !item.archived;
+    await saveData();
+    await render();
+    return toast(item.archived ? "Позиция перемещена в архив" : "Позиция возвращена на склад");
   }
   if (action === "new-tool") return toolModal();
   if (action === "edit-tool") {
