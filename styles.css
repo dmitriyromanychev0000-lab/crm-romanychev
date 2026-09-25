@@ -1962,3 +1962,132 @@ h2 { margin: 0; font-size: 24px; }
   .legacy-goods-sheet b { grid-column: 2; grid-row: 2; }
   .legacy-goods-sheet .chevron { grid-column: 3; grid-row: 1 / span 2; }
 }
+
+
+/* 0.37.0 · Настройки и документы/чеки */
+.settings-content,
+.receipts-content { padding-top: 28px; }
+
+.settings-profile-panel .form-grid { margin-top: 2px; }
+.settings-system-panel,
+.settings-sections-panel { padding: 20px; }
+.settings-system-list { display: grid; }
+.legacy-setting-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0,1fr) auto;
+  gap: 12px;
+  min-height: 72px;
+  padding: 13px 0;
+}
+.legacy-setting-row:first-child { border-top: 0; }
+.legacy-setting-row > div { min-width: 0; }
+.legacy-setting-row > div > strong { display: block; margin-bottom: 4px; font-size: 16px; }
+.legacy-setting-row .secondary-button {
+  min-height: 44px;
+  padding: 10px 13px;
+  text-decoration: none;
+}
+.setting-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,107,79,.18);
+  border-radius: 13px;
+  background: rgba(255,107,79,.08);
+  color: var(--accent);
+}
+.setting-icon .ui-icon { width: 21px; height: 21px; }
+
+.legacy-settings-links {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.legacy-settings-links .secondary-button {
+  display: grid;
+  grid-template-columns: 44px minmax(0,1fr) 22px;
+  gap: 12px;
+  min-height: 72px;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+}
+.legacy-settings-links .secondary-button:last-child { border-bottom: 0; }
+.legacy-settings-links .secondary-button > span:nth-child(2) { min-width: 0; }
+.legacy-settings-links strong,
+.legacy-settings-links small { display: block; }
+.legacy-settings-links strong { font-size: 16px; }
+.legacy-settings-links small { margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 500; }
+.settings-link-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(91,168,255,.09);
+  color: #5ba8ff;
+}
+.settings-link-icon .ui-icon { width: 21px; height: 21px; }
+.legacy-settings-links .chevron { justify-self: end; }
+.settings-data-panel { padding: 18px 20px; }
+.settings-data-copy { display: grid; grid-template-columns: 44px minmax(0,1fr); gap: 12px; align-items: center; }
+.settings-data-copy p { margin: 4px 0 0; }
+
+.receipt-stats-panel { margin-bottom: 16px; }
+.receipt-add-button { min-height: 58px; margin-bottom: 16px; }
+.receipt-history-panel { padding: 20px; }
+.receipt-list { display: grid; }
+.receipt-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0,1fr) auto 22px;
+  gap: 11px;
+  align-items: center;
+  width: 100%;
+  min-height: 72px;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+.receipt-row:last-child { border-bottom: 0; }
+.receipt-row-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(91,168,255,.09);
+  color: #5ba8ff;
+}
+.receipt-row-icon .ui-icon { width: 21px; height: 21px; }
+.receipt-row-copy { min-width: 0; }
+.receipt-row-copy strong,
+.receipt-row-copy small { display: block; }
+.receipt-row-copy strong {
+  overflow: hidden;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.receipt-row-copy small {
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.receipt-row b { color: var(--accent); font-size: 17px; white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .legacy-setting-row { grid-template-columns: 42px minmax(0,1fr); }
+  .legacy-setting-row .secondary-button { grid-column: 2; justify-self: start; }
+  .receipt-row { grid-template-columns: 42px minmax(0,1fr) 20px; }
+  .receipt-row b { grid-column: 2; grid-row: 2; }
+  .receipt-row .chevron { grid-column: 3; grid-row: 1 / span 2; }
+}
