@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.46.0";
-const APP_BUILD = "2026.09.26.17";
+const APP_VERSION = "0.46.1";
+const APP_BUILD = "2026.09.26.18";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Старые складские позиции без ID автоматически получают внутренний UUID при загрузке, импорте и откате";
+const APP_RELEASE = "Отсутствующие ID старых заявок, склада и товарников безопасно восстанавливаются при загрузке и импорте";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -268,6 +268,47 @@ function validateBackup(candidate) {
     ...candidate,
     settings: { ...defaultData().settings, ...candidate.settings }
   };
+}
+
+function ensureOrderIds() {
+  let changed = false;
+  const used = new Set((Array.isArray(data.orders) ? data.orders : [])
+    .map((item) => String(item?.id ?? "").trim())
+    .filter(Boolean));
+  let seed = Number(String(Date.now()).slice(-6));
+  (Array.isArray(data.orders) ? data.orders : []).forEach((order) => {
+    if (String(order?.id ?? "").trim()) return;
+    let attempts = 0;
+    let candidate = "";
+    do {
+      candidate = String((seed + attempts) % 1000000).padStart(6, "0");
+      attempts += 1;
+    } while (used.has(candidate) && attempts < 1000000);
+    if (!candidate || used.has(candidate)) candidate = crypto.randomUUID();
+    order.id = candidate;
+    used.add(String(candidate));
+    seed = (seed + attempts) % 1000000;
+    changed = true;
+  });
+  return changed;
+}
+
+function ensureGoodsSheetIds() {
+  let changed = false;
+  (Array.isArray(data.goods_sheets) ? data.goods_sheets : []).forEach((sheet) => {
+    if (String(sheet?.id || "").trim()) return;
+    sheet.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function ensureDataIds() {
+  let changed = false;
+  if (ensureOrderIds()) changed = true;
+  if (ensureWarehouseIds()) changed = true;
+  if (ensureGoodsSheetIds()) changed = true;
+  return changed;
 }
 
 function ensureWarehouseIds() {
@@ -2737,7 +2778,7 @@ app.addEventListener("click", async (event) => {
     if (!confirm("Вернуть данные, которые были до последнего импорта?")) return;
     const current = structuredClone(data);
     data = validateBackup(structuredClone(rollback));
-    ensureWarehouseIds();
+    ensureDataIds();
     await saveData();
     await dbSet(PRE_IMPORT_KEY, current);
     activePage = "orders";
@@ -3004,7 +3045,7 @@ fileInput.addEventListener("change", async () => {
     if (!confirmed) return;
     await dbSet(PRE_IMPORT_KEY, structuredClone(data));
     data = restored;
-    ensureWarehouseIds();
+    ensureDataIds();
     await saveData();
     activePage = "orders";
     moreSection = "menu";
@@ -3024,7 +3065,7 @@ async function start() {
     const stored = await dbGet(DATA_KEY);
     if (stored) {
       data = validateBackup(stored);
-      if (ensureWarehouseIds()) await saveData();
+      if (ensureDataIds()) await saveData();
     }
   } catch (error) {
     console.error("Не удалось прочитать локальную базу", error);
