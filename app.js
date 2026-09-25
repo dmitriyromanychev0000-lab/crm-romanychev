@@ -1451,6 +1451,21 @@ app.addEventListener("click", async (event) => {
   if (action === "download-backup") return downloadBackup();
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
+  if (action === "restore-pre-import") {
+    const rollback = await dbGet(PRE_IMPORT_KEY);
+    if (!rollback) return toast("Точки отката пока нет");
+    if (!confirm("Вернуть данные, которые были до последнего импорта?")) return;
+    const current = structuredClone(data);
+    data = validateBackup(structuredClone(rollback));
+    await saveData();
+    await dbSet(PRE_IMPORT_KEY, current);
+    activePage = "orders";
+    moreSection = "menu";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return toast("Данные до импорта восстановлены");
+  }
   if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
