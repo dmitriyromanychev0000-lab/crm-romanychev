@@ -775,14 +775,20 @@ function warehousePage() {
       <div class="warehouse-compat-list">
         ${["Холодильники","Коммерческое холод. оборудование","Стиральные машины","Посудомоечные машины","Сушильные машины","Плиты и духовки","Кондиционеры","Мелкая бытовая техника"].map((value) => `<label class="warehouse-compat-option"><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" /><span class="warehouse-check"></span><span>${escapeHtml(value)}</span></label>`).join("")}
       </div>
-      <div class="warehouse-create-grid warehouse-create-numbers">
-        <div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option>${value}</option>`).join("")}</select></div>
-        <div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="0" /></div>
-        <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="0" /></div>
-        <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="0" /></div>
-        <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="0" /></div>
+      <div class="warehouse-create-grid warehouse-create-numbers warehouse-create-triple">
+        <div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="1" /></div>
+        <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="3" /></div>
+        <div class="form-group"><label>Сумма покупки</label><input class="field" name="purchaseTotal" type="number" min="0" step="1" value="0" /><div class="small purchase-helper">По сумме рассчитаем себестоимость единицы.</div></div>
       </div>
-      <button class="primary-button warehouse-create-submit" type="submit">Добавить позицию</button>
+      <div class="warehouse-create-grid warehouse-storage-grid">
+        <div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option>${value}</option>`).join("")}</select></div>
+        <div class="form-group"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact">Точный</option><option value="presence">По наличию</option></select></div>
+      </div>
+      <div class="warehouse-create-grid warehouse-pricing-grid">
+        <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="0" /></div>
+        <div class="form-group"><label>Себестоимость единицы</label><div class="field readonly-field" id="warehouse-unit-cost">0 ₽</div></div>
+      </div>
+      <button class="primary-button warehouse-create-submit" type="submit">+ &nbsp;Добавить на склад</button>
     </form>
 
     <section id="warehouse-shopping" class="panel warehouse-shopping-panel ${lowItems.length ? "" : "warehouse-section-muted"}">
@@ -2206,6 +2212,14 @@ app.addEventListener("click", async (event) => {
 });
 
 app.addEventListener("input", (event) => {
+  if (event.target.closest("#warehouse-inline-form") && ["quantity", "purchaseTotal"].includes(event.target.name)) {
+    const form = event.target.closest("#warehouse-inline-form");
+    const quantity = Number(form.elements.quantity.value) || 0;
+    const total = Number(form.elements.purchaseTotal.value) || 0;
+    const output = form.querySelector("#warehouse-unit-cost");
+    if (output) output.textContent = money(quantity > 0 ? total / quantity : 0);
+    return;
+  }
   const liveSearch = async (selector) => {
     const cursor = event.target.selectionStart;
     await render();
@@ -2235,6 +2249,8 @@ app.addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.target);
     const quantity = Number(form.get("quantity")) || 0;
+    const purchaseTotal = Number(form.get("purchaseTotal")) || 0;
+    const unitCost = quantity > 0 ? purchaseTotal / quantity : 0;
     const item = {
       id: crypto.randomUUID(),
       name: String(form.get("name") || "").trim(),
@@ -2243,11 +2259,12 @@ app.addEventListener("submit", async (event) => {
       quantity,
       min: Number(form.get("min")) || 0,
       price: Number(form.get("price")) || 0,
-      lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0,
+      lastPurchasePrice: unitCost,
+      lastPurchaseTotal: purchaseTotal,
       compatibility: form.getAll("compatibility").map(String).filter(Boolean),
       archived: false,
       hiddenFromOrders: false,
-      tracking: "exact",
+      tracking: String(form.get("tracking") || "exact"),
       consumeUnit: String(form.get("unit") || "шт.")
     };
     if (!item.name) return toast("Укажи название позиции");
