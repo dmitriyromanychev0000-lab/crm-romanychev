@@ -50,6 +50,7 @@ let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiStat
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let analyticsPeriod = ["all", "30", "90", "365"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "all";
+let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.financePeriod)) ? String(initialUiState.financePeriod) : "all";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
@@ -63,6 +64,7 @@ function saveUiState(extra = {}) {
       warehouseSearch,
       clientSearch,
       analyticsPeriod,
+      financePeriod,
       moreSection,
       selectedActOrderId,
       scrollY: window.scrollY,
