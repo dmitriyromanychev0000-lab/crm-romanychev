@@ -1319,7 +1319,7 @@ function priceModal(existing = null, priceIndex = -1) {
 
 function clientModal(clientKey) {
   const orders = data.orders
-    .filter((order) => clientKeyForOrder(order) === clientKey)
+    .filter((order) => !order.archived && clientKeyForOrder(order) === clientKey)
     .sort((a, b) => new Date(b.created || 0) - new Date(a.created || 0));
   if (!orders.length) return;
   const client = orders[0];
