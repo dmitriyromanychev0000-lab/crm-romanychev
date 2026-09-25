@@ -2541,3 +2541,102 @@ body {
   .legacy-shopping-card { display: grid; gap: 10px; }
   .shopping-need { text-align: left; }
 }
+
+
+/* 0.40.1 · Узкие экраны 320–360 px */
+@media (max-width: 360px) {
+  .topbar {
+    min-height: 112px;
+    gap: 12px;
+    padding: 20px 14px;
+  }
+  .logo {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+    border-radius: 17px;
+  }
+  .logo .ui-icon { width: 35px; height: 35px; }
+  .brand-title {
+    font-size: clamp(17px, 5.55vw, 20px);
+    letter-spacing: -.025em;
+  }
+  .brand-subtitle {
+    margin-top: 6px;
+    font-size: 9px;
+    letter-spacing: .1em;
+  }
+
+  .modal-backdrop { top: 112px; }
+  .content { padding-top: 28px; }
+  .order-card { padding: 20px 16px 22px; }
+  .order-top {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 8px;
+  }
+  .order-name {
+    display: block;
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+  }
+  .order-state { max-width: 112px; }
+  .appliance {
+    padding-top: 16px;
+    padding-bottom: 14px;
+  }
+  .appliance-icon {
+    width: 62px;
+    height: 62px;
+    flex-basis: 62px;
+    border-radius: 18px;
+  }
+  .appliance-icon .ui-icon { width: 34px; height: 34px; }
+  .appliance-name { font-size: 19px; }
+  .appliance-model { font-size: 15px; }
+
+  .order-money {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .order-main-actions {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+  .order-secondary-actions {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+  .order-secondary-actions .secondary-order-action:first-child,
+  .danger-action {
+    grid-column: auto;
+  }
+  .action,
+  .secondary-order-action {
+    min-height: 68px;
+    font-size: 10px;
+  }
+  .action span .ui-icon { width: 22px; height: 22px; }
+
+  .next-visit-line {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 7px;
+  }
+  .next-visit-line > span:nth-child(2) { display: none; }
+  .next-visit-line .visit-address {
+    grid-column: 1 / -1;
+    white-space: normal;
+  }
+  .visit-id {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .warehouse-shortcuts { grid-template-columns: 1fr; }
+  .analytics-period-grid { grid-template-columns: repeat(2, 1fr); }
+  .focus-grid { grid-template-columns: 1fr; }
+  .focus-grid > div { min-height: 82px; }
+  .analytics-kpis { grid-template-columns: 1fr; }
+}
