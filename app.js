@@ -626,6 +626,7 @@ async function backupSettings() {
         <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
         <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
         <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
+        <button class="secondary-button" data-action="backup-self-test">Проверить бэкап</button>
         <button class="secondary-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
       </div>
       <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
@@ -1467,6 +1468,7 @@ app.addEventListener("click", async (event) => {
   if (action === "download-backup") return downloadBackup();
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
+  if (action === "backup-self-test") return runBackupSelfTest();
   if (action === "restore-pre-import") {
     const rollback = await dbGet(PRE_IMPORT_KEY);
     if (!rollback) return toast("Точки отката пока нет");
