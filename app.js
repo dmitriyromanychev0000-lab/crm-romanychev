@@ -406,8 +406,16 @@ function availableServices() {
 }
 function priceList() {
   const prices = data.receipt_prices.slice(0, 100);
+  const customServices = Array.isArray(data.service_custom) ? data.service_custom : [];
   return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
-    <section class="panel">${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span>›</span></button></li>`).join("")}</ul>` : `<div class="empty"><p>Прайс пуст</p><button class="primary-button" data-action="new-price">Добавить первую позицию</button></div>`}</section></main>`;
+    <section class="panel"><div class="panel-title">Основной прайс</div>${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span>›</span></button></li>`).join("")}</ul>` : `<div class="empty">Основной прайс пуст</div>`}</section>
+    <section class="panel"><div class="panel-title">Пользовательские услуги</div><button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>${customServices.length ? `<div class="goods-list">${customServices.map((item, index) => {
+      const name = item.name || item.title || item.service || "Услуга";
+      const price = Number(item.price || item.cost || item.sum) || 0;
+      const category = item.category || item.tech || "Своя услуга";
+      return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span>›</span></button>`;
+    }).join("")}</div>` : `<div class="empty">Своих услуг пока нет</div>`}</section>
+  </main>`;
 }
 
 
