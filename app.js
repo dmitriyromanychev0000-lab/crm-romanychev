@@ -57,7 +57,10 @@ let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiStat
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
-let analyticsPeriod = ["all", "30", "90", "365"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "all";
+let analyticsPeriod = ["today", "7", "30", "365", "all", "custom"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "30";
+let analyticsOffset = Number.isInteger(Number(initialUiState.analyticsOffset)) ? Number(initialUiState.analyticsOffset) : 0;
+let analyticsCustomStart = typeof initialUiState.analyticsCustomStart === "string" ? initialUiState.analyticsCustomStart : "";
+let analyticsCustomEnd = typeof initialUiState.analyticsCustomEnd === "string" ? initialUiState.analyticsCustomEnd : "";
 let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.financePeriod)) ? String(initialUiState.financePeriod) : "all";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
@@ -75,6 +78,9 @@ function saveUiState(extra = {}) {
       warehouseFilter,
       clientSearch,
       analyticsPeriod,
+      analyticsOffset,
+      analyticsCustomStart,
+      analyticsCustomEnd,
       financePeriod,
       moreSection,
       selectedActOrderId,
@@ -785,22 +791,106 @@ function warehousePage() {
   </main>`;
 }
 
+function analyticsRange(period = analyticsPeriod, offset = analyticsOffset) {
+  const now = new Date();
+  const day = 86400000;
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (period === "all") return null;
+  if (period === "custom") {
+    if (!analyticsCustomStart || !analyticsCustomEnd) return null;
+    const start = new Date(`${analyticsCustomStart}T00:00:00`);
+    const end = new Date(`${analyticsCustomEnd}T00:00:00`);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+    return { start: start.getTime(), end: end.getTime() + day };
+  }
+  if (period === "today") {
+    const start = startOfToday.getTime() + offset * day;
+    return { start, end: start + day };
+  }
+  if (period === "7") {
+    const end = startOfToday.getTime() + day + offset * 7 * day;
+    return { start: end - 7 * day, end };
+  }
+  if (period === "30") {
+    const start = new Date(now.getFullYear(), now.getMonth() + offset, 1).getTime();
+    const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 1).getTime();
+    return { start, end };
+  }
+  if (period === "365") {
+    const start = new Date(now.getFullYear() + offset, 0, 1).getTime();
+    const end = new Date(now.getFullYear() + offset + 1, 0, 1).getTime();
+    return { start, end };
+  }
+  return null;
+}
+
+function inAnalyticsRange(value, range = analyticsRange()) {
+  if (!range) return true;
+  const time = new Date(value || 0).getTime();
+  return Number.isFinite(time) && time >= range.start && time < range.end;
+}
+
+function analyticsPeriodTitle(range = analyticsRange()) {
+  if (analyticsPeriod === "all") return "Всё время";
+  if (analyticsPeriod === "custom") return analyticsCustomStart && analyticsCustomEnd ? `${shortDate(analyticsCustomStart)} — ${shortDate(analyticsCustomEnd)}` : "Свой период";
+  if (!range) return "Период";
+  const start = new Date(range.start);
+  const end = new Date(range.end - 1);
+  if (analyticsPeriod === "today") return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(start);
+  if (analyticsPeriod === "30") return new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" }).format(start);
+  if (analyticsPeriod === "365") return String(start.getFullYear());
+  return `${shortDate(start)} — ${shortDate(end)}`;
+}
+
+function analyticsRangeModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="analytics-range-form"><h2>Свой период</h2><div class="form-grid"><div class="form-group"><label>С</label><input class="field" type="date" name="start" value="${escapeHtml(analyticsCustomStart)}" required /></div><div class="form-group"><label>По</label><input class="field" type="date" name="end" value="${escapeHtml(analyticsCustomEnd)}" required /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Применить</button></div></form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    analyticsCustomStart = String(form.get("start") || "");
+    analyticsCustomEnd = String(form.get("end") || "");
+    if (analyticsCustomStart > analyticsCustomEnd) return toast("Дата начала позже даты окончания");
+    analyticsPeriod = "custom";
+    analyticsOffset = 0;
+    saveUiState();
+    modal.remove();
+    await render();
+  });
+}
+
 function analyticsPage() {
-  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && withinPeriod(order.created, analyticsPeriod));
-  const periodExpenses = data.expenses.filter((item) => withinPeriod(item.date, analyticsPeriod));
-  const periodIncomes = data.incomes.filter((item) => withinPeriod(item.date, analyticsPeriod));
+  const range = analyticsRange();
+  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && inAnalyticsRange(order.completed || order.created, range));
+  const activeOrders = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "active");
+  const periodExpenses = data.expenses.filter((item) => inAnalyticsRange(item.date, range));
+  const periodIncomes = data.incomes.filter((item) => inAnalyticsRange(item.date, range));
   const revenue = closed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
   const repairCosts = closed.reduce((sum, order) => sum + (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0), 0);
   const repairResult = revenue - repairCosts;
   const personalExpenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const personalIncome = periodIncomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const personalResult = personalIncome - personalExpenses;
+  const totalSpent = repairCosts + personalExpenses;
   const totalResult = repairResult + personalResult;
   const average = closed.length ? revenue / closed.length : 0;
 
+  const now = Date.now();
+  const overdueVisits = activeOrders.filter((order) => order.nextVisit && new Date(order.nextVisit).getTime() < now).length;
+  const lowStock = data.warehouse.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
+  const oldestActiveDays = activeOrders.length
+    ? Math.max(...activeOrders.map((order) => Math.max(0, Math.floor((now - new Date(order.created || now).getTime()) / 86400000))))
+    : 0;
+  const activeSum = activeOrders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
+
   const grouped = new Map();
   closed.forEach((order) => {
-    const date = shortDate(order.created);
+    const date = shortDate(order.completed || order.created);
     grouped.set(date, (grouped.get(date) || 0) + (Number(order.sum) || 0));
   });
   const bars = [...grouped.entries()].slice(-7);
@@ -818,46 +908,67 @@ function analyticsPage() {
   const techStats = [...techMap.values()].sort((a, b) => b.revenue - a.revenue);
 
   const usageMap = new Map();
-  data.warehouse_movements
-    .filter((movement) => withinPeriod(movement.date, analyticsPeriod))
-    .forEach((movement) => {
-      let delta = 0;
-      if (movement.type === "order_out" || movement.type === "manual_out") delta = Number(movement.qty) || 0;
-      if (movement.type === "order_return") delta = -(Number(movement.qty) || 0);
-      if (!delta) return;
-      const key = String(movement.warehouseId || movement.name || "unknown");
-      const stockItem = data.warehouse.find((item) => String(item.id) === String(movement.warehouseId));
-      const current = usageMap.get(key) || {
-        name: movement.name || stockItem?.name || "Материал",
-        unit: stockItem?.unit || "шт.",
-        qty: 0,
-        operations: 0
-      };
-      current.qty += delta;
-      current.operations += 1;
-      usageMap.set(key, current);
-    });
-  const materialUsage = [...usageMap.values()]
-    .filter((item) => item.qty > 0)
-    .sort((a, b) => b.qty - a.qty)
-    .slice(0, 10);
+  data.warehouse_movements.filter((movement) => inAnalyticsRange(movement.date, range)).forEach((movement) => {
+    let delta = 0;
+    if (movement.type === "order_out" || movement.type === "manual_out") delta = Number(movement.qty) || 0;
+    if (movement.type === "order_return") delta = -(Number(movement.qty) || 0);
+    if (!delta) return;
+    const key = String(movement.warehouseId || movement.name || "unknown");
+    const stockItem = data.warehouse.find((item) => String(item.id) === String(movement.warehouseId));
+    const current = usageMap.get(key) || { name: movement.name || stockItem?.name || "Материал", unit: stockItem?.unit || "шт.", qty: 0, operations: 0 };
+    current.qty += delta;
+    current.operations += 1;
+    usageMap.set(key, current);
+  });
+  const materialUsage = [...usageMap.values()].filter((item) => item.qty > 0).sort((a, b) => b.qty - a.qty).slice(0, 10);
 
-  return `<main class="content">
-    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Ремонты, личные финансы и склад отдельно</p></div></div>
-    <div class="chips"><button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё время</button><button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">30 дней</button><button class="chip ${analyticsPeriod === "90" ? "active" : ""}" data-analytics-period="90">90 дней</button><button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">365 дней</button></div>
-    <section class="panel">
-      <div class="panel-title"><span class="badge-icon">${icon("analytics")}</span> Главные показатели</div>
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value">${closed.length}</div></div>
-        <div class="metric"><div class="metric-label">Выручка ремонтов</div><div class="metric-value blue">${money(revenue)}</div></div>
-        <div class="metric"><div class="metric-label">Результат ремонтов</div><div class="metric-value ${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</div></div>
-        <div class="metric"><div class="metric-label">Расходы ремонтов</div><div class="metric-value red">${money(repairCosts)}</div></div>
-        <div class="metric"><div class="metric-label">Личные финансы</div><div class="metric-value ${personalResult >= 0 ? "green" : "red"}">${money(personalResult)}</div></div>
-        <div class="metric"><div class="metric-label">Общий результат</div><div class="metric-value ${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</div></div>
-        <div class="metric"><div class="metric-label">Средний чек</div><div class="metric-value yellow">${money(average)}</div></div>
-        <div class="metric"><div class="metric-label">Склад</div><div class="metric-value purple">${data.warehouse.filter((item) => !item.archived).length}</div></div>
+  return `<main class="content analytics-content">
+    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
+
+    <div class="analytics-period-grid">
+      <button class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today">Сегодня</button>
+      <button class="chip ${analyticsPeriod === "7" ? "active" : ""}" data-analytics-period="7">Неделя</button>
+      <button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">Месяц</button>
+      <button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">Год</button>
+      <button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё</button>
+      <button class="chip ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom">Свой период</button>
+    </div>
+
+    <div class="analytics-range-nav">
+      <button class="analytics-arrow" data-analytics-shift="-1" ${analyticsPeriod === "all" || analyticsPeriod === "custom" ? "disabled" : ""}>‹</button>
+      <div><strong>${escapeHtml(analyticsPeriodTitle(range))}</strong><small>${range ? `${shortDate(new Date(range.start))} — ${shortDate(new Date(range.end - 1))}` : "Все данные CRM"}</small></div>
+      <button class="analytics-arrow" data-analytics-shift="1" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>›</button>
+    </div>
+
+    <section class="panel analytics-kpi-panel">
+      <div class="panel-title"><span class="badge-icon">◇</span> Главные показатели <small>по закрытым заявкам</small></div>
+      <div class="analytics-kpis">
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО</span><strong class="red">${money(totalSpent)}</strong></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong></div>
       </div>
     </section>
+
+    <section class="panel analytics-focus">
+      <div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Фокус внимания</div>
+      <div class="focus-grid">
+        <div><strong class="yellow">${overdueVisits}</strong><span>просроченных визитов</span></div>
+        <div><strong class="yellow">${lowStock}</strong><span>позиций заканчивается</span></div>
+        <div><strong class="yellow">${oldestActiveDays}</strong><span>дней самой старой заявке</span></div>
+      </div>
+    </section>
+
+    <section class="panel analytics-work">
+      <div class="panel-title"><span class="badge-icon">${icon("tools")}</span> Работа сейчас</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
+        <div class="metric"><div class="metric-label">Сумма активных</div><div class="metric-value blue">${money(activeSum)}</div></div>
+      </div>
+    </section>
+
     <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span> Динамика выручки</div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
     <section class="panel"><div class="panel-title">Доходность по типам техники</div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
       const result = item.revenue - item.costs;
@@ -866,6 +977,7 @@ function analyticsPage() {
     <section class="panel"><div class="panel-title">Расход материалов</div>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</section>
   </main>`;
 }
+
 
 function availableServices() {
   const regular = data.receipt_prices
@@ -1829,7 +1941,23 @@ app.addEventListener("click", async (event) => {
   const orderPeriodFilter = event.target.closest("[data-order-period]");
   if (orderPeriodFilter) { orderPeriod = orderPeriodFilter.dataset.orderPeriod; saveUiState(); await render(); return; }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
-  if (analyticsFilter) { analyticsPeriod = analyticsFilter.dataset.analyticsPeriod; saveUiState(); await render(); return; }
+  if (analyticsFilter) {
+    const period = analyticsFilter.dataset.analyticsPeriod;
+    if (period === "custom") return analyticsRangeModal();
+    analyticsPeriod = period;
+    analyticsOffset = 0;
+    saveUiState();
+    await render();
+    return;
+  }
+  const analyticsShift = event.target.closest("[data-analytics-shift]");
+  if (analyticsShift) {
+    analyticsOffset += Number(analyticsShift.dataset.analyticsShift) || 0;
+    if (analyticsOffset > 0) analyticsOffset = 0;
+    saveUiState();
+    await render();
+    return;
+  }
   const financeFilter = event.target.closest("[data-finance-period]");
   if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
