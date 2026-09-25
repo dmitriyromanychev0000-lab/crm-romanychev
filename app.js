@@ -224,6 +224,57 @@ function backupPayload() {
   return JSON.stringify({ ...data, date: new Date().toISOString() }, null, 2);
 }
 
+async function inspectBackupFile() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json,.json";
+  input.hidden = true;
+  document.body.appendChild(input);
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    if (!file) { input.remove(); return; }
+    try {
+      const candidate = JSON.parse(await file.text());
+      const restored = validateBackup(structuredClone(candidate));
+      const warnings = backupWarnings(restored);
+      const photoCount = restored.orders.reduce((sum, order) => sum + (Array.isArray(order.photos) ? order.photos.length : 0), 0);
+      const draftCount = Array.isArray(restored.draft)
+        ? restored.draft.length
+        : looksLikeOrderDraft(restored.draft)
+          ? 1
+          : restored.draft && typeof restored.draft === "object"
+            ? Object.keys(restored.draft).length
+            : 0;
+      const rows = [
+        ["Файл", file.name],
+        ["Размер", formatBytes(file.size)],
+        ["Версия", String(candidate.version ?? "не указана")],
+        ["Дата бэкапа", candidate.date ? shortDate(candidate.date) : "не указана"],
+        ["Заявки", String(restored.orders.length)],
+        ["Склад", String(restored.warehouse.length)],
+        ["Документы", String(restored.receipts.length)],
+        ["Инструменты", String(restored.tools.length)],
+        ["Черновики", String(draftCount)],
+        ["Фотографии", String(photoCount)]
+      ];
+      const modal = document.createElement("div");
+      modal.className = "modal-backdrop";
+      modal.innerHTML = `<div class="modal compact-modal"><h2>Проверка бэкапа</h2><div class="goods-list">${rows.map(([name, value]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="green">✓</b><span></span></div>`).join("")}</div>${warnings.length ? `<div class="form-section-title">Предупреждения</div><div class="panel">${warnings.map((item) => `<div class="small">• ${escapeHtml(item)}</div>`).join("")}</div>` : `<div class="panel"><strong class="green">Файл совместим с текущей CRM</strong></div>`}<div class="modal-actions"><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
+      document.body.appendChild(modal);
+      modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+      modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+    } catch (error) {
+      console.error(error);
+      toast(`Файл не прошёл проверку: ${error.message}`);
+    } finally {
+      input.remove();
+    }
+  }, { once: true });
+
+  input.click();
+}
+
 async function runBackupSelfTest() {
   try {
     const payload = backupPayload();
@@ -1627,6 +1678,7 @@ app.addEventListener("click", async (event) => {
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "new-order") return newOrderModal();
   if (action === "import") return fileInput.click();
+  if (action === "inspect-backup-file") return inspectBackupFile();
   if (action === "download-backup") return downloadBackup();
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
