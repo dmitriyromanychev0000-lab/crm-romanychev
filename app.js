@@ -573,7 +573,7 @@ function clientsPage() {
   const query = clientSearch.trim().toLowerCase();
   const filtered = sorted.filter((client) => !query || [client.name, client.phone, client.address].join(" ").toLowerCase().includes(query));
   return `<main class="content"><div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div><div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.length}</div></div></div></section>
+    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div><div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.filter((item) => !item.archived).length}</div></div></div></section>
     <div class="search-row"><input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
     ${filtered.length ? `<div class="client-list">${filtered.map((client) => `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(client.name)}</div><div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div></div><strong>${money(client.total)}</strong></div><div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>${client.address ? `<div class="small client-address">⌖ ${escapeHtml(client.address)}</div>` : ""}${client.phone ? `<a class="secondary-button client-call" href="tel:${escapeHtml(client.phone)}">☎ Позвонить</a>` : ""}<button class="secondary-button client-call" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button></article>`).join("")}</div>` : (query ? emptyState("⌕", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("♙", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
   </main>`;
@@ -598,7 +598,7 @@ function financePage() {
 
 function actPage() {
   const orders = [...data.orders].filter((item) => !item.archived).reverse();
-  if (!selectedActOrderId && orders.length) selectedActOrderId = String(orders[0].id);
+  if (orders.length && !orders.some((item) => String(item.id) === String(selectedActOrderId))) selectedActOrderId = String(orders[0].id);
   const order = orders.find((item) => String(item.id) === String(selectedActOrderId));
   const actItems = order ? [
     ...(Array.isArray(order.services) ? order.services.map((item) => ({ ...item, actType: "service" })) : []),
