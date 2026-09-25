@@ -4,6 +4,7 @@ const STORE = "keyval";
 const DATA_KEY = "crm-data";
 const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
+const BACKUP_TEST_KEY = "crm-backup-self-test";
 const APP_VERSION = "0.21.0";
 const APP_BUILD = "2026.09.25.21";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
@@ -105,6 +106,16 @@ async function dbSet(key, value) {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, "readwrite");
     tx.objectStore(STORE).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function dbDelete(key) {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readwrite");
+    tx.objectStore(STORE).delete(key);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
