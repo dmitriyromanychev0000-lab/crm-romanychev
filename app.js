@@ -769,6 +769,7 @@ async function backupSettings() {
       <div class="panel-title"><span class="badge-icon">▧</span> Резервное копирование</div>
       <div class="backup-grid">
         <button class="primary-button" data-action="import">Импортировать JSON</button>
+        <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
         <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
         <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
         <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
