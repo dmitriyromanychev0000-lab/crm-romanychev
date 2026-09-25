@@ -279,7 +279,7 @@ function ordersPage() {
       <button class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
       <button class="chip ${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
     </div>
-    ${filtered.length ? filtered.map(orderCard).join("") : emptyState("▣", "Заявок пока нет", "Импортируй резервную копию или создай первую заявку.")}
+    ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">▣</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
 }
 
@@ -383,27 +383,107 @@ async function render() {
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
 }
 
+const orderServiceRow = (item = {}) => `<div class="line-item" data-service-row>
+  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название услуги" />
+  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+  <input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" />
+  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
+</div>`;
+
+const orderMaterialRow = (item = {}) => `<div class="line-item material-line" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}">
+  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" />
+  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+  <input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" aria-label="Цена" />
+  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
+</div>`;
+
 function newOrderModal(existing = null) {
   const order = existing || {};
+  const services = Array.isArray(order.services) ? order.services : [];
+  const materials = Array.isArray(order.materials) ? order.materials : [];
+  const serviceOptions = data.receipt_prices
+    .filter((item) => item.kind !== "material")
+    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
+  const stockOptions = data.warehouse
+    .filter((item) => !item.archived && !item.hiddenFromOrders)
+    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
   modal.innerHTML = `<form class="modal" id="order-form">
     <h2>${existing ? "Редактировать заявку" : "Новая заявка"}</h2>
+    <div class="form-section-title">Клиент и техника</div>
     <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(order.phone || "")}" inputmode="tel" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Стиральная машина","Посудомоечная машина","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group"><label>Модель</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" /></div>
-      <div class="form-group"><label>Сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
-      <div class="form-group"><label>Гарантия, мес.</label><input class="field" name="guarantee" type="number" min="0" value="${Number(order.guarantee) || 6}" /></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
+      <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
+      <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
+      <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
+      <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${order.nextVisit ? escapeHtml(String(order.nextVisit).slice(0, 16)) : ""}" /></div>
+      <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+    </div>
+
+    <div class="form-section-title">Услуги</div>
+    <div class="catalog-add"><select class="field" id="service-picker"><option value="">— Выбрать услугу из прайса —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
+    <div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div>
+    <div id="service-lines" class="line-list">${services.map(orderServiceRow).join("")}</div>
+
+    <div class="form-section-title">Запчасти и материалы</div>
+    <div class="catalog-add"><select class="field" id="material-picker"><option value="">— Выбрать со склада —</option>${stockOptions}</select><button type="button" class="secondary-button" id="add-material">+ Добавить</button></div>
+    <div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div>
+    <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
+
+    <div class="calculated-total"><span>Услуги и материалы</span><strong id="calculated-total">0 ₽</strong><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
+
+    <div class="form-section-title">Расчёт и гарантия</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
+      <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
+      <div class="form-group"><label>Процент мастера</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
+      <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+      <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
+      <div class="form-group"><label>Гарантия, мес.</label><input class="field" name="guarantee" type="number" min="0" value="${Number(order.guarantee) || 6}" /></div>
+      <div class="form-group full"><label>Условия гарантии</label><textarea class="field textarea" name="guaranteeNote">${escapeHtml(order.guaranteeNote || "")}</textarea></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
     </div>
     <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
+  const formElement = modal.querySelector("form");
+  const calculateLines = () => {
+    const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
+    const materialTotal = [...modal.querySelectorAll("[data-material-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="unit-cost"]').value) || 0), 0);
+    const total = serviceTotal + materialTotal;
+    modal.querySelector("#calculated-total").textContent = money(total);
+    return total;
+  };
+  modal.querySelector("#add-service").addEventListener("click", () => {
+    const picker = modal.querySelector("#service-picker");
+    const item = picker.value === "" ? null : data.receipt_prices.filter((entry) => entry.kind !== "material")[Number(picker.value)];
+    modal.querySelector("#service-lines").insertAdjacentHTML("beforeend", orderServiceRow(item ? { name: item.name, price: item.price, basePrice: item.price, qty: 1 } : {}));
+    calculateLines();
+  });
+  modal.querySelector("#add-material").addEventListener("click", () => {
+    const picker = modal.querySelector("#material-picker");
+    const item = picker.value === "" ? null : data.warehouse.filter((entry) => !entry.archived && !entry.hiddenFromOrders)[Number(picker.value)];
+    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow(item ? { warehouseId: item.id, name: item.name, qty: 1, unit: item.unit, unitCost: item.price || item.lastPurchasePrice || 0, tracking: item.tracking, writeOff: false } : {}));
+    calculateLines();
+  });
+  modal.addEventListener("click", (event) => {
+    if (event.target.closest("[data-remove-line]")) {
+      event.target.closest(".line-item").remove();
+      calculateLines();
+    }
+  });
+  modal.addEventListener("input", (event) => { if (event.target.closest(".line-item")) calculateLines(); });
+  modal.querySelector("#use-calculated-total").addEventListener("click", () => { formElement.elements.sum.value = calculateLines(); });
+  calculateLines();
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
-  modal.querySelector("form").addEventListener("submit", async (event) => {
+  formElement.addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const next = {
@@ -416,10 +496,34 @@ function newOrderModal(existing = null) {
       tech: form.get("tech"),
       brand: form.get("brand"),
       sum: Number(form.get("sum")),
+      prepay: Number(form.get("prepay")),
+      discount: Number(form.get("discount")),
+      percent: Number(form.get("percent")),
+      expense_gray: Number(form.get("expense_gray")),
+      expense_white: Number(form.get("expense_white")),
       guarantee: Number(form.get("guarantee")),
       address: form.get("address"),
-      services: order.services || [],
-      materials: order.materials || [],
+      issue: form.get("issue"),
+      diagnosis: form.get("diagnosis"),
+      defects: form.get("defects"),
+      comment: form.get("comment"),
+      guaranteeNote: form.get("guaranteeNote"),
+      nextVisit: form.get("nextVisit") || null,
+      status: form.get("status"),
+      services: [...modal.querySelectorAll("[data-service-row]")].map((row) => ({
+        name: row.querySelector('[data-line="name"]').value,
+        qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
+        price: Number(row.querySelector('[data-line="price"]').value) || 0,
+        basePrice: Number(row.querySelector('[data-line="price"]').value) || 0
+      })).filter((item) => item.name.trim()),
+      materials: [...modal.querySelectorAll("[data-material-row]")].map((row) => ({
+        warehouseId: row.dataset.warehouseId || null,
+        name: row.querySelector('[data-line="name"]').value,
+        qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
+        unitCost: Number(row.querySelector('[data-line="unit-cost"]').value) || 0,
+        unit: "шт.",
+        writeOff: false
+      })).filter((item) => item.name.trim()),
       photos: order.photos || []
     };
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
