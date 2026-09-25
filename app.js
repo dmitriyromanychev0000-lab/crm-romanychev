@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.43.1";
-const APP_BUILD = "2026.09.26.08";
+const APP_VERSION = "0.44.0";
+const APP_BUILD = "2026.09.26.09";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Доведены фильтры прайса и навигация по разделам склада после визуального уплотнения";
+const APP_RELEASE = "Оставшиеся разделы уплотнены; товарники и документы сортируются по дате, инструменты по имени, телефон мастера валидируется как российский";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1361,10 +1361,15 @@ function actPage() {
   </main>`;
 }
 function goodsPage() {
-  const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
+  const sheets = Array.isArray(data.goods_sheets)
+    ? [...data.goods_sheets].sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+    : [];
   const latest = sheets[0] || null;
   const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
-  const productPrice = data.receipt_prices.filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар")).slice(0, 30);
+  const productPrice = data.receipt_prices
+    .filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))
+    .slice(0, 30);
   const totalItems = sheets.reduce((sum, sheet) => sum + (Array.isArray(sheet.items) ? sheet.items.length : 0), 0);
 
   return `<main class="content goods-content">
@@ -1434,7 +1439,7 @@ function settingsPage() {
       <div class="form-grid">
         <div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div>
         <div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div>
-        <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(settings.phone || "")}" inputmode="tel" /></div>
+        <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
         <div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div>
         <div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div>
       </div>
@@ -1556,6 +1561,9 @@ function receiptSummary(item = {}) {
 
 function receiptsPage() {
   const receipts = Array.isArray(data.receipts) ? data.receipts : [];
+  const receiptEntries = receipts
+    .map((item, index) => ({ item, index, view: receiptSummary(item) }))
+    .sort((a, b) => new Date(b.view.date || b.item.updatedAt || 0) - new Date(a.view.date || a.item.updatedAt || 0));
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content receipts-content">
@@ -1574,8 +1582,7 @@ function receiptsPage() {
 
     ${receipts.length ? `<section class="panel receipt-history-panel">
       <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История документов</div>
-      <div class="receipt-list">${receipts.map((item, index) => {
-        const view = receiptSummary(item);
+      <div class="receipt-list">${receiptEntries.map(({ item, index, view }) => {
         const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
         return `<button class="receipt-row" data-action="edit-receipt" data-index="${index}">
           <span class="receipt-row-icon">${icon("receipt")}</span>
@@ -1589,11 +1596,14 @@ function receiptsPage() {
 }
 function toolsPage() {
   const tools = Array.isArray(data.tools) ? data.tools : [];
+  const toolEntries = tools
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => String(a.item.name || a.item.title || a.item.tool || "").localeCompare(String(b.item.name || b.item.title || b.item.tool || ""), "ru"));
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
   return `<main class="content tools-content">
-    <div class="page-head"><div><h1>Инструменты</h1><p class="lead">Учёт рабочего инструмента и оборудования</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
+    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
     <section class="panel tools-stats-panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
-    ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${tools.map((item, index) => {
+    ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${toolEntries.map(({ item, index }) => {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
@@ -2891,12 +2901,19 @@ app.addEventListener("submit", async (event) => {
   }
   if (event.target.id !== "settings-form") return;
   event.preventDefault();
+  const settingsPhoneInput = event.target.elements.phone;
+  const rawSettingsPhone = String(settingsPhoneInput?.value || "").trim();
+  const normalizedSettingsPhone = sanitizeRussianPhoneField(settingsPhoneInput);
+  if (rawSettingsPhone && !isValidRussianPhone(normalizedSettingsPhone)) {
+    settingsPhoneInput?.focus();
+    return toast("Телефон мастера: формат +7XXXXXXXXXX");
+  }
   const form = new FormData(event.target);
   data.settings = {
     ...data.settings,
     companyName: form.get("companyName"),
     name: form.get("name"),
-    phone: form.get("phone"),
+    phone: normalizedSettingsPhone,
     companyAddress: form.get("companyAddress"),
     inn: form.get("inn"),
     catalogApplyWithoutFit: form.get("catalogApplyWithoutFit") === "on"
