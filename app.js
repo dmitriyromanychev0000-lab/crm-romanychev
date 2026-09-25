@@ -1708,7 +1708,8 @@ function openServiceCatalog(orderModal, serviceCatalog) {
 
     const rows = [...customRows, ...chosen];
     orderModal.querySelector("#service-lines").innerHTML = rows.map(orderServiceRow).join("");
-    orderModal.dispatchEvent(new Event("input", { bubbles: true }));
+    const sumInput = orderModal.querySelector('[name="sum"]');
+    if (sumInput) sumInput.dispatchEvent(new Event("input", { bubbles: true }));
     modal.remove();
   };
 
@@ -1768,7 +1769,7 @@ function newOrderModal(existing = null, options = {}) {
 
     <div class="form-section-title">Выбранные услуги</div>
     <button type="button" class="legacy-catalog-button legacy-service-catalog-open" id="open-service-catalog">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></button>
-    <div class="legacy-catalog-fallback"><select class="field" id="service-picker"><option value="">— Быстро добавить услугу —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
+    <details class="legacy-quick-add"><summary>Быстро добавить одну услугу</summary><div class="legacy-catalog-fallback"><select class="field" id="service-picker"><option value="">— Выбрать услугу —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div></details>
     <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
     <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
 
