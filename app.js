@@ -6,8 +6,8 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.38.0";
-const APP_BUILD = "2026.09.25.40";
+const APP_VERSION = "0.38.1";
+const APP_BUILD = "2026.09.25.41";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Формы, модалки и состояния контролов унифицированы; добавлена мобильная и клавиатурная полировка";
 const BACKUP_FORMAT_VERSION = 18;
@@ -580,7 +580,7 @@ function header() {
   return `<header class="topbar">
     <div class="logo">${icon("logo")}</div>
     <div class="brand">
-      <div class="brand-title">CRM by <span>Romanychev</span> 😎</div>
+      <div class="brand-title">CRM by <span>Romanychev</span>😎</div>
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
     </div>
   </header>`;
