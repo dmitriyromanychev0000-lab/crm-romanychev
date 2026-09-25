@@ -1121,6 +1121,7 @@ function settingsPage() {
   return `<main class="content"><div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <form class="panel" id="settings-form"><div class="panel-title">Реквизиты исполнителя</div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div><div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div><div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(settings.phone || "")}" inputmode="tel" /></div><div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div><div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div></div><button class="primary-button wide settings-save" type="submit">Сохранить настройки</button></form>
     <section class="panel"><div class="panel-title">Версия приложения</div><div class="setting-row"><div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">Что нового: ${escapeHtml(APP_RELEASE)}</div></div><button class="secondary-button" data-action="check-update">Проверить обновление</button></div><div class="setting-row"><div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div><a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a></div><div class="setting-row"><div><strong>Диагностика</strong><div class="small">Проверить базу, кэш, service worker и хранилище</div></div><button class="secondary-button" data-action="run-diagnostics">Запустить</button></div><div class="setting-row"><div><strong>Защита локальных данных</strong><div class="small">Попросить браузер не очищать базу автоматически при нехватке места</div></div><button class="secondary-button" data-action="protect-storage">Защитить</button></div></section>
+    <section class="panel"><div class="panel-title">Дополнительные разделы</div><div class="settings-links"><button class="secondary-button" data-more="backup">${icon("backup")}<span>Бэкапы</span></button><button class="secondary-button" data-more="tools">${icon("tools")}<span>Инструменты</span></button><button class="secondary-button" data-more="receipts">${icon("receipt")}<span>Документы и чеки</span></button><button class="secondary-button" data-more="drafts">${icon("drafts")}<span>Черновики</span></button></div></section>
     <section class="panel"><div class="panel-title">О данных</div><p class="small">Все данные находятся только в браузере устройства. Для переноса и защиты используй раздел «Бэкапы».</p></section>
   </main>`;
 }
@@ -1257,23 +1258,32 @@ function toolsPage() {
     }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
   </main>`;
 }
+
+function shoppingPage() {
+  const items = data.warehouse
+    .filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0))
+    .sort((a, b) => (Number(a.quantity) - Number(a.min || 0)) - (Number(b.quantity) - Number(b.min || 0)));
+  return `<main class="content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    ${items.length ? `<div class="client-list">${items.map((item) => {
+      const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
+      return `<article class="panel shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
+    }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
+  </main>`;
+}
 function moreMenu() {
   const items = [
-    ["backup", "backup", "Бэкапы", "Импорт, экспорт и автосохранение"],
-    ["prices", "price", "Прайс-лист", "Каталог услуг и материалов"],
+    ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
+    ["shopping", "shopping", "Список покупок", "Позиции ниже минимального остатка"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
-    ["finance", "finance", "Финансы", "Расходы и дополнительные доходы"],
-    ["goods", "goods", "Товарник", "Отдельный расчёт товаров"],
-    ["tools", "tools", "Инструменты", "Учёт рабочего инструмента"],
-    ["receipts", "receipt", "Документы и чеки", "Старые документы и новые записи"],
-    ["drafts", "drafts", "Черновики", "Незавершённые заявки и восстановление"],
+    ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "act", "Акт", "Подготовка и печать документа"],
-    ["settings", "settings", "Настройки", "Оформление и параметры приложения"]
+    ["goods", "goods", "Товарник", "Товары из заявки или вручную"],
+    ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
-  return `<main class="content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item" data-more="${id}"><span class="menu-icon">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></main>`;
+  return `<main class="content more-content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list legacy-more-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></main>`;
 }
-
 async function morePage() {
+  if (moreSection === "shopping") return shoppingPage();
   if (moreSection === "backup") return backupSettings();
   if (moreSection === "prices") return priceList();
   if (moreSection === "clients") return clientsPage();
@@ -2093,7 +2103,7 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    if (["backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"].includes(more)) moreSection = more;
+    if (["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"].includes(more)) moreSection = more;
     else toast("Раздел будет восстановлен на следующем этапе");
     saveUiState({ scrollY: 0 });
     await render();
