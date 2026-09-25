@@ -356,12 +356,17 @@ function priceList() {
     <section class="panel">${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span>›</span></button></li>`).join("")}</ul>` : `<div class="empty"><p>Прайс пуст</p><button class="primary-button" data-action="new-price">Добавить первую позицию</button></div>`}</section></main>`;
 }
 
+
+function clientKeyForOrder(order) {
+  return String(order.phone || order.name || order.id || "").trim().toLowerCase();
+}
+
 function clientsPage() {
   const clients = new Map();
   data.orders.forEach((order) => {
-    const key = String(order.phone || order.name || order.id || "").trim().toLowerCase();
+    const key = clientKeyForOrder(order);
     if (!key) return;
-    const current = clients.get(key) || { name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: order.created };
+    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: order.created };
     current.orders.push(order);
     current.total += Number(order.sum) || 0;
     if (new Date(order.created || 0) > new Date(current.last || 0)) {
