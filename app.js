@@ -9,7 +9,7 @@ const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "0.29.0";
 const APP_BUILD = "2026.09.25.30";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Аналитический центр восстановлен по эталону: периоды, KPI, фокус внимания, работа сейчас, рейтинг услуг и склад";
+const APP_RELEASE = "Аналитический центр и экран «Ещё» восстановлены по архивным скриншотам; служебные разделы перенесены в настройки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
