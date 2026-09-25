@@ -1309,18 +1309,24 @@ async function render() {
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
 }
 
-const orderServiceRow = (item = {}) => `<div class="line-item" data-service-row>
-  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название услуги" />
-  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
-  <input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" />
-  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
+const orderServiceRow = (item = {}) => `<div class="line-item legacy-service-row" data-service-row>
+  <span class="service-check">${icon("check")}</span>
+  <input class="field service-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название услуги" />
+  <input class="field compact service-qty-field" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+  <div class="service-price-field"><input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" /><span>₽</span></div>
+  <button type="button" class="remove-line service-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
 </div>`;
 
-const orderMaterialRow = (item = {}) => `<div class="line-item material-line" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
-  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" />
-  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
-  <input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" aria-label="Цена" />
-  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
+const orderMaterialRow = (item = {}) => `<div class="line-item material-line legacy-material-card" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
+  <div class="material-card-head">
+    <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>${item.warehouseId ? "Материал со склада" : "Материал вне склада · только наличие"}</small></div>
+    <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
+  </div>
+  <div class="material-card-controls">
+    <label><span>Количество</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
+    <label><span>Единица</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
+    <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
+  </div>
 </div>`;
 
 function syncOrderStock(previousMaterials = [], nextMaterials = [], orderId) {
@@ -1457,12 +1463,10 @@ function newOrderModal(existing = null, options = {}) {
 
     <div class="form-section-title">Услуги</div>
     <div class="catalog-add"><select class="field" id="service-picker"><option value="">— Выбрать услугу из прайса —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
-    <div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div>
     <div id="service-lines" class="line-list">${services.map(orderServiceRow).join("")}</div>
 
     <div class="form-section-title">Запчасти и материалы</div>
     <div class="catalog-add"><select class="field" id="material-picker"><option value="">— Выбрать со склада —</option>${stockOptions}</select><button type="button" class="secondary-button" id="add-material">+ Добавить</button></div>
-    <div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
 
     <div class="form-section-title">Фотографии</div>
