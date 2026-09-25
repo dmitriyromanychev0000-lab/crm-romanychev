@@ -1,4 +1,4 @@
-const CACHE = "crm-romanychev-v26";
+const CACHE = "crm-romanychev-v27";
 const ASSETS = ["./", "./index.html", "./styles.css?v=7", "./app.js?v=23", "./manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
