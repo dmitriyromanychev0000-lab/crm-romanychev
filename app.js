@@ -646,6 +646,8 @@ function newOrderModal(existing = null) {
       })).filter((item) => item.name.trim()),
       photos: order.photos || []
     };
+    const stockSync = syncOrderStock(order.materials, next.materials, next.id);
+    if (!stockSync.ok) return toast(stockSync.message);
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
     await saveData();
