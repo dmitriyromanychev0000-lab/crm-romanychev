@@ -5444,3 +5444,280 @@ body,
     page-break-inside: avoid !important;
   }
 }
+
+
+/* 0.47.0 · Финальная мобильная сверка по доступным эталонным скриншотам */
+body.modal-open { overflow: hidden !important; }
+
+/* Фон, линии и глубина ближе к старой CRM */
+:root {
+  --bg: #050b0f;
+  --panel: #11181d;
+  --panel-2: #182028;
+  --line: #2b353d;
+  --muted: #92999f;
+  --text: #f0f2f3;
+  --accent: #ff6b57;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 86%, rgba(255,107,87,.045), transparent 22%),
+    linear-gradient(180deg,#050b0f 0%,#03080c 100%);
+}
+
+.panel,
+.order-card,
+.menu-item,
+.compact-modal,
+.warehouse-group,
+.legacy-stock-card,
+.legacy-client-card,
+.legacy-goods-card {
+  border-color: #2a343c;
+  box-shadow: 0 8px 22px rgba(0,0,0,.16);
+}
+
+/* Главная карточка — плотнее по пропорциям референса */
+.order-card {
+  padding: 14px 13px 15px;
+  border-radius: 16px;
+}
+.order-top { align-items: start; }
+.order-number { font-size: 14px; }
+.order-name { font-size: 16px; }
+.order-date { font-size: 9.5px; }
+.status { padding: 4px 8px; font-size: 9.5px; }
+.appliance { padding: 10px 0 8px; }
+.appliance-icon {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  border-radius: 14px;
+}
+.appliance-icon .ui-icon { width: 27px; height: 27px; }
+.appliance-name { font-size: 15px; }
+.appliance-model { font-size: 11px; }
+.order-money { margin-bottom: 8px; }
+.money-box { padding: 8px 9px; border-radius: 11px; }
+.money-label { font-size: 8px; }
+.money-value { font-size: 17px; }
+.meta {
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 9.5px;
+}
+.order-main-actions { gap: 4px; margin-top: 8px; }
+.action {
+  min-height: 48px;
+  border-radius: 9px;
+  font-size: 8px;
+}
+.action span .ui-icon { width: 17px; height: 17px; }
+
+/* Редактор заявки — размеры соответствуют старому мобильному ритму */
+.order-editor-modal {
+  padding-top: 10px;
+}
+.order-editor-modal h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+.order-editor-modal .form-section-title {
+  margin: 14px 0 7px;
+  padding-top: 10px;
+  font-size: 9px;
+}
+.order-editor-modal .form-group { gap: 3px; }
+.order-editor-modal .form-group label {
+  font-size: 8.5px;
+  letter-spacing: .045em;
+}
+.order-editor-modal .field {
+  min-height: 42px;
+  padding: 0 10px;
+  border-radius: 11px;
+  font-size: 12px;
+}
+.order-editor-modal .textarea {
+  min-height: 66px;
+  padding-top: 9px;
+}
+.order-editor-modal .compact-textarea { min-height: 42px; }
+.order-editor-modal .legacy-catalog-button,
+.order-editor-modal .legacy-stock-button {
+  min-height: 44px;
+  font-size: 11px;
+}
+.order-editor-modal .legacy-material-help {
+  margin: 0 0 7px;
+  font-size: 9px;
+  line-height: 1.3;
+}
+.order-editor-modal .legacy-service-total {
+  padding-top: 7px;
+  font-size: 11px;
+}
+.order-editor-modal .order-calculation-summary {
+  padding: 8px;
+  font-size: 10px;
+}
+.order-editor-modal .legacy-guarantee-card {
+  padding: 10px;
+}
+.order-editor-modal .modal-actions {
+  gap: 5px;
+}
+.order-editor-modal .modal-actions button {
+  min-height: 40px;
+  font-size: 11px;
+}
+
+/* Каталог услуг — компактный список, видимая шапка, скролл только внутри */
+.catalog-modal {
+  border-radius: 15px;
+}
+.catalog-modal-head {
+  margin-bottom: 6px;
+}
+.catalog-modal-head h2 { font-size: 16px; }
+.catalog-search-row .search {
+  min-height: 40px;
+  font-size: 12px;
+}
+.catalog-service-list { gap: 7px; }
+.catalog-service-group h3 {
+  margin: 4px 2px 2px;
+  font-size: 11px;
+}
+.catalog-service-option {
+  min-height: 42px;
+  padding: 4px 2px;
+}
+.catalog-check {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  font-size: 15px;
+}
+.catalog-service-copy strong { font-size: 12px; }
+.catalog-service-copy small { font-size: 9px; }
+.catalog-service-price { font-size: 12px; }
+.catalog-modal-actions button {
+  min-height: 40px;
+  font-size: 11px;
+}
+
+/* Ещё — семь старых основных пунктов без отдельного системного блока */
+.more-content .page-head { margin-bottom: 9px; }
+.legacy-more-list { gap: 4px; }
+.legacy-more-list .menu-item {
+  min-height: 54px;
+  padding: 7px 9px;
+  border-radius: 12px;
+}
+.legacy-more-list .menu-icon {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 10px;
+}
+.legacy-more-list .menu-icon .ui-icon {
+  width: 19px;
+  height: 19px;
+}
+.legacy-more-list .menu-name { font-size: 12.5px; }
+.legacy-more-list .menu-description { font-size: 8.5px; }
+
+/* Настройки: служебные разделы прямо внутри страницы */
+.settings-sections-panel {
+  padding: 10px 12px;
+}
+.settings-sections-panel .panel-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.settings-sections-panel .legacy-settings-links .secondary-button {
+  grid-template-columns: 30px minmax(0,1fr) 16px;
+  gap: 7px;
+  min-height: 47px;
+  padding: 7px 0;
+}
+.settings-sections-panel .settings-link-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.settings-sections-panel .settings-link-icon .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+.settings-sections-panel .legacy-settings-links strong { font-size: 10.5px; }
+.settings-sections-panel .legacy-settings-links small {
+  margin-top: 1px;
+  font-size: 8px;
+}
+.settings-sections-panel .chevron .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    min-height: 82px;
+    padding: 13px 12px;
+    gap: 11px;
+  }
+  .logo {
+    width: 45px;
+    height: 45px;
+    flex-basis: 45px;
+    border-radius: 14px;
+  }
+  .logo .ui-icon { width: 27px; height: 27px; }
+  .brand-title {
+    font-size: clamp(18px,5vw,20px);
+    line-height: 1.04;
+  }
+  .brand-subtitle {
+    margin-top: 4px;
+    font-size: 7.7px;
+  }
+
+  .content { padding: 14px 10px 5px; }
+  .orders-content { padding-top: 14px; }
+
+  .order-editor-backdrop {
+    top: 82px;
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+
+  .order-editor-modal .form-grid,
+  .order-editor-modal .legacy-payment-grid {
+    gap: 6px;
+  }
+
+  .bottom-nav {
+    padding-top: 4px;
+    padding-bottom: calc(5px + env(safe-area-inset-bottom));
+  }
+  .nav-button {
+    min-height: 54px;
+    font-size: 9.5px;
+  }
+  .nav-button .nav-icon .ui-icon {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+@media (max-width: 360px) {
+  .topbar { min-height: 78px; }
+  .order-editor-backdrop {
+    top: 78px;
+    bottom: calc(62px + env(safe-area-inset-bottom));
+  }
+  .order-card { padding-right: 11px; padding-left: 11px; }
+  .order-main-actions { gap: 3px; }
+  .action { min-height: 46px; font-size: 7.2px; }
+}
