@@ -304,6 +304,7 @@ function orderCard(order) {
       <button class="action" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>✎</span>Изменить</button>
       <button class="action" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${isClosed ? "↻" : "✓"}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
       <button class="action" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>▣</span>Копия</button>
+      <button class="action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>▤</span>Документ</button>
       ${order.phone ? `<a class="action" href="tel:${escapeHtml(order.phone)}"><span>☎</span>Позвонить</a>` : `<button class="action" disabled><span>☎</span>Позвонить</button>`}
     </div>
   </article>`;
