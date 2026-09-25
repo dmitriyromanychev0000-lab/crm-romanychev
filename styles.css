@@ -5225,227 +5225,6 @@ body,
 #product-price-panel { scroll-margin-top: 96px; }
 
 
-/* 0.45.0 · Канонический A4 print-layer — должен быть последним */
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 6mm;
-  }
-
-  html,
-  body {
-    width: 210mm !important;
-    min-width: 210mm !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    background: #fff !important;
-  }
-
-  body {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  .topbar,
-  .bottom-nav,
-  .no-print,
-  .toast,
-  .modal-backdrop {
-    display: none !important;
-  }
-
-  .shell,
-  .content,
-  .act-content {
-    display: block !important;
-    width: 100% !important;
-    max-width: none !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  .act-sheet {
-    box-sizing: border-box !important;
-    width: 198mm !important;
-    max-width: 198mm !important;
-    min-width: 0 !important;
-    margin: 0 auto !important;
-    padding: 5mm 6mm 4mm !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    background: #fff !important;
-    color: #000 !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 8.2pt !important;
-    line-height: 1.12 !important;
-    zoom: var(--act-print-zoom, .72);
-    break-inside: avoid-page !important;
-    page-break-inside: avoid !important;
-  }
-
-  .act-sheet h2 {
-    margin: 0 0 2.2mm !important;
-    font-size: 13.5pt !important;
-    line-height: 1 !important;
-    letter-spacing: .01em !important;
-  }
-
-  .act-contract-line {
-    margin: 0 0 3mm !important;
-    font-size: 8pt !important;
-    line-height: 1.05 !important;
-  }
-
-  .act-main-fields {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.3mm 5mm !important;
-    margin: 0 0 3mm !important;
-  }
-
-  .act-main-fields > div {
-    display: grid !important;
-    grid-template-columns: 32mm minmax(0,1fr) !important;
-    gap: 1.5mm !important;
-    min-height: 0 !important;
-    padding: 0 0 1mm !important;
-    border-bottom: .25mm solid #777 !important;
-    align-items: start !important;
-    font-size: 7.6pt !important;
-  }
-
-  .act-main-fields > div:nth-child(2),
-  .act-main-fields > div:nth-child(3) {
-    grid-column: 1 / -1 !important;
-    grid-template-columns: 32mm minmax(0,1fr) !important;
-  }
-
-  .act-sheet table {
-    width: 100% !important;
-    min-width: 0 !important;
-    margin: 2mm 0 0 !important;
-    border-collapse: collapse !important;
-    table-layout: fixed !important;
-    font-size: 7.3pt !important;
-    line-height: 1.08 !important;
-  }
-
-  .act-sheet th,
-  .act-sheet td {
-    padding: 1mm .9mm !important;
-    border: .25mm solid #333 !important;
-    vertical-align: middle !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-  }
-
-  .act-sheet th:nth-child(1),
-  .act-sheet td:nth-child(1) { width: 5% !important; }
-  .act-sheet th:nth-child(2),
-  .act-sheet td:nth-child(2) { width: 43% !important; text-align: left !important; }
-  .act-sheet th:nth-child(3),
-  .act-sheet td:nth-child(3) { width: 14% !important; }
-  .act-sheet th:nth-child(4),
-  .act-sheet td:nth-child(4) { width: 9% !important; }
-  .act-sheet th:nth-child(5),
-  .act-sheet td:nth-child(5) { width: 16% !important; }
-  .act-sheet th:nth-child(6),
-  .act-sheet td:nth-child(6) { width: 13% !important; }
-
-  .act-sheet tr,
-  .act-sheet td,
-  .act-sheet th {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  .act-total {
-    display: flex !important;
-    justify-content: flex-end !important;
-    align-items: baseline !important;
-    gap: 5mm !important;
-    margin: 2mm 0 0 !important;
-    padding: 1.5mm 0 !important;
-    border-bottom: .25mm solid #777 !important;
-    font-size: 9pt !important;
-  }
-  .act-total strong { font-size: 10pt !important; }
-
-  .act-warranty {
-    display: grid !important;
-    grid-template-columns: 31mm minmax(0,1fr) !important;
-    gap: 1.5mm !important;
-    min-height: 0 !important;
-    margin: 1.5mm 0 0 !important;
-    padding: 1mm 0 !important;
-    border-bottom: .25mm solid #777 !important;
-    font-size: 7.4pt !important;
-  }
-
-  .act-party-details {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.2mm 5mm !important;
-    margin: 2.5mm 0 0 !important;
-  }
-
-  .act-party-details > div {
-    display: grid !important;
-    grid-template-columns: 25mm minmax(0,1fr) !important;
-    gap: 1.5mm !important;
-    min-height: 0 !important;
-    padding: 0 0 .9mm !important;
-    border-bottom: .25mm solid #777 !important;
-    font-size: 7.4pt !important;
-  }
-
-  .act-party-details > .act-party-wide {
-    grid-column: 1 / -1 !important;
-    grid-template-columns: 25mm minmax(0,1fr) !important;
-  }
-
-  .act-acceptance {
-    margin: 3mm 0 0 !important;
-    padding: 2mm 0 0 !important;
-    border-top: .25mm solid #777 !important;
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  .act-acceptance h3 {
-    margin: 0 0 1.5mm !important;
-    font-size: 8.7pt !important;
-    line-height: 1 !important;
-  }
-
-  .act-acceptance p {
-    margin: 0 !important;
-    font-size: 7pt !important;
-    line-height: 1.15 !important;
-    text-align: left !important;
-  }
-
-  .act-signatures {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12mm !important;
-    margin: 3mm 0 0 !important;
-    font-size: 7.5pt !important;
-    line-height: 1.45 !important;
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-}
-
-
 /* 0.47.0 · Финальная мобильная сверка по доступным эталонным скриншотам */
 body.modal-open { overflow: hidden !important; }
 
@@ -5720,4 +5499,224 @@ body {
   .order-card { padding-right: 11px; padding-left: 11px; }
   .order-main-actions { gap: 3px; }
   .action { min-height: 46px; font-size: 7.2px; }
+}
+
+/* 0.45.0 · Канонический A4 print-layer — должен быть последним */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 6mm;
+  }
+
+  html,
+  body {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .topbar,
+  .bottom-nav,
+  .no-print,
+  .toast,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .shell,
+  .content,
+  .act-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .act-sheet {
+    box-sizing: border-box !important;
+    width: 198mm !important;
+    max-width: 198mm !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 5mm 6mm 4mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 8.2pt !important;
+    line-height: 1.12 !important;
+    zoom: var(--act-print-zoom, .72);
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+  }
+
+  .act-sheet h2 {
+    margin: 0 0 2.2mm !important;
+    font-size: 13.5pt !important;
+    line-height: 1 !important;
+    letter-spacing: .01em !important;
+  }
+
+  .act-contract-line {
+    margin: 0 0 3mm !important;
+    font-size: 8pt !important;
+    line-height: 1.05 !important;
+  }
+
+  .act-main-fields {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.3mm 5mm !important;
+    margin: 0 0 3mm !important;
+  }
+
+  .act-main-fields > div {
+    display: grid !important;
+    grid-template-columns: 32mm minmax(0,1fr) !important;
+    gap: 1.5mm !important;
+    min-height: 0 !important;
+    padding: 0 0 1mm !important;
+    border-bottom: .25mm solid #777 !important;
+    align-items: start !important;
+    font-size: 7.6pt !important;
+  }
+
+  .act-main-fields > div:nth-child(2),
+  .act-main-fields > div:nth-child(3) {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: 32mm minmax(0,1fr) !important;
+  }
+
+  .act-sheet table {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 2mm 0 0 !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    font-size: 7.3pt !important;
+    line-height: 1.08 !important;
+  }
+
+  .act-sheet th,
+  .act-sheet td {
+    padding: 1mm .9mm !important;
+    border: .25mm solid #333 !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .act-sheet th:nth-child(1),
+  .act-sheet td:nth-child(1) { width: 5% !important; }
+  .act-sheet th:nth-child(2),
+  .act-sheet td:nth-child(2) { width: 43% !important; text-align: left !important; }
+  .act-sheet th:nth-child(3),
+  .act-sheet td:nth-child(3) { width: 14% !important; }
+  .act-sheet th:nth-child(4),
+  .act-sheet td:nth-child(4) { width: 9% !important; }
+  .act-sheet th:nth-child(5),
+  .act-sheet td:nth-child(5) { width: 16% !important; }
+  .act-sheet th:nth-child(6),
+  .act-sheet td:nth-child(6) { width: 13% !important; }
+
+  .act-sheet tr,
+  .act-sheet td,
+  .act-sheet th {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .act-total {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: baseline !important;
+    gap: 5mm !important;
+    margin: 2mm 0 0 !important;
+    padding: 1.5mm 0 !important;
+    border-bottom: .25mm solid #777 !important;
+    font-size: 9pt !important;
+  }
+  .act-total strong { font-size: 10pt !important; }
+
+  .act-warranty {
+    display: grid !important;
+    grid-template-columns: 31mm minmax(0,1fr) !important;
+    gap: 1.5mm !important;
+    min-height: 0 !important;
+    margin: 1.5mm 0 0 !important;
+    padding: 1mm 0 !important;
+    border-bottom: .25mm solid #777 !important;
+    font-size: 7.4pt !important;
+  }
+
+  .act-party-details {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.2mm 5mm !important;
+    margin: 2.5mm 0 0 !important;
+  }
+
+  .act-party-details > div {
+    display: grid !important;
+    grid-template-columns: 25mm minmax(0,1fr) !important;
+    gap: 1.5mm !important;
+    min-height: 0 !important;
+    padding: 0 0 .9mm !important;
+    border-bottom: .25mm solid #777 !important;
+    font-size: 7.4pt !important;
+  }
+
+  .act-party-details > .act-party-wide {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: 25mm minmax(0,1fr) !important;
+  }
+
+  .act-acceptance {
+    margin: 3mm 0 0 !important;
+    padding: 2mm 0 0 !important;
+    border-top: .25mm solid #777 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .act-acceptance h3 {
+    margin: 0 0 1.5mm !important;
+    font-size: 8.7pt !important;
+    line-height: 1 !important;
+  }
+
+  .act-acceptance p {
+    margin: 0 !important;
+    font-size: 7pt !important;
+    line-height: 1.15 !important;
+    text-align: left !important;
+  }
+
+  .act-signatures {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12mm !important;
+    margin: 3mm 0 0 !important;
+    font-size: 7.5pt !important;
+    line-height: 1.45 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
 }
