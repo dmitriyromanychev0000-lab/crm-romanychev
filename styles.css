@@ -5640,6 +5640,14 @@ body {
   .act-signatures { gap: 14px; margin-top: 10px; }
 }
 
+/* 0.48.1 · Список покупок — отдельный экран склада */
+button.warehouse-shortcut {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  cursor: pointer;
+}
 
 
 /* 0.48.0 · Канонический A4 по эталонному акту — последний CSS-блок */
