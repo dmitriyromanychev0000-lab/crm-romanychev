@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.46.2";
-const APP_BUILD = "2026.09.26.19";
+const APP_VERSION = "0.47.0";
+const APP_BUILD = "2026.09.26.20";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Поиск заявок и клиентов одинаково понимает российские номера в формате 8..., +7... и с форматированием";
+const APP_RELEASE = "Меню «Ещё» возвращено к старой структуре; служебные разделы перенесены напрямую в Настройки; все модалки блокируют фон";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1557,8 +1557,14 @@ function settingsPage() {
       </div>
     </section>
 
-    <section class="panel settings-data-panel settings-hint-panel">
-      <div class="settings-data-copy"><span class="setting-icon">${icon("backup")}</span><div><strong>Бэкапы и служебные разделы теперь в «Ещё»</strong><p class="small">Без лишних подменю: документы, инструменты, черновики и резервные копии открываются напрямую.</p></div></div>
+    <section class="panel settings-sections-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("more")}</span> Данные и служебные разделы</div>
+      <div class="legacy-settings-links">
+        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><span class="chevron">${icon("chevron")}</span></button>
+      </div>
     </section>
   </main>`;
 }
@@ -1750,22 +1756,13 @@ function moreMenu() {
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"]
-  ];
-  const systemItems = [
-    ["tools", "tools", "Инструменты", "Рабочее оснащение"],
-    ["receipts", "receipt", "Документы и чеки", "Квитанции и старые документы"],
-    ["drafts", "drafts", "Черновики", "Незавершённые заявки"],
-    ["backup", "backup", "Бэкапы", "Импорт, экспорт и защита данных"],
-    ["settings", "settings", "Настройки", "Реквизиты и параметры приложения"]
+    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"],
+    ["settings", "settings", "Настройки", "Реквизиты, данные и приложение"]
   ];
   const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
   return `<main class="content more-content">
     <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы и настройки</p></div></div>
-    <div class="more-section-label">РАБОТА</div>
     <div class="menu-list legacy-more-list">${cards(workItems)}</div>
-    <div class="more-section-label more-section-system">СИСТЕМА</div>
-    <div class="menu-list legacy-more-list">${cards(systemItems)}</div>
   </main>`;
 }
 
@@ -2736,6 +2733,13 @@ function closeTopModalFromKeyboard() {
   else top.remove();
   return true;
 }
+
+const syncModalScrollLock = () => {
+  document.body.classList.toggle("modal-open", Boolean(document.querySelector(".modal-backdrop")));
+};
+const modalScrollObserver = new MutationObserver(syncModalScrollLock);
+modalScrollObserver.observe(document.body, { childList: true });
+syncModalScrollLock();
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
