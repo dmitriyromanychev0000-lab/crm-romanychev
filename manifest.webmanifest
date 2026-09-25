@@ -6,8 +6,8 @@
   "start_url": "/crm-romanychev/",
   "scope": "/crm-romanychev/",
   "display": "standalone",
-  "background_color": "#080d11",
-  "theme_color": "#080d11",
+  "background_color": "#070c10",
+  "theme_color": "#070c10",
   "icons": [
     {
       "src": "./icon.svg",
