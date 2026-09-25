@@ -1012,6 +1012,7 @@ app.addEventListener("click", async (event) => {
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "check-update") return checkForAppUpdate();
   if (action === "new-price") return priceModal();
   if (action === "new-tool") return toolModal();
   if (action === "edit-tool") {
@@ -1071,6 +1072,7 @@ app.addEventListener("click", async (event) => {
 app.addEventListener("input", (event) => {
   if (event.target.id === "order-search") {
     searchQuery = event.target.value;
+    saveUiState();
     const cursor = event.target.selectionStart;
     render().then(() => {
       const input = document.querySelector("#order-search");
@@ -1092,6 +1094,7 @@ app.addEventListener("submit", async (event) => {
 app.addEventListener("change", async (event) => {
   if (event.target.id === "act-order-select") {
     selectedActOrderId = event.target.value;
+    saveUiState();
     await render();
     return;
   }
@@ -1114,6 +1117,7 @@ fileInput.addEventListener("change", async () => {
     await saveData();
     activePage = "orders";
     moreSection = "menu";
+    saveUiState({ scrollY: 0 });
     await render();
     toast("Бэкап успешно восстановлен");
   } catch (error) {
@@ -1133,8 +1137,23 @@ async function start() {
     toast("Не удалось открыть локальную базу");
   }
   await render();
+  if (restoreScrollY > 0) {
+    const targetY = restoreScrollY;
+    restoreScrollY = 0;
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, targetY)));
+  }
   await maybeAutoBackup();
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(console.warn);
 }
+
+let uiScrollTimer = null;
+window.addEventListener("scroll", () => {
+  clearTimeout(uiScrollTimer);
+  uiScrollTimer = setTimeout(() => saveUiState(), 120);
+}, { passive: true });
+window.addEventListener("beforeunload", () => saveUiState());
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveUiState();
+});
 
 start();
