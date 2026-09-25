@@ -183,7 +183,10 @@ const ICONS = {
   history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   shopping: '<path d="M8 6h13l-2 8H9L7 3H3"/><circle cx="10" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/>',
   box: '<path d="m3 7 9-4 9 4-9 4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>',
-  gem: '<path d="M4 8 8 3h8l4 5-8 13Z"/><path d="m4 8 8 5 8-5M8 3l4 10 4-10"/>'
+  gem: '<path d="M4 8 8 3h8l4 5-8 13Z"/><path d="m4 8 8 5 8-5M8 3l4 10 4-10"/>',
+  shoppingList: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.2" fill="currentColor" stroke="none"/>',
+  printer: '<path d="M6 9V3h12v6"/><rect x="5" y="14" width="14" height="7" rx="1"/><path d="M5 17H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M17 12h.01"/>',
+  tag: '<path d="M20 13 13 20a2 2 0 0 1-3 0l-6-6a2 2 0 0 1 0-3l7-7h7a2 2 0 0 1 2 2Z"/><circle cx="15.5" cy="8.5" r="1.2"/><path d="m10 12 4 4"/>'
 };
 
 function icon(name, className = "") {
@@ -1273,11 +1276,11 @@ function shoppingPage() {
 function moreMenu() {
   const items = [
     ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
-    ["shopping", "shopping", "Список покупок", "Позиции ниже минимального остатка"],
+    ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
-    ["act", "act", "Акт", "Подготовка и печать документа"],
-    ["goods", "goods", "Товарник", "Товары из заявки или вручную"],
+    ["act", "printer", "Акт", "Подготовка и печать документа"],
+    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
     ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
   return `<main class="content more-content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list legacy-more-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></main>`;
