@@ -9,7 +9,7 @@ const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "0.40.5";
 const APP_BUILD = "2026.09.25.50";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Уменьшен общий визуальный масштаб: шрифты, иконки, карточки и элементы управления";
+const APP_RELEASE = "Новые заявки теперь сверху; интерфейс уменьшен; раздел Ещё упрощён; печать акта ужата в одну A4-страницу";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -631,6 +631,28 @@ function telegramPhoneLink(phone) {
   return digits ? `tg://resolve?phone=${digits}` : "";
 }
 
+function orderCreatedTimestamp(order = {}) {
+  const candidates = [order.created, order.createdAt, order.date, order.created_at];
+  for (const value of candidates) {
+    if (!value) continue;
+    const time = new Date(value).getTime();
+    if (Number.isFinite(time)) return time;
+  }
+  return null;
+}
+
+function ordersNewestFirst(source = data.orders) {
+  return [...(Array.isArray(source) ? source : [])]
+    .map((order, index) => ({ order, index, time: orderCreatedTimestamp(order) }))
+    .sort((a, b) => {
+      if (a.time !== null && b.time !== null && a.time !== b.time) return b.time - a.time;
+      if (a.time !== null && b.time === null) return -1;
+      if (a.time === null && b.time !== null) return 1;
+      return a.index - b.index;
+    })
+    .map((entry) => entry.order);
+}
+
 function orderCard(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
@@ -683,7 +705,7 @@ function orderCard(order) {
 
 function ordersPage() {
   const query = searchQuery.trim().toLowerCase();
-  const filtered = [...data.orders].reverse().filter((order) => {
+  const filtered = ordersNewestFirst().filter((order) => {
     const status = normalizeStatus(order.status);
     const isArchived = Boolean(order.archived);
     const filterMatch = orderFilter === "archived"
@@ -1262,7 +1284,7 @@ function financePage() {
 }
 
 function actPage() {
-  const orders = [...data.orders].filter((item) => !item.archived).reverse();
+  const orders = ordersNewestFirst().filter((item) => !item.archived);
   if (orders.length && !orders.some((item) => String(item.id) === String(selectedActOrderId))) selectedActOrderId = String(orders[0].id);
   const order = orders.find((item) => String(item.id) === String(selectedActOrderId));
   const actItems = order ? [
@@ -1381,7 +1403,7 @@ function goodsPage() {
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content settings-content">
-    <div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="page-head"><div><h1>Настройки</h1><p class="lead">Реквизиты и приложение</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
 
     <form class="panel settings-profile-panel" id="settings-form">
       <div class="panel-title"><span class="badge-icon">${icon("settings")}</span> Реквизиты исполнителя</div>
@@ -1392,50 +1414,36 @@ function settingsPage() {
         <div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div>
         <div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div>
       </div>
-      <button class="primary-button wide settings-save" type="submit">Сохранить настройки</button>
+      <button class="primary-button wide settings-save" type="submit">Сохранить</button>
     </form>
 
     <section class="panel settings-system-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("settings")}</span> Приложение</div>
+      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Приложение</div>
       <div class="settings-system-list">
-        <div class="setting-row legacy-setting-row">
+        <div class="setting-row legacy-setting-row settings-version-row">
           <span class="setting-icon">${icon("document")}</span>
-          <div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">Что нового: ${escapeHtml(APP_RELEASE)}</div></div>
-          <button class="secondary-button" data-action="check-update">Проверить</button>
-        </div>
-        <div class="setting-row legacy-setting-row">
-          <span class="setting-icon">${icon("location")}</span>
-          <div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div>
-          <a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a>
+          <div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">${escapeHtml(APP_RELEASE)}</div></div>
+          <button class="secondary-button" data-action="check-update">Обновить</button>
         </div>
         <div class="setting-row legacy-setting-row">
           <span class="setting-icon">${icon("analytics")}</span>
-          <div><strong>Диагностика</strong><div class="small">База, кэш, service worker и хранилище</div></div>
-          <button class="secondary-button" data-action="run-diagnostics">Запустить</button>
+          <div><strong>Диагностика</strong><div class="small">Кэш, база и хранилище</div></div>
+          <button class="secondary-button" data-action="run-diagnostics">Проверить</button>
         </div>
         <div class="setting-row legacy-setting-row">
           <span class="setting-icon">${icon("backup")}</span>
-          <div><strong>Защита локальных данных</strong><div class="small">Запретить браузеру очищать базу автоматически</div></div>
+          <div><strong>Локальные данные</strong><div class="small">${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</div></div>
           <button class="secondary-button" data-action="protect-storage">Защитить</button>
         </div>
       </div>
     </section>
 
-    <section class="panel settings-sections-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("more")}</span> Дополнительные разделы</div>
-      <div class="settings-links legacy-settings-links">
-        <button class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт и резервные копии</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Учёт рабочего оснащения</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и старые записи</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Несохранённые записи</small></span><span class="chevron">${icon("chevron")}</span></button>
-      </div>
-    </section>
-
-    <section class="panel settings-data-panel">
-      <div class="settings-data-copy"><span class="setting-icon">${icon("backup")}</span><div><strong>Данные хранятся на устройстве</strong><p class="small">Для переноса и защиты используй раздел «Бэкапы».</p></div></div>
+    <section class="panel settings-data-panel settings-hint-panel">
+      <div class="settings-data-copy"><span class="setting-icon">${icon("backup")}</span><div><strong>Бэкапы и служебные разделы теперь в «Ещё»</strong><p class="small">Без лишних подменю: документы, инструменты, черновики и резервные копии открываются напрямую.</p></div></div>
     </section>
   </main>`;
 }
+
 function looksLikeOrderDraft(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   return ["name", "phone", "tech", "brand", "services", "materials", "sum", "issue", "diagnosis"].some((key) => key in value);
@@ -1612,17 +1620,31 @@ function shoppingPage() {
   </main>`;
 }
 function moreMenu() {
-  const items = [
-    ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
+  const workItems = [
+    ["finance", "finance", "Финансы", "Доходы, расходы и результат"],
     ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
-    ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
+    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"]
   ];
-  return `<main class="content more-content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list legacy-more-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></main>`;
+  const systemItems = [
+    ["tools", "tools", "Инструменты", "Рабочее оснащение"],
+    ["receipts", "receipt", "Документы и чеки", "Квитанции и старые документы"],
+    ["drafts", "drafts", "Черновики", "Незавершённые заявки"],
+    ["backup", "backup", "Бэкапы", "Импорт, экспорт и защита данных"],
+    ["settings", "settings", "Настройки", "Реквизиты и параметры приложения"]
+  ];
+  const cards = (items) => items.map(([id, iconName, name, description]) => `<button class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
+  return `<main class="content more-content">
+    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы и настройки</p></div></div>
+    <div class="more-section-label">РАБОТА</div>
+    <div class="menu-list legacy-more-list">${cards(workItems)}</div>
+    <div class="more-section-label more-section-system">СИСТЕМА</div>
+    <div class="menu-list legacy-more-list">${cards(systemItems)}</div>
+  </main>`;
 }
+
 async function morePage() {
   if (moreSection === "shopping") return shoppingPage();
   if (moreSection === "backup") return backupSettings();
@@ -2166,7 +2188,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const view = receiptSummary(item);
   const rawDate = String(view.date || "");
   const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
-  const orderOptions = [...data.orders].reverse().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
+  const orderOptions = ordersNewestFirst().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
   modal.innerHTML = `<form class="modal compact-modal" id="receipt-form">
@@ -2466,6 +2488,16 @@ function goodsModal(existing = null) {
   calculate();
 }
 
+function printActOnePage() {
+  const sheet = document.querySelector(".act-sheet");
+  if (!sheet) return;
+  const measuredHeight = Math.max(sheet.scrollHeight, 1);
+  const targetHeight = 1010;
+  const zoom = Math.max(0.56, Math.min(0.9, targetHeight / measuredHeight));
+  document.documentElement.style.setProperty("--act-print-zoom", zoom.toFixed(3));
+  window.print();
+}
+
 async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
@@ -2643,7 +2675,7 @@ app.addEventListener("click", async (event) => {
     const sheet = (data.goods_sheets || []).find((item) => String(item.id) === String(id));
     if (sheet) return goodsModal(sheet);
   }
-  if (action === "print-act") return window.print();
+  if (action === "print-act") return printActOnePage();
   if (action === "toggle-auto") {
     data.settings.autoBackup = !data.settings.autoBackup;
     await saveData();
