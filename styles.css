@@ -786,7 +786,106 @@ h2 { margin: 0; font-size: 24px; }
 }
 .catalog-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 12px; }
 .catalog-add .secondary-button { white-space: nowrap; }
-.line-list { display: grid; gap: 9px; }
+.line-list { display: grid; gap: 10px; }
+
+.legacy-service-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr) 68px 112px 48px;
+  gap: 8px;
+  align-items: center;
+  min-height: 58px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.legacy-service-row:last-child { border-bottom: 0; }
+.service-check {
+  display: grid;
+  place-items: center;
+  color: #f0f2f3;
+}
+.service-check .ui-icon { width: 22px; height: 22px; stroke-width: 2.2; }
+.service-name-field {
+  min-height: 48px !important;
+  padding: 0 6px !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 17px !important;
+}
+.service-qty-field { min-height: 48px !important; text-align: center; }
+.service-price-field { position: relative; }
+.service-price-field .field { min-height: 48px !important; padding-right: 28px !important; text-align: right; }
+.service-price-field > span {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+.service-remove,
+.material-remove {
+  display: grid;
+  place-items: center;
+  font-size: 0;
+}
+.service-remove .ui-icon,
+.material-remove .ui-icon { width: 22px; height: 22px; }
+
+.legacy-material-card {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #171e25;
+}
+.material-card-head {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 52px;
+  gap: 12px;
+  align-items: start;
+}
+.material-card-head small {
+  display: block;
+  margin: 4px 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.material-name-field {
+  min-height: 46px !important;
+  padding: 0 6px !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+  font-weight: 700;
+}
+.material-remove {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+}
+.material-card-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.material-card-controls label {
+  display: grid;
+  gap: 7px;
+}
+.material-card-controls label > span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.material-card-controls .field { min-height: 58px !important; }
+.material-unit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .line-head, .line-item { display: grid; grid-template-columns: minmax(160px, 1fr) 92px 120px 44px; gap: 8px; align-items: center; }
 .line-head { padding: 0 4px; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
 .line-item .field { min-height: 54px; padding: 0 12px; border-radius: 15px; }
@@ -829,6 +928,9 @@ h2 { margin: 0; font-size: 24px; }
   .analytics-work-grid .metric { padding: 13px 10px; }
   .analytics-work-grid .metric-label { font-size: 10px; }
   .analytics-work-grid .metric-value { font-size: 20px; }
+  .legacy-service-row { grid-template-columns: 24px minmax(0,1fr) 58px 96px 44px; gap: 6px; }
+  .legacy-service-row .field { font-size: 14px !important; }
+  .material-card-controls { grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
   .panel { padding: 18px; border-radius: 22px; }
   .order-main-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .order-secondary-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -889,6 +991,9 @@ h2 { margin: 0; font-size: 24px; }
   .metrics { grid-template-columns: 1fr; }
   .warehouse-create-grid { grid-template-columns: 1fr; }
   .analytics-work-grid { grid-template-columns: 1fr; }
+  .legacy-service-row { grid-template-columns: 22px minmax(0,1fr) 50px 82px 40px; }
+  .service-remove { width: 40px; height: 40px; }
+  .material-card-controls { grid-template-columns: 1fr; }
   .analytics-kpis { grid-template-columns: 1fr 1fr; }
   .analytics-kpi > strong { font-size: 20px; }
   .focus-grid { grid-template-columns: repeat(3, 1fr); }
