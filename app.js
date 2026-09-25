@@ -620,9 +620,9 @@ function newOrderModal(existing = null) {
   const order = existing || {};
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
-  const serviceOptions = data.receipt_prices
-    .filter((item) => item.kind !== "material")
-    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
+  const serviceCatalog = availableServices();
+  const serviceOptions = serviceCatalog
+    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}${item.source === "custom" ? " · своё" : ""}</option>`).join("");
   const stockOptions = data.warehouse
     .filter((item) => !item.archived && !item.hiddenFromOrders)
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
@@ -681,7 +681,7 @@ function newOrderModal(existing = null) {
   };
   modal.querySelector("#add-service").addEventListener("click", () => {
     const picker = modal.querySelector("#service-picker");
-    const item = picker.value === "" ? null : data.receipt_prices.filter((entry) => entry.kind !== "material")[Number(picker.value)];
+    const item = picker.value === "" ? null : serviceCatalog[Number(picker.value)];
     modal.querySelector("#service-lines").insertAdjacentHTML("beforeend", orderServiceRow(item ? { name: item.name, price: item.price, basePrice: item.price, qty: 1 } : {}));
     calculateLines();
   });
