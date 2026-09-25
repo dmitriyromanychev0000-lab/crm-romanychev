@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.48.1";
-const APP_BUILD = "2026.09.26.23";
+const APP_VERSION = "0.49.0";
+const APP_BUILD = "2026.09.26.24";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Список покупок вынесен со Склада в отдельный экран; на складе осталась только кнопка перехода";
+const APP_RELEASE = "Функциональная доводка: единый список покупок с копированием, упрощённая форма заявки, компактные рабочие экраны и полноразмерный A4";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -56,7 +56,7 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
-let warehouseCreateOpen = Boolean(initialUiState.warehouseCreateOpen);
+let warehouseCreateOpen = false;
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
 let priceTechFilter = typeof initialUiState.priceTechFilter === "string" ? initialUiState.priceTechFilter : "all";
@@ -2686,13 +2686,10 @@ function printActOnePage() {
   const sheet = document.querySelector(".act-sheet");
   if (!sheet) return;
   const rows = sheet.querySelectorAll("tbody tr").length;
-  const textLength = (sheet.innerText || "").length;
-  let zoom = 0.96;
-  if (rows > 10 || textLength > 2500) zoom = 0.88;
-  if (rows > 13 || textLength > 3200) zoom = 0.79;
-  if (rows > 17 || textLength > 3900) zoom = 0.69;
-  if (rows > 21 || textLength > 4700) zoom = 0.59;
-  if (rows > 26 || textLength > 5600) zoom = 0.50;
+  let zoom = 1;
+  if (rows > 22) zoom = 0.94;
+  if (rows > 26) zoom = 0.88;
+  if (rows > 30) zoom = 0.82;
   document.documentElement.style.setProperty("--act-print-zoom", String(zoom));
   requestAnimationFrame(() => window.print());
 }
