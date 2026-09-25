@@ -289,7 +289,7 @@ function warehousePage() {
   const items = [...data.warehouse].filter((item) => !item.archived);
   const low = items.filter((item) => Number(item.quantity) <= Number(item.min || 0)).length;
   return `<main class="content">
-    <div class="page-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div></div>
+    <div class="page-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div><button class="icon-button" data-action="new-stock" aria-label="Новая позиция">+</button></div>
     <div class="metrics panel">
       <div class="metric"><div class="metric-label">Активных позиций</div><div class="metric-value">${items.length}</div></div>
       <div class="metric"><div class="metric-label">Мало осталось</div><div class="metric-value yellow">${low}</div></div>
@@ -626,6 +626,25 @@ function financeModal(type) {
   });
 }
 
+function stockModal(existing = null) {
+  const item = existing || {};
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="stock-form"><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div><div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div><div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" /></div><div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div><div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" value="${Number(item.price) || 0}" /></div><div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" value="${Number(item.lastPurchasePrice) || 0}" /></div><div class="form-group full"><label>Подходит для техники</label><input class="field" name="compatibility" value="${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : "")}" placeholder="Холодильники, стиральные машины…" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = { ...item, id: item.id || crypto.randomUUID(), name: form.get("name"), category: form.get("category"), unit: form.get("unit"), quantity: Number(form.get("quantity")) || 0, min: Number(form.get("min")) || 0, price: Number(form.get("price")) || 0, lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0, compatibility: String(form.get("compatibility") || "").split(",").map((value) => value.trim()).filter(Boolean), archived: false, hiddenFromOrders: false, tracking: item.tracking || "exact", consumeUnit: item.consumeUnit || form.get("unit") };
+    const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
+    if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
+    if (!existing && next.quantity > 0) data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
+    await saveData(); modal.remove(); await render(); toast("Позиция склада сохранена");
+  });
+}
+
 const goodsLine = (item = {}) => `<div class="line-item" data-goods-row>
   <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
   <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
@@ -736,6 +755,7 @@ app.addEventListener("click", async (event) => {
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "more-menu") { moreSection = "menu"; return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "new-stock") return stockModal();
   if (action === "new-goods-sheet") return goodsModal();
   if (action === "edit-goods-sheet") {
     const id = event.target.closest("[data-action]").dataset.id;
