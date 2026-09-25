@@ -395,6 +395,15 @@ function analyticsPage() {
   </main>`;
 }
 
+
+function availableServices() {
+  const regular = data.receipt_prices
+    .filter((item) => item.kind !== "material")
+    .map((item) => ({ ...item, name: item.name || item.title || "Услуга", price: Number(item.price) || 0, source: "price" }));
+  const custom = (Array.isArray(data.service_custom) ? data.service_custom : [])
+    .map((item) => ({ ...item, name: item.name || item.title || item.service || "Услуга", price: Number(item.price || item.cost || item.sum) || 0, source: "custom" }));
+  return [...regular, ...custom];
+}
 function priceList() {
   const prices = data.receipt_prices.slice(0, 100);
   return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
