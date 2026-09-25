@@ -390,6 +390,94 @@ h2 { margin: 0; font-size: 24px; }
 .red { color: var(--red); }
 .purple { color: var(--purple); }
 
+.analytics-content { padding-top: 28px; }
+.analytics-period-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 11px;
+  margin-bottom: 18px;
+}
+.analytics-period-grid .chip {
+  width: 100%;
+  min-height: 58px;
+  padding: 10px 8px;
+  border-radius: 999px;
+  font-size: 16px;
+}
+.analytics-period-grid .chip.active {
+  border-color: var(--accent);
+  background: rgba(255,107,79,.15);
+  color: #f5f6f7;
+}
+.analytics-range-nav {
+  display: grid;
+  grid-template-columns: 58px minmax(0,1fr) 58px;
+  gap: 15px;
+  align-items: center;
+  margin: 3px 0 20px;
+}
+.analytics-range-nav > div { text-align: center; }
+.analytics-range-nav strong {
+  display: block;
+  font-size: 22px;
+  text-transform: lowercase;
+}
+.analytics-range-nav small { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+.analytics-arrow {
+  width: 58px;
+  height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #171e25;
+  color: #f0f2f3;
+  font-size: 42px;
+  line-height: 1;
+}
+.analytics-arrow:disabled { color: #4c555c; opacity: .55; cursor: default; }
+
+.analytics-kpi-panel .panel-title small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+.analytics-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.analytics-kpi {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #171e25;
+}
+.analytics-kpi > span {
+  display: block;
+  color: #969ea5;
+  font-size: 12px;
+  letter-spacing: .06em;
+}
+.analytics-kpi > strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 27px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.analytics-focus .panel-title { margin-bottom: 18px; }
+.focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.focus-grid > div {
+  display: grid;
+  align-content: center;
+  min-height: 112px;
+  padding: 14px 10px;
+  border: 1px solid rgba(229,170,61,.35);
+  border-radius: 18px;
+  background: rgba(229,170,61,.055);
+  text-align: center;
+}
+.focus-grid strong { font-size: 31px; font-weight: 500; }
+.focus-grid span { margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.25; }
+.analytics-work .metric { min-height: 96px; }
+
 .bars { display: flex; align-items: flex-end; gap: 8px; height: 170px; margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
 .bar-wrap { flex: 1; display: flex; height: 100%; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; }
 .bar { width: 100%; max-width: 72px; min-height: 5px; border-radius: 8px 8px 0 0; background: var(--accent); }
@@ -538,6 +626,15 @@ h2 { margin: 0; font-size: 24px; }
   .warehouse-shortcut .ui-icon { width: 21px; height: 21px; }
   .warehouse-new-card { grid-template-columns: 52px minmax(0,1fr) 20px; padding: 17px; }
   .warehouse-new-card strong { font-size: 19px; }
+  .analytics-period-grid { gap: 8px; }
+  .analytics-period-grid .chip { min-height: 52px; font-size: 14px; }
+  .analytics-range-nav { grid-template-columns: 52px minmax(0,1fr) 52px; gap: 10px; }
+  .analytics-arrow { width: 52px; height: 52px; }
+  .analytics-kpi { padding: 15px; }
+  .analytics-kpi > strong { font-size: 23px; }
+  .focus-grid { gap: 8px; }
+  .focus-grid > div { min-height: 102px; padding: 12px 7px; }
+  .focus-grid strong { font-size: 27px; }
   .backup-grid { grid-template-columns: 1fr; }
   .empty-actions { grid-template-columns: 1fr; }
   .finance-actions { grid-template-columns: 1fr; }
@@ -562,6 +659,10 @@ h2 { margin: 0; font-size: 24px; }
 
 @media (max-width: 380px) {
   .metrics { grid-template-columns: 1fr; }
+  .analytics-kpis { grid-template-columns: 1fr 1fr; }
+  .analytics-kpi > strong { font-size: 20px; }
+  .focus-grid { grid-template-columns: repeat(3, 1fr); }
+  .focus-grid span { font-size: 10px; }
   .order-main-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .order-secondary-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .photo-grid { grid-template-columns: 1fr; }
