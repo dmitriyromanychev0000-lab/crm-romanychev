@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.44.1";
-const APP_BUILD = "2026.09.26.11";
+const APP_VERSION = "0.45.0";
+const APP_BUILD = "2026.09.26.12";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Товарник теперь использует только товары и материалы; черновики сортируются по дате; телефон мастера очищается при вводе";
+const APP_RELEASE = "Форма заявки очищена от дублирующего быстрого добавления услуг; печать акта сведена к единому одностраничному A4-режиму";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1349,11 +1349,10 @@ function actPage() {
 
       <div class="act-party-details">
         <div><b>Исполнитель:</b><span>${escapeHtml(data.settings.companyName || data.settings.name || "—")}</span></div>
-        <div><b>Мастер:</b><span>${escapeHtml(data.settings.name || "—")}</span></div>
-        <div><b>Телефон:</b><span>${escapeHtml(data.settings.phone || "—")}</span></div>
+        <div><b>Мастер / телефон:</b><span>${escapeHtml([data.settings.name, data.settings.phone].filter(Boolean).join(" · ") || "—")}</span></div>
         ${data.settings.inn ? `<div><b>ИНН:</b><span>${escapeHtml(data.settings.inn)}</span></div>` : ""}
-        <div><b>Заказчик:</b><span>${escapeHtml(order.name || "—")}${order.phone ? ` · ${escapeHtml(order.phone)}` : ""}</span></div>
-        ${order.address ? `<div><b>Адрес:</b><span>${escapeHtml(order.address)}</span></div>` : ""}
+        <div><b>Заказчик:</b><span>${escapeHtml([order.name, order.phone].filter(Boolean).join(" · ") || "—")}</span></div>
+        ${order.address ? `<div class="act-party-wide"><b>Адрес:</b><span>${escapeHtml(order.address)}</span></div>` : ""}
       </div>
 
       <div class="act-acceptance"><h3>АКТ СДАЧИ-ПРИЁМКИ ОКАЗАННЫХ УСЛУГ</h3><p>Исполнитель выполнил работы по обслуживанию указанного оборудования. Заказчик с условиями обслуживания и оплаты ознакомлен, к качеству работ и состоянию оборудования претензий не имеет.</p><div class="act-signatures"><div><b>Исполнитель:</b><br>${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________</div><div><b>Заказчик:</b><br>${escapeHtml(order.name || "________________")}<br>${escapeHtml(order.phone || "")}<br>Подпись: ____________</div></div></div>
@@ -2000,8 +1999,6 @@ function newOrderModal(existing = null, options = {}) {
     : Number(order.guarantee);
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
-  const serviceOptions = serviceCatalog
-    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}${item.source === "custom" ? " · своё" : ""}</option>`).join("");
   const stockOptions = data.warehouse
     .filter((item) => !item.archived && !item.hiddenFromOrders)
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
@@ -2025,7 +2022,6 @@ function newOrderModal(existing = null, options = {}) {
 
     <div class="form-section-title">Выбранные услуги</div>
     <button type="button" class="legacy-catalog-button legacy-service-catalog-open" id="open-service-catalog">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></button>
-    <details class="legacy-quick-add"><summary>Быстро добавить одну услугу</summary><div class="legacy-catalog-fallback"><select class="field" id="service-picker"><option value="">— Выбрать услугу —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div></details>
     <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
     <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
 
@@ -2127,12 +2123,6 @@ function newOrderModal(existing = null, options = {}) {
     return total;
   };
   modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
-  modal.querySelector("#add-service").addEventListener("click", () => {
-    const picker = modal.querySelector("#service-picker");
-    const item = picker.value === "" ? null : serviceCatalog[Number(picker.value)];
-    modal.querySelector("#service-lines").insertAdjacentHTML("beforeend", orderServiceRow(item ? { name: item.name, price: item.price, basePrice: item.price, qty: 1 } : {}));
-    calculateLines();
-  });
   modal.querySelector("#add-material").addEventListener("click", () => {
     const picker = modal.querySelector("#material-picker");
     const item = picker.value === "" ? null : data.warehouse.filter((entry) => !entry.archived && !entry.hiddenFromOrders)[Number(picker.value)];
@@ -2555,13 +2545,15 @@ function goodsModal(existing = null) {
 function printActOnePage() {
   const sheet = document.querySelector(".act-sheet");
   if (!sheet) return;
-  const measuredHeight = Math.max(sheet.scrollHeight, 1);
   const rows = sheet.querySelectorAll("tbody tr").length;
-  const targetHeight = 930;
-  const density = rows > 10 ? 0.86 : rows > 6 ? 0.92 : 1;
-  const zoom = Math.max(0.36, Math.min(0.88, (targetHeight / measuredHeight) * density));
-  document.documentElement.style.setProperty("--act-print-zoom", zoom.toFixed(3));
-  window.print();
+  const textLength = (sheet.innerText || "").length;
+  let zoom = 0.78;
+  if (rows > 5 || textLength > 1800) zoom = 0.72;
+  if (rows > 8 || textLength > 2400) zoom = 0.66;
+  if (rows > 11 || textLength > 3200) zoom = 0.58;
+  if (rows > 15 || textLength > 4200) zoom = 0.50;
+  document.documentElement.style.setProperty("--act-print-zoom", String(zoom));
+  requestAnimationFrame(() => window.print());
 }
 
 function orderActionsSheet(order) {
