@@ -6,8 +6,8 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.37.0";
-const APP_BUILD = "2026.09.25.38";
+const APP_VERSION = "0.37.1";
+const APP_BUILD = "2026.09.25.39";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Настройки и Документы/чеки приведены к общей старой дизайн-системе; товарник сохранён в новом виде";
 const BACKUP_FORMAT_VERSION = 18;
@@ -1422,12 +1422,12 @@ function settingsPage() {
       <div class="panel-title"><span class="badge-icon">${icon("settings")}</span> Приложение</div>
       <div class="settings-system-list">
         <div class="setting-row legacy-setting-row">
-          <span class="setting-icon">${icon("info")}</span>
+          <span class="setting-icon">${icon("document")}</span>
           <div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">Что нового: ${escapeHtml(APP_RELEASE)}</div></div>
           <button class="secondary-button" data-action="check-update">Проверить</button>
         </div>
         <div class="setting-row legacy-setting-row">
-          <span class="setting-icon">${icon("link")}</span>
+          <span class="setting-icon">${icon("location")}</span>
           <div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div>
           <a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a>
         </div>
