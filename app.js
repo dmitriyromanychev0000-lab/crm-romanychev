@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.45.1";
-const APP_BUILD = "2026.09.26.13";
+const APP_VERSION = "0.45.2";
+const APP_BUILD = "2026.09.26.14";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Даты старых и импортированных заявок унифицированы во всех экранах; редактирование больше не меняет их исходную хронологию";
+const APP_RELEASE = "Исправлена копия закрытой заявки: новая копия всегда активная и не наследует дату завершения";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2607,6 +2607,8 @@ async function handleOrderAction(action, id) {
       id: newOrderId(),
       created: new Date().toISOString(),
       status: "В работе",
+      completed: null,
+      updatedAt: new Date().toISOString(),
       archived: false,
       archivedAt: null,
       photos: []
