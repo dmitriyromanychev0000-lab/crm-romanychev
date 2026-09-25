@@ -192,6 +192,13 @@ h2 { margin: 0; font-size: 24px; }
 .goods-sheet small { display: block; margin-top: 4px; color: var(--muted); }
 .readonly-field { display: flex; align-items: center; color: var(--accent); font-size: 21px; font-weight: 800; }
 .goods-adjust { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 12px; }
+.photo-input { padding: 12px 14px; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.photo-card { position: relative; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--panel-2); }
+.photo-card img, .photo-missing { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+.photo-missing { display: grid; place-items: center; align-content: center; gap: 4px; color: var(--muted); font-size: 30px; }
+.photo-caption { padding: 8px 34px 9px 9px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.photo-remove { position: absolute; right: 6px; bottom: 6px; width: 28px; height: 28px; padding: 0; border: 1px solid rgba(255,95,103,.45); border-radius: 9px; background: rgba(8,13,17,.88); color: var(--red); font-size: 20px; line-height: 1; }
 .settings-save { margin-top: 18px; }
 .compact-modal { max-width: 560px; }
 .act-print-button { margin-top: 14px; }
@@ -252,6 +259,7 @@ h2 { margin: 0; font-size: 24px; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 520px) {
+  .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .topbar { min-height: 88px; padding: 16px 18px; }
   .logo { width: 52px; height: 52px; flex-basis: 52px; }
   .content { padding: 24px 16px 8px; }
