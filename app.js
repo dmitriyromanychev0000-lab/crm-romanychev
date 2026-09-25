@@ -55,6 +55,7 @@ let orderPeriod = ["all", "7", "30", "90", "365"].includes(String(initialUiState
 let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(initialUiState.orderVisitFilter)) ? String(initialUiState.orderVisitFilter) : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
+let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let analyticsPeriod = ["all", "30", "90", "365"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "all";
 let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.financePeriod)) ? String(initialUiState.financePeriod) : "all";
@@ -71,6 +72,7 @@ function saveUiState(extra = {}) {
       orderVisitFilter,
       searchQuery,
       warehouseSearch,
+      warehouseFilter,
       clientSearch,
       analyticsPeriod,
       financePeriod,
@@ -171,7 +173,10 @@ const ICONS = {
   washer: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01"/><circle cx="12" cy="15" r="4.5"/>',
   fridge: '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M15 6v2M15 13v2"/>',
   dishwasher: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01"/><path d="M8 14c1 2 7 2 8 0"/>',
-  oven: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01M16 5h.01"/><rect x="7" y="11" width="10" height="7" rx="1"/>'
+  oven: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01M16 5h.01"/><rect x="7" y="11" width="10" height="7" rx="1"/>',
+  history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+  shopping: '<path d="M8 6h13l-2 8H9L7 3H3"/><circle cx="10" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/>',
+  box: '<path d="m3 7 9-4 9 4-9 4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>'
 };
 
 function icon(name, className = "") {
@@ -713,16 +718,16 @@ function ordersPage() {
 function warehousePage() {
   const query = warehouseSearch.trim().toLowerCase();
   const activeItems = [...data.warehouse].filter((item) => !item.archived);
-  const items = activeItems.filter((item) => {
+  const lowItems = activeItems.filter((item) => Number(item.quantity) <= Number(item.min || 0));
+  const sourceItems = warehouseFilter === "low" ? lowItems : warehouseFilter === "all" ? [...data.warehouse] : activeItems;
+  const items = sourceItems.filter((item) => {
     const compatibility = Array.isArray(item.compatibility) ? item.compatibility.join(" ") : item.compatibility || "";
     const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
     return !query || haystack.includes(query);
   });
-  const lowItems = activeItems.filter((item) => Number(item.quantity) <= Number(item.min || 0));
-  const low = lowItems.length;
   const movements = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    .slice(0, 12);
+    .slice(0, 30);
   const movementLabels = {
     initial: "Начальный остаток",
     manual_in: "Приход",
@@ -730,19 +735,46 @@ function warehousePage() {
     order_out: "Списано в заявку",
     order_return: "Возврат из заявки"
   };
-  return `<main class="content">
-    <div class="page-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div><button class="icon-button" data-action="new-stock" aria-label="Новая позиция">+</button></div>
-    <div class="search-row"><input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название, категория или совместимость" /></div>
-    <div class="metrics panel">
-      <div class="metric"><div class="metric-label">Активных позиций</div><div class="metric-value">${activeItems.length}</div></div>
-      <div class="metric"><div class="metric-label">Мало осталось</div><div class="metric-value yellow">${low}</div></div>
+
+  return `<main class="content warehouse-content">
+    <div class="page-head warehouse-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div></div>
+
+    <div class="search-row search-with-icon warehouse-search">${icon("search")}<input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" /></div>
+
+    <div class="warehouse-filter order-date-filter">
+      <select class="field" id="warehouse-filter-select">
+        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
+        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось · ${lowItems.length}</option>
+        <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
+      </select>
+      <span class="select-chevron">${icon("chevron")}</span>
     </div>
-    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : ""}
-    ${items.length ? items.map((item) => `<article class="panel stock-card">
-      <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">в наличии</div></div></div>
-      <div class="stock-actions"><button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Изменить</span></button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
-    </article>`).join("") : (query ? emptyState("⌕", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("▥", "Склад пуст", "Позиции появятся после импорта бэкапа."))}
-    <section class="panel"><div class="panel-title">Последние движения</div>
+
+    <div class="warehouse-shortcuts">
+      <a class="warehouse-shortcut" href="#warehouse-movements">${icon("history")}<span>История движения</span></a>
+      <a class="warehouse-shortcut" href="#warehouse-shopping">${icon("shopping")}<span>Список покупок</span></a>
+    </div>
+
+    <button class="panel warehouse-new-card" data-action="new-stock">
+      <span class="warehouse-new-icon">${icon("box")}</span>
+      <span><strong>Новая позиция</strong><small>Добавить запчасть или расходный материал</small></span>
+      <span class="chevron">${icon("chevron")}</span>
+    </button>
+
+    <section id="warehouse-shopping" class="panel warehouse-shopping-panel ${lowItems.length ? "" : "warehouse-section-muted"}">
+      <div class="panel-title"><span class="badge-icon">${icon("shopping")}</span> Список покупок</div>
+      ${lowItems.length ? `<div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")} · минимум ${escapeHtml(item.min || 0)}</small></span><b class="yellow">Докупить</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>` : `<div class="small">Все позиции выше минимального остатка.</div>`}
+    </section>
+
+    <section class="warehouse-items">
+      ${items.length ? items.map((item) => `<article class="panel stock-card ${item.archived ? "archived-stock" : ""}">
+        <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">${item.archived ? "архив" : "в наличии"}</div></div></div>
+        ${item.compatibility ? `<div class="stock-compatibility">${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : item.compatibility)}</div>` : ""}
+        <div class="stock-actions"><button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Изменить</span></button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
+      </article>`).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
+    </section>
+
+    <section id="warehouse-movements" class="panel warehouse-movements"><div class="panel-title"><span class="badge-icon">${icon("history")}</span> История движения</div>
       ${movements.length ? `<ul class="list">${movements.map((movement) => {
         const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
         const incoming = ["initial", "manual_in", "order_return"].includes(movement.type);
@@ -1947,6 +1979,12 @@ app.addEventListener("submit", async (event) => {
 app.addEventListener("change", async (event) => {
   if (event.target.id === "order-visit-filter") {
     orderVisitFilter = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
+  if (event.target.id === "warehouse-filter-select") {
+    warehouseFilter = event.target.value;
     saveUiState();
     await render();
     return;
