@@ -2465,3 +2465,79 @@ body {
   .draft-top > strong { justify-self: start; }
   .draft-actions { grid-template-columns: 1fr; }
 }
+
+
+/* 0.40.0 · Бэкапы, покупки и инструменты */
+.backup-content,
+.shopping-content,
+.tools-content { padding-top: 28px; }
+
+.backup-main-panel,
+.backup-content-panel,
+.tools-stats-panel,
+.tools-list-panel { padding: 20px; }
+
+.backup-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+.backup-grid button {
+  min-width: 0;
+  min-height: 60px;
+}
+.backup-settings-list .setting-row:first-child { border-top: 1px solid var(--line); }
+.backup-settings-list .setting-row > div { min-width: 0; }
+.backup-settings-list .small { overflow-wrap: anywhere; }
+.backup-settings-list select {
+  max-width: 180px;
+  color-scheme: dark;
+}
+
+.legacy-shopping-card {
+  min-height: 86px;
+  margin-bottom: 0;
+  padding: 18px 20px;
+  border-radius: 22px;
+}
+.legacy-shopping-card > div:first-child { min-width: 0; }
+.legacy-shopping-card .stock-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shopping-content .client-list { gap: 12px; }
+
+.tools-content .page-head > .finance-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 9px;
+  width: auto;
+}
+.tools-content .page-head > .finance-actions button { min-height: 52px; }
+.tools-stats-panel { margin-bottom: 16px; }
+.tools-list-panel { padding: 20px; }
+.tools-list-panel .goods-list { gap: 0; }
+.tool-row {
+  min-height: 70px;
+  padding: 13px 0;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: transparent;
+}
+.tool-row:last-child { border-bottom: 0; }
+.tool-row b { color: var(--accent); white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .backup-grid { grid-template-columns: 1fr; }
+  .tools-content .page-head > .finance-actions {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .legacy-shopping-card { align-items: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .tools-content .page-head > .finance-actions { grid-template-columns: 1fr; }
+  .legacy-shopping-card { display: grid; gap: 10px; }
+  .shopping-need { text-align: left; }
+}
