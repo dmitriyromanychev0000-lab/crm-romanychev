@@ -246,7 +246,7 @@ async function runBackupSelfTest() {
   }
 }
 
-function downloadBackup() {
+async function downloadBackup() {
   const blob = new Blob([backupPayload()], { type: "application/json;charset=utf-8" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -255,8 +255,8 @@ function downloadBackup() {
   link.click();
   link.remove();
   URL.revokeObjectURL(link.href);
-  markBackupComplete();
-  toast("Бэкап скачан на устройство");
+  await markBackupComplete();
+  toast("Бэкап подготовлен и скачивание запущено");
 }
 
 
@@ -409,8 +409,8 @@ async function maybeAutoBackup() {
   if (!handle) return;
   try {
     if ((await handle.queryPermission({ mode: "readwrite" })) === "granted") {
-      await writeBackupToDirectory({ silent: true });
-      toast("Автоматический бэкап сохранён");
+      const saved = await writeBackupToDirectory({ silent: true });
+      if (saved) toast("Автоматический бэкап сохранён");
     }
   } catch (error) {
     console.warn("Автобэкап ожидает разрешения пользователя", error);
