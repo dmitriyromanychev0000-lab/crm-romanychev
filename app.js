@@ -6,8 +6,8 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.40.5";
-const APP_BUILD = "2026.09.25.50";
+const APP_VERSION = "0.41.0";
+const APP_BUILD = "2026.09.26.01";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Новые заявки теперь сверху; интерфейс уменьшен; раздел Ещё упрощён; печать акта ужата в одну A4-страницу";
 const BACKUP_FORMAT_VERSION = 18;
@@ -2492,8 +2492,10 @@ function printActOnePage() {
   const sheet = document.querySelector(".act-sheet");
   if (!sheet) return;
   const measuredHeight = Math.max(sheet.scrollHeight, 1);
-  const targetHeight = 1010;
-  const zoom = Math.max(0.56, Math.min(0.9, targetHeight / measuredHeight));
+  const rows = sheet.querySelectorAll("tbody tr").length;
+  const targetHeight = 930;
+  const density = rows > 10 ? 0.86 : rows > 6 ? 0.92 : 1;
+  const zoom = Math.max(0.36, Math.min(0.88, (targetHeight / measuredHeight) * density));
   document.documentElement.style.setProperty("--act-print-zoom", zoom.toFixed(3));
   window.print();
 }
