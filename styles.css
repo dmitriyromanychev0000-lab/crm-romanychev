@@ -2091,3 +2091,162 @@ h2 { margin: 0; font-size: 24px; }
   .receipt-row b { grid-column: 2; grid-row: 2; }
   .receipt-row .chevron { grid-column: 3; grid-row: 1 / span 2; }
 }
+
+
+/* 0.38.0 · Общие формы, модалки и состояния */
+button,
+a.secondary-button,
+.chip,
+.menu-item,
+.nav-button,
+.receipt-row,
+.goods-sheet,
+.price-catalog-card,
+.warehouse-shortcut {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.icon-button,
+.primary-button,
+.secondary-button,
+.danger-button,
+.chip,
+.field,
+.search,
+.menu-item,
+.nav-button {
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease, box-shadow .16s ease, opacity .16s ease, transform .16s ease;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+.secondary-button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .46;
+  filter: saturate(.55);
+}
+
+.field:disabled,
+.search:disabled {
+  border-color: #252d34;
+  background: #11171c;
+  color: #737c83;
+  box-shadow: none;
+}
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.danger-button:focus-visible,
+.icon-button:focus-visible,
+.chip:focus-visible,
+.menu-item:focus-visible,
+.nav-button:focus-visible,
+.receipt-row:focus-visible,
+.goods-sheet:focus-visible,
+.price-catalog-card:focus-visible,
+.warehouse-shortcut:focus-visible,
+.field:focus-visible,
+.search:focus-visible,
+a.secondary-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.field:focus-visible,
+.search:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.modal-actions {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  align-items: stretch;
+}
+.modal-actions > * { min-width: 0; }
+
+.compact-modal .modal-actions {
+  position: sticky;
+  bottom: -22px;
+  z-index: 3;
+  margin-right: -22px;
+  margin-left: -22px;
+  margin-bottom: -22px;
+  padding: 14px 22px calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid #293139;
+  background: rgba(17,24,29,.97);
+  backdrop-filter: blur(16px);
+}
+
+.compact-modal .form-group label,
+.settings-profile-panel .form-group label {
+  line-height: 1.25;
+}
+
+.modal input.field,
+.modal select.field,
+.modal textarea.field {
+  scroll-margin-top: 150px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary-button:not(:disabled):hover,
+  .icon-button:not(:disabled):hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+  .secondary-button:not(:disabled):hover,
+  .danger-button:not(:disabled):hover,
+  .chip:not(:disabled):hover,
+  .menu-item:hover,
+  .receipt-row:hover,
+  .goods-sheet:hover,
+  .price-catalog-card:hover,
+  .warehouse-shortcut:hover {
+    border-color: #46515a;
+    background-color: #1d252c;
+  }
+  .nav-button:hover { color: #c8cdd1; }
+}
+
+.primary-button:not(:disabled):active,
+.secondary-button:not(:disabled):active,
+.danger-button:not(:disabled):active,
+.icon-button:not(:disabled):active,
+.chip:not(:disabled):active,
+.menu-item:active,
+.receipt-row:active,
+.goods-sheet:active,
+.price-catalog-card:active,
+.warehouse-shortcut:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 520px) {
+  .compact-modal .modal-actions {
+    bottom: -20px;
+    margin-right: -20px;
+    margin-left: -20px;
+    margin-bottom: -20px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .modal-actions { grid-template-columns: 1fr 1fr; }
+  .modal-actions > :only-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 380px) {
+  .modal-actions { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
