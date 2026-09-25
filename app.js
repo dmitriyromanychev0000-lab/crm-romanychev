@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.43.0";
-const APP_BUILD = "2026.09.26.07";
+const APP_VERSION = "0.43.1";
+const APP_BUILD = "2026.09.26.08";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад, аналитика, финансы и прайс уплотнены и очищены по визуалу; списки получили предсказуемую сортировку";
+const APP_RELEASE = "Доведены фильтры прайса и навигация по разделам склада после визуального уплотнения";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1155,6 +1155,8 @@ function priceList() {
 
   const customServices = (Array.isArray(data.service_custom) ? data.service_custom : [])
     .filter((item) => {
+      const techMatch = priceTechFilter === "all" || String(item.tech || "").trim() === priceTechFilter;
+      if (!techMatch) return false;
       if (!query) return true;
       return [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase().includes(query);
     })
