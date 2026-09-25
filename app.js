@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.42.2";
-const APP_BUILD = "2026.09.26.06";
+const APP_VERSION = "0.43.0";
+const APP_BUILD = "2026.09.26.07";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Завершён аудит мобильных форм: устранены вылеты за viewport и конфликт старых sticky-футеров модалок";
+const APP_RELEASE = "Склад, аналитика, финансы и прайс уплотнены и очищены по визуалу; списки получили предсказуемую сортировку";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -795,7 +795,9 @@ function warehousePage() {
     if (!map.has(category)) map.set(category, []);
     map.get(category).push(item);
     return map;
-  }, new Map()).entries()].sort(([a], [b]) => a.localeCompare(b, "ru"));
+  }, new Map()).entries()]
+    .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
+    .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
   const movements = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
@@ -863,7 +865,7 @@ function warehousePage() {
       ${groupedItems.length ? groupedItems.map(([category, group]) => {
         const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
         return `<section class="panel warehouse-group">
-          <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div><span class="warehouse-group-caret">${icon("chevron")}</span></div>
+          <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div></div>
           <div class="warehouse-group-list">${group.map((item) => `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""}">
             <div class="stock-card-main">
               <span class="stock-box-icon">${icon("box")}</span>
@@ -1055,7 +1057,7 @@ function analyticsPage() {
   const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
 
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
+    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Главные показатели работы</p></div></div>
 
     <div class="analytics-period-grid">
       <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">Сегодня</button>
@@ -1075,12 +1077,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong></div>
+        <div class="analytics-kpi"><span>ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong></div>
+        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong></div>
+        <div class="analytics-kpi"><span>ОСТАТОК</span><strong class="green">${money(totalResult)}</strong></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong></div>
       </div>
     </section>
 
@@ -1147,15 +1149,19 @@ function priceList() {
     if (!map.has(group)) map.set(group, []);
     map.get(group).push(item);
     return map;
-  }, new Map()).entries()].sort(([a], [b]) => a.localeCompare(b, "ru"));
+  }, new Map()).entries()]
+    .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
+    .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
-  const customServices = (Array.isArray(data.service_custom) ? data.service_custom : []).filter((item) => {
-    if (!query) return true;
-    return [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase().includes(query);
-  });
+  const customServices = (Array.isArray(data.service_custom) ? data.service_custom : [])
+    .filter((item) => {
+      if (!query) return true;
+      return [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase().includes(query);
+    })
+    .sort((a, b) => String(a.name || a.title || a.service || "").localeCompare(String(b.name || b.title || b.service || ""), "ru"));
 
   return `<main class="content price-content">
-    <div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и своих позиций</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
+    <div class="page-head price-head"><div><h1>Прайс-лист</h1><p class="lead">Услуги и материалы</p></div><div class="price-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
 
     <div class="search-row search-with-icon price-search-row">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название услуги или материала" /></div>
     <div class="price-tech-filter">
@@ -1263,7 +1269,7 @@ function financePage() {
   ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
   return `<main class="content finance-content">
-    <div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="page-head"><div><h1>Финансы</h1><p class="lead">Доходы, расходы и результат</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
 
     <div class="finance-period-grid">
       <button type="button" class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all" aria-pressed="${financePeriod === "all"}">Всё время</button>
