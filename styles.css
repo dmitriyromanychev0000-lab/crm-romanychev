@@ -3130,7 +3130,7 @@ h1 { font-size: clamp(30px, 6vw, 36px); }
   }
 
   .act-sheet {
-    width: calc(200mm / var(--act-print-zoom, .82)) !important;
+    width: 200mm !important;
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
@@ -3211,3 +3211,10 @@ h1 { font-size: clamp(30px, 6vw, 36px); }
     page-break-inside: avoid !important;
   }
 }
+
+
+/* 0.41.0 · Цвета прямых служебных пунктов меню */
+.menu-icon-tools { color: #5ba8ff; background: rgba(91,168,255,.12); }
+.menu-icon-receipts { color: #62d591; background: rgba(98,213,145,.12); }
+.menu-icon-drafts { color: #e6b85e; background: rgba(230,184,94,.12); }
+.menu-icon-backup { color: #ae83ff; background: rgba(174,131,255,.13); }
