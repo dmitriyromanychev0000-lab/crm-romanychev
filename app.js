@@ -1658,7 +1658,17 @@ async function start() {
     requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, targetY)));
   }
   await maybeAutoBackup();
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(console.warn);
+  if ("serviceWorker" in navigator) {
+    let reloadingForUpdate = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (reloadingForUpdate) return;
+      reloadingForUpdate = true;
+      window.location.replace(APP_URL);
+    });
+    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
+      .then((registration) => registration.update().catch(console.warn))
+      .catch(console.warn);
+  }
 }
 
 let uiScrollTimer = null;
