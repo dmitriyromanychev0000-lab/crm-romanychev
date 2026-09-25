@@ -1628,13 +1628,22 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
     </div>
 
-    <div class="form-section-title">Услуги</div>
-    <div class="catalog-add"><select class="field" id="service-picker"><option value="">— Выбрать услугу из прайса —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
-    <div id="service-lines" class="line-list">${services.map(orderServiceRow).join("")}</div>
+    <div class="form-section-title">Выбранные услуги</div>
+    <details class="legacy-catalog-picker">
+      <summary class="legacy-catalog-button">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></summary>
+      <div class="catalog-add legacy-catalog-content"><select class="field" id="service-picker"><option value="">— Выбрать услугу из прайса —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
+    </details>
+    <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
+    <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
 
     <div class="form-section-title">Запчасти и материалы</div>
-    <div class="catalog-add"><select class="field" id="material-picker"><option value="">— Выбрать со склада —</option>${stockOptions}</select><button type="button" class="secondary-button" id="add-material">+ Добавить</button></div>
+    <p class="legacy-material-help">Показываются позиции, подходящие для выбранной техники, и универсальные материалы. Количество и единицу выбираешь сам.</p>
+    <details class="legacy-catalog-picker material-picker-panel">
+      <summary class="legacy-stock-button">${icon("warehouse")}<span>Выбрать со склада</span></summary>
+      <div class="catalog-add legacy-catalog-content"><select class="field" id="material-picker"><option value="">— Выбрать со склада —</option>${stockOptions}</select><button type="button" class="secondary-button" id="add-material">+ Добавить</button></div>
+    </details>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
+    <details class="manual-material-details"><summary>Добавить материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
 
     <div class="form-section-title">Фотографии</div>
     <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото уменьшаются перед сохранением и остаются только в локальной CRM и бэкапе.</div></div>
@@ -1712,6 +1721,15 @@ function newOrderModal(existing = null, options = {}) {
     modal.querySelector("#service-total").textContent = money(serviceTotal);
     modal.querySelector("#material-total").textContent = money(materialTotal);
     modal.querySelector("#calculated-total").textContent = money(total);
+    const legacyServiceTotal = modal.querySelector("#legacy-service-total");
+    const legacyMatch = modal.querySelector("#legacy-service-match");
+    if (legacyServiceTotal) legacyServiceTotal.textContent = money(serviceTotal);
+    if (legacyMatch) {
+      const orderSum = Number(formElement.elements.sum?.value) || 0;
+      const matches = serviceTotal === orderSum;
+      legacyMatch.textContent = orderSum ? (matches ? "| Совпадает" : `| Разница ${money(orderSum - serviceTotal)}`) : "| —";
+      legacyMatch.className = matches && orderSum ? "green" : "";
+    }
     return total;
   };
   modal.querySelector("#add-service").addEventListener("click", () => {
@@ -1726,13 +1744,19 @@ function newOrderModal(existing = null, options = {}) {
     modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow(item ? { warehouseId: item.id, name: item.name, qty: 1, unit: item.unit, unitCost: item.price || item.lastPurchasePrice || 0, tracking: item.tracking, writeOff: true } : {}));
     calculateLines();
   });
+  modal.querySelector("#add-manual-material").addEventListener("click", () => {
+    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({ qty: 1, unit: "шт.", unitCost: 0, writeOff: false }));
+    calculateLines();
+  });
   modal.addEventListener("click", (event) => {
     if (event.target.closest("[data-remove-line]")) {
       event.target.closest(".line-item").remove();
       calculateLines();
     }
   });
-  modal.addEventListener("input", (event) => { if (event.target.closest(".line-item")) calculateLines(); });
+  modal.addEventListener("input", (event) => {
+    if (event.target.closest(".line-item") || event.target.name === "sum") calculateLines();
+  });
   modal.querySelector("#use-calculated-total").addEventListener("click", () => { formElement.elements.sum.value = calculateLines(); });
   calculateLines();
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
