@@ -31,12 +31,39 @@ const defaultData = () => ({
   }
 });
 
+const UI_STATE_KEY = "crm-ui-state";
+
+function readUiState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(UI_STATE_KEY) || "{}");
+    return saved && typeof saved === "object" ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+const initialUiState = readUiState();
 let data = defaultData();
-let activePage = "orders";
-let orderFilter = "all";
-let searchQuery = "";
-let moreSection = "menu";
-let selectedActOrderId = null;
+let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
+let orderFilter = ["all", "closed", "active", "declined"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
+let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
+let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
+let selectedActOrderId = initialUiState.selectedActOrderId || null;
+let restoreScrollY = Number(initialUiState.scrollY) || 0;
+
+function saveUiState(extra = {}) {
+  try {
+    localStorage.setItem(UI_STATE_KEY, JSON.stringify({
+      activePage,
+      orderFilter,
+      searchQuery,
+      moreSection,
+      selectedActOrderId,
+      scrollY: window.scrollY,
+      ...extra
+    }));
+  } catch {}
+}
 
 const app = document.querySelector("#app");
 const fileInput = document.querySelector("#backup-file");
