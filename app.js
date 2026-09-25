@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.46.1";
-const APP_BUILD = "2026.09.26.18";
+const APP_VERSION = "0.46.2";
+const APP_BUILD = "2026.09.26.19";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Отсутствующие ID старых заявок, склада и товарников безопасно восстанавливаются при загрузке и импорте";
+const APP_RELEASE = "Поиск заявок и клиентов одинаково понимает российские номера в формате 8..., +7... и с форматированием";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -781,6 +781,8 @@ function orderCard(order) {
 
 function ordersPage() {
   const query = searchQuery.trim().toLowerCase();
+  const queryDigits = searchQuery.replace(/\D/g, "");
+  const phoneQuery = queryDigits.length >= 3 ? normalizeRussianPhone(searchQuery) : "";
   const filtered = ordersNewestFirst().filter((order) => {
     const status = normalizeStatus(order.status);
     const isArchived = Boolean(order.archived);
@@ -788,6 +790,8 @@ function ordersPage() {
       ? isArchived
       : !isArchived && (orderFilter === "all" || orderFilter === status);
     const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id].join(" ").toLowerCase();
+    const normalizedOrderPhone = normalizeRussianPhone(order.phone || "");
+    const searchMatch = !query || haystack.includes(query) || (phoneQuery && normalizedOrderPhone.includes(phoneQuery));
     const visitTime = order.nextVisit ? new Date(order.nextVisit).getTime() : NaN;
     const today = new Date();
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
@@ -1291,7 +1295,13 @@ function clientsPage() {
   });
   const sorted = [...clients.values()].sort((a, b) => Number(b.lastTime || 0) - Number(a.lastTime || 0));
   const query = clientSearch.trim().toLowerCase();
-  const filtered = sorted.filter((client) => !query || [client.name, client.phone, client.address].join(" ").toLowerCase().includes(query));
+  const queryDigits = clientSearch.replace(/\D/g, "");
+  const phoneQuery = queryDigits.length >= 3 ? normalizeRussianPhone(clientSearch) : "";
+  const filtered = sorted.filter((client) => {
+    const haystack = [client.name, client.phone, client.address].join(" ").toLowerCase();
+    const normalizedClientPhone = normalizeRussianPhone(client.phone || "");
+    return !query || haystack.includes(query) || (phoneQuery && normalizedClientPhone.includes(phoneQuery));
+  });
   const closedOrders = data.orders.filter((item) => !item.archived && normalizeStatus(item.status) === "closed").length;
 
   return `<main class="content clients-content">
