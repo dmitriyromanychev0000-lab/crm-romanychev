@@ -1103,6 +1103,7 @@ async function handleOrderAction(action, id) {
   if (index < 0) return;
   const order = data.orders[index];
   if (action === "edit") return newOrderModal(order);
+  if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
   if (action === "toggle") {
     order.status = normalizeStatus(order.status) === "closed" ? "В работе" : "Закрыта";
   }
