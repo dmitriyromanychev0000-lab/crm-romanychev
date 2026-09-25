@@ -10,9 +10,10 @@ const APP_VERSION = "0.23.0";
 const APP_BUILD = "2026.09.25.23";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Фильтр заявок по периоду, диагностика, защита хранилища и исправления бэкапов/склада";
+const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
-  version: 18,
+  version: BACKUP_FORMAT_VERSION,
   date: new Date().toISOString(),
   orders: [],
   warehouse: [],
@@ -190,6 +191,12 @@ function validateBackup(candidate) {
 
 function backupWarnings(candidate) {
   const warnings = [];
+  const version = Number(candidate.version);
+  if (Number.isFinite(version) && version !== BACKUP_FORMAT_VERSION) {
+    warnings.push(version > BACKUP_FORMAT_VERSION
+      ? `версия бэкапа ${version} новее поддерживаемой ${BACKUP_FORMAT_VERSION}`
+      : `версия бэкапа ${version}, ожидается CRM BT v${BACKUP_FORMAT_VERSION}`);
+  }
   const duplicateCount = (items) => {
     const ids = items.map((item) => item?.id).filter((id) => id !== undefined && id !== null && String(id) !== "");
     return ids.length - new Set(ids.map(String)).size;
