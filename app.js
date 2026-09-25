@@ -352,8 +352,8 @@ function analyticsPage() {
 
 function priceList() {
   const prices = data.receipt_prices.slice(0, 100);
-  return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel">${prices.length ? `<ul class="list">${prices.map((item) => `<li class="price-row"><div><strong>${escapeHtml(item.name)}</strong><div class="small">${escapeHtml(item.category || item.tech || "")}</div></div><strong class="accent">${money(item.price)}</strong></li>`).join("")}</ul>` : `<div class="empty">Прайс пуст</div>`}</section></main>`;
+  return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
+    <section class="panel">${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span>›</span></button></li>`).join("")}</ul>` : `<div class="empty"><p>Прайс пуст</p><button class="primary-button" data-action="new-price">Добавить первую позицию</button></div>`}</section></main>`;
 }
 
 function clientsPage() {
