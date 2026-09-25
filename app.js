@@ -545,6 +545,11 @@ async function backupSettings() {
 
 
 
+function looksLikeOrderDraft(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  return ["name", "phone", "tech", "brand", "services", "materials", "sum", "issue", "diagnosis"].some((key) => key in value);
+}
+
 function draftRecords() {
   if (Array.isArray(data.draft)) {
     return data.draft.map((value, index) => ({
@@ -552,6 +557,9 @@ function draftRecords() {
       value: value && typeof value === "object" ? value : { value },
       storage: "array"
     }));
+  }
+  if (looksLikeOrderDraft(data.draft)) {
+    return [{ key: "__root__", value: data.draft, storage: "root" }];
   }
   if (data.draft && typeof data.draft === "object") {
     return Object.entries(data.draft).map(([key, value]) => ({
@@ -591,6 +599,7 @@ function getDraftRecord(key) {
     const index = Number(key);
     return Number.isInteger(index) && index >= 0 && index < data.draft.length ? data.draft[index] : null;
   }
+  if (key === "__root__" && looksLikeOrderDraft(data.draft)) return data.draft;
   if (data.draft && typeof data.draft === "object") return data.draft[key] ?? null;
   return null;
 }
@@ -601,6 +610,7 @@ function removeDraftRecord(key) {
     if (Number.isInteger(index) && index >= 0 && index < data.draft.length) data.draft.splice(index, 1);
     return;
   }
+  if (key === "__root__" && looksLikeOrderDraft(data.draft)) { data.draft = []; return; }
   if (data.draft && typeof data.draft === "object") delete data.draft[key];
 }
 function receiptSummary(item = {}) {
