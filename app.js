@@ -5,8 +5,8 @@ const DATA_KEY = "crm-data";
 const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
-const APP_VERSION = "0.21.0";
-const APP_BUILD = "2026.09.25.21";
+const APP_VERSION = "0.22.0";
+const APP_BUILD = "2026.09.25.22";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 
 const defaultData = () => ({
