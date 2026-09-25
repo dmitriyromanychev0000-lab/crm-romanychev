@@ -706,6 +706,7 @@ function newOrderModal(existing = null) {
   const order = existing || {};
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
+  let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
   const serviceOptions = serviceCatalog
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}${item.source === "custom" ? " · своё" : ""}</option>`).join("");
@@ -740,6 +741,10 @@ function newOrderModal(existing = null) {
     <div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
 
+    <div class="form-section-title">Фотографии</div>
+    <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото уменьшаются перед сохранением и остаются только в локальной CRM и бэкапе.</div></div>
+    <div class="photo-grid" id="order-photo-list"></div>
+
     <div class="calculated-total"><span>Услуги и материалы</span><strong id="calculated-total">0 ₽</strong><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
 
     <div class="form-section-title">Расчёт и гарантия</div>
@@ -758,6 +763,41 @@ function newOrderModal(existing = null) {
   </form>`;
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
+  const photoList = modal.querySelector("#order-photo-list");
+  const photoInput = modal.querySelector("#order-photo-input");
+  const renderPhotos = () => {
+    photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
+      const source = photoSource(photo);
+      const label = photoLabel(photo, index);
+      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">▧<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">×</button></div>`;
+    }).join("") : `<div class="small">Фотографий пока нет</div>`;
+  };
+  photoInput.addEventListener("change", async () => {
+    const files = [...(photoInput.files || [])];
+    if (!files.length) return;
+    if (orderPhotos.length + files.length > 20) {
+      photoInput.value = "";
+      return toast("В одной заявке можно хранить до 20 фото");
+    }
+    photoInput.disabled = true;
+    for (const file of files) {
+      try {
+        orderPhotos.push(await compressPhotoFile(file));
+      } catch (error) {
+        toast(error.message || "Не удалось добавить фото");
+      }
+    }
+    photoInput.value = "";
+    photoInput.disabled = false;
+    renderPhotos();
+  });
+  photoList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-remove-photo]");
+    if (!button) return;
+    orderPhotos.splice(Number(button.dataset.removePhoto), 1);
+    renderPhotos();
+  });
+  renderPhotos();
   const calculateLines = () => {
     const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
     const materialTotal = [...modal.querySelectorAll("[data-material-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="unit-cost"]').value) || 0), 0);
@@ -829,7 +869,7 @@ function newOrderModal(existing = null) {
         unit: row.dataset.unit || "шт.",
         writeOff: row.dataset.writeOff === "true"
       })).filter((item) => item.name.trim()),
-      photos: order.photos || []
+      photos: orderPhotos
     };
     const stockSync = syncOrderStock(order.materials, next.materials, next.id);
     if (!stockSync.ok) return toast(stockSync.message);
