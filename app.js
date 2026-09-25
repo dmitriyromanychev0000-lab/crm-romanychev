@@ -1435,7 +1435,18 @@ async function handleOrderAction(action, id) {
     order.status = normalizeStatus(order.status) === "closed" ? "В работе" : "Закрыта";
   }
   if (action === "copy") {
-    data.orders.push({ ...structuredClone(order), id: String(Date.now()).slice(-6), created: new Date().toISOString(), status: "В работе", archived: false, archivedAt: null });
+    const copy = {
+      ...structuredClone(order),
+      id: String(Date.now()).slice(-6),
+      created: new Date().toISOString(),
+      status: "В работе",
+      archived: false,
+      archivedAt: null,
+      photos: []
+    };
+    const stockSync = syncOrderStock([], copy.materials, copy.id);
+    if (!stockSync.ok) return toast(`Копия не создана: ${stockSync.message}`);
+    data.orders.push(copy);
   }
   if (action === "archive") {
     order.archived = !order.archived;
