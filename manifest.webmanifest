@@ -1,0 +1,11 @@
+{
+  "name": "CRM by Romanychev",
+  "short_name": "CRM",
+  "description": "Локальная CRM мастера",
+  "lang": "ru",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080d11",
+  "theme_color": "#080d11",
+  "icons": []
+}
