@@ -454,7 +454,92 @@ h2 { margin: 0; font-size: 24px; }
 .warehouse-shopping-panel,
 .warehouse-movements { scroll-margin-top: 150px; }
 .warehouse-section-muted { opacity: .76; }
+.warehouse-toggle-create {
+  width: 100%;
+  min-height: 62px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 600;
+}
 .warehouse-items { margin-top: 2px; }
+.warehouse-group {
+  padding: 20px;
+  border-radius: 24px;
+}
+.warehouse-group-head {
+  display: grid;
+  grid-template-columns: 38px minmax(0,1fr) 52px;
+  align-items: center;
+  gap: 12px;
+  min-height: 78px;
+  padding: 0 2px 16px;
+}
+.warehouse-folder { color: #f0f2f3; }
+.warehouse-folder .ui-icon { width: 31px; height: 31px; }
+.warehouse-group-head strong { display: inline; font-size: 22px; font-weight: 720; }
+.warehouse-group-head small { margin-left: 6px; color: var(--muted); font-size: 13px; }
+.warehouse-group-caret {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 17px;
+  background: #171e25;
+  color: #899199;
+  justify-self: end;
+}
+.warehouse-group-caret .ui-icon { width: 18px; height: 18px; transform: rotate(90deg); }
+.warehouse-group-list { display: grid; gap: 12px; }
+
+.legacy-stock-card {
+  position: relative;
+  padding: 18px 20px 18px 24px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--green);
+  border-radius: 22px;
+  background: linear-gradient(145deg,#11181d,#0e1418);
+}
+.stock-card-main {
+  display: grid;
+  grid-template-columns: 68px minmax(0,1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+.stock-box-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border: 1px solid rgba(255,107,79,.35);
+  border-radius: 18px;
+  color: var(--accent);
+  background: rgba(255,107,79,.08);
+}
+.stock-box-icon .ui-icon { width: 32px; height: 32px; }
+.stock-copy { min-width: 0; }
+.stock-copy .stock-name { font-size: 20px; }
+.stock-copy .stock-category { margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stock-available { margin-top: 7px; color: var(--green); font-size: 14px; font-weight: 650; }
+.stock-quantity-block { text-align: right; align-self: start; }
+.stock-quantity-block strong { display: block; color: var(--green); font-size: 24px; font-weight: 650; white-space: nowrap; }
+.stock-quantity-block span { display: block; margin-top: 8px; color: #929aa1; font-size: 11px; letter-spacing: .07em; }
+.legacy-stock-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.legacy-stock-actions button {
+  min-height: 54px;
+  padding: 9px 8px;
+  border-radius: 15px;
+  font-size: 14px;
+}
+.legacy-stock-actions button:last-child { grid-column: 1 / span 1; }
+.legacy-stock-actions .ui-icon { width: 18px; height: 18px; }
 .stock-card { border-left: 4px solid var(--green); }
 .archived-stock { opacity: .62; border-left-color: var(--muted); }
 .stock-compatibility {
@@ -1087,6 +1172,13 @@ h2 { margin: 0; font-size: 24px; }
   .brand-subtitle { margin-top: 7px; font-size: 11px; letter-spacing: .12em; }
   .content { padding: 34px 16px 10px; }
   .warehouse-create-card { padding: 22px 22px 24px; }
+  .warehouse-group { padding: 18px; }
+  .legacy-stock-card { padding: 17px 16px 17px 20px; }
+  .stock-card-main { grid-template-columns: 58px minmax(0,1fr) auto; gap: 11px; }
+  .stock-box-icon { width: 54px; height: 54px; }
+  .stock-box-icon .ui-icon { width: 29px; height: 29px; }
+  .stock-quantity-block strong { font-size: 21px; }
+  .legacy-stock-actions { grid-template-columns: repeat(3, 1fr); }
   .warehouse-create-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .warehouse-create-triple { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .warehouse-create-card .field { min-height: 62px; }
@@ -1174,6 +1266,10 @@ h2 { margin: 0; font-size: 24px; }
   .modal-actions { grid-template-columns: 1fr; }
   .metrics { grid-template-columns: 1fr; }
   .warehouse-create-grid { grid-template-columns: 1fr; }
+  .stock-card-main { grid-template-columns: 52px minmax(0,1fr); }
+  .stock-quantity-block { grid-column: 2; text-align: left; }
+  .legacy-stock-actions { grid-template-columns: repeat(2, 1fr); }
+  .legacy-stock-actions button:last-child { grid-column: auto; }
   .warehouse-create-triple { grid-template-columns: 1fr; }
   .analytics-work-grid { grid-template-columns: 1fr; }
   .legacy-service-row { grid-template-columns: 22px minmax(0,1fr) 50px 82px 40px; }
