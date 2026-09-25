@@ -996,9 +996,10 @@ function analyticsPage() {
 
     <section class="panel analytics-work">
       <div class="panel-title"><span class="badge-icon">${icon("tools")}</span> Работа сейчас</div>
-      <div class="metrics">
+      <div class="analytics-work-grid">
         <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
         <div class="metric"><div class="metric-label">Сумма активных</div><div class="metric-value blue">${money(activeSum)}</div></div>
+        <div class="metric"><div class="metric-label">Просрочено визитов</div><div class="metric-value yellow">${overdueVisits}</div></div>
       </div>
     </section>
 
