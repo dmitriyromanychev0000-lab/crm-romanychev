@@ -5649,6 +5649,309 @@ button.warehouse-shortcut {
   cursor: pointer;
 }
 
+/* 0.49.0 · Функциональная компоновка перед редизайном */
+
+/* Ещё — не мелкое меню, но и не гигантские плитки */
+.legacy-more-list {
+  gap: 7px;
+}
+.legacy-more-list .menu-item {
+  min-height: 70px;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 15px;
+}
+.legacy-more-list .menu-icon {
+  width: 44px;
+  height: 44px;
+  flex-basis: 44px;
+  border-radius: 12px;
+}
+.legacy-more-list .menu-icon .ui-icon {
+  width: 23px;
+  height: 23px;
+}
+.legacy-more-list .menu-name {
+  font-size: 15px;
+  line-height: 1.15;
+}
+.legacy-more-list .menu-description {
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+.legacy-more-list .chevron .ui-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Настройки — служебные разделы больше не занимают пол-экрана */
+.settings-sections-panel {
+  padding: 10px;
+}
+.settings-sections-panel .panel-title {
+  margin-bottom: 7px;
+}
+.settings-sections-panel .legacy-settings-links {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.settings-sections-panel .legacy-settings-links .secondary-button {
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr);
+  gap: 7px;
+  align-items: center;
+  min-height: 58px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #151d23;
+  text-align: left;
+}
+.settings-sections-panel .settings-link-icon {
+  width: 28px;
+  height: 28px;
+}
+.settings-sections-panel .legacy-settings-links strong {
+  display: block;
+  font-size: 10.5px;
+}
+.settings-sections-panel .legacy-settings-links small {
+  display: block;
+  margin-top: 2px;
+  font-size: 7.5px;
+  line-height: 1.15;
+}
+.settings-sections-panel .legacy-settings-links .chevron {
+  display: none;
+}
+.settings-system-list .legacy-setting-row {
+  grid-template-columns: 28px minmax(0,1fr) auto !important;
+  gap: 7px !important;
+  min-height: 46px !important;
+  padding: 7px 0 !important;
+}
+.settings-system-list .legacy-setting-row > .secondary-button,
+.settings-system-list .legacy-setting-row > a.secondary-button {
+  grid-column: auto !important;
+  justify-self: end !important;
+  min-height: 32px !important;
+  padding: 5px 7px !important;
+  font-size: 9px !important;
+}
+
+/* Редактор заявки — чистая структура и сворачиваемые второстепенные блоки */
+.order-editor-head {
+  position: sticky;
+  top: -12px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 36px;
+  align-items: center;
+  gap: 8px;
+  margin: -2px -2px 8px;
+  padding: 8px 2px 7px;
+  background: rgba(17,24,29,.97);
+  backdrop-filter: blur(12px);
+}
+.order-editor-head h2 {
+  margin: 0 !important;
+}
+.order-editor-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #182028;
+  color: var(--text);
+  font-size: 22px;
+}
+.order-extra-details {
+  margin: 10px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #11181d;
+}
+.order-extra-details > summary {
+  min-height: 40px;
+  padding: 10px 11px;
+  cursor: pointer;
+  color: #d8dcdf;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+.order-extra-body {
+  padding: 0 10px 10px;
+}
+.order-extra-details .legacy-guarantee-card {
+  margin: 0 0 8px;
+}
+.order-editor-modal .legacy-payment-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: 6px !important;
+}
+
+/* Список покупок — отдельный раздел с копированием */
+.shopping-page-actions {
+  margin: 0 0 9px;
+}
+.shopping-page-actions .primary-button {
+  width: 100%;
+  min-height: 40px;
+  font-size: 11px;
+}
+
+/* Склад — форма и карточки без ощущения увеличения */
+.warehouse-create-card {
+  padding: 9px !important;
+  border-radius: 13px !important;
+}
+.warehouse-create-title {
+  margin-bottom: 7px !important;
+}
+.warehouse-create-title strong {
+  font-size: 13px !important;
+}
+.warehouse-new-icon {
+  width: 30px !important;
+  height: 30px !important;
+}
+.warehouse-create-grid {
+  gap: 5px !important;
+}
+.warehouse-create-card .form-group label,
+.warehouse-compat-title {
+  margin-bottom: 3px !important;
+  font-size: 8px !important;
+}
+.warehouse-create-card .field {
+  min-height: 38px !important;
+  padding-right: 8px !important;
+  padding-left: 8px !important;
+  border-radius: 9px !important;
+  font-size: 10.5px !important;
+}
+.warehouse-compat-title {
+  margin: 10px 0 5px !important;
+}
+.warehouse-compat-list {
+  gap: 4px !important;
+}
+.warehouse-compat-option {
+  min-height: 34px !important;
+  padding: 5px 6px !important;
+  border-radius: 9px !important;
+  font-size: 9px !important;
+}
+.warehouse-check {
+  width: 16px !important;
+  height: 16px !important;
+}
+.warehouse-create-submit {
+  min-height: 38px !important;
+  margin-top: 7px !important;
+  font-size: 10.5px !important;
+}
+.warehouse-group {
+  padding: 9px !important;
+}
+.legacy-stock-card {
+  padding: 9px 10px 10px 12px !important;
+}
+
+/* Аналитика — показатели остаются информативными, но не огромными */
+.analytics-content .panel {
+  padding: 10px !important;
+  margin-bottom: 7px !important;
+}
+.analytics-kpis {
+  gap: 5px !important;
+}
+.analytics-kpi {
+  min-height: 58px !important;
+  padding: 7px 8px !important;
+}
+.analytics-kpi > span {
+  font-size: 7.5px !important;
+}
+.analytics-kpi > strong {
+  margin-top: 4px !important;
+  font-size: 17px !important;
+}
+.analytics-kpi > small {
+  margin-top: 3px !important;
+  font-size: 6.8px !important;
+}
+.focus-grid > div {
+  min-height: 52px !important;
+  padding: 6px 4px !important;
+}
+.focus-grid strong {
+  font-size: 17px !important;
+}
+.focus-grid span {
+  font-size: 7px !important;
+}
+.analytics-work-grid .metric {
+  padding: 6px 5px !important;
+}
+.analytics-work-grid .metric-value {
+  font-size: 14px !important;
+}
+
+/* Финансы — компактные метрики и история */
+.finance-summary-panel {
+  padding: 9px !important;
+}
+.finance-metrics {
+  gap: 5px !important;
+}
+.finance-metrics .metric {
+  min-height: 54px;
+  padding: 7px 8px !important;
+}
+.finance-metrics .metric-label {
+  font-size: 7.5px !important;
+}
+.finance-metrics .metric-value {
+  margin-top: 3px !important;
+  font-size: 16px !important;
+}
+.legacy-finance-actions {
+  gap: 5px !important;
+  margin-bottom: 7px !important;
+}
+.legacy-finance-actions button {
+  min-height: 37px !important;
+  font-size: 10px !important;
+}
+.finance-history-panel {
+  padding: 9px 10px !important;
+}
+.legacy-finance-row {
+  min-height: 43px !important;
+  padding: 6px 0 !important;
+}
+
+@media (max-width: 360px) {
+  .settings-sections-panel .legacy-settings-links {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .settings-sections-panel .legacy-settings-links .secondary-button {
+    min-height: 54px;
+    padding: 7px;
+  }
+  .order-editor-modal .legacy-payment-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
 
 /* 0.48.0 · Канонический A4 по эталонному акту — последний CSS-блок */
 @media print {
@@ -5705,9 +6008,13 @@ button.warehouse-shortcut {
     background: #fff !important;
     color: #000 !important;
     font-family: "Times New Roman", Times, serif !important;
-    font-size: 9.4pt !important;
+    font-size: 10pt !important;
     line-height: 1.12 !important;
-    zoom: var(--act-print-zoom, .96);
+    zoom: var(--act-print-zoom, 1);
+    height: 277mm !important;
+    min-height: 277mm !important;
+    display: flex !important;
+    flex-direction: column !important;
     break-inside: avoid-page !important;
     page-break-inside: avoid !important;
   }
@@ -5715,7 +6022,7 @@ button.warehouse-shortcut {
   .act-sheet h2 {
     margin: 0 0 2mm !important;
     text-align: center !important;
-    font-size: 15.5pt !important;
+    font-size: 17pt !important;
     line-height: 1 !important;
   }
 
@@ -5754,13 +6061,13 @@ button.warehouse-shortcut {
     margin: 0 !important;
     border-collapse: collapse !important;
     table-layout: fixed !important;
-    font-size: 8.2pt !important;
+    font-size: 8.8pt !important;
     line-height: 1.05 !important;
   }
 
   .act-work-table th,
   .act-work-table td {
-    padding: 1.1mm 1mm !important;
+    padding: 1.35mm 1mm !important;
     border: .25mm solid #000 !important;
     text-align: center !important;
     vertical-align: middle !important;
@@ -5803,8 +6110,11 @@ button.warehouse-shortcut {
   }
 
   .act-acceptance {
-    margin: 7mm 0 0 !important;
+    margin: 8mm 0 0 !important;
     padding: 0 !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
     border: 0 !important;
     break-inside: avoid !important;
     page-break-inside: avoid !important;
@@ -5834,7 +6144,7 @@ button.warehouse-shortcut {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 18mm !important;
-    margin: 5mm 0 0 !important;
+    margin: auto 0 0 !important;
     font-size: 8.7pt !important;
     line-height: 1.45 !important;
     break-inside: avoid !important;
