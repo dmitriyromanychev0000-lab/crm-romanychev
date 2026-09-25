@@ -461,7 +461,7 @@ const orderServiceRow = (item = {}) => `<div class="line-item" data-service-row>
   <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
 </div>`;
 
-const orderMaterialRow = (item = {}) => `<div class="line-item material-line" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}">
+const orderMaterialRow = (item = {}) => `<div class="line-item material-line" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
   <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" />
   <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
   <input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" aria-label="Цена" />
@@ -540,7 +540,7 @@ function newOrderModal(existing = null) {
   modal.querySelector("#add-material").addEventListener("click", () => {
     const picker = modal.querySelector("#material-picker");
     const item = picker.value === "" ? null : data.warehouse.filter((entry) => !entry.archived && !entry.hiddenFromOrders)[Number(picker.value)];
-    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow(item ? { warehouseId: item.id, name: item.name, qty: 1, unit: item.unit, unitCost: item.price || item.lastPurchasePrice || 0, tracking: item.tracking, writeOff: false } : {}));
+    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow(item ? { warehouseId: item.id, name: item.name, qty: 1, unit: item.unit, unitCost: item.price || item.lastPurchasePrice || 0, tracking: item.tracking, writeOff: true } : {}));
     calculateLines();
   });
   modal.addEventListener("click", (event) => {
@@ -593,7 +593,7 @@ function newOrderModal(existing = null) {
         qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
         unitCost: Number(row.querySelector('[data-line="unit-cost"]').value) || 0,
         unit: row.dataset.unit || "шт.",
-        writeOff: false
+        writeOff: row.dataset.writeOff === "true"
       })).filter((item) => item.name.trim()),
       photos: order.photos || []
     };
