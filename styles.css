@@ -870,20 +870,137 @@ h2 { margin: 0; font-size: 24px; }
 .photo-remove { position: absolute; right: 6px; bottom: 6px; width: 28px; height: 28px; padding: 0; border: 1px solid rgba(255,95,103,.45); border-radius: 9px; background: rgba(8,13,17,.88); color: var(--red); font-size: 20px; line-height: 1; }
 .settings-save { margin-top: 18px; }
 .compact-modal { max-width: 560px; }
-.act-print-button { margin-top: 14px; }
-.act-sheet { padding: 34px; background: white; color: #111; border-radius: 5px; font-family: Georgia, "Times New Roman", serif; }
-.act-sheet h2 { text-align: center; font-size: 28px; }
-.act-subtitle { margin: -8px 0 28px; text-align: right; }
-.act-fields { display: grid; gap: 10px; margin-bottom: 18px; }
-.act-fields > div { display: grid; grid-template-columns: 230px 1fr; gap: 10px; border-bottom: 1px solid #555; padding-bottom: 5px; }
-.act-sheet table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.act-sheet th, .act-sheet td { padding: 8px 6px; border: 1px solid #222; text-align: center; }
-.act-sheet th:nth-child(2), .act-sheet td:nth-child(2) { text-align: left; }
-.act-total { display: flex; justify-content: space-between; margin-top: 16px; font-size: 20px; }
-.act-acceptance { margin-top: 34px; }
-.act-acceptance h3 { text-align: center; }
-.act-acceptance p { line-height: 1.45; }
-.act-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 34px; line-height: 1.8; }
+.act-content { padding-top: 28px; }
+.act-control-panel {
+  padding: 22px;
+  border-radius: 24px;
+}
+.act-control-panel .panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 21px;
+}
+.act-picker-label {
+  display: block;
+  margin: 4px 0 8px;
+  color: #a0a7ad;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.act-control-panel .field {
+  min-height: 62px;
+  border-radius: 18px;
+  background: #181f26;
+  font-size: 16px;
+}
+.act-print-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 14px;
+}
+.act-print-button .ui-icon { width: 20px; height: 20px; }
+
+.act-sheet {
+  width: 100%;
+  margin: 18px auto 0;
+  padding: 44px 46px 50px;
+  background: #fff;
+  color: #111;
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.28);
+  font-family: "Times New Roman", Times, serif;
+}
+.act-sheet h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 25px;
+  letter-spacing: .02em;
+}
+.act-contract-line {
+  margin: 14px 0 26px;
+  text-align: center;
+  font-size: 14px;
+}
+.act-main-fields,
+.act-party-details {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.act-main-fields > div,
+.act-party-details > div,
+.act-warranty {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 10px;
+  min-height: 28px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #555;
+  align-items: end;
+}
+.act-main-fields b,
+.act-party-details b,
+.act-warranty b { font-weight: 700; }
+.act-main-fields span,
+.act-party-details span,
+.act-warranty span { min-width: 0; }
+
+.act-sheet table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.act-sheet th,
+.act-sheet td {
+  padding: 8px 6px;
+  border: 1px solid #222;
+  text-align: center;
+  vertical-align: middle;
+}
+.act-sheet th { font-weight: 700; }
+.act-sheet th:nth-child(2),
+.act-sheet td:nth-child(2) { text-align: left; }
+
+.act-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 15px;
+  padding-top: 8px;
+  font-size: 18px;
+}
+.act-total strong { font-size: 20px; }
+.act-warranty { margin-top: 16px; }
+.act-party-details { margin-top: 24px; }
+
+.act-acceptance {
+  margin-top: 34px;
+  padding-top: 20px;
+  border-top: 1px solid #999;
+}
+.act-acceptance h3 {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 17px;
+}
+.act-acceptance p {
+  margin: 0;
+  line-height: 1.45;
+  text-align: justify;
+}
+.act-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-top: 34px;
+  line-height: 1.8;
+}
 
 .bottom-nav {
   position: fixed;
@@ -1253,6 +1370,11 @@ h2 { margin: 0; font-size: 24px; }
   .logo .ui-icon { width: 43px; height: 43px; }
   .brand-subtitle { margin-top: 7px; font-size: 11px; letter-spacing: .12em; }
   .content { padding: 34px 16px 10px; }
+  .act-sheet { padding: 28px 22px 34px; overflow-x: auto; }
+  .act-main-fields > div,
+  .act-party-details > div,
+  .act-warranty { grid-template-columns: 1fr; gap: 3px; }
+  .act-signatures { gap: 28px; }
   .warehouse-create-card { padding: 22px 22px 24px; }
   .warehouse-group { padding: 18px; }
   .goods-create-actions { grid-template-columns: 1fr; }
