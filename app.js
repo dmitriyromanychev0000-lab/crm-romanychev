@@ -675,6 +675,37 @@ function newOrderModal(existing = null) {
   });
 }
 
+function priceModal(existing = null, priceIndex = -1) {
+  const item = existing || {};
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="price-form">
+    <h2>${existing ? "Редактировать позицию" : "Новая позиция прайса"}</h2>
+    <div class="form-grid">
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" /></div>
+      <div class="form-group"><label>Тип</label><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал</option></select></div>
+      <div class="form-group full"><label>Цена</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required /></div>
+    </div>
+    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-price">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("#delete-price")?.addEventListener("click", async () => {
+    if (!confirm("Удалить позицию из прайса?")) return;
+    if (priceIndex >= 0) data.receipt_prices.splice(priceIndex, 1);
+    await saveData(); modal.remove(); await render(); toast("Позиция удалена");
+  });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = { ...item, id: item.id || crypto.randomUUID(), name: form.get("name"), category: form.get("category"), kind: form.get("kind"), price: Number(form.get("price")) || 0 };
+    if (priceIndex >= 0) data.receipt_prices[priceIndex] = next; else data.receipt_prices.push(next);
+    await saveData(); modal.remove(); await render(); toast("Прайс обновлён");
+  });
+}
+
 function financeModal(type) {
   const isIncome = type === "income";
   const modal = document.createElement("div");
