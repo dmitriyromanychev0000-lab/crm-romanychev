@@ -3276,3 +3276,400 @@ h1 { font-size: clamp(30px, 6vw, 36px); }
 .catalog-modal-actions .primary-button {
   width: 100%;
 }
+
+
+/* 0.42.0 · Компактный UX по эталонным мобильным скриншотам */
+:root {
+  --radius-card: 17px;
+  --radius-control: 13px;
+  --radius-icon: 12px;
+  --control-height: 46px;
+  --control-height-lg: 52px;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.topbar {
+  min-height: 88px;
+  gap: 12px;
+  padding: 16px 15px;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  border-radius: 15px;
+}
+.logo .ui-icon { width: 29px; height: 29px; }
+.brand-title { font-size: clamp(19px, 5vw, 22px); }
+.brand-subtitle { margin-top: 4px; font-size: 8.5px; letter-spacing: .11em; }
+
+.content { padding: 18px 12px 6px; }
+.page-head { margin-bottom: 12px; }
+h1 { font-size: clamp(26px, 6vw, 31px); }
+h2 { font-size: 21px; }
+.lead { margin-top: 3px; font-size: 13px; }
+
+.panel {
+  margin-bottom: 10px;
+  padding: 14px;
+  border-radius: 17px;
+  box-shadow: 0 9px 24px rgba(0,0,0,.13);
+}
+.panel-title { margin-bottom: 10px; font-size: 16px; }
+
+.search,
+.field {
+  min-height: 46px;
+  padding: 0 12px;
+  border-radius: 13px;
+  font-size: 14px;
+}
+.primary-button,
+.secondary-button,
+.danger-button {
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.chip { padding: 7px 13px; font-size: 12px; }
+
+.orders-content { padding-top: 17px; }
+.orders-head { margin-bottom: 12px; }
+.order-add-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  font-size: 29px;
+}
+.next-visit-card { padding: 11px 13px; border-radius: 15px; }
+.next-visit-title { font-size: 14px; }
+.next-visit-title .ui-icon { width: 19px; height: 19px; }
+.next-visit-line { margin-top: 7px; font-size: 11px; }
+
+.search-with-icon > .ui-icon {
+  left: 15px;
+  width: 19px;
+  height: 19px;
+}
+.search-with-icon .search {
+  min-height: 48px;
+  padding-left: 42px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+.order-status-chips { gap: 6px; margin-bottom: 9px; }
+.order-status-chips .chip { min-height: 36px; padding: 6px; font-size: 12px; }
+.order-date-filter .field { min-height: 44px; font-size: 13px; }
+.orders-aux-filters { min-height: 20px; margin-bottom: 8px; font-size: 10px; }
+
+.order-card {
+  margin-bottom: 10px;
+  padding: 15px 14px 16px;
+  border-radius: 17px;
+}
+.order-number { font-size: 15px; }
+.order-name { margin-left: 5px; font-size: 17px; }
+.order-date { font-size: 10px; }
+.status { margin-top: 4px; padding: 4px 8px; border-radius: 8px; font-size: 10px; }
+
+.appliance { padding: 11px 0 9px; }
+.appliance-main { gap: 9px; }
+.appliance-icon {
+  width: 52px;
+  height: 52px;
+  flex-basis: 52px;
+  border-radius: 15px;
+}
+.appliance-icon .ui-icon { width: 29px; height: 29px; }
+.appliance-name { font-size: 16px; }
+.appliance-model { margin-top: 2px; font-size: 12px; }
+
+.order-money { gap: 7px; margin-bottom: 9px; }
+.money-box { padding: 9px 10px; border-radius: 12px; }
+.money-label { font-size: 9px; }
+.money-value { margin-top: 3px; font-size: 18px; }
+.money-box-net .money-value:not(.green) { font-size: 12px; }
+
+/* Телефон, адрес, гарантия и фото — одна компактная строка */
+.meta {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto auto;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 0;
+  overflow: hidden;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.meta-item { gap: 4px; min-width: 0; }
+.meta-item .ui-icon { width: 13px; height: 13px; }
+.address-meta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.address-meta .ui-icon { flex: 0 0 auto; }
+
+.order-main-actions {
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 5px;
+  margin-top: 9px;
+}
+.order-secondary-actions { display: none !important; }
+.action {
+  min-height: 52px;
+  gap: 3px;
+  padding: 5px 1px;
+  border-radius: 10px;
+  font-size: 8.5px;
+}
+.action span .ui-icon { width: 18px; height: 18px; }
+.action-more span { color: #b8bec3; }
+
+/* Меню дополнительных действий заявки */
+.order-actions-backdrop {
+  z-index: 90;
+  top: 0 !important;
+  bottom: 0 !important;
+  align-items: flex-end;
+  padding: 12px;
+  background: rgba(3,7,10,.76);
+}
+.order-actions-sheet {
+  width: min(100%, 430px);
+  margin: 0 auto max(6px, env(safe-area-inset-bottom));
+  padding: 14px;
+  border: 1px solid #2b343b;
+  border-radius: 18px;
+  background: #12191f;
+  box-shadow: 0 24px 70px rgba(0,0,0,.5);
+}
+.order-actions-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+.order-actions-head strong,
+.order-actions-head small { display: block; }
+.order-actions-head strong { font-size: 14px; }
+.order-actions-head small { margin-top: 2px; color: var(--muted); font-size: 11px; }
+.order-actions-close,
+.catalog-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  padding: 0;
+  border: 1px solid #38434b;
+  border-radius: 11px;
+  background: #1a2229;
+  color: #d9dde0;
+  font-size: 23px;
+  line-height: 1;
+}
+.order-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 7px;
+}
+.order-actions-grid button,
+.order-actions-grid a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 9px 11px;
+  border: 1px solid #303a42;
+  border-radius: 12px;
+  background: #192128;
+  color: #edf0f2;
+  text-decoration: none;
+  text-align: left;
+}
+.order-actions-grid .ui-icon { width: 19px; height: 19px; color: var(--accent); }
+.order-actions-grid b { font-size: 12px; }
+.order-actions-grid .danger .ui-icon,
+.order-actions-grid .danger b { color: var(--red); }
+.order-actions-grid button:disabled { opacity: .42; }
+
+/* Редактор заявки: плотная двухколоночная сетка */
+.modal-backdrop {
+  top: 88px;
+  bottom: calc(68px + env(safe-area-inset-bottom));
+  padding-top: 7px;
+}
+.modal {
+  width: min(100%, 700px);
+  padding: 12px 12px 28px;
+}
+.modal h2 { margin-bottom: 14px; font-size: 23px; }
+.form-grid { gap: 9px 8px; }
+.form-group { gap: 5px; min-width: 0; }
+.form-group label {
+  font-size: 10px;
+  letter-spacing: .055em;
+}
+.modal .field {
+  min-width: 0;
+  min-height: 46px;
+  border-radius: 13px;
+  font-size: 13px;
+}
+.textarea {
+  min-height: 76px;
+  padding-top: 11px;
+  font-size: 13px;
+}
+.compact-textarea { min-height: 46px; }
+.form-section-title {
+  margin: 18px 0 9px;
+  padding-top: 13px;
+  font-size: 10.5px;
+}
+.legacy-catalog-button,
+.legacy-stock-button {
+  min-height: 50px;
+  padding: 9px 12px;
+  border-radius: 13px;
+  font-size: 13px;
+}
+.legacy-catalog-button .ui-icon,
+.legacy-stock-button .ui-icon { width: 19px; height: 19px; }
+.legacy-material-help { margin-bottom: 9px; font-size: 11px; }
+.legacy-service-total { padding-top: 9px; font-size: 13px; }
+.legacy-guarantee-card { padding: 12px; }
+.order-calculation-summary { gap: 7px; padding: 10px; }
+
+/* Каталог услуг: неподвижный фон, фиксированная шапка, скролл только списка */
+.catalog-modal-backdrop {
+  top: 0 !important;
+  bottom: 0 !important;
+  align-items: stretch;
+  overflow: hidden;
+  padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+}
+.catalog-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 650px);
+  max-height: 100%;
+  margin: auto;
+  padding: 12px;
+  overflow: hidden;
+  border-radius: 18px;
+}
+.catalog-modal-head {
+  flex: 0 0 auto;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.catalog-modal-head h2 { margin-top: 1px; font-size: 18px; }
+.catalog-modal-head .small { font-size: 9px; }
+.catalog-search-row { flex: 0 0 auto; margin-bottom: 7px; }
+.catalog-search-row .search {
+  min-height: 44px;
+  padding-left: 41px;
+  font-size: 13px;
+}
+.catalog-service-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-right: 2px;
+}
+.catalog-service-group h3 { margin-bottom: 4px; font-size: 13px; }
+.catalog-service-option {
+  grid-template-columns: 30px minmax(0,1fr) auto;
+  gap: 7px;
+  min-height: 48px;
+  padding: 5px 2px;
+}
+.catalog-check {
+  width: 28px;
+  height: 28px;
+  border-width: 1px;
+  border-radius: 7px;
+  font-size: 17px;
+}
+.catalog-service-copy strong { font-size: 13px; }
+.catalog-service-copy small { margin-top: 1px; font-size: 10px; }
+.catalog-service-price { font-size: 13px; }
+.catalog-fit-summary {
+  flex: 0 0 auto;
+  gap: 3px;
+  margin-top: 7px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  font-size: 10px;
+}
+.catalog-fit-summary strong { font-size: 12px; }
+.catalog-modal-actions {
+  position: static;
+  flex: 0 0 auto;
+  margin: 7px 0 0;
+  padding: 0;
+  border-top: 0;
+  background: transparent;
+}
+.catalog-modal-actions button { min-height: 44px; }
+
+/* Нижняя навигация компактнее */
+.bottom-nav {
+  padding-top: 5px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+}
+.nav-button { min-height: 56px; gap: 3px; font-size: 10px; }
+.nav-button .nav-icon .ui-icon { width: 22px; height: 22px; }
+
+@media (max-width: 520px) {
+  .topbar { min-height: 84px; padding: 14px 12px; }
+  .logo { width: 46px; height: 46px; flex-basis: 46px; }
+  .logo .ui-icon { width: 27px; height: 27px; }
+  .brand-title { font-size: clamp(18px, 5.2vw, 21px); }
+  .brand-subtitle { font-size: 8px; }
+  .content { padding: 16px 10px 6px; }
+  .panel { padding: 13px; border-radius: 16px; }
+
+  .order-editor-backdrop { top: 84px; bottom: calc(66px + env(safe-area-inset-bottom)); }
+  .order-editor-modal .form-grid,
+  .order-editor-modal .legacy-payment-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 8px 7px;
+  }
+  .order-editor-modal .form-group.full { grid-column: 1 / -1; }
+  .order-editor-modal .field { min-width: 0; }
+  .order-editor-modal input[type="datetime-local"] { font-size: 11px; }
+
+  .catalog-modal { width: 100%; max-height: 100%; padding: 11px; border-radius: 16px; }
+  .catalog-modal-actions { margin: 7px 0 0; padding: 0; }
+
+  .menu-item { min-height: 70px; padding: 10px 12px; gap: 11px; }
+  .menu-icon { width: 44px; height: 44px; flex-basis: 44px; border-radius: 13px; }
+  .menu-icon .ui-icon { width: 23px; height: 23px; }
+  .menu-name { font-size: 16px; }
+  .menu-description { font-size: 11px; }
+}
+
+@media (max-width: 360px) {
+  .topbar { min-height: 80px; }
+  .modal-backdrop,
+  .order-editor-backdrop { top: 80px; }
+  .catalog-modal-backdrop,
+  .order-actions-backdrop { top: 0 !important; }
+  .order-main-actions { grid-template-columns: repeat(5, minmax(0,1fr)); }
+  .action { min-height: 49px; font-size: 7.5px; }
+  .action span .ui-icon { width: 16px; height: 16px; }
+  .meta { gap: 5px; font-size: 9px; }
+}
