@@ -2804,8 +2804,9 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    if (["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"].includes(more)) moreSection = more;
-    else toast("Раздел будет восстановлен на следующем этапе");
+    const supportedMoreSections = ["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
+    if (!supportedMoreSections.includes(more)) return toast("Раздел недоступен");
+    moreSection = more;
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
