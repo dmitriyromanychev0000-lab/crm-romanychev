@@ -1111,6 +1111,56 @@ function actPage() {
   </main>`;
 }
 
+function goodsInlineRow(item = {}) {
+  const originalPrice = Number(item.originalPrice ?? item.price) || 0;
+  return `<div class="goods-inline-row" data-goods-inline-row data-original-price="${originalPrice}">
+    <input class="field goods-inline-name" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
+    <input class="field goods-inline-qty" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+    <select class="field goods-inline-unit" data-line="unit" aria-label="Единица">${["шт.","м","г","условно"].map((unit) => `<option ${String(item.unit || "шт.") === unit ? "selected" : ""}>${unit}</option>`).join("")}</select>
+    <input class="field goods-inline-price" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" />
+    <button type="button" class="remove-line" data-remove-goods-inline aria-label="Удалить">×</button>
+  </div>`;
+}
+
+function goodsInlineItems(root = document) {
+  return [...root.querySelectorAll("[data-goods-inline-row]")].map((row) => ({
+    name: row.querySelector('[data-line="name"]').value.trim(),
+    qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
+    unit: row.querySelector('[data-line="unit"]').value || "шт.",
+    price: Number(row.querySelector('[data-line="price"]').value) || 0,
+    originalPrice: Number(row.dataset.originalPrice) || 0
+  })).filter((item) => item.name);
+}
+
+function calculateGoodsInline(root = document) {
+  const items = goodsInlineItems(root);
+  const total = items.reduce((sum, item) => sum + item.qty * item.price, 0);
+  const target = Number(root.querySelector("#goods-inline-target")?.value) || 0;
+  const totalEl = root.querySelector("#goods-inline-total");
+  const diffEl = root.querySelector("#goods-inline-difference");
+  if (totalEl) totalEl.textContent = money(total);
+  if (diffEl) {
+    if (!target) diffEl.textContent = "—";
+    else {
+      const diff = target - total;
+      diffEl.textContent = `${diff >= 0 ? "+" : "−"}${money(Math.abs(diff))}`;
+      diffEl.className = `goods-difference ${Math.abs(diff) < 1 ? "green" : diff > 0 ? "yellow" : "red"}`;
+    }
+  }
+  return { items, total, target };
+}
+
+function renderGoodsInlinePreview(root = document) {
+  const { items, total } = calculateGoodsInline(root);
+  const panel = root.querySelector("#goods-inline-preview");
+  if (!panel) return;
+  const tbody = panel.querySelector("tbody");
+  tbody.innerHTML = items.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</td><td>${money(item.price)}</td></tr>`).join("");
+  panel.querySelector("[data-preview-total]").textContent = money(total);
+  panel.hidden = false;
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function goodsPage() {
   const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
   return `<main class="content"><div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
