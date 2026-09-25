@@ -853,7 +853,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group full"><label>Условия гарантии</label><textarea class="field textarea" name="guaranteeNote">${escapeHtml(order.guaranteeNote || "")}</textarea></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
     </div>
-    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">В черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
