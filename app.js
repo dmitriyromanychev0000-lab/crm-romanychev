@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.40.0";
-const APP_BUILD = "2026.09.25.45";
+const APP_VERSION = "0.40.1";
+const APP_BUILD = "2026.09.25.46";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Восстановлен раздел Бэкапы; служебные экраны Покупки и Инструменты приведены к общей системе";
+const APP_RELEASE = "Добавлена финальная адаптация узких экранов: шапка, карточка заявки и сетка действий";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
