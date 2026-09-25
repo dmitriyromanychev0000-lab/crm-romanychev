@@ -1148,6 +1148,12 @@ app.addEventListener("click", async (event) => {
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
   if (action === "new-price") return priceModal();
+  if (action === "new-receipt") return receiptModal();
+  if (action === "edit-receipt") {
+    const index = Number(event.target.closest("[data-action]").dataset.index);
+    const item = data.receipts[index];
+    if (item) return receiptModal(item, index);
+  }
   if (action === "new-custom-service") return customServiceModal();
   if (action === "edit-custom-service") {
     const index = Number(event.target.closest("[data-action]").dataset.index);
