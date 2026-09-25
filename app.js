@@ -58,6 +58,8 @@ let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initi
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
 let warehouseCreateOpen = Boolean(initialUiState.warehouseCreateOpen);
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
+let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
+let priceTechFilter = typeof initialUiState.priceTechFilter === "string" ? initialUiState.priceTechFilter : "all";
 let analyticsPeriod = ["today", "7", "30", "365", "all", "custom"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "30";
 let analyticsOffset = Number.isInteger(Number(initialUiState.analyticsOffset)) ? Number(initialUiState.analyticsOffset) : 0;
 let analyticsCustomStart = typeof initialUiState.analyticsCustomStart === "string" ? initialUiState.analyticsCustomStart : "";
@@ -79,6 +81,8 @@ function saveUiState(extra = {}) {
       warehouseFilter,
       warehouseCreateOpen,
       clientSearch,
+      priceSearch,
+      priceTechFilter,
       analyticsPeriod,
       analyticsOffset,
       analyticsCustomStart,
@@ -1066,19 +1070,62 @@ function availableServices() {
   return [...regular, ...custom];
 }
 function priceList() {
-  const prices = data.receipt_prices.slice(0, 100);
-  const customServices = Array.isArray(data.service_custom) ? data.service_custom : [];
-  return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
-    <section class="panel"><div class="panel-title">Основной прайс</div>${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span class="chevron">${icon("chevron")}</span></button></li>`).join("")}</ul>` : `<div class="empty">Основной прайс пуст</div>`}</section>
-    <section class="panel"><div class="panel-title">Пользовательские услуги</div><button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>${customServices.length ? `<div class="goods-list">${customServices.map((item, index) => {
-      const name = item.name || item.title || item.service || "Услуга";
-      const price = Number(item.price || item.cost || item.sum) || 0;
-      const category = item.category || item.tech || "Своя услуга";
-      return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span class="chevron">${icon("chevron")}</span></button>`;
-    }).join("")}</div>` : `<div class="empty">Своих услуг пока нет</div>`}</section>
+  const query = priceSearch.trim().toLowerCase();
+  const techs = [...new Set(data.receipt_prices.map((item) => String(item.tech || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const prices = data.receipt_prices.filter((item) => {
+    const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
+    const haystack = [item.name, item.category, item.tech, item.unit, item.kind].join(" ").toLowerCase();
+    return techMatch && (!query || haystack.includes(query));
+  });
+  const groups = [...prices.reduce((map, item) => {
+    const group = String(item.category || (item.kind === "material" ? "Материалы" : "Услуги")).trim() || "Прочее";
+    if (!map.has(group)) map.set(group, []);
+    map.get(group).push(item);
+    return map;
+  }, new Map()).entries()].sort(([a], [b]) => a.localeCompare(b, "ru"));
+
+  const customServices = (Array.isArray(data.service_custom) ? data.service_custom : []).filter((item) => {
+    if (!query) return true;
+    return [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase().includes(query);
+  });
+
+  return `<main class="content price-content">
+    <div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и своих позиций</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
+
+    <div class="search-row search-with-icon price-search-row">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название услуги или материала" /></div>
+    <div class="price-tech-filter">
+      <select class="field" id="price-tech-filter">
+        <option value="all">Вся техника</option>
+        ${techs.map((tech) => `<option value="${escapeHtml(tech)}" ${priceTechFilter === tech ? "selected" : ""}>${escapeHtml(tech)}</option>`).join("")}
+      </select>
+      <span class="select-chevron">${icon("chevron")}</span>
+    </div>
+
+    ${groups.length ? `<div class="price-groups">${groups.map(([category, items]) => `
+      <section class="price-category">
+        <h3>${escapeHtml(category)}</h3>
+        <div class="price-catalog-list">${items.map((item) => {
+          const index = data.receipt_prices.indexOf(item);
+          return `<button class="price-catalog-card" data-action="edit-price" data-index="${index}">
+            <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml([item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span>
+            <b>${money(item.price || 0)}</b>
+          </button>`;
+        }).join("")}</div>
+      </section>`).join("")}</div>` : `<section class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр техники.</p></section>`}
+
+    <section class="panel custom-price-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("edit")}</span> Пользовательские услуги</div>
+      <button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>
+      ${customServices.length ? `<div class="goods-list">${customServices.map((item) => {
+        const index = data.service_custom.indexOf(item);
+        const name = item.name || item.title || item.service || "Услуга";
+        const price = Number(item.price || item.cost || item.sum) || 0;
+        const category = item.category || item.tech || "Своя услуга";
+        return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span class="chevron">${icon("chevron")}</span></button>`;
+      }).join("")}</div>` : `<div class="small">Своих услуг пока нет</div>`}
+    </section>
   </main>`;
 }
-
 
 function clientKeyForOrder(order) {
   return String(order.phone || order.name || order.id || "").trim().toLowerCase();
@@ -2519,6 +2566,11 @@ app.addEventListener("input", (event) => {
     saveUiState();
     return liveSearch("#client-search");
   }
+  if (event.target.id === "price-search") {
+    priceSearch = event.target.value;
+    saveUiState();
+    return liveSearch("#price-search");
+  }
 });
 
 app.addEventListener("submit", async (event) => {
@@ -2570,6 +2622,12 @@ app.addEventListener("submit", async (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  if (event.target.id === "price-tech-filter") {
+    priceTechFilter = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
   if (event.target.id === "order-visit-filter") {
     orderVisitFilter = event.target.value;
     saveUiState();
