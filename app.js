@@ -159,7 +159,10 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
   warning: '<path d="M12 3 2.5 20h19Z"/><path d="M12 9v5M12 17h.01"/>',
   chart: '<path d="M4 19V5M4 19h16"/><path d="M8 16v-4M12 16V8M16 16V5"/>',
-  camera: '<path d="M4 7h4l2-3h4l2 3h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>'
+  camera: '<path d="M4 7h4l2-3h4l2 3h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>',
+  location: '<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+  shield: '<path d="M12 3 20 6v6c0 5-3.4 8-8 10-4.6-2-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/>',
+  chevron: '<path d="m9 18 6-6-6-6"/>'
 };
 
 function icon(name, className = "") {
@@ -575,10 +578,10 @@ function orderCard(order) {
       <div class="sum">${money(order.sum)}</div>
     </div>
     <div class="meta">
-      ${order.phone ? `<span>☎ ${escapeHtml(order.phone)}</span>` : ""}
-      ${order.address ? `<span>⌖ ${escapeHtml(order.address)}</span>` : ""}
-      <span>♢ ${escapeHtml(order.guarantee || 0)} мес.</span>
-      ${photos ? `<span>▧ ${photos} фото</span>` : ""}
+      ${order.phone ? `<span class="meta-item">${icon("phone")} ${escapeHtml(order.phone)}</span>` : ""}
+      ${order.address ? `<span class="meta-item">${icon("location")} ${escapeHtml(order.address)}</span>` : ""}
+      <span class="meta-item">${icon("shield")} ${escapeHtml(order.guarantee || 0)} мес.</span>
+      ${photos ? `<span class="meta-item">${icon("camera")} ${photos} фото</span>` : ""}
     </div>
     <div class="actions">
       <button class="action" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>${icon("edit")}</span>Изменить</button>
@@ -651,7 +654,7 @@ function warehousePage() {
       <div class="metric"><div class="metric-label">Активных позиций</div><div class="metric-value">${activeItems.length}</div></div>
       <div class="metric"><div class="metric-label">Мало осталось</div><div class="metric-value yellow">${low}</div></div>
     </div>
-    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">!</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span>›</span></button>`).join("")}</div></section>` : ""}
+    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span>›</span></button>`).join("")}</div></section>` : ""}
     ${items.length ? items.map((item) => `<article class="panel stock-card">
       <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">в наличии</div></div></div>
       <div class="stock-actions"><button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">✎ Изменить</button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
@@ -728,7 +731,7 @@ function analyticsPage() {
     <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Ремонты, личные финансы и склад отдельно</p></div></div>
     <div class="chips"><button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё время</button><button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">30 дней</button><button class="chip ${analyticsPeriod === "90" ? "active" : ""}" data-analytics-period="90">90 дней</button><button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">365 дней</button></div>
     <section class="panel">
-      <div class="panel-title"><span class="badge-icon">◇</span> Главные показатели</div>
+      <div class="panel-title"><span class="badge-icon">${icon("analytics")}</span> Главные показатели</div>
       <div class="metrics">
         <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value">${closed.length}</div></div>
         <div class="metric"><div class="metric-label">Выручка ремонтов</div><div class="metric-value blue">${money(revenue)}</div></div>
@@ -837,7 +840,7 @@ function actPage() {
 function goodsPage() {
   const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
   return `<main class="content"><div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel"><div class="panel-title"><span class="badge-icon">◇</span> Новый товарник</div><p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p><button class="primary-button wide" data-action="new-goods-sheet">+ Создать вручную</button></section>
+    <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("goods")}</span> Новый товарник</div><p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p><button class="primary-button wide" data-action="new-goods-sheet">+ Создать вручную</button></section>
     ${sheets.length ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span>›</span></button>`).join("")}</div></section>` : emptyState("◇", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
   </main>`;
 }
@@ -856,7 +859,7 @@ async function backupSettings() {
   const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content"><div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel">
-      <div class="panel-title"><span class="badge-icon">▧</span> Резервное копирование</div>
+      <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
       <div class="backup-grid">
         <button class="primary-button" data-action="import">Импортировать JSON</button>
         <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
