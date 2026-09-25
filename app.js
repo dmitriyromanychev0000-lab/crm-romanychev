@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.40.1";
-const APP_BUILD = "2026.09.25.46";
+const APP_VERSION = "0.40.2";
+const APP_BUILD = "2026.09.25.47";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Добавлена финальная адаптация узких экранов: шапка, карточка заявки и сетка действий";
+const APP_RELEASE = "Удалён мёртвый фильтр заявок; навигация и периодные фильтры получили корректные accessibility-состояния";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -51,7 +51,6 @@ const initialUiState = readUiState();
 let data = defaultData();
 let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
 let orderFilter = ["all", "closed", "active", "declined", "archived"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
-let orderPeriod = ["all", "7", "30", "90", "365"].includes(String(initialUiState.orderPeriod)) ? String(initialUiState.orderPeriod) : "all";
 let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(initialUiState.orderVisitFilter)) ? String(initialUiState.orderVisitFilter) : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
@@ -74,7 +73,6 @@ function saveUiState(extra = {}) {
     localStorage.setItem(UI_STATE_KEY, JSON.stringify({
       activePage,
       orderFilter,
-      orderPeriod,
       orderVisitFilter,
       searchQuery,
       warehouseSearch,
@@ -571,7 +569,7 @@ function nav() {
     ["more", "more", "Ещё"]
   ];
   return `<nav class="bottom-nav">${items.map(([id, iconName, label]) => `
-    <button class="nav-button ${activePage === id ? "active" : ""}" data-nav="${id}">
+    <button type="button" class="nav-button ${activePage === id ? "active" : ""}" data-nav="${id}" aria-current="${activePage === id ? "page" : "false"}">
       <span class="nav-icon">${icon(iconName)}</span><span>${label}</span>
     </button>`).join("")}</nav>`;
 }
@@ -706,9 +704,9 @@ function ordersPage() {
     <div class="search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" /></div>
 
     <div class="chips order-status-chips">
-      <button class="chip ${orderFilter === "all" ? "active" : ""}" data-filter="all">Все</button>
-      <button class="chip ${orderFilter === "closed" ? "active" : ""}" data-filter="closed">Закрыты</button>
-      <button class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
+      <button type="button" class="chip ${orderFilter === "all" ? "active" : ""}" data-filter="all" aria-pressed="${orderFilter === "all"}">Все</button>
+      <button type="button" class="chip ${orderFilter === "closed" ? "active" : ""}" data-filter="closed" aria-pressed="${orderFilter === "closed"}">Закрыты</button>
+      <button type="button" class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active" aria-pressed="${orderFilter === "active"}">В работе</button>
     </div>
 
     <div class="order-date-filter">
@@ -722,9 +720,9 @@ function ordersPage() {
     </div>
 
     <div class="orders-aux-filters">
-      <button class="${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
+      <button type="button" class="${orderFilter === "declined" ? "active" : ""}" data-filter="declined" aria-pressed="${orderFilter === "declined"}">Отказы</button>
       <span>·</span>
-      <button class="${orderFilter === "archived" ? "active" : ""}" data-filter="archived">Архив</button>
+      <button type="button" class="${orderFilter === "archived" ? "active" : ""}" data-filter="archived" aria-pressed="${orderFilter === "archived"}">Архив</button>
     </div>
 
     ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
@@ -993,12 +991,12 @@ function analyticsPage() {
     <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
 
     <div class="analytics-period-grid">
-      <button class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today">Сегодня</button>
-      <button class="chip ${analyticsPeriod === "7" ? "active" : ""}" data-analytics-period="7">Неделя</button>
-      <button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">Месяц</button>
-      <button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">Год</button>
-      <button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё</button>
-      <button class="chip ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom">Свой период</button>
+      <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">Сегодня</button>
+      <button type="button" class="chip ${analyticsPeriod === "7" ? "active" : ""}" data-analytics-period="7" aria-pressed="${analyticsPeriod === "7"}">Неделя</button>
+      <button type="button" class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30" aria-pressed="${analyticsPeriod === "30"}">Месяц</button>
+      <button type="button" class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365" aria-pressed="${analyticsPeriod === "365"}">Год</button>
+      <button type="button" class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all" aria-pressed="${analyticsPeriod === "all"}">Всё</button>
+      <button type="button" class="chip ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom" aria-pressed="${analyticsPeriod === "custom"}">Свой период</button>
     </div>
 
     <div class="analytics-range-nav">
@@ -1201,10 +1199,10 @@ function financePage() {
     <div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
 
     <div class="finance-period-grid">
-      <button class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button>
-      <button class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button>
-      <button class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button>
-      <button class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365">Год</button>
+      <button type="button" class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all" aria-pressed="${financePeriod === "all"}">Всё время</button>
+      <button type="button" class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30" aria-pressed="${financePeriod === "30"}">30 дней</button>
+      <button type="button" class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90" aria-pressed="${financePeriod === "90"}">90 дней</button>
+      <button type="button" class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365" aria-pressed="${financePeriod === "365"}">Год</button>
     </div>
 
     <section class="panel finance-summary-panel">
@@ -2490,8 +2488,6 @@ app.addEventListener("click", async (event) => {
   }
   const filter = event.target.closest("[data-filter]");
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
-  const orderPeriodFilter = event.target.closest("[data-order-period]");
-  if (orderPeriodFilter) { orderPeriod = orderPeriodFilter.dataset.orderPeriod; saveUiState(); await render(); return; }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) {
     const period = analyticsFilter.dataset.analyticsPeriod;
@@ -2741,12 +2737,6 @@ app.addEventListener("change", async (event) => {
   }
   if (event.target.id === "warehouse-filter-select") {
     warehouseFilter = event.target.value;
-    saveUiState();
-    await render();
-    return;
-  }
-  if (event.target.id === "order-period-select") {
-    orderPeriod = event.target.value;
     saveUiState();
     await render();
     return;
