@@ -893,6 +893,69 @@ h2 { margin: 0; font-size: 24px; }
 .calculated-total { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: #171e25; }
 .calculated-total strong { color: var(--accent); font-size: 22px; }
 .calculated-total button { grid-column: 1 / -1; }
+
+.legacy-payment-grid { margin-top: 2px; }
+.order-extra-finance {
+  margin-top: 16px;
+  border: 1px dashed #39434b;
+  border-radius: 18px;
+  background: rgba(23,30,37,.55);
+}
+.order-extra-finance summary {
+  padding: 17px 18px;
+  color: #aab0b5;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.order-extra-finance summary::-webkit-details-marker { display: none; }
+.order-extra-finance summary::before { content: "▸"; margin-right: 8px; color: #858e95; }
+.order-extra-finance[open] summary::before { content: "▾"; }
+.order-extra-finance[open] summary { border-bottom: 1px solid var(--line); }
+.order-extra-finance .form-grid { padding: 16px; }
+
+.legacy-guarantee-card {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255,107,79,.38);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(30,21,21,.72), rgba(18,18,20,.55));
+}
+.legacy-guarantee-head {
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.guarantee-icon { color: #f2f4f5; }
+.guarantee-icon .ui-icon { width: 28px; height: 28px; }
+.legacy-guarantee-head strong { font-size: 20px; }
+.guarantee-date {
+  padding: 7px 12px;
+  border: 1px solid rgba(91,168,255,.55);
+  border-radius: 999px;
+  color: #65aaf6;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.legacy-guarantee-card > label,
+.order-comment > label {
+  display: block;
+  margin-bottom: 8px;
+  color: #a0a7ad;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.legacy-guarantee-card .textarea {
+  min-height: 110px;
+  border-color: rgba(255,107,79,.22);
+}
+.order-comment { margin-top: 18px; }
+
 .modal-actions { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 24px; }
 
 .order-editor-modal > h2 {
@@ -1025,6 +1088,10 @@ h2 { margin: 0; font-size: 24px; }
   .legacy-service-row { grid-template-columns: 24px minmax(0,1fr) 58px 96px 44px; gap: 6px; }
   .legacy-service-row .field { font-size: 14px !important; }
   .material-card-controls { grid-template-columns: 1fr 1fr 1.2fr; gap: 8px; }
+  .legacy-guarantee-card { padding: 18px; }
+  .legacy-guarantee-head { grid-template-columns: 30px minmax(0,1fr) auto; }
+  .legacy-guarantee-head strong { font-size: 18px; }
+  .guarantee-date { padding: 6px 10px; font-size: 11px; }
   .panel { padding: 18px; border-radius: 22px; }
   .order-main-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .order-secondary-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
