@@ -651,6 +651,57 @@ function syncOrderStock(previousMaterials = [], nextMaterials = [], orderId) {
   return { ok: true };
 }
 
+
+function photoSource(photo) {
+  let value = "";
+  if (typeof photo === "string") value = photo;
+  else if (photo && typeof photo === "object") value = photo.dataUrl || photo.data || photo.src || photo.base64 || "";
+  value = String(value || "");
+  if (value.startsWith("data:image/") || value.startsWith("blob:")) return value;
+  if (value.length > 1000 && /^[A-Za-z0-9+/=\s]+$/.test(value)) {
+    return `data:image/jpeg;base64,${value.replace(/\s/g, "")}`;
+  }
+  return "";
+}
+
+function photoLabel(photo, index) {
+  if (photo && typeof photo === "object") return photo.name || photo.filename || photo.title || `Фото ${index + 1}`;
+  return `Фото ${index + 1}`;
+}
+
+async function compressPhotoFile(file) {
+  if (!file?.type?.startsWith("image/")) throw new Error("Можно добавлять только изображения");
+  if (file.size > 20 * 1024 * 1024) throw new Error(`Слишком большой файл: ${file.name}`);
+  const source = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("Не удалось прочитать фото"));
+    reader.readAsDataURL(file);
+  });
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Не удалось открыть фото: ${file.name}`));
+    img.src = source;
+  });
+  const maxSide = 1280;
+  const scale = Math.min(1, maxSide / Math.max(image.naturalWidth || 1, image.naturalHeight || 1));
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Не удалось обработать фото");
+  context.drawImage(image, 0, 0, width, height);
+  return {
+    id: crypto.randomUUID(),
+    name: file.name,
+    type: "image/jpeg",
+    dataUrl: canvas.toDataURL("image/jpeg", 0.72),
+    createdAt: new Date().toISOString()
+  };
+}
 function newOrderModal(existing = null) {
   const order = existing || {};
   const services = Array.isArray(order.services) ? order.services : [];
