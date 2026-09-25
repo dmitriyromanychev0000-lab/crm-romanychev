@@ -288,6 +288,16 @@ function ordersPage() {
 function warehousePage() {
   const items = [...data.warehouse].filter((item) => !item.archived);
   const low = items.filter((item) => Number(item.quantity) <= Number(item.min || 0)).length;
+  const movements = [...data.warehouse_movements]
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 12);
+  const movementLabels = {
+    initial: "Начальный остаток",
+    manual_in: "Приход",
+    manual_out: "Ручное списание",
+    order_out: "Списано в заявку",
+    order_return: "Возврат из заявки"
+  };
   return `<main class="content">
     <div class="page-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div><button class="icon-button" data-action="new-stock" aria-label="Новая позиция">+</button></div>
     <div class="metrics panel">
@@ -298,6 +308,14 @@ function warehousePage() {
       <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">в наличии</div></div></div>
       <div class="stock-actions"><button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">✎ Изменить</button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
     </article>`).join("") : emptyState("▥", "Склад пуст", "Позиции появятся после импорта бэкапа.")}
+    <section class="panel"><div class="panel-title">Последние движения</div>
+      ${movements.length ? `<ul class="list">${movements.map((movement) => {
+        const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
+        const incoming = ["initial", "manual_in", "order_return"].includes(movement.type);
+        const source = movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : "";
+        return `<li class="price-row"><div><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><div class="small">${movementLabels[movement.type] || "Движение"}${source} · ${shortDate(movement.date)}</div></div><strong class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</strong></li>`;
+      }).join("")}</ul>` : `<div class="empty">Движений пока нет</div>`}
+    </section>
   </main>`;
 }
 
