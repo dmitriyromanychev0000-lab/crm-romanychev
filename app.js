@@ -601,6 +601,7 @@ function settingsPage() {
 
 async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
+  const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content"><div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel">
       <div class="panel-title"><span class="badge-icon">▧</span> Резервное копирование</div>
@@ -609,11 +610,12 @@ async function backupSettings() {
         <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
         <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
         <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
+        <button class="secondary-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
       </div>
       <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
       <div class="setting-row"><div><strong>Автоматический бэкап</strong><div class="small">Проверяется при открытии приложения</div></div><button class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" aria-label="Автоматический бэкап"></button></div>
       <div class="setting-row"><div><strong>Периодичность</strong></div><select id="backup-days">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
-      <div class="setting-row"><div><strong>Последний бэкап</strong><div class="small">${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</div></div></div>
+      <div class="setting-row"><div><strong>Последний бэкап</strong><div class="small">${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</div></div></div><div class="setting-row"><div><strong>Точка отката импорта</strong><div class="small">${rollback ? `Есть · ${rollback.orders?.length || 0} заявок` : "Ещё не создавалась"}</div></div></div>
     </section>
     <section class="panel"><div class="panel-title">Содержимое</div><div class="metrics"><div class="metric"><div class="metric-label">Заявки</div><div class="metric-value">${data.orders.length}</div></div><div class="metric"><div class="metric-label">Склад</div><div class="metric-value">${data.warehouse.length}</div></div><div class="metric"><div class="metric-label">Движения</div><div class="metric-value">${data.warehouse_movements.length}</div></div><div class="metric"><div class="metric-label">Прайс</div><div class="metric-value">${data.receipt_prices.length}</div></div><div class="metric"><div class="metric-label">Документы</div><div class="metric-value">${data.receipts.length}</div></div><div class="metric"><div class="metric-label">Черновики</div><div class="metric-value">${draftRecords().length}</div></div></div></section>
   </main>`;
