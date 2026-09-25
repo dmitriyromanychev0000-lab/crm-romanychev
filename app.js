@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.40.3";
-const APP_BUILD = "2026.09.25.48";
+const APP_VERSION = "0.40.4";
+const APP_BUILD = "2026.09.25.49";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлены дата закрытия заявки и сохранение режима «Без гарантии»";
+const APP_RELEASE = "Аналитика сортирует выручку по датам и не ломается на повреждённых датах заявок";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -894,6 +894,25 @@ function inAnalyticsRange(value, range = analyticsRange()) {
   return Number.isFinite(time) && time >= range.start && time < range.end;
 }
 
+function calendarDayTime(value) {
+  const date = new Date(value || 0);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+}
+
+function revenueBarsForOrders(orders) {
+  const grouped = new Map();
+  orders.forEach((order) => {
+    const dayTime = calendarDayTime(order.completed || order.created);
+    if (dayTime === null) return;
+    grouped.set(dayTime, (grouped.get(dayTime) || 0) + (Number(order.sum) || 0));
+  });
+  return [...grouped.entries()]
+    .sort(([left], [right]) => left - right)
+    .slice(-7)
+    .map(([dayTime, value]) => [shortDate(new Date(dayTime)), value]);
+}
+
 function analyticsPeriodTitle(range = analyticsRange()) {
   if (analyticsPeriod === "all") return "Всё время";
   if (analyticsPeriod === "custom") return analyticsCustomStart && analyticsCustomEnd ? `${shortDate(analyticsCustomStart)} — ${shortDate(analyticsCustomEnd)}` : "Свой период";
@@ -946,17 +965,14 @@ function analyticsPage() {
   const now = Date.now();
   const overdueVisits = activeOrders.filter((order) => order.nextVisit && new Date(order.nextVisit).getTime() < now).length;
   const lowStock = data.warehouse.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
-  const oldestActiveDays = activeOrders.length
-    ? Math.max(...activeOrders.map((order) => Math.max(0, Math.floor((now - new Date(order.created || now).getTime()) / 86400000))))
-    : 0;
+  const activeOrderAges = activeOrders
+    .map((order) => new Date(order.created || "").getTime())
+    .filter(Number.isFinite)
+    .map((created) => Math.max(0, Math.floor((now - created) / 86400000)));
+  const oldestActiveDays = activeOrderAges.length ? Math.max(...activeOrderAges) : 0;
   const activeSum = activeOrders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
 
-  const grouped = new Map();
-  closed.forEach((order) => {
-    const date = shortDate(order.completed || order.created);
-    grouped.set(date, (grouped.get(date) || 0) + (Number(order.sum) || 0));
-  });
-  const bars = [...grouped.entries()].slice(-7);
+  const bars = revenueBarsForOrders(closed);
   const max = Math.max(...bars.map(([, value]) => value), 1);
 
   const techMap = new Map();
