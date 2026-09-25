@@ -267,6 +267,18 @@ function formatBytes(value) {
   return `${(bytes / 1024 / 1024).toFixed(1)} МБ`;
 }
 
+async function requestPersistentStorage() {
+  if (!navigator.storage?.persist) return toast("Этот браузер не поддерживает постоянное хранилище");
+  try {
+    if (navigator.storage.persisted && await navigator.storage.persisted()) return toast("Локальные данные уже защищены браузером");
+    const granted = await navigator.storage.persist();
+    toast(granted ? "Браузер включил защиту локальных данных" : "Браузер не разрешил постоянное хранилище — используй регулярные бэкапы");
+  } catch (error) {
+    console.warn(error);
+    toast("Не удалось запросить защиту хранилища");
+  }
+}
+
 async function runAppDiagnostics() {
   const rows = [];
   try {
@@ -718,7 +730,7 @@ function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content"><div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <form class="panel" id="settings-form"><div class="panel-title">Реквизиты исполнителя</div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div><div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div><div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(settings.phone || "")}" inputmode="tel" /></div><div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div><div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div></div><button class="primary-button wide settings-save" type="submit">Сохранить настройки</button></form>
-    <section class="panel"><div class="panel-title">Версия приложения</div><div class="setting-row"><div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div></div><button class="secondary-button" data-action="check-update">Проверить обновление</button></div><div class="setting-row"><div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div><a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a></div><div class="setting-row"><div><strong>Диагностика</strong><div class="small">Проверить базу, кэш, service worker и хранилище</div></div><button class="secondary-button" data-action="run-diagnostics">Запустить</button></div></section>
+    <section class="panel"><div class="panel-title">Версия приложения</div><div class="setting-row"><div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div></div><button class="secondary-button" data-action="check-update">Проверить обновление</button></div><div class="setting-row"><div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div><a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a></div><div class="setting-row"><div><strong>Диагностика</strong><div class="small">Проверить базу, кэш, service worker и хранилище</div></div><button class="secondary-button" data-action="run-diagnostics">Запустить</button></div><div class="setting-row"><div><strong>Защита локальных данных</strong><div class="small">Попросить браузер не очищать базу автоматически при нехватке места</div></div><button class="secondary-button" data-action="protect-storage">Защитить</button></div></section>
     <section class="panel"><div class="panel-title">О данных</div><p class="small">Все данные находятся только в браузере устройства. Для переноса и защиты используй раздел «Бэкапы».</p></section>
   </main>`;
 }
@@ -1611,6 +1623,7 @@ app.addEventListener("click", async (event) => {
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
+  if (action === "protect-storage") return requestPersistentStorage();
   if (action === "new-price") return priceModal();
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
