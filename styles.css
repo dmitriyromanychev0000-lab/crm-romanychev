@@ -1869,3 +1869,96 @@ h2 { margin: 0; font-size: 24px; }
   .order-secondary-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .photo-grid { grid-template-columns: 1fr; }
 }
+
+
+/* 0.36.0 · Товарник в общей legacy-дизайн-системе */
+.goods-stats-panel { margin-bottom: 16px; }
+.legacy-goods-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.legacy-goods-actions button { min-height: 58px; }
+.legacy-goods-actions .secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.legacy-goods-actions .ui-icon { width: 20px; height: 20px; color: var(--accent); }
+
+.legacy-goods-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: linear-gradient(145deg,#11181d,#0f1519);
+}
+.goods-card-main {
+  display: grid;
+  grid-template-columns: 58px minmax(0,1fr) auto;
+  gap: 13px;
+  align-items: center;
+}
+.goods-card-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(174,131,255,.24);
+  border-radius: 17px;
+  background: rgba(174,131,255,.10);
+  color: #ae83ff;
+}
+.goods-card-icon .ui-icon { width: 29px; height: 29px; }
+.goods-card-copy { min-width: 0; }
+.goods-card-title { overflow: hidden; font-size: 20px; font-weight: 760; text-overflow: ellipsis; white-space: nowrap; }
+.goods-card-total { color: var(--accent); font-size: 20px; white-space: nowrap; }
+.goods-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 14px 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+.goods-card-meta strong { color: var(--text); }
+.goods-card-meta strong.yellow { color: var(--yellow); }
+
+.goods-history-panel { padding: 20px; }
+.legacy-goods-list { gap: 0; }
+.legacy-goods-sheet {
+  grid-template-columns: 42px minmax(0,1fr) auto 22px;
+  gap: 11px;
+  min-height: 70px;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.legacy-goods-sheet:last-child { border-bottom: 0; }
+.goods-sheet-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: rgba(174,131,255,.09);
+  color: #ae83ff;
+}
+.goods-sheet-icon .ui-icon { width: 20px; height: 20px; }
+.legacy-goods-sheet b { color: var(--accent); font-size: 17px; white-space: nowrap; }
+.goods-note { margin: -2px 4px 0; text-align: center; }
+
+@media (max-width: 520px) {
+  .legacy-goods-actions { grid-template-columns: 1fr; }
+  .goods-card-main { grid-template-columns: 50px minmax(0,1fr); }
+  .goods-card-icon { width: 48px; height: 48px; border-radius: 15px; }
+  .goods-card-total { grid-column: 2; margin-top: -7px; }
+  .goods-card-meta { display: grid; gap: 6px; }
+  .legacy-goods-sheet { grid-template-columns: 40px minmax(0,1fr) 20px; }
+  .legacy-goods-sheet b { grid-column: 2; grid-row: 2; }
+  .legacy-goods-sheet .chevron { grid-column: 3; grid-row: 1 / span 2; }
+}
