@@ -260,6 +260,68 @@ function downloadBackup() {
 }
 
 
+function formatBytes(value) {
+  const bytes = Number(value) || 0;
+  if (bytes < 1024) return `${bytes} Б`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} КБ`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} МБ`;
+}
+
+async function runAppDiagnostics() {
+  const rows = [];
+  try {
+    const marker = { ok: true, at: Date.now() };
+    await dbSet(DIAGNOSTIC_KEY, marker);
+    const reread = await dbGet(DIAGNOSTIC_KEY);
+    await dbDelete(DIAGNOSTIC_KEY);
+    rows.push(["IndexedDB", reread?.ok ? "✓ работает" : "✕ ошибка записи/чтения", Boolean(reread?.ok)]);
+  } catch (error) {
+    rows.push(["IndexedDB", `✕ ${error.message || "ошибка"}`, false]);
+  }
+
+  if ("serviceWorker" in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      const state = registration?.active?.state || registration?.installing?.state || registration?.waiting?.state || "не активирован";
+      rows.push(["Service worker", registration ? `✓ ${state}` : "△ не зарегистрирован", Boolean(registration)]);
+    } catch (error) {
+      rows.push(["Service worker", `✕ ${error.message || "ошибка"}`, false]);
+    }
+  } else {
+    rows.push(["Service worker", "✕ не поддерживается", false]);
+  }
+
+  try {
+    const cacheNames = "caches" in window ? await caches.keys() : [];
+    rows.push(["Офлайн-кэш", cacheNames.length ? `✓ ${cacheNames.length} кэш(а)` : "△ пуст", cacheNames.length > 0]);
+  } catch (error) {
+    rows.push(["Офлайн-кэш", `✕ ${error.message || "ошибка"}`, false]);
+  }
+
+  try {
+    const estimate = navigator.storage?.estimate ? await navigator.storage.estimate() : null;
+    const persisted = navigator.storage?.persisted ? await navigator.storage.persisted() : null;
+    rows.push(["Хранилище", estimate ? `${formatBytes(estimate.usage)} из ${formatBytes(estimate.quota)}${persisted === null ? "" : persisted ? " · постоянное" : " · обычное"}` : "данные недоступны", true]);
+  } catch (error) {
+    rows.push(["Хранилище", `✕ ${error.message || "ошибка"}`, false]);
+  }
+
+  rows.push(["Интернет", navigator.onLine ? "✓ онлайн" : "△ офлайн", true]);
+  rows.push(["Версия", `${APP_VERSION} · сборка ${APP_BUILD}`, true]);
+  rows.push(["Адрес", location.href, location.href.startsWith(APP_URL)]);
+
+  const photoCount = data.orders.reduce((sum, order) => sum + (Array.isArray(order.photos) ? order.photos.length : 0), 0);
+  rows.push(["Данные", `${data.orders.length} заявок · ${data.warehouse.length} склад · ${photoCount} фото`, true]);
+
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("#diagnostic-backup-test").addEventListener("click", () => runBackupSelfTest());
+}
+
 async function checkForAppUpdate() {
   toast("Проверяем обновление…");
   try {
@@ -1548,6 +1610,7 @@ app.addEventListener("click", async (event) => {
   if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
+  if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "new-price") return priceModal();
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
