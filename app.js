@@ -1011,6 +1011,12 @@ app.addEventListener("click", async (event) => {
   if (action === "more-menu") { moreSection = "menu"; return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "new-price") return priceModal();
+  if (action === "new-tool") return toolModal();
+  if (action === "edit-tool") {
+    const index = Number(event.target.closest("[data-action]").dataset.index);
+    const item = data.tools[index];
+    if (item) return toolModal(item, index);
+  }
   if (action === "open-client") return clientModal(event.target.closest("[data-action]").dataset.key);
   if (action === "edit-price") {
     const index = Number(event.target.closest("[data-action]").dataset.index);
