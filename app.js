@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.48.0";
-const APP_BUILD = "2026.09.26.22";
+const APP_VERSION = "0.48.1";
+const APP_BUILD = "2026.09.26.23";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финальная сверка по архиву: восстановлены точные тексты аналитики и меню, добавлена миграция настроек v18";
+const APP_RELEASE = "Список покупок вынесен со Склада в отдельный экран; на складе осталась только кнопка перехода";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -56,6 +56,7 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
+let warehouseSection = ["main", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "main";
 let warehouseCreateOpen = Boolean(initialUiState.warehouseCreateOpen);
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
@@ -78,6 +79,7 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
+      warehouseSection,
       warehouseCreateOpen,
       clientSearch,
       priceSearch,
@@ -895,7 +897,7 @@ function warehousePage() {
 
     <div class="warehouse-shortcuts">
       <a class="warehouse-shortcut" href="#warehouse-movements">${icon("history")}<span>История движения</span></a>
-      <a class="warehouse-shortcut" href="#warehouse-shopping">${icon("shopping")}<span>Список покупок</span></a>
+      <button type="button" class="warehouse-shortcut" data-action="warehouse-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
     <button class="primary-button warehouse-toggle-create" data-action="toggle-stock-form" type="button">${warehouseCreateOpen ? "− Закрыть новую позицию" : "+ Новая позиция"}</button>
@@ -924,11 +926,6 @@ function warehousePage() {
       </div>
       <button class="primary-button warehouse-create-submit" type="submit">+ &nbsp;Добавить на склад</button>
     </form>` : ""}
-
-    <section id="warehouse-shopping" class="panel warehouse-shopping-panel ${lowItems.length ? "" : "warehouse-section-muted"}">
-      <div class="panel-title"><span class="badge-icon">${icon("shopping")}</span> Список покупок</div>
-      ${lowItems.length ? `<div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")} · минимум ${escapeHtml(item.min || 0)}</small></span><b class="yellow">Докупить</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>` : `<div class="small">Все позиции выше минимального остатка.</div>`}
-    </section>
 
     <section class="warehouse-items">
       ${groupedItems.length ? groupedItems.map(([category, group]) => {
@@ -1764,11 +1761,11 @@ async function backupSettings() {
   </main>`;
 }
 
-function shoppingPage() {
+function shoppingPage(backAction = "more-menu") {
   const items = data.warehouse
     .filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0))
     .sort((a, b) => (Number(a.quantity) - Number(a.min || 0)) - (Number(b.quantity) - Number(b.min || 0)));
-  return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+  return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="${backAction}">Назад</button></div>
     ${items.length ? `<div class="client-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
       return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
@@ -1810,7 +1807,7 @@ async function morePage() {
 async function render() {
   let page;
   if (activePage === "orders") page = ordersPage();
-  if (activePage === "warehouse") page = warehousePage();
+  if (activePage === "warehouse") page = warehouseSection === "shopping" ? shoppingPage("warehouse-main") : warehousePage();
   if (activePage === "analytics") page = analyticsPage();
   if (activePage === "more") page = await morePage();
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
@@ -2749,6 +2746,7 @@ app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
   if (navButton) {
     activePage = navButton.dataset.nav;
+    if (activePage === "warehouse") warehouseSection = "main";
     if (activePage !== "more") moreSection = "menu";
     saveUiState({ scrollY: 0 });
     await render();
@@ -2778,6 +2776,21 @@ app.addEventListener("click", async (event) => {
   const financeFilter = event.target.closest("[data-finance-period]");
   if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "warehouse-shopping") {
+    warehouseSection = "shopping";
+    warehouseCreateOpen = false;
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (action === "warehouse-main") {
+    warehouseSection = "main";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "new-order") return newOrderModal();
   if (action === "import") return fileInput.click();
   if (action === "inspect-backup-file") return inspectBackupFile();
