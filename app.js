@@ -1150,10 +1150,39 @@ function clientsPage() {
   const sorted = [...clients.values()].sort((a, b) => new Date(b.last || 0) - new Date(a.last || 0));
   const query = clientSearch.trim().toLowerCase();
   const filtered = sorted.filter((client) => !query || [client.name, client.phone, client.address].join(" ").toLowerCase().includes(query));
-  return `<main class="content"><div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div><div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.filter((item) => !item.archived).length}</div></div></div></section>
-    <div class="search-row"><input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
-    ${filtered.length ? `<div class="client-list">${filtered.map((client) => `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(client.name)}</div><div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div></div><strong>${money(client.total)}</strong></div><div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>${client.address ? `<div class="small client-address meta-item">${icon("location")}<span>${escapeHtml(client.address)}</span></div>` : ""}${client.phone ? `<a class="secondary-button client-call icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}<button class="secondary-button client-call" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button></article>`).join("")}</div>` : (query ? emptyState("⌕", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("♙", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
+  const closedOrders = data.orders.filter((item) => !item.archived && normalizeStatus(item.status) === "closed").length;
+
+  return `<main class="content clients-content">
+    <div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+
+    <section class="panel client-stats-panel">
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div>
+        <div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.filter((item) => !item.archived).length}</div></div>
+        <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value green">${closedOrders}</div></div>
+        <div class="metric"><div class="metric-label">Средне на клиента</div><div class="metric-value yellow">${sorted.length ? (data.orders.filter((item) => !item.archived).length / sorted.length).toFixed(1) : "0"}</div></div>
+      </div>
+    </section>
+
+    <div class="search-row search-with-icon clients-search-row">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
+
+    ${filtered.length ? `<div class="client-list">${filtered.map((client) => `
+      <article class="panel client-card legacy-client-card">
+        <div class="client-card-main">
+          <span class="client-avatar">${icon("clients")}</span>
+          <div class="client-card-copy">
+            <div class="client-name">${escapeHtml(client.name)}</div>
+            <div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div>
+          </div>
+          <strong class="client-total">${money(client.total)}</strong>
+        </div>
+        <div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>
+        ${client.address ? `<div class="small client-address meta-item">${icon("location")}<span>${escapeHtml(client.address)}</span></div>` : ""}
+        <div class="client-actions">
+          ${client.phone ? `<a class="secondary-button icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button class="secondary-button" disabled>Телефон не указан</button>`}
+          <button class="primary-button" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button>
+        </div>
+      </article>`).join("")}</div>` : (query ? emptyState("search", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("clients", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
   </main>`;
 }
 
@@ -1162,15 +1191,46 @@ function financePage() {
   const incomeRows = data.incomes.filter((item) => withinPeriod(item.date, financePeriod));
   const expenses = expenseRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const incomes = incomeRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const result = incomes - expenses;
   const rows = [
     ...expenseRows.map((item) => ({ ...item, financeType: "expense" })),
     ...incomeRows.map((item) => ({ ...item, financeType: "income" }))
   ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-  return `<main class="content"><div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <div class="chips"><button class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button><button class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button><button class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button><button class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365">365 дней</button></div>
-    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Доходы</div><div class="metric-value green">${money(incomes)}</div></div><div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses)}</div></div><div class="metric"><div class="metric-label">Результат</div><div class="metric-value ${incomes - expenses >= 0 ? "green" : "red"}">${money(incomes - expenses)}</div></div><div class="metric"><div class="metric-label">Операций</div><div class="metric-value">${rows.length}</div></div></div></section>
-    <div class="finance-actions"><button class="primary-button" data-action="add-finance" data-type="expense">− Добавить расход</button><button class="secondary-button" data-action="add-finance" data-type="income">+ Добавить доход</button></div>
-    <section class="panel"><div class="panel-title">История операций</div>${rows.length ? `<ul class="list">${rows.map((item) => `<li class="finance-row"><div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div><div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div><button class="remove-line" data-delete-finance="${item.financeType}" data-id="${escapeHtml(item.id)}" aria-label="Удалить">×</button></li>`).join("")}</ul>` : `<div class="empty">Операций пока нет</div>`}</section>
+
+  return `<main class="content finance-content">
+    <div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+
+    <div class="finance-period-grid">
+      <button class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button>
+      <button class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button>
+      <button class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button>
+      <button class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365">Год</button>
+    </div>
+
+    <section class="panel finance-summary-panel">
+      <div class="metrics finance-metrics">
+        <div class="metric"><div class="metric-label">Доходы</div><div class="metric-value green">${money(incomes)}</div></div>
+        <div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses)}</div></div>
+        <div class="metric"><div class="metric-label">Результат</div><div class="metric-value ${result >= 0 ? "green" : "red"}">${money(result)}</div></div>
+        <div class="metric"><div class="metric-label">Операций</div><div class="metric-value">${rows.length}</div></div>
+      </div>
+    </section>
+
+    <div class="finance-actions legacy-finance-actions">
+      <button class="primary-button" data-action="add-finance" data-type="expense">− Добавить расход</button>
+      <button class="secondary-button" data-action="add-finance" data-type="income">+ Добавить доход</button>
+    </div>
+
+    <section class="panel finance-history-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История операций</div>
+      ${rows.length ? `<div class="finance-history-list">${rows.map((item) => `
+        <div class="finance-row legacy-finance-row">
+          <span class="finance-kind-icon ${item.financeType === "income" ? "income" : "expense"}">${icon(item.financeType === "income" ? "finance" : "receipt")}</span>
+          <div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div>
+          <div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div>
+          <button class="remove-line" data-delete-finance="${item.financeType}" data-id="${escapeHtml(item.id)}" aria-label="Удалить">${icon("trash")}</button>
+        </div>`).join("")}</div>` : `<div class="empty">Операций пока нет</div>`}
+    </section>
   </main>`;
 }
 
