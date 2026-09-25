@@ -997,18 +997,20 @@ app.addEventListener("click", async (event) => {
   if (navButton) {
     activePage = navButton.dataset.nav;
     if (activePage !== "more") moreSection = "menu";
+    saveUiState({ scrollY: 0 });
     await render();
+    window.scrollTo(0, 0);
     return;
   }
   const filter = event.target.closest("[data-filter]");
-  if (filter) { orderFilter = filter.dataset.filter; await render(); return; }
+  if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "new-order") return newOrderModal();
   if (action === "import") return fileInput.click();
   if (action === "download-backup") return downloadBackup();
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
-  if (action === "more-menu") { moreSection = "menu"; return render(); }
+  if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "new-price") return priceModal();
   if (action === "new-tool") return toolModal();
@@ -1047,7 +1049,9 @@ app.addEventListener("click", async (event) => {
   if (more) {
     if (["backup", "prices", "clients", "finance", "goods", "tools", "act", "settings"].includes(more)) moreSection = more;
     else toast("Раздел будет восстановлен на следующем этапе");
+    saveUiState({ scrollY: 0 });
     await render();
+    window.scrollTo(0, 0);
     return;
   }
   const orderAction = event.target.closest("[data-order-action]");
