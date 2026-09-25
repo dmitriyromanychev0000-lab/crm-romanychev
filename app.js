@@ -192,6 +192,22 @@ function backupPayload() {
   return JSON.stringify({ ...data, date: new Date().toISOString() }, null, 2);
 }
 
+function runBackupSelfTest() {
+  try {
+    const parsed = JSON.parse(backupPayload());
+    const restored = validateBackup(parsed);
+    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "receipts", "receipt_prices", "tools", "goods_sheets"];
+    const mismatches = sections.filter((key) => (data[key]?.length || 0) !== (restored[key]?.length || 0));
+    if (mismatches.length) throw new Error(`Не совпали разделы: ${mismatches.join(", ")}`);
+    const warnings = backupWarnings(restored);
+    const sizeMb = new Blob([backupPayload()]).size / 1024 / 1024;
+    toast(warnings.length ? `Бэкап читается, но есть предупреждения: ${warnings.length}` : `Бэкап исправен · ${sizeMb.toFixed(1)} МБ`);
+  } catch (error) {
+    console.error(error);
+    toast(`Проверка бэкапа не пройдена: ${error.message}`);
+  }
+}
+
 function downloadBackup() {
   const blob = new Blob([backupPayload()], { type: "application/json;charset=utf-8" });
   const link = document.createElement("a");
