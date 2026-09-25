@@ -544,6 +544,65 @@ async function backupSettings() {
 
 
 
+
+function draftRecords() {
+  if (Array.isArray(data.draft)) {
+    return data.draft.map((value, index) => ({
+      key: String(index),
+      value: value && typeof value === "object" ? value : { value },
+      storage: "array"
+    }));
+  }
+  if (data.draft && typeof data.draft === "object") {
+    return Object.entries(data.draft).map(([key, value]) => ({
+      key,
+      value: value && typeof value === "object" ? value : { value },
+      storage: "object"
+    }));
+  }
+  return [];
+}
+
+function draftSummary(item = {}) {
+  const title = item.title || item.name || item.client || item.customer || item.label || "Черновик";
+  const date = item.updatedAt || item.updated || item.date || item.createdAt || item.created || "";
+  const tech = item.tech || item.appliance || item.device || "";
+  const brand = item.brand || item.model || "";
+  const phone = item.phone || item.tel || "";
+  const sum = Number(item.sum ?? item.total ?? item.amount) || 0;
+  return { title, date, tech, brand, phone, sum };
+}
+
+function draftsPage() {
+  const drafts = draftRecords();
+  return `<main class="content">
+    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
+    ${drafts.length ? `<div class="client-list">${drafts.map((record) => {
+      const view = draftSummary(record.value);
+      const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
+      return `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(view.title)}</div><div class="small">${escapeHtml(meta || "Старый формат черновика")}</div></div>${view.sum ? `<strong>${money(view.sum)}</strong>` : ""}</div><div class="finance-actions"><button class="primary-button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button class="danger-button" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div></article>`;
+    }).join("")}</div>` : emptyState("✎", "Черновиков пока нет", "Черновики можно сохранять из формы новой заявки.")}
+  </main>`;
+}
+
+function getDraftRecord(key) {
+  if (Array.isArray(data.draft)) {
+    const index = Number(key);
+    return Number.isInteger(index) && index >= 0 && index < data.draft.length ? data.draft[index] : null;
+  }
+  if (data.draft && typeof data.draft === "object") return data.draft[key] ?? null;
+  return null;
+}
+
+function removeDraftRecord(key) {
+  if (Array.isArray(data.draft)) {
+    const index = Number(key);
+    if (Number.isInteger(index) && index >= 0 && index < data.draft.length) data.draft.splice(index, 1);
+    return;
+  }
+  if (data.draft && typeof data.draft === "object") delete data.draft[key];
+}
 function receiptSummary(item = {}) {
   const title = item.title || item.name || item.type || item.kind || "Документ";
   const number = item.number || item.no || item.receiptNumber || item.receipt_no || "";
