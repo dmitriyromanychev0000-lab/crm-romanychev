@@ -553,8 +553,11 @@ function header() {
   </header>`;
 }
 
-function emptyState(icon, title, description) {
-  return `<div class="panel empty"><div class="empty-icon">${icon}</div><h2>${title}</h2><p>${description}</p></div>`;
+function emptyState(iconValue, title, description) {
+  const legacyMap = { "▣": "orders", "▥": "warehouse", "⌕": "search", "♙": "clients", "▤": "document", "◇": "goods", "✎": "drafts", "🛠": "tools" };
+  const iconName = legacyMap[iconValue] || iconValue;
+  const graphic = ICONS[iconName] ? icon(iconName) : escapeHtml(iconValue);
+  return `<div class="panel empty"><div class="empty-icon">${graphic}</div><h2>${title}</h2><p>${description}</p></div>`;
 }
 
 function orderCard(order) {
