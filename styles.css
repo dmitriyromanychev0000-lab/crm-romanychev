@@ -4574,3 +4574,648 @@ body,
 #warehouse-movements {
   scroll-margin-top: 96px;
 }
+
+
+/* 0.44.0 · Компактные вторичные экраны */
+.more-content,
+.clients-content,
+.goods-content,
+.settings-content,
+.receipts-content,
+.drafts-content,
+.backup-content,
+.tools-content,
+.shopping-content {
+  padding-top: 16px;
+}
+
+.more-content .page-head,
+.clients-content .page-head,
+.goods-content .page-head,
+.settings-content .page-head,
+.receipts-content .page-head,
+.drafts-content .page-head,
+.backup-content .page-head,
+.tools-content .page-head,
+.shopping-content .page-head {
+  margin-bottom: 11px;
+}
+
+.clients-content .page-head > .secondary-button,
+.goods-content .page-head > .secondary-button,
+.settings-content .page-head > .secondary-button,
+.receipts-content .page-head > .secondary-button,
+.drafts-content .page-head > .secondary-button,
+.backup-content .page-head > .secondary-button,
+.shopping-content .page-head > .secondary-button {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+/* Ещё */
+.more-section-label {
+  margin: 3px 3px 6px;
+  font-size: 8px;
+  letter-spacing: .13em;
+}
+.more-section-system { margin-top: 13px; }
+.legacy-more-list {
+  gap: 5px;
+}
+.legacy-more-list .menu-item {
+  min-height: 58px;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 13px;
+}
+.legacy-more-list .menu-icon {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+  border-radius: 11px;
+}
+.legacy-more-list .menu-icon .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+.legacy-more-list .menu-name {
+  font-size: 13px;
+  line-height: 1.15;
+}
+.legacy-more-list .menu-description {
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 1.2;
+}
+.legacy-more-list .chevron .ui-icon {
+  width: 17px;
+  height: 17px;
+}
+
+/* Клиенты */
+.client-stats-panel {
+  margin-bottom: 9px;
+  padding: 10px;
+}
+.client-stats-panel .metrics {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.client-stats-panel .metric {
+  padding: 8px 9px;
+  border-radius: 10px;
+}
+.client-stats-panel .metric-label { font-size: 8px; }
+.client-stats-panel .metric-value {
+  margin-top: 4px;
+  font-size: 17px;
+}
+.clients-search-row {
+  margin-bottom: 9px;
+}
+.clients-search-row .search {
+  min-height: 45px;
+  padding-left: 42px;
+  border-radius: 13px;
+  font-size: 12px;
+}
+.clients-search-row > .ui-icon {
+  left: 15px;
+  width: 18px;
+  height: 18px;
+}
+.client-list {
+  gap: 7px;
+}
+.legacy-client-card {
+  padding: 11px 12px;
+  border-radius: 14px;
+}
+.client-card-main {
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  gap: 8px;
+}
+.client-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.client-avatar .ui-icon {
+  width: 19px;
+  height: 19px;
+}
+.client-name {
+  font-size: 13px;
+  line-height: 1.2;
+}
+.client-card-copy .small {
+  margin-top: 1px;
+  font-size: 9px;
+}
+.client-total {
+  font-size: 12px;
+}
+.client-meta {
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 7px;
+  font-size: 9px;
+}
+.client-address {
+  margin-top: 6px;
+  font-size: 9px;
+}
+.client-address .ui-icon {
+  width: 12px;
+  height: 12px;
+}
+.client-actions {
+  gap: 5px;
+  margin-top: 8px;
+}
+.client-actions .primary-button,
+.client-actions .secondary-button {
+  min-height: 36px;
+  padding: 6px 8px;
+  font-size: 10px;
+}
+.client-actions .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Товарник */
+.goods-stats-panel {
+  margin-bottom: 9px;
+  padding: 10px;
+}
+.goods-stats-panel .metrics {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.goods-stats-panel .metric {
+  padding: 8px 9px;
+  border-radius: 10px;
+}
+.goods-stats-panel .metric-label { font-size: 8px; }
+.goods-stats-panel .metric-value {
+  margin-top: 4px;
+  font-size: 17px;
+}
+.legacy-goods-actions {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.legacy-goods-actions button {
+  min-height: 40px;
+  padding: 7px 8px;
+  font-size: 10px;
+}
+.legacy-goods-actions .ui-icon {
+  width: 15px;
+  height: 15px;
+}
+.legacy-goods-card {
+  padding: 11px 12px;
+  border-radius: 14px;
+}
+.goods-card-main {
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  gap: 8px;
+}
+.goods-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.goods-card-icon .ui-icon {
+  width: 19px;
+  height: 19px;
+}
+.goods-card-title {
+  font-size: 13px;
+}
+.goods-card-copy .small {
+  margin-top: 1px;
+  font-size: 9px;
+}
+.goods-card-total {
+  font-size: 12px;
+}
+.goods-card-meta {
+  gap: 8px;
+  margin: 8px 0;
+  padding-top: 7px;
+  font-size: 9px;
+}
+.legacy-goods-card > .primary-button {
+  min-height: 37px;
+  font-size: 10px;
+}
+
+.goods-preview-panel,
+.goods-history-panel,
+.goods-price-panel {
+  padding: 11px 12px;
+}
+.goods-preview-panel .panel-title,
+.goods-history-panel .panel-title,
+.goods-price-panel .panel-title {
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+.goods-preview-table-wrap {
+  border-radius: 10px;
+}
+.goods-preview-table {
+  min-width: 420px;
+}
+.goods-preview-table th,
+.goods-preview-table td {
+  padding: 7px 8px;
+}
+.goods-preview-table th {
+  font-size: 8px;
+}
+.goods-preview-table td {
+  font-size: 10px;
+}
+.goods-preview-total {
+  padding: 9px 5px 1px;
+  font-size: 12px;
+}
+.goods-preview-total strong:last-child {
+  font-size: 15px;
+}
+.legacy-goods-sheet {
+  grid-template-columns: 30px minmax(0,1fr) auto 16px;
+  gap: 7px;
+  min-height: 48px;
+  padding: 7px 0;
+}
+.goods-sheet-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.goods-sheet-icon .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+.legacy-goods-sheet strong { font-size: 11px; }
+.legacy-goods-sheet small { font-size: 8px; }
+.legacy-goods-sheet b { font-size: 10px; }
+.legacy-goods-sheet .chevron .ui-icon { width: 14px; height: 14px; }
+
+.goods-price-panel summary {
+  min-height: 30px;
+}
+.goods-price-panel[open] summary {
+  margin-bottom: 5px;
+}
+.goods-price-row {
+  gap: 8px;
+  padding: 7px 1px;
+}
+.goods-price-row strong { font-size: 11px; }
+.goods-price-row small { margin-top: 1px; font-size: 8px; }
+.goods-price-row b { font-size: 10px; }
+.goods-note {
+  margin: 4px 3px 0;
+  font-size: 8.5px;
+}
+
+/* Настройки */
+.settings-profile-panel,
+.settings-system-panel,
+.settings-data-panel {
+  padding: 11px 12px;
+  border-radius: 14px;
+}
+.settings-profile-panel .panel-title,
+.settings-system-panel .panel-title {
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+.settings-profile-panel .form-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 7px 6px;
+}
+.settings-profile-panel .form-group {
+  gap: 3px;
+}
+.settings-profile-panel .form-group label {
+  font-size: 8.5px;
+}
+.settings-profile-panel .field {
+  min-height: 42px;
+  padding-right: 9px;
+  padding-left: 9px;
+  border-radius: 11px;
+  font-size: 11px;
+}
+.settings-check-row {
+  grid-template-columns: 20px minmax(0,1fr);
+  gap: 8px;
+  margin: 10px 0;
+  padding: 9px 10px;
+  border-radius: 11px;
+}
+.settings-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+.settings-check-row strong {
+  font-size: 11px;
+}
+.settings-check-row small {
+  margin-top: 2px;
+  font-size: 8.5px;
+}
+.settings-save {
+  min-height: 39px;
+  font-size: 11px;
+}
+.settings-system-list .legacy-setting-row {
+  grid-template-columns: 30px minmax(0,1fr) auto;
+  min-height: 48px;
+  gap: 7px;
+  padding: 7px 0;
+}
+.settings-system-list .setting-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.settings-system-list .setting-icon .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+.settings-system-list .legacy-setting-row > div > strong {
+  font-size: 11px;
+}
+.settings-system-list .small {
+  margin-top: 1px;
+  font-size: 8px;
+  line-height: 1.25;
+}
+.settings-system-list .secondary-button {
+  min-height: 32px;
+  padding: 5px 7px;
+  border-radius: 9px;
+  font-size: 9px;
+}
+.settings-hint-panel {
+  padding: 9px 10px;
+}
+.settings-data-copy {
+  grid-template-columns: 28px minmax(0,1fr);
+  gap: 7px;
+}
+.settings-data-copy strong { font-size: 10px; }
+.settings-data-copy .small { margin-top: 2px; font-size: 8px; }
+
+/* Документы */
+.receipt-stats-panel {
+  margin-bottom: 9px;
+  padding: 10px;
+}
+.receipt-stats-panel .metrics {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.receipt-stats-panel .metric {
+  padding: 8px 9px;
+  border-radius: 10px;
+}
+.receipt-stats-panel .metric-label { font-size: 8px; }
+.receipt-stats-panel .metric-value {
+  margin-top: 4px;
+  font-size: 17px;
+}
+.receipt-add-button {
+  min-height: 40px;
+  margin-bottom: 9px;
+  font-size: 11px;
+}
+.receipt-history-panel {
+  padding: 11px 12px;
+}
+.receipt-history-panel .panel-title {
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+.receipt-row {
+  grid-template-columns: 30px minmax(0,1fr) auto 16px;
+  gap: 7px;
+  min-height: 48px;
+  padding: 7px 0;
+}
+.receipt-row-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.receipt-row-icon .ui-icon {
+  width: 14px;
+  height: 14px;
+}
+.receipt-row-copy strong { font-size: 11px; }
+.receipt-row-copy small { margin-top: 1px; font-size: 8px; }
+.receipt-row b { font-size: 10px; }
+.receipt-row .chevron .ui-icon { width: 14px; height: 14px; }
+
+/* Черновики */
+.drafts-content > .panel:first-of-type {
+  padding: 10px 11px;
+}
+.drafts-content > .panel:first-of-type .panel-title {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.drafts-content > .panel:first-of-type .small {
+  font-size: 8.5px;
+}
+.draft-card {
+  margin-bottom: 7px;
+  padding: 11px 12px;
+  border-radius: 14px;
+}
+.draft-top {
+  gap: 8px;
+}
+.draft-top .client-name { font-size: 12px; }
+.draft-top .small { margin-top: 2px; font-size: 8.5px; }
+.draft-top > strong { font-size: 11px; }
+.draft-actions {
+  gap: 5px;
+  margin-top: 8px;
+}
+.draft-actions button {
+  min-height: 36px;
+  padding: 6px 8px;
+  font-size: 10px;
+}
+
+/* Бэкапы */
+.backup-main-panel,
+.backup-content-panel {
+  padding: 11px 12px;
+}
+.backup-main-panel .panel-title,
+.backup-content-panel .panel-title {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.backup-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.backup-grid button {
+  min-height: 38px;
+  padding: 6px 7px;
+  border-radius: 10px;
+  font-size: 9px;
+}
+.backup-settings-list .setting-row {
+  min-height: 44px;
+  padding: 7px 0;
+}
+.backup-settings-list strong { font-size: 10px; }
+.backup-settings-list .small { margin-top: 1px; font-size: 8px; }
+.backup-settings-list select {
+  min-height: 34px;
+  max-width: 125px;
+  padding: 4px 7px;
+  border-radius: 9px;
+  font-size: 9px;
+}
+.backup-settings-list .toggle {
+  transform: scale(.82);
+  transform-origin: right center;
+}
+.backup-content-panel .metrics {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 5px;
+}
+.backup-content-panel .metric {
+  padding: 7px 5px;
+  border-radius: 9px;
+}
+.backup-content-panel .metric-label { font-size: 7.5px; }
+.backup-content-panel .metric-value { margin-top: 3px; font-size: 14px; }
+
+/* Инструменты */
+.tools-head {
+  align-items: flex-start;
+}
+.tools-head-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+.tools-head-actions button {
+  min-height: 36px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 9.5px;
+}
+.tools-stats-panel {
+  margin-bottom: 9px;
+  padding: 10px;
+}
+.tools-stats-panel .metrics {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.tools-stats-panel .metric {
+  padding: 8px 9px;
+  border-radius: 10px;
+}
+.tools-stats-panel .metric-label { font-size: 8px; }
+.tools-stats-panel .metric-value { margin-top: 4px; font-size: 17px; }
+.tools-list-panel {
+  padding: 10px 12px;
+}
+.tool-row {
+  min-height: 46px;
+  padding: 7px 0;
+}
+.tool-row strong { font-size: 11px; }
+.tool-row small { margin-top: 1px; font-size: 8px; }
+.tool-row b { font-size: 10px; }
+.tool-row .chevron .ui-icon { width: 14px; height: 14px; }
+
+/* Список покупок */
+.shopping-content .client-list {
+  gap: 6px;
+}
+.legacy-shopping-card {
+  min-height: 54px;
+  padding: 9px 11px;
+  border-radius: 13px;
+}
+.legacy-shopping-card .stock-name {
+  font-size: 11px;
+}
+.legacy-shopping-card .small {
+  margin-top: 2px;
+  font-size: 8px;
+}
+.shopping-need span {
+  font-size: 8px;
+}
+.shopping-need strong {
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+@media (max-width: 380px) {
+  .settings-profile-panel .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .settings-profile-panel .form-group.full {
+    grid-column: 1;
+  }
+
+  .settings-system-list .legacy-setting-row {
+    grid-template-columns: 28px minmax(0,1fr);
+  }
+  .settings-system-list .secondary-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .backup-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .backup-content-panel .metrics {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .tools-head {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+  }
+  .tools-head-actions {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .goods-card-main {
+    grid-template-columns: 36px minmax(0,1fr);
+  }
+  .goods-card-total {
+    grid-column: 2;
+    margin-top: -3px;
+  }
+
+  .legacy-shopping-card {
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+}
