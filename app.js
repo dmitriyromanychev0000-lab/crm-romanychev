@@ -711,6 +711,45 @@ function priceModal(existing = null, priceIndex = -1) {
   });
 }
 
+function clientModal(clientKey) {
+  const orders = data.orders
+    .filter((order) => clientKeyForOrder(order) === clientKey)
+    .sort((a, b) => new Date(b.created || 0) - new Date(a.created || 0));
+  if (!orders.length) return;
+  const client = orders[0];
+  const total = orders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
+  const closed = orders.filter((order) => normalizeStatus(order.status) === "closed").length;
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<div class="modal compact-modal">
+    <h2>${escapeHtml(client.name || "Клиент")}</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Телефон</label><div class="field readonly-field">${escapeHtml(client.phone || "—")}</div></div>
+      <div class="form-group"><label>Обращений</label><div class="field readonly-field">${orders.length}</div></div>
+      <div class="form-group"><label>Закрыто</label><div class="field readonly-field">${closed}</div></div>
+      <div class="form-group"><label>Общая сумма</label><div class="field readonly-field">${money(total)}</div></div>
+      ${client.address ? `<div class="form-group full"><label>Последний адрес</label><div class="field readonly-field">${escapeHtml(client.address)}</div></div>` : ""}
+    </div>
+    <div class="form-section-title">История заявок</div>
+    <div class="goods-list">${orders.map((order) => `<button class="goods-sheet" data-client-order="${escapeHtml(order.id)}"><span><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(order.created)} · ${escapeHtml(order.status || "В работе")}</small></span><b>${money(order.sum)}</b><span>›</span></button>`).join("")}</div>
+    <div class="modal-actions">
+      ${client.phone ? `<a class="secondary-button" href="tel:${escapeHtml(client.phone)}">☎ Позвонить</a>` : ""}
+      <button type="button" class="primary-button" data-close-modal>Закрыть</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) return modal.remove();
+    const orderButton = event.target.closest("[data-client-order]");
+    if (!orderButton) return;
+    const order = data.orders.find((item) => String(item.id) === String(orderButton.dataset.clientOrder));
+    if (!order) return;
+    modal.remove();
+    newOrderModal(order);
+  });
+}
+
 function financeModal(type) {
   const isIncome = type === "income";
   const modal = document.createElement("div");
