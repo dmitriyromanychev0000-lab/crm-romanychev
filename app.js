@@ -791,6 +791,56 @@ function newOrderModal(existing = null) {
 }
 
 
+
+function receiptModal(existing = null, receiptIndex = -1) {
+  const item = existing || {};
+  const view = receiptSummary(item);
+  const rawDate = String(view.date || "");
+  const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const orderOptions = [...data.orders].reverse().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="receipt-form">
+    <h2>${existing ? "Редактировать документ" : "Новый документ"}</h2>
+    <div class="form-grid">
+      <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Чек, квитанция, заказ-наряд…" /></div>
+      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" /></div>
+      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${escapeHtml(dateValue)}" /></div>
+      <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" value="${view.amount}" /></div>
+      <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(view.note)}</textarea></div>
+    </div>
+    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("#delete-receipt")?.addEventListener("click", async () => {
+    if (!confirm("Удалить документ?")) return;
+    if (receiptIndex >= 0) data.receipts.splice(receiptIndex, 1);
+    await saveData(); modal.remove(); await render(); toast("Документ удалён");
+  });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const date = form.get("date");
+    const next = {
+      ...item,
+      id: item.id || crypto.randomUUID(),
+      title: form.get("title"),
+      number: form.get("number"),
+      date: date ? new Date(`${date}T12:00:00`).toISOString() : null,
+      amount: Number(form.get("amount")) || 0,
+      orderId: form.get("orderId") || null,
+      note: form.get("note"),
+      updatedAt: new Date().toISOString()
+    };
+    if (!Array.isArray(data.receipts)) data.receipts = [];
+    if (receiptIndex >= 0) data.receipts[receiptIndex] = next;
+    else data.receipts.push({ ...next, createdAt: new Date().toISOString() });
+    await saveData(); modal.remove(); await render(); toast("Документ сохранён");
+  });
+}
 function toolModal(existing = null, toolIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
