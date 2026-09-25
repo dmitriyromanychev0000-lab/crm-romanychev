@@ -260,6 +260,13 @@ h2 { margin: 0; font-size: 24px; }
 
 @media (max-width: 520px) {
   .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .page-head { flex-wrap: wrap; }
+  .page-head > .finance-actions { width: 100%; }
+  .brand-title { white-space: normal; font-size: 20px; line-height: 1.15; }
+  .metric-value { white-space: normal; overflow-wrap: anywhere; }
+  .setting-row { align-items: stretch; flex-direction: column; }
+  .setting-row .small { overflow-wrap: anywhere; word-break: break-word; }
+  .modal { max-height: calc(100dvh - 24px); padding-bottom: calc(22px + env(safe-area-inset-bottom)); }
   .topbar { min-height: 88px; padding: 16px 18px; }
   .logo { width: 52px; height: 52px; flex-basis: 52px; }
   .content { padding: 24px 16px 8px; }
@@ -292,4 +299,13 @@ h2 { margin: 0; font-size: 24px; }
   .topbar, .bottom-nav, .no-print, .toast { display: none !important; }
   .shell, .content { width: 100%; max-width: none; padding: 0; margin: 0; }
   .act-sheet { padding: 0; border: 0; box-shadow: none; }
+  .act-sheet table { min-width: 0; font-size: 11px; }
+  .act-sheet tr, .act-sheet td, .act-sheet th { break-inside: avoid; }
+  .act-acceptance, .act-signatures { break-inside: avoid; }
+}
+
+@media (max-width: 380px) {
+  .metrics { grid-template-columns: 1fr; }
+  .actions { grid-template-columns: repeat(2, 1fr); }
+  .photo-grid { grid-template-columns: 1fr; }
 }
