@@ -855,6 +855,12 @@ app.addEventListener("click", async (event) => {
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "more-menu") { moreSection = "menu"; return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "new-price") return priceModal();
+  if (action === "edit-price") {
+    const index = Number(event.target.closest("[data-action]").dataset.index);
+    const item = data.receipt_prices[index];
+    if (item) return priceModal(item, index);
+  }
   if (action === "new-stock") return stockModal();
   if (action === "edit-stock") {
     const id = event.target.closest("[data-action]").dataset.id;
