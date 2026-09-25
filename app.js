@@ -793,8 +793,11 @@ async function compressPhotoFile(file) {
     createdAt: new Date().toISOString()
   };
 }
-function newOrderModal(existing = null) {
-  const order = existing || {};
+function newOrderModal(existing = null, options = {}) {
+  const forceNew = Boolean(options.forceNew);
+  const sourceOrder = existing || {};
+  const order = forceNew ? { ...structuredClone(sourceOrder), id: null, created: null } : sourceOrder;
+  const previousMaterials = forceNew ? [] : (Array.isArray(order.materials) ? order.materials : []);
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
@@ -807,7 +810,7 @@ function newOrderModal(existing = null) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
   modal.innerHTML = `<form class="modal" id="order-form">
-    <h2>${existing ? "Редактировать заявку" : "Новая заявка"}</h2>
+    <h2>${existing && !forceNew ? "Редактировать заявку" : "Новая заявка"}</h2>
     <div class="form-section-title">Клиент и техника</div>
     <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
@@ -962,7 +965,7 @@ function newOrderModal(existing = null) {
       })).filter((item) => item.name.trim()),
       photos: orderPhotos
     };
-    const stockSync = syncOrderStock(order.materials, next.materials, next.id);
+    const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
     if (!stockSync.ok) return toast(stockSync.message);
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
