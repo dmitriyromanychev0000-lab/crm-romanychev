@@ -623,7 +623,7 @@ function ordersPage() {
       <button class="chip ${orderPeriod === "90" ? "active" : ""}" data-order-period="90">90 дней</button>
       <button class="chip ${orderPeriod === "365" ? "active" : ""}" data-order-period="365">365 дней</button>
     </div>
-    ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">▣</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
+    ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
 }
 
@@ -654,10 +654,10 @@ function warehousePage() {
       <div class="metric"><div class="metric-label">Активных позиций</div><div class="metric-value">${activeItems.length}</div></div>
       <div class="metric"><div class="metric-label">Мало осталось</div><div class="metric-value yellow">${low}</div></div>
     </div>
-    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span>›</span></button>`).join("")}</div></section>` : ""}
+    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : ""}
     ${items.length ? items.map((item) => `<article class="panel stock-card">
       <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">в наличии</div></div></div>
-      <div class="stock-actions"><button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">✎ Изменить</button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
+      <div class="stock-actions"><button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Изменить</span></button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
     </article>`).join("") : (query ? emptyState("⌕", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("▥", "Склад пуст", "Позиции появятся после импорта бэкапа."))}
     <section class="panel"><div class="panel-title">Последние движения</div>
       ${movements.length ? `<ul class="list">${movements.map((movement) => {
@@ -743,7 +743,7 @@ function analyticsPage() {
         <div class="metric"><div class="metric-label">Склад</div><div class="metric-value purple">${data.warehouse.filter((item) => !item.archived).length}</div></div>
       </div>
     </section>
-    <section class="panel"><div class="panel-title">⌁ Динамика выручки</div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
+    <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span> Динамика выручки</div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
     <section class="panel"><div class="panel-title">Доходность по типам техники</div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
       const result = item.revenue - item.costs;
       return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
@@ -764,12 +764,12 @@ function priceList() {
   const prices = data.receipt_prices.slice(0, 100);
   const customServices = Array.isArray(data.service_custom) ? data.service_custom : [];
   return `<main class="content"><div class="page-head"><div><h1>Прайс-лист</h1><p class="lead">Каталог услуг и материалов</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
-    <section class="panel"><div class="panel-title">Основной прайс</div>${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span>›</span></button></li>`).join("")}</ul>` : `<div class="empty">Основной прайс пуст</div>`}</section>
+    <section class="panel"><div class="panel-title">Основной прайс</div>${prices.length ? `<ul class="list">${prices.map((item, index) => `<li class="price-row"><button class="goods-sheet" data-action="edit-price" data-index="${index}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || item.tech || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span><b>${money(item.price)}</b><span class="chevron">${icon("chevron")}</span></button></li>`).join("")}</ul>` : `<div class="empty">Основной прайс пуст</div>`}</section>
     <section class="panel"><div class="panel-title">Пользовательские услуги</div><button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>${customServices.length ? `<div class="goods-list">${customServices.map((item, index) => {
       const name = item.name || item.title || item.service || "Услуга";
       const price = Number(item.price || item.cost || item.sum) || 0;
       const category = item.category || item.tech || "Своя услуга";
-      return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span>›</span></button>`;
+      return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div>` : `<div class="empty">Своих услуг пока нет</div>`}</section>
   </main>`;
 }
@@ -801,7 +801,7 @@ function clientsPage() {
   return `<main class="content"><div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div><div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.filter((item) => !item.archived).length}</div></div></div></section>
     <div class="search-row"><input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
-    ${filtered.length ? `<div class="client-list">${filtered.map((client) => `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(client.name)}</div><div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div></div><strong>${money(client.total)}</strong></div><div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>${client.address ? `<div class="small client-address">⌖ ${escapeHtml(client.address)}</div>` : ""}${client.phone ? `<a class="secondary-button client-call" href="tel:${escapeHtml(client.phone)}">☎ Позвонить</a>` : ""}<button class="secondary-button client-call" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button></article>`).join("")}</div>` : (query ? emptyState("⌕", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("♙", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
+    ${filtered.length ? `<div class="client-list">${filtered.map((client) => `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(client.name)}</div><div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div></div><strong>${money(client.total)}</strong></div><div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>${client.address ? `<div class="small client-address meta-item">${icon("location")}<span>${escapeHtml(client.address)}</span></div>` : ""}${client.phone ? `<a class="secondary-button client-call icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}<button class="secondary-button client-call" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button></article>`).join("")}</div>` : (query ? emptyState("⌕", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("♙", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
   </main>`;
 }
 
@@ -841,7 +841,7 @@ function goodsPage() {
   const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
   return `<main class="content"><div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("goods")}</span> Новый товарник</div><p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p><button class="primary-button wide" data-action="new-goods-sheet">+ Создать вручную</button></section>
-    ${sheets.length ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span>›</span></button>`).join("")}</div></section>` : emptyState("◇", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
+    ${sheets.length ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : emptyState("◇", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
   </main>`;
 }
 
@@ -968,7 +968,7 @@ function receiptsPage() {
     ${receipts.length ? `<section class="panel"><div class="goods-list">${receipts.map((item, index) => {
       const view = receiptSummary(item);
       const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
-      return `<button class="goods-sheet" data-action="edit-receipt" data-index="${index}"><span><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span><b>${view.amount ? money(view.amount) : ""}</b><span>›</span></button>`;
+      return `<button class="goods-sheet" data-action="edit-receipt" data-index="${index}"><span><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span><b>${view.amount ? money(view.amount) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div></section>` : emptyState("▤", "Документов пока нет", "Добавь документ вручную или импортируй старый бэкап.")}
   </main>`;
 }
@@ -982,7 +982,7 @@ function toolsPage() {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button class="goods-sheet" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span>›</span></button>`;
+      return `<button class="goods-sheet" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
   </main>`;
 }
@@ -999,7 +999,7 @@ function moreMenu() {
     ["act", "act", "Акт", "Подготовка и печать документа"],
     ["settings", "settings", "Настройки", "Оформление и параметры приложения"]
   ];
-  return `<main class="content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item" data-more="${id}"><span class="menu-icon">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">›</span></button>`).join("")}</div></main>`;
+  return `<main class="content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item" data-more="${id}"><span class="menu-icon">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></main>`;
 }
 
 async function morePage() {
@@ -1209,7 +1209,7 @@ function newOrderModal(existing = null, options = {}) {
     photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
       const source = photoSource(photo);
       const label = photoLabel(photo, index);
-      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">▧<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">×</button></div>`;
+      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">${icon("camera")}<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">×</button></div>`;
     }).join("") : `<div class="small">Фотографий пока нет</div>`;
   };
   photoInput.addEventListener("change", async () => {
@@ -1532,9 +1532,9 @@ function clientModal(clientKey) {
       ${client.address ? `<div class="form-group full"><label>Последний адрес</label><div class="field readonly-field">${escapeHtml(client.address)}</div></div>` : ""}
     </div>
     <div class="form-section-title">История заявок</div>
-    <div class="goods-list">${orders.map((order) => `<button class="goods-sheet" data-client-order="${escapeHtml(order.id)}"><span><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(order.created)} · ${escapeHtml(order.status || "В работе")}</small></span><b>${money(order.sum)}</b><span>›</span></button>`).join("")}</div>
+    <div class="goods-list">${orders.map((order) => `<button class="goods-sheet" data-client-order="${escapeHtml(order.id)}"><span><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(order.created)} · ${escapeHtml(order.status || "В работе")}</small></span><b>${money(order.sum)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>
     <div class="modal-actions">
-      ${client.phone ? `<a class="secondary-button" href="tel:${escapeHtml(client.phone)}">☎ Позвонить</a>` : ""}
+      ${client.phone ? `<a class="secondary-button icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}
       <button type="button" class="primary-button" data-close-modal>Закрыть</button>
     </div>
   </div>`;
