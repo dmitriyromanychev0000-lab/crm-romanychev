@@ -1653,20 +1653,15 @@ function newOrderModal(existing = null, options = {}) {
 
     <div class="form-section-title">Расчёт и гарантия</div>
     <div class="form-grid legacy-payment-grid">
-      <div class="form-group"><label>Итоговая сумма (₽)</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
-      <div class="form-group"><label>Предоплата (₽)</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
-      <div class="form-group"><label>Скидка (₽)</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${Number(order.guarantee || 6) === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${Number(order.guarantee || 6) === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${Number(order.guarantee || 6) === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${Number(order.guarantee || 6) === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${Number(order.guarantee || 6) === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${Number(order.guarantee || 6) === 24 ? "selected" : ""}>24 месяцев</option></select></div>
+      <div class="form-group"><label>💰 Итоговая сумма для клиента (₽)</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group"><label>💳 Предоплата (₽)</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
+      <div class="form-group"><label>🎁 Скидка (₽)</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
+      <div class="form-group"><label>🛡️ Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${Number(order.guarantee || 6) === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${Number(order.guarantee || 6) === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${Number(order.guarantee || 6) === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${Number(order.guarantee || 6) === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${Number(order.guarantee || 6) === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${Number(order.guarantee || 6) === 24 ? "selected" : ""}>24 месяца</option></select></div>
+      <div class="form-group"><label>🧾 Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+      <div class="form-group"><label>📄 Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
+      <div class="form-group"><label>📊 Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
+      <div class="form-group"><label>🏷️ Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
-
-    <details class="order-extra-finance">
-      <summary>Дополнительный расчёт</summary>
-      <div class="form-grid">
-        <div class="form-group"><label>Процент мастера</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
-        <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
-        <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
-      </div>
-    </details>
 
     <section class="legacy-guarantee-card">
       <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">до ${escapeHtml(warrantyUntilText(order))}</span></div>
