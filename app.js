@@ -699,6 +699,50 @@ function newOrderModal(existing = null) {
   });
 }
 
+
+function toolModal(existing = null, toolIndex = -1) {
+  const item = existing || {};
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="tool-form">
+    <h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2>
+    <div class="form-grid">
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Электроинструмент, измерительный…" /></div>
+      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" /></div>
+      <div class="form-group"><label>Стоимость</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" /></div>
+      <div class="form-group"><label>Серийный номер</label><input class="field" name="serial" value="${escapeHtml(item.serial || item.serialNumber || "")}" /></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(item.note || item.comment || "")}</textarea></div>
+    </div>
+    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-tool">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("#delete-tool")?.addEventListener("click", async () => {
+    if (!confirm("Удалить инструмент?")) return;
+    if (toolIndex >= 0) data.tools.splice(toolIndex, 1);
+    await saveData(); modal.remove(); await render(); toast("Инструмент удалён");
+  });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = {
+      ...item,
+      id: item.id || crypto.randomUUID(),
+      name: form.get("name"),
+      category: form.get("category"),
+      status: form.get("status"),
+      price: Number(form.get("price")) || 0,
+      serial: form.get("serial"),
+      note: form.get("note"),
+      updatedAt: new Date().toISOString()
+    };
+    if (!Array.isArray(data.tools)) data.tools = [];
+    if (toolIndex >= 0) data.tools[toolIndex] = next; else data.tools.push({ ...next, createdAt: new Date().toISOString() });
+    await saveData(); modal.remove(); await render(); toast("Инструмент сохранён");
+  });
+}
 function priceModal(existing = null, priceIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
