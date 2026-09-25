@@ -49,6 +49,7 @@ let orderFilter = ["all", "closed", "active", "declined"].includes(initialUiStat
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
+let analyticsPeriod = ["all", "30", "90", "365"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "all";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
@@ -61,6 +62,7 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       clientSearch,
+      analyticsPeriod,
       moreSection,
       selectedActOrderId,
       scrollY: window.scrollY,
@@ -117,6 +119,13 @@ const shortDate = (value) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return escapeHtml(value);
   return new Intl.DateTimeFormat("ru-RU").format(date);
+};
+
+const withinPeriod = (value, period) => {
+  if (period === "all") return true;
+  const time = new Date(value || 0).getTime();
+  if (!Number.isFinite(time)) return false;
+  return time >= Date.now() - Number(period) * 86400000;
 };
 
 const normalizeStatus = (status) => {
