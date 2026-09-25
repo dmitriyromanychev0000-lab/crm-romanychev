@@ -532,20 +532,20 @@ async function maybeAutoBackup() {
 
 function nav() {
   const items = [
-    ["orders", "▣", "Заявки"],
-    ["warehouse", "▥", "Склад"],
-    ["analytics", "⌁", "Аналитика"],
-    ["more", "•••", "Ещё"]
+    ["orders", "orders", "Заявки"],
+    ["warehouse", "warehouse", "Склад"],
+    ["analytics", "analytics", "Аналитика"],
+    ["more", "more", "Ещё"]
   ];
-  return `<nav class="bottom-nav">${items.map(([id, icon, label]) => `
+  return `<nav class="bottom-nav">${items.map(([id, iconName, label]) => `
     <button class="nav-button ${activePage === id ? "active" : ""}" data-nav="${id}">
-      <span class="nav-icon">${icon}</span>${label}
+      <span class="nav-icon">${icon(iconName)}</span><span>${label}</span>
     </button>`).join("")}</nav>`;
 }
 
 function header() {
   return `<header class="topbar">
-    <div class="logo">⌁</div>
+    <div class="logo">${icon("logo")}</div>
     <div class="brand">
       <div class="brand-title">CRM by <span>Romanychev</span> 😎</div>
       <div class="brand-subtitle">Личный кабинет мастера</div>
@@ -568,7 +568,7 @@ function orderCard(order) {
       <div><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
     </div>
     <div class="appliance">
-      <div class="appliance-main"><div class="appliance-icon">▥</div><div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div></div>
+      <div class="appliance-main"><div class="appliance-icon">${icon("appliance")}</div><div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div></div>
       <div class="sum">${money(order.sum)}</div>
     </div>
     <div class="meta">
@@ -578,12 +578,12 @@ function orderCard(order) {
       ${photos ? `<span>▧ ${photos} фото</span>` : ""}
     </div>
     <div class="actions">
-      <button class="action" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>✎</span>Изменить</button>
-      <button class="action" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${isClosed ? "↻" : "✓"}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
-      <button class="action" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>▣</span>Копия</button>
-      <button class="action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>▤</span>Документ</button>
-      <button class="action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${isArchived ? "↩" : "⌫"}</span>${isArchived ? "Вернуть" : "В архив"}</button>
-      ${order.phone ? `<a class="action" href="tel:${escapeHtml(order.phone)}"><span>☎</span>Позвонить</a>` : `<button class="action" disabled><span>☎</span>Позвонить</button>`}
+      <button class="action" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>${icon("edit")}</span>Изменить</button>
+      <button class="action" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${icon(isClosed ? "reopen" : "check")}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
+      <button class="action" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>${icon("copy")}</span>Копия</button>
+      <button class="action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>${icon("document")}</span>Документ</button>
+      <button class="action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${icon(isArchived ? "restore" : "archive")}</span>${isArchived ? "Вернуть" : "В архив"}</button>
+      ${order.phone ? `<a class="action" href="tel:${escapeHtml(order.phone)}"><span>${icon("phone")}</span>Позвонить</a>` : `<button class="action" disabled><span>${icon("phone")}</span>Позвонить</button>`}
     </div>
   </article>`;
 }
@@ -982,18 +982,18 @@ function toolsPage() {
 }
 function moreMenu() {
   const items = [
-    ["backup", "▧", "Бэкапы", "Импорт, экспорт и автосохранение"],
-    ["prices", "◇", "Прайс-лист", "Каталог услуг и материалов"],
-    ["clients", "♙", "Клиенты", "История обращений и ремонтов"],
-    ["finance", "₽", "Финансы", "Расходы и дополнительные доходы"],
-    ["goods", "◇", "Товарник", "Отдельный расчёт товаров"],
-    ["tools", "🛠", "Инструменты", "Учёт рабочего инструмента"],
-    ["receipts", "▤", "Документы и чеки", "Старые документы и новые записи"],
-    ["drafts", "✎", "Черновики", "Незавершённые заявки и восстановление"],
-    ["act", "▤", "Акт", "Подготовка и печать документа"],
-    ["settings", "⚙", "Настройки", "Оформление и параметры приложения"]
+    ["backup", "backup", "Бэкапы", "Импорт, экспорт и автосохранение"],
+    ["prices", "price", "Прайс-лист", "Каталог услуг и материалов"],
+    ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
+    ["finance", "finance", "Финансы", "Расходы и дополнительные доходы"],
+    ["goods", "goods", "Товарник", "Отдельный расчёт товаров"],
+    ["tools", "tools", "Инструменты", "Учёт рабочего инструмента"],
+    ["receipts", "receipt", "Документы и чеки", "Старые документы и новые записи"],
+    ["drafts", "drafts", "Черновики", "Незавершённые заявки и восстановление"],
+    ["act", "act", "Акт", "Подготовка и печать документа"],
+    ["settings", "settings", "Настройки", "Оформление и параметры приложения"]
   ];
-  return `<main class="content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list">${items.map(([id, icon, name, description]) => `<button class="menu-item" data-more="${id}"><span class="menu-icon">${icon}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">›</span></button>`).join("")}</div></main>`;
+  return `<main class="content"><div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div><div class="menu-list">${items.map(([id, iconName, name, description]) => `<button class="menu-item" data-more="${id}"><span class="menu-icon">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">›</span></button>`).join("")}</div></main>`;
 }
 
 async function morePage() {
