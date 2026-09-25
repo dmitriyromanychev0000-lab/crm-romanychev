@@ -1468,6 +1468,8 @@ app.addEventListener("click", async (event) => {
   }
   const filter = event.target.closest("[data-filter]");
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
+  const orderPeriodFilter = event.target.closest("[data-order-period]");
+  if (orderPeriodFilter) { orderPeriod = orderPeriodFilter.dataset.orderPeriod; saveUiState(); await render(); return; }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) { analyticsPeriod = analyticsFilter.dataset.analyticsPeriod; saveUiState(); await render(); return; }
   const financeFilter = event.target.closest("[data-finance-period]");
