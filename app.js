@@ -1438,14 +1438,14 @@ function newOrderModal(existing = null, options = {}) {
     .filter((item) => !item.archived && !item.hiddenFromOrders)
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal" id="order-form">
+  modal.className = "modal-backdrop order-editor-backdrop";
+  modal.innerHTML = `<form class="modal order-editor-modal" id="order-form">
     <h2>${existing && !forceNew ? "Редактировать заявку" : "Новая заявка"}</h2>
     <div class="form-section-title">Клиент и техника</div>
     <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(order.phone || "")}" inputmode="tel" /></div>
-      <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Стиральная машина","Посудомоечная машина","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group"><label>Модель</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" /></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
@@ -1469,7 +1469,7 @@ function newOrderModal(existing = null, options = {}) {
     <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото уменьшаются перед сохранением и остаются только в локальной CRM и бэкапе.</div></div>
     <div class="photo-grid" id="order-photo-list"></div>
 
-    <div class="calculated-total"><span>Услуги и материалы</span><strong id="calculated-total">0 ₽</strong><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
+    <div class="calculated-total order-calculation-summary"><div><span>Итого услуг</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Общий расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
 
     <div class="form-section-title">Расчёт и гарантия</div>
     <div class="form-grid">
@@ -1526,6 +1526,8 @@ function newOrderModal(existing = null, options = {}) {
     const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
     const materialTotal = [...modal.querySelectorAll("[data-material-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="unit-cost"]').value) || 0), 0);
     const total = serviceTotal + materialTotal;
+    modal.querySelector("#service-total").textContent = money(serviceTotal);
+    modal.querySelector("#material-total").textContent = money(materialTotal);
     modal.querySelector("#calculated-total").textContent = money(total);
     return total;
   };
@@ -1572,6 +1574,7 @@ function newOrderModal(existing = null, options = {}) {
       expense_gray: Number(form.get("expense_gray")),
       expense_white: Number(form.get("expense_white")),
       guarantee: Number(form.get("guarantee")),
+      tag: form.get("tag"),
       address: form.get("address"),
       issue: form.get("issue"),
       diagnosis: form.get("diagnosis"),
