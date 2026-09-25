@@ -360,7 +360,8 @@ function warehousePage() {
     const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
     return !query || haystack.includes(query);
   });
-  const low = activeItems.filter((item) => Number(item.quantity) <= Number(item.min || 0)).length;
+  const lowItems = activeItems.filter((item) => Number(item.quantity) <= Number(item.min || 0));
+  const low = lowItems.length;
   const movements = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
     .slice(0, 12);
@@ -378,6 +379,7 @@ function warehousePage() {
       <div class="metric"><div class="metric-label">Активных позиций</div><div class="metric-value">${activeItems.length}</div></div>
       <div class="metric"><div class="metric-label">Мало осталось</div><div class="metric-value yellow">${low}</div></div>
     </div>
+    ${lowItems.length ? `<section class="panel"><div class="panel-title"><span class="badge-icon">!</span> Критические остатки</div><div class="goods-list">${lowItems.map((item) => `<button class="goods-sheet" data-action="edit-stock" data-id="${escapeHtml(item.id)}"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>Минимум: ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</small></span><b class="yellow">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</b><span>›</span></button>`).join("")}</div></section>` : ""}
     ${items.length ? items.map((item) => `<article class="panel stock-card">
       <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">в наличии</div></div></div>
       <div class="stock-actions"><button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">✎ Изменить</button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
