@@ -4062,3 +4062,34 @@ body,
     grid-template-columns: 1fr;
   }
 }
+
+
+/* 0.42.2 · Финальная стабилизация модальных футеров */
+.modal-backdrop > .modal {
+  flex: 0 0 auto;
+}
+
+.compact-modal .modal-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin: 12px 0 0;
+  padding: 9px 0 calc(4px + env(safe-area-inset-bottom));
+  border-top: 1px solid #293139;
+  background: rgba(17,24,29,.96);
+  backdrop-filter: blur(14px);
+}
+
+.compact-modal .modal-actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 520px) {
+  .compact-modal .modal-actions {
+    bottom: 0;
+    margin: 10px 0 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
