@@ -7,7 +7,7 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "0.42.0";
-const APP_BUILD = "2026.09.26.03";
+const APP_BUILD = "2026.09.26.04";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Карточка заявки упрощена до 5 действий; форма и каталог услуг стали компактнее; добавлена строгая валидация российского телефона";
 const BACKUP_FORMAT_VERSION = 18;
@@ -344,7 +344,7 @@ async function inspectBackupFile() {
       modal.innerHTML = `<div class="modal compact-modal"><h2>Проверка бэкапа</h2><div class="goods-list">${rows.map(([name, value]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="green">✓</b><span></span></div>`).join("")}</div>${warnings.length ? `<div class="form-section-title">Предупреждения</div><div class="panel">${warnings.map((item) => `<div class="small">• ${escapeHtml(item)}</div>`).join("")}</div>` : `<div class="panel"><strong class="green">Файл совместим с текущей CRM</strong></div>`}<div class="modal-actions"><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
       document.body.appendChild(modal);
       modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
-      modal.addEventListener("click", (event) => { if (event.target === modal) closeCatalog(); });
+      modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
     } catch (error) {
       console.error(error);
       toast(`Файл не прошёл проверку: ${error.message}`);
@@ -1965,7 +1965,8 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   modal.querySelector("#catalog-apply").addEventListener("click", () => {
     applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
   });
-  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.addEventListener("click", (event) => { if (event.target === modal) closeCatalog(); });
+  modal.addEventListener("keydown", (event) => { if (event.key === "Escape") closeCatalog(); });
   renderCatalog();
 }
 
