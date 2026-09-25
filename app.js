@@ -1194,12 +1194,52 @@ function renderGoodsInlinePreview(root = document) {
 
 function goodsPage() {
   const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
-  return `<main class="content"><div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-    <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("goods")}</span> Новый товарник</div><p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p><button class="primary-button wide" data-action="new-goods-sheet">+ Создать вручную</button></section>
-    ${sheets.length ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : emptyState("◇", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
+  const latest = sheets[0] || null;
+  const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
+  const productPrice = data.receipt_prices.filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар")).slice(0, 30);
+
+  return `<main class="content goods-content">
+    <div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+
+    <section class="panel goods-create-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("goods")}</span> Новый товарник</div>
+      <div class="goods-create-actions">
+        <button class="primary-button" data-action="new-goods-sheet">+ Создать вручную</button>
+        <button class="secondary-button" data-action="open-product-price">${icon("price")}<span>Из прайса товаров</span></button>
+      </div>
+      <p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
+    </section>
+
+    ${latest ? `<section class="panel goods-edit-summary">
+      <div class="panel-title"><span class="badge-icon">${icon("edit")}</span> Редактирование товарника</div>
+      <div class="goods-summary-row"><span>Название</span><strong>${escapeHtml(latest.title || "Товарник")}</strong></div>
+      <div class="goods-summary-row"><span>Позиций</span><strong>${latestItems.length}</strong></div>
+      <div class="goods-summary-row"><span>Текущая сумма</span><strong>${money(latest.total || 0)}</strong></div>
+      <div class="goods-summary-row"><span>Целевая сумма</span><strong class="yellow">${money(latest.target || 0)}</strong></div>
+      <button class="secondary-button wide" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
+    </section>
+
+    <section class="panel goods-preview-panel" id="goods-inline-preview">
+      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Предпросмотр</div>
+      <div class="goods-preview-table-wrap">
+        <table class="goods-preview-table">
+          <thead><tr><th>Товар</th><th>Количество</th><th>Цена</th></tr></thead>
+          <tbody>${latestItems.map((item) => `<tr><td>${escapeHtml(item.name || "")}</td><td>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(Number(item.qty) || 0)} ${escapeHtml(item.unit || "шт.")}</td><td>${money(item.price || 0)}</td></tr>`).join("")}</tbody>
+        </table>
+      </div>
+      <div class="goods-preview-total"><strong>Итого</strong><strong>${money(latest.total || 0)}</strong></div>
+    </section>` : ""}
+
+    ${sheets.length > 1 ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.slice(1).map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : ""}
+
+    <details class="panel goods-price-panel" id="product-price-panel">
+      <summary><span class="panel-title"><span class="badge-icon">${icon("price")}</span> Прайс товаров</span><span class="chevron">${icon("chevron")}</span></summary>
+      ${productPrice.length ? `<div class="goods-price-list">${productPrice.map((item) => `<div class="goods-price-row"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<div class="small">В прайс-листе пока нет товарных позиций.</div>`}
+    </details>
+
+    ${!sheets.length ? emptyState("goods", "Товарников пока нет", "Создай первый расчёт товаров или материалов.") : ""}
   </main>`;
 }
-
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content"><div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
@@ -2207,6 +2247,14 @@ app.addEventListener("click", async (event) => {
     const id = event.target.closest("[data-action]").dataset.id;
     const item = data.warehouse.find((entry) => String(entry.id) === String(id));
     if (item) return stockModal(item);
+  }
+  if (action === "open-product-price") {
+    const panel = document.querySelector("#product-price-panel");
+    if (panel) {
+      panel.open = true;
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    return;
   }
   if (action === "new-goods-sheet") return goodsModal();
   if (action === "edit-goods-sheet") {
