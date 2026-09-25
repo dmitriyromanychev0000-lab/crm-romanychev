@@ -1263,6 +1263,8 @@ app.addEventListener("click", async (event) => {
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) { analyticsPeriod = analyticsFilter.dataset.analyticsPeriod; saveUiState(); await render(); return; }
+  const financeFilter = event.target.closest("[data-finance-period]");
+  if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "new-order") return newOrderModal();
   if (action === "import") return fileInput.click();
