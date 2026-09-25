@@ -328,11 +328,29 @@ async function runAppDiagnostics() {
 
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
-  modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
+  modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="secondary-button" id="copy-diagnostics">Скопировать отчёт</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("#diagnostic-backup-test").addEventListener("click", () => runBackupSelfTest());
+  modal.querySelector("#copy-diagnostics").addEventListener("click", async () => {
+    const report = [
+      "CRM by Romanychev — диагностика",
+      ...rows.map(([name, value, ok]) => `${ok ? "OK" : "WARN"} | ${name}: ${value}`)
+    ].join("\n");
+    try {
+      await navigator.clipboard.writeText(report);
+      toast("Диагностический отчёт скопирован");
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = report;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+      toast("Диагностический отчёт скопирован");
+    }
+  });
 }
 
 async function checkForAppUpdate() {
