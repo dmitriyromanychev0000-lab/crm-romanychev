@@ -56,7 +56,6 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
-let warehouseSection = ["main", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "main";
 let warehouseCreateOpen = Boolean(initialUiState.warehouseCreateOpen);
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
@@ -79,7 +78,6 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
-      warehouseSection,
       warehouseCreateOpen,
       clientSearch,
       priceSearch,
@@ -897,7 +895,7 @@ function warehousePage() {
 
     <div class="warehouse-shortcuts">
       <a class="warehouse-shortcut" href="#warehouse-movements">${icon("history")}<span>История движения</span></a>
-      <button type="button" class="warehouse-shortcut" data-action="warehouse-shopping">${icon("shopping")}<span>Список покупок</span></button>
+      <button type="button" class="warehouse-shortcut" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
     <button class="primary-button warehouse-toggle-create" data-action="toggle-stock-form" type="button">${warehouseCreateOpen ? "− Закрыть новую позицию" : "+ Новая позиция"}</button>
@@ -1761,11 +1759,42 @@ async function backupSettings() {
   </main>`;
 }
 
-function shoppingPage(backAction = "more-menu") {
-  const items = data.warehouse
+function shoppingItems() {
+  return data.warehouse
     .filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0))
     .sort((a, b) => (Number(a.quantity) - Number(a.min || 0)) - (Number(b.quantity) - Number(b.min || 0)));
+}
+
+function shoppingListText() {
+  const items = shoppingItems();
+  const lines = items.map((item) => {
+    const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
+    const amount = need > 0 ? new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need) : "проверить";
+    return `• ${item.name || "Позиция"} — ${amount}${need > 0 ? ` ${item.unit || "шт."}` : ""}`;
+  });
+  return ["Список покупок", ...lines].join("\n");
+}
+
+async function copyTextToClipboard(text, successMessage = "Скопировано") {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+  toast(successMessage);
+}
+
+function shoppingPage(backAction = "more-menu") {
+  const items = shoppingItems();
   return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="${backAction}">Назад</button></div>
+    <div class="shopping-page-actions"><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="client-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
       return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
@@ -1807,7 +1836,7 @@ async function morePage() {
 async function render() {
   let page;
   if (activePage === "orders") page = ordersPage();
-  if (activePage === "warehouse") page = warehouseSection === "shopping" ? shoppingPage("warehouse-main") : warehousePage();
+  if (activePage === "warehouse") page = warehousePage();
   if (activePage === "analytics") page = analyticsPage();
   if (activePage === "more") page = await morePage();
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
@@ -2746,7 +2775,6 @@ app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
   if (navButton) {
     activePage = navButton.dataset.nav;
-    if (activePage === "warehouse") warehouseSection = "main";
     if (activePage !== "more") moreSection = "menu";
     saveUiState({ scrollY: 0 });
     await render();
@@ -2776,21 +2804,16 @@ app.addEventListener("click", async (event) => {
   const financeFilter = event.target.closest("[data-finance-period]");
   if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
-  if (action === "warehouse-shopping") {
-    warehouseSection = "shopping";
+  if (action === "open-shopping") {
+    activePage = "more";
+    moreSection = "shopping";
     warehouseCreateOpen = false;
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
     return;
   }
-  if (action === "warehouse-main") {
-    warehouseSection = "main";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
+  if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
   if (action === "new-order") return newOrderModal();
   if (action === "import") return fileInput.click();
   if (action === "inspect-backup-file") return inspectBackupFile();
