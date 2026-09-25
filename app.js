@@ -1464,7 +1464,8 @@ async function adjustStock(id, direction) {
   const amount = Number(prompt(direction === "in" ? "Количество для прихода" : "Количество для списания", "1"));
   if (!Number.isFinite(amount) || amount <= 0) return;
   const before = Number(item.quantity) || 0;
-  item.quantity = direction === "in" ? before + amount : Math.max(0, before - amount);
+  if (direction === "out" && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${item.unit || "шт."}`);
+  item.quantity = direction === "in" ? before + amount : before - amount;
   data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: item.id, name: item.name, qty: amount, type: direction === "in" ? "manual_in" : "manual_out", date: new Date().toISOString() });
   await saveData();
   render();
