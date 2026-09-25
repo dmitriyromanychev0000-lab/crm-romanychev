@@ -6,9 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.22.0";
-const APP_BUILD = "2026.09.25.22";
+const APP_VERSION = "0.23.0";
+const APP_BUILD = "2026.09.25.23";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
+const APP_RELEASE = "Фильтр заявок по периоду, диагностика, защита хранилища и исправления бэкапов/склада";
 
 const defaultData = () => ({
   version: 18,
@@ -730,7 +731,7 @@ function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content"><div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <form class="panel" id="settings-form"><div class="panel-title">Реквизиты исполнителя</div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div><div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div><div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(settings.phone || "")}" inputmode="tel" /></div><div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div><div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div></div><button class="primary-button wide settings-save" type="submit">Сохранить настройки</button></form>
-    <section class="panel"><div class="panel-title">Версия приложения</div><div class="setting-row"><div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div></div><button class="secondary-button" data-action="check-update">Проверить обновление</button></div><div class="setting-row"><div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div><a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a></div><div class="setting-row"><div><strong>Диагностика</strong><div class="small">Проверить базу, кэш, service worker и хранилище</div></div><button class="secondary-button" data-action="run-diagnostics">Запустить</button></div><div class="setting-row"><div><strong>Защита локальных данных</strong><div class="small">Попросить браузер не очищать базу автоматически при нехватке места</div></div><button class="secondary-button" data-action="protect-storage">Защитить</button></div></section>
+    <section class="panel"><div class="panel-title">Версия приложения</div><div class="setting-row"><div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">Что нового: ${escapeHtml(APP_RELEASE)}</div></div><button class="secondary-button" data-action="check-update">Проверить обновление</button></div><div class="setting-row"><div><strong>Адрес приложения</strong><div class="small">${escapeHtml(APP_URL)}</div></div><a class="secondary-button" href="${escapeHtml(APP_URL)}">Открыть</a></div><div class="setting-row"><div><strong>Диагностика</strong><div class="small">Проверить базу, кэш, service worker и хранилище</div></div><button class="secondary-button" data-action="run-diagnostics">Запустить</button></div><div class="setting-row"><div><strong>Защита локальных данных</strong><div class="small">Попросить браузер не очищать базу автоматически при нехватке места</div></div><button class="secondary-button" data-action="protect-storage">Защитить</button></div></section>
     <section class="panel"><div class="panel-title">О данных</div><p class="small">Все данные находятся только в браузере устройства. Для переноса и защиты используй раздел «Бэкапы».</p></section>
   </main>`;
 }
