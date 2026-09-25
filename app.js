@@ -56,6 +56,7 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
+let warehouseCreateOpen = Boolean(initialUiState.warehouseCreateOpen);
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let analyticsPeriod = ["today", "7", "30", "365", "all", "custom"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "30";
 let analyticsOffset = Number.isInteger(Number(initialUiState.analyticsOffset)) ? Number(initialUiState.analyticsOffset) : 0;
@@ -76,6 +77,7 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
+      warehouseCreateOpen,
       clientSearch,
       analyticsPeriod,
       analyticsOffset,
@@ -735,6 +737,13 @@ function warehousePage() {
     const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
     return !query || haystack.includes(query);
   });
+  const groupedItems = [...items.reduce((map, item) => {
+    const category = String(item.category || "Нераспределённые").trim() || "Нераспределённые";
+    if (!map.has(category)) map.set(category, []);
+    map.get(category).push(item);
+    return map;
+  }, new Map()).entries()].sort(([a], [b]) => a.localeCompare(b, "ru"));
+
   const movements = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
     .slice(0, 30);
@@ -765,7 +774,8 @@ function warehousePage() {
       <a class="warehouse-shortcut" href="#warehouse-shopping">${icon("shopping")}<span>Список покупок</span></a>
     </div>
 
-    <form class="panel warehouse-create-card" id="warehouse-inline-form">
+    <button class="primary-button warehouse-toggle-create" data-action="toggle-stock-form" type="button">${warehouseCreateOpen ? "− Закрыть новую позицию" : "+ Новая позиция"}</button>
+    ${warehouseCreateOpen ? `<form class="panel warehouse-create-card" id="warehouse-inline-form">
       <div class="warehouse-create-title"><span class="warehouse-new-icon">${icon("box")}</span><strong>Новая позиция</strong></div>
       <div class="warehouse-create-grid">
         <div class="form-group"><label>Название</label><input class="field" name="name" required placeholder="Двигатель стиральной машины" /></div>
@@ -789,7 +799,7 @@ function warehousePage() {
         <div class="form-group"><label>Себестоимость единицы</label><div class="field readonly-field" id="warehouse-unit-cost">0 ₽</div></div>
       </div>
       <button class="primary-button warehouse-create-submit" type="submit">+ &nbsp;Добавить на склад</button>
-    </form>
+    </form>` : ""}
 
     <section id="warehouse-shopping" class="panel warehouse-shopping-panel ${lowItems.length ? "" : "warehouse-section-muted"}">
       <div class="panel-title"><span class="badge-icon">${icon("shopping")}</span> Список покупок</div>
@@ -797,11 +807,25 @@ function warehousePage() {
     </section>
 
     <section class="warehouse-items">
-      ${items.length ? items.map((item) => `<article class="panel stock-card ${item.archived ? "archived-stock" : ""}">
-        <div class="stock-top"><div><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml(item.category || "Без категории")} · ${money(item.lastPurchasePrice || item.price)} / ${escapeHtml(item.unit || "шт.")}</div></div><div><div class="quantity">${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">${item.archived ? "архив" : "в наличии"}</div></div></div>
-        ${item.compatibility ? `<div class="stock-compatibility">${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : item.compatibility)}</div>` : ""}
-        <div class="stock-actions"><button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Изменить</span></button><button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button><button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button></div>
-      </article>`).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
+      ${groupedItems.length ? groupedItems.map(([category, group]) => {
+        const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
+        return `<section class="panel warehouse-group">
+          <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div><span class="warehouse-group-caret">${icon("chevron")}</span></div>
+          <div class="warehouse-group-list">${group.map((item) => `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""}">
+            <div class="stock-card-main">
+              <span class="stock-box-icon">${icon("box")}</span>
+              <div class="stock-copy"><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")} · себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</div><div class="stock-available">доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">последняя закупка ${money(item.lastPurchasePrice || 0)}/${escapeHtml(item.unit || "шт.")}</div></div>
+              <div class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><span>${item.archived ? "АРХИВ" : "В НАЛИЧИИ"}</span></div>
+            </div>
+            <div class="stock-actions legacy-stock-actions">
+              <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ &nbsp;Приход</button>
+              <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− &nbsp;Списать</button>
+              <button class="secondary-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("archive")}<span>Архив</span></button>
+              <button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
+            </div>
+          </article>`).join("")}</div>
+        </section>`;
+      }).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
     </section>
 
     <section id="warehouse-movements" class="panel warehouse-movements"><div class="panel-title"><span class="badge-icon">${icon("history")}</span> История движения</div>
@@ -2129,6 +2153,7 @@ app.addEventListener("click", async (event) => {
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "protect-storage") return requestPersistentStorage();
+  if (action === "toggle-stock-form") { warehouseCreateOpen = !warehouseCreateOpen; saveUiState({ scrollY: 0 }); await render(); window.scrollTo(0, 0); return; }
   if (action === "new-price") return priceModal();
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
@@ -2278,8 +2303,8 @@ app.addEventListener("submit", async (event) => {
       date: new Date().toISOString()
     });
     await saveData();
-    event.target.reset();
-    event.target.querySelector('[name="category"]').value = "Запчасти";
+    warehouseCreateOpen = false;
+    saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo({ top: 0, behavior: "smooth" });
     return toast("Позиция добавлена на склад");
