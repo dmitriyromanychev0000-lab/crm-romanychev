@@ -386,9 +386,10 @@ function warehousePage() {
 }
 
 function analyticsPage() {
-  const closed = data.orders.filter((order) => normalizeStatus(order.status) === "closed");
+  const closed = data.orders.filter((order) => normalizeStatus(order.status) === "closed" && withinPeriod(order.created, analyticsPeriod));
+  const periodExpenses = data.expenses.filter((item) => withinPeriod(item.date, analyticsPeriod));
   const revenue = closed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
-  const expenses = data.expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const expenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const materialCost = closed.reduce((sum, order) => sum + (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0), 0);
   const profit = revenue - expenses - materialCost;
   const average = closed.length ? revenue / closed.length : 0;
@@ -401,6 +402,7 @@ function analyticsPage() {
   const max = Math.max(...bars.map(([, value]) => value), 1);
   return `<main class="content">
     <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
+    <div class="chips"><button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё время</button><button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">30 дней</button><button class="chip ${analyticsPeriod === "90" ? "active" : ""}" data-analytics-period="90">90 дней</button><button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">365 дней</button></div>
     <section class="panel">
       <div class="panel-title"><span class="badge-icon">◇</span> Главные показатели</div>
       <div class="metrics">
