@@ -3,6 +3,7 @@ const DB_VERSION = 1;
 const STORE = "keyval";
 const DATA_KEY = "crm-data";
 const DIRECTORY_KEY = "backup-directory";
+const PRE_IMPORT_KEY = "crm-pre-import-data";
 const APP_VERSION = "0.20.0";
 const APP_BUILD = "2026.09.25.20";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
