@@ -2863,3 +2863,351 @@ h2 { font-size: 21px; }
   .secondary-order-action { min-height: 60px; }
   .focus-grid > div { min-height: 76px; }
 }
+
+
+/* 0.41.0 · Компактный масштаб и более собранная визуальная иерархия */
+:root {
+  --radius-card: 20px;
+  --radius-control: 15px;
+  --radius-icon: 14px;
+  --control-height: 52px;
+  --control-height-lg: 58px;
+}
+
+.topbar {
+  min-height: 104px;
+  gap: 14px;
+  padding: 20px 20px;
+}
+.logo {
+  width: 60px;
+  height: 60px;
+  flex-basis: 60px;
+  border-radius: 17px;
+}
+.logo .ui-icon { width: 35px; height: 35px; }
+.brand-title { font-size: clamp(22px, 4vw, 27px); }
+.brand-subtitle { margin-top: 6px; font-size: 11px; }
+
+.content { padding: 24px 16px 8px; }
+.page-head { margin-bottom: 15px; }
+h1 { font-size: clamp(30px, 6vw, 36px); }
+.lead { margin-top: 5px; font-size: 15px; }
+
+.panel {
+  margin-bottom: 12px;
+  padding: 16px;
+  border-radius: 20px;
+}
+.panel-title { gap: 8px; margin-bottom: 12px; font-size: 18px; }
+
+.search,
+.field {
+  min-height: 52px;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-radius: 15px;
+  font-size: 15px;
+}
+.primary-button,
+.secondary-button,
+.danger-button {
+  min-height: 46px;
+  padding: 10px 15px;
+  border-radius: 14px;
+  font-size: 14px;
+}
+.chip { padding: 8px 16px; }
+
+.order-add-button {
+  width: 56px;
+  height: 56px;
+  border-radius: 17px;
+  font-size: 34px;
+}
+.next-visit-card {
+  margin-bottom: 13px;
+  padding: 14px 16px;
+  border-radius: 18px;
+}
+.next-visit-title { font-size: 16px; }
+.next-visit-title .ui-icon { width: 23px; height: 23px; }
+.next-visit-line { margin-top: 10px; font-size: 13px; }
+
+.search-with-icon > .ui-icon {
+  left: 18px;
+  width: 22px;
+  height: 22px;
+}
+.search-with-icon .search {
+  min-height: 56px;
+  padding-left: 50px;
+  border-radius: 17px;
+  font-size: 15px;
+}
+.order-status-chips { gap: 8px; margin-bottom: 12px; }
+.order-status-chips .chip { min-height: 42px; font-size: 14px; }
+.order-date-filter .field {
+  min-height: 50px;
+  padding-left: 17px;
+  font-size: 15px;
+}
+.orders-aux-filters { margin-bottom: 10px; }
+
+.order-card {
+  margin-bottom: 12px;
+  padding: 18px 18px 19px;
+  border-radius: 20px;
+}
+.order-card::before { width: 4px; }
+.order-number { font-size: 17px; }
+.order-name { margin-left: 6px; font-size: 19px; }
+.order-date { font-size: 11px; }
+.status {
+  margin-top: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.appliance { padding: 14px 0 12px; }
+.appliance-main { gap: 11px; }
+.appliance-icon {
+  width: 64px;
+  height: 64px;
+  flex-basis: 64px;
+  border-radius: 18px;
+}
+.appliance-icon .ui-icon { width: 35px; height: 35px; }
+.appliance-name { font-size: 18px; }
+.appliance-model { font-size: 14px; }
+
+.order-money { gap: 8px; margin-bottom: 12px; }
+.money-box { padding: 11px 13px 12px; border-radius: 14px; }
+.money-label { font-size: 10px; }
+.money-value { margin-top: 4px; font-size: 20px; }
+.money-box-net .money-value:not(.green) { font-size: 14px; }
+
+.meta { gap: 7px 12px; padding: 11px 2px; font-size: 12px; }
+.meta-item { gap: 5px; }
+.meta-item .ui-icon { width: 15px; height: 15px; }
+
+.actions { gap: 6px; margin-top: 12px; }
+.order-main-actions,
+.order-secondary-actions { gap: 6px; }
+.order-secondary-actions { margin-top: 6px; }
+.action,
+.secondary-order-action {
+  min-height: 60px;
+  gap: 4px;
+  padding: 6px 2px;
+  border-radius: 12px;
+  font-size: 9px;
+}
+.action span .ui-icon { width: 20px; height: 20px; }
+
+.menu-list { gap: 8px; }
+.menu-item {
+  min-height: 86px;
+  gap: 14px;
+  padding: 13px 16px;
+  border-radius: 19px;
+}
+.menu-icon {
+  width: 54px;
+  height: 54px;
+  flex-basis: 54px;
+  border-radius: 15px;
+}
+.menu-icon .ui-icon { width: 28px; height: 28px; }
+.menu-name { font-size: 19px; }
+.menu-description { margin-top: 4px; font-size: 13px; }
+.menu-item .chevron .ui-icon { width: 22px; height: 22px; }
+.more-section-label {
+  margin: 4px 4px 9px;
+  color: #727b82;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.more-section-system { margin-top: 20px; }
+
+.bottom-nav {
+  padding-top: 7px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+.nav-button {
+  min-height: 62px;
+  gap: 5px;
+  font-size: 12px;
+}
+.nav-button .nav-icon .ui-icon { width: 25px; height: 25px; }
+
+.settings-profile-panel,
+.settings-system-panel,
+.settings-data-panel { padding: 16px; }
+.legacy-setting-row {
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  min-height: 60px;
+  gap: 10px;
+  padding: 10px 0;
+}
+.setting-icon,
+.settings-link-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+}
+.setting-icon .ui-icon,
+.settings-link-icon .ui-icon { width: 18px; height: 18px; }
+.legacy-setting-row > div > strong { font-size: 14px; }
+.legacy-setting-row .secondary-button { min-height: 38px; padding: 8px 10px; }
+.settings-hint-panel { margin-top: 0; }
+
+.modal-backdrop {
+  top: 104px;
+  bottom: calc(78px + env(safe-area-inset-bottom));
+}
+.modal { padding-top: 15px; }
+.modal.compact-modal { border-radius: 20px; }
+.modal h2 { font-size: 26px; }
+.compact-modal h2 { font-size: 21px; }
+.form-section-title {
+  margin-top: 22px;
+  padding-top: 17px;
+}
+.modal .field { min-height: 54px; border-radius: 15px; font-size: 15px; }
+.textarea { min-height: 92px; padding-top: 13px; }
+
+@media (max-width: 520px) {
+  .topbar { min-height: 100px; padding: 18px 16px; }
+  .logo { width: 56px; height: 56px; flex-basis: 56px; }
+  .brand-title { font-size: clamp(19px, 5.5vw, 23px); }
+  .brand-subtitle { font-size: 9px; }
+  .content { padding: 22px 13px 8px; }
+  .menu-item { min-height: 80px; padding: 12px 14px; }
+  .menu-icon { width: 50px; height: 50px; flex-basis: 50px; }
+  .menu-icon .ui-icon { width: 26px; height: 26px; }
+  .modal-backdrop { top: 100px; bottom: calc(78px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 360px) {
+  .topbar { min-height: 92px; padding: 16px 12px; }
+  .logo { width: 50px; height: 50px; flex-basis: 50px; }
+  .logo .ui-icon { width: 30px; height: 30px; }
+  .brand-title { font-size: 17px; }
+  .brand-subtitle { font-size: 8px; }
+  .modal-backdrop { top: 92px; }
+  .order-main-actions { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .order-secondary-actions { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+/* Печать: один компактный лист A4 */
+@media print {
+  @page { size: A4 portrait; margin: 5mm; }
+
+  html,
+  body {
+    width: 210mm;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .topbar,
+  .bottom-nav,
+  .no-print,
+  .toast { display: none !important; }
+
+  .shell,
+  .content,
+  .act-content {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .act-sheet {
+    width: calc(200mm / var(--act-print-zoom, .82)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    zoom: var(--act-print-zoom, .82);
+    color: #000 !important;
+    background: #fff !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .act-sheet h2 {
+    margin: 0 0 3mm !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+  .act-contract-line { margin-bottom: 3mm !important; font-size: 9px !important; }
+  .act-main-fields { gap: 1mm !important; margin-bottom: 3mm !important; }
+  .act-main-fields > div,
+  .act-party-details > div,
+  .act-warranty {
+    grid-template-columns: 42mm 1fr !important;
+    gap: 2mm !important;
+    padding: 1mm 0 !important;
+    font-size: 8.5px !important;
+  }
+
+  .act-sheet table {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 2mm 0 !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
+    table-layout: fixed !important;
+  }
+  .act-sheet th,
+  .act-sheet td {
+    padding: 1.2mm 1mm !important;
+    line-height: 1.1 !important;
+    word-break: break-word !important;
+  }
+  .act-sheet th:nth-child(1),
+  .act-sheet td:nth-child(1) { width: 5%; }
+  .act-sheet th:nth-child(2),
+  .act-sheet td:nth-child(2) { width: 43%; }
+  .act-sheet th:nth-child(3),
+  .act-sheet td:nth-child(3) { width: 15%; }
+  .act-sheet th:nth-child(4),
+  .act-sheet td:nth-child(4) { width: 9%; }
+  .act-sheet th:nth-child(5),
+  .act-sheet td:nth-child(5) { width: 15%; }
+  .act-sheet th:nth-child(6),
+  .act-sheet td:nth-child(6) { width: 13%; }
+
+  .act-total {
+    margin: 2mm 0 !important;
+    padding: 2mm 0 !important;
+    font-size: 11px !important;
+  }
+  .act-warranty { margin: 2mm 0 !important; }
+  .act-party-details { gap: .5mm !important; margin-top: 2mm !important; }
+  .act-acceptance {
+    margin-top: 3mm !important;
+    padding-top: 2mm !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  .act-acceptance h3 { margin: 0 0 1.5mm !important; font-size: 10px !important; }
+  .act-acceptance p { margin: 0 0 2mm !important; font-size: 8px !important; line-height: 1.2 !important; }
+  .act-signatures {
+    gap: 8mm !important;
+    margin-top: 2mm !important;
+    font-size: 8.5px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
