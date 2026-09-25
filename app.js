@@ -1429,6 +1429,14 @@ async function compressPhotoFile(file) {
     createdAt: new Date().toISOString()
   };
 }
+function warrantyUntilText(order = {}) {
+  const months = Number(order.guarantee) || 6;
+  const base = new Date(order.completed || order.updatedAt || order.created || Date.now());
+  if (Number.isNaN(base.getTime())) return "";
+  base.setMonth(base.getMonth() + months);
+  return new Intl.DateTimeFormat("ru-RU").format(base);
+}
+
 function newOrderModal(existing = null, options = {}) {
   const forceNew = Boolean(options.forceNew);
   const sourceOrder = existing || {};
@@ -1476,17 +1484,29 @@ function newOrderModal(existing = null, options = {}) {
     <div class="calculated-total order-calculation-summary"><div><span>Итого услуг</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Общий расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
 
     <div class="form-section-title">Расчёт и гарантия</div>
-    <div class="form-grid">
-      <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
-      <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
-      <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>Процент мастера</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
-      <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
-      <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
-      <div class="form-group"><label>Гарантия, мес.</label><input class="field" name="guarantee" type="number" min="0" value="${Number(order.guarantee) || 6}" /></div>
-      <div class="form-group full"><label>Условия гарантии</label><textarea class="field textarea" name="guaranteeNote">${escapeHtml(order.guaranteeNote || "")}</textarea></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
+    <div class="form-grid legacy-payment-grid">
+      <div class="form-group"><label>Итоговая сумма (₽)</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group"><label>Предоплата (₽)</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
+      <div class="form-group"><label>Скидка (₽)</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
+      <div class="form-group"><label>Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${Number(order.guarantee || 6) === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${Number(order.guarantee || 6) === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${Number(order.guarantee || 6) === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${Number(order.guarantee || 6) === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${Number(order.guarantee || 6) === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${Number(order.guarantee || 6) === 24 ? "selected" : ""}>24 месяцев</option></select></div>
     </div>
+
+    <details class="order-extra-finance">
+      <summary>Дополнительный расчёт</summary>
+      <div class="form-grid">
+        <div class="form-group"><label>Процент мастера</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
+        <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+        <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
+      </div>
+    </details>
+
+    <section class="legacy-guarantee-card">
+      <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">до ${escapeHtml(warrantyUntilText(order))}</span></div>
+      <label>Что покрывает</label>
+      <textarea class="field textarea" name="guaranteeNote" placeholder="Опиши условия гарантии">${escapeHtml(order.guaranteeNote || "")}</textarea>
+    </section>
+
+    <div class="form-group order-comment"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
     <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">В черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
