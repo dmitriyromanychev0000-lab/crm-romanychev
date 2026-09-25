@@ -435,6 +435,15 @@ h2 { margin: 0; font-size: 24px; }
 .warehouse-create-numbers {
   margin-top: 18px;
 }
+.warehouse-create-triple { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.warehouse-storage-grid,
+.warehouse-pricing-grid { margin-top: 18px; }
+.purchase-helper { margin-top: 7px; line-height: 1.4; }
+.readonly-field {
+  display: flex;
+  align-items: center;
+  color: #f0f2f3;
+}
 .warehouse-create-submit {
   width: 100%;
   min-height: 58px;
@@ -1079,6 +1088,7 @@ h2 { margin: 0; font-size: 24px; }
   .content { padding: 34px 16px 10px; }
   .warehouse-create-card { padding: 22px 22px 24px; }
   .warehouse-create-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .warehouse-create-triple { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .warehouse-create-card .field { min-height: 62px; }
   .warehouse-compat-option { min-height: 60px; }
   .analytics-work-grid { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
@@ -1164,6 +1174,7 @@ h2 { margin: 0; font-size: 24px; }
   .modal-actions { grid-template-columns: 1fr; }
   .metrics { grid-template-columns: 1fr; }
   .warehouse-create-grid { grid-template-columns: 1fr; }
+  .warehouse-create-triple { grid-template-columns: 1fr; }
   .analytics-work-grid { grid-template-columns: 1fr; }
   .legacy-service-row { grid-template-columns: 22px minmax(0,1fr) 50px 82px 40px; }
   .service-remove { width: 40px; height: 40px; }
