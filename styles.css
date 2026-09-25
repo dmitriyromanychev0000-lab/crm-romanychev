@@ -4093,3 +4093,477 @@ body,
     padding-left: 0;
   }
 }
+
+
+/* 0.43.0 · Компактные Склад / Аналитика / Финансы / Прайс */
+.warehouse-content,
+.analytics-content,
+.finance-content,
+.price-content {
+  padding-top: 16px;
+}
+
+.warehouse-content .page-head,
+.analytics-content .page-head,
+.finance-content .page-head,
+.price-content .page-head {
+  margin-bottom: 11px;
+}
+
+/* Склад */
+.warehouse-search { margin-bottom: 8px; }
+.warehouse-search .search { min-height: 46px; font-size: 13px; }
+.warehouse-filter { margin-bottom: 8px; }
+.warehouse-filter .field { min-height: 44px; font-size: 12px; }
+
+.warehouse-shortcuts {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.warehouse-shortcut {
+  min-height: 46px;
+  gap: 6px;
+  padding: 8px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+.warehouse-shortcut .ui-icon { width: 17px; height: 17px; }
+
+.warehouse-toggle-create {
+  min-height: 42px;
+  margin-bottom: 9px;
+  font-size: 12px;
+}
+
+.warehouse-create-card {
+  padding: 12px;
+  border-radius: 15px;
+}
+.warehouse-create-title { margin-bottom: 10px; }
+.warehouse-create-title strong { font-size: 15px; }
+.warehouse-new-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+.warehouse-new-icon .ui-icon { width: 18px; height: 18px; }
+
+.warehouse-create-grid { gap: 7px; }
+.warehouse-create-card .form-group { gap: 4px; }
+.warehouse-create-card .form-group label,
+.warehouse-compat-title {
+  font-size: 9px;
+  letter-spacing: .045em;
+}
+.warehouse-create-card .field {
+  min-height: 42px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 11px;
+  font-size: 12px;
+}
+.warehouse-create-triple {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+.warehouse-create-triple .form-group:nth-child(3) {
+  grid-column: 1 / -1;
+}
+.warehouse-compat-list {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.warehouse-compat-option {
+  min-height: 40px;
+  gap: 7px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+.warehouse-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+.purchase-helper { margin-top: 3px; font-size: 9px; }
+.warehouse-create-submit { min-height: 42px; margin-top: 9px; }
+
+.warehouse-shopping-panel,
+.warehouse-movements {
+  padding: 12px;
+}
+.warehouse-shopping-panel .goods-sheet,
+.warehouse-movements .price-row {
+  min-height: 50px;
+  padding: 8px 0;
+}
+.warehouse-shopping-panel .goods-sheet strong,
+.warehouse-movements .price-row strong { font-size: 12px; }
+.warehouse-shopping-panel .goods-sheet small,
+.warehouse-movements .price-row .small { font-size: 9px; }
+
+.warehouse-group {
+  padding: 10px;
+  border-radius: 15px;
+}
+.warehouse-group-head {
+  grid-template-columns: 34px minmax(0,1fr);
+  gap: 8px;
+  min-height: 40px;
+  margin-bottom: 6px;
+}
+.warehouse-folder {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+}
+.warehouse-folder .ui-icon { width: 17px; height: 17px; }
+.warehouse-group-head strong { font-size: 14px; }
+.warehouse-group-head small { font-size: 9px; }
+.warehouse-group-list { gap: 6px; }
+
+.legacy-stock-card {
+  padding: 10px 11px 11px 13px;
+  border-radius: 13px;
+}
+.stock-card-main {
+  grid-template-columns: 40px minmax(0,1fr) auto;
+  gap: 8px;
+}
+.stock-box-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+.stock-box-icon .ui-icon { width: 20px; height: 20px; }
+.stock-copy .stock-name,
+.stock-name { font-size: 13px; line-height: 1.2; }
+.stock-category { margin-top: 2px; font-size: 9px; }
+.stock-available { margin-top: 4px; font-size: 10px; }
+.stock-copy .small { margin-top: 2px; font-size: 8.5px; }
+.stock-quantity-block strong { font-size: 14px; }
+.stock-quantity-block span { margin-top: 4px; font-size: 8px; }
+
+.legacy-stock-actions {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 5px;
+  margin-top: 8px;
+}
+.legacy-stock-actions button {
+  min-height: 36px;
+  padding: 6px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+.legacy-stock-actions .ui-icon { width: 14px; height: 14px; }
+
+/* Аналитика */
+.analytics-period-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.analytics-period-grid .chip {
+  min-height: 36px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+.analytics-range-nav {
+  grid-template-columns: 36px minmax(0,1fr) 36px;
+  gap: 7px;
+  margin-bottom: 9px;
+}
+.analytics-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 24px;
+}
+.analytics-range-nav strong { font-size: 13px; }
+.analytics-range-nav small { margin-top: 1px; font-size: 9px; }
+
+.analytics-content .panel {
+  padding: 12px;
+  margin-bottom: 9px;
+  border-radius: 15px;
+}
+.analytics-content .panel-title {
+  margin-bottom: 9px;
+  font-size: 14px;
+}
+.analytics-kpi-panel .panel-title small {
+  font-size: 9px;
+}
+.analytics-kpis {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.analytics-kpi {
+  min-height: 70px;
+  padding: 9px 10px;
+  border-radius: 11px;
+}
+.analytics-kpi > span {
+  font-size: 8px;
+  letter-spacing: .045em;
+}
+.analytics-kpi > strong {
+  margin-top: 6px;
+  font-size: clamp(16px,5vw,20px);
+  line-height: 1.05;
+}
+.analytics-kpi > small { display: none; }
+
+.focus-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 5px;
+}
+.focus-grid > div {
+  min-height: 64px;
+  padding: 8px 5px;
+  border-radius: 10px;
+}
+.focus-grid strong { font-size: 20px; }
+.focus-grid span { margin-top: 3px; font-size: 8px; line-height: 1.15; }
+
+.analytics-work-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 5px;
+}
+.analytics-work-grid .metric {
+  padding: 8px 6px;
+  border-radius: 10px;
+}
+.analytics-work-grid .metric-label { font-size: 8px; }
+.analytics-work-grid .metric-value {
+  margin-top: 4px;
+  font-size: 16px;
+}
+
+.analytics-ranking-row {
+  grid-template-columns: 26px minmax(0,1fr) auto;
+  gap: 7px;
+  min-height: 46px;
+  padding: 7px 0;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: transparent;
+}
+.analytics-ranking-row:last-child { border-bottom: 0; }
+.ranking-place {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  font-size: 10px;
+}
+.analytics-ranking-row strong { font-size: 11px; }
+.analytics-ranking-row small { margin-top: 1px; font-size: 8px; }
+.analytics-ranking-row b { font-size: 11px; }
+
+.analytics-content .goods-sheet {
+  min-height: 48px;
+  padding: 7px 0;
+}
+.analytics-content .goods-sheet strong { font-size: 11px; }
+.analytics-content .goods-sheet small { font-size: 8px; }
+.analytics-content .goods-sheet b { font-size: 11px; }
+
+.analytics-content .bars {
+  min-height: 110px;
+  gap: 5px;
+}
+.analytics-content .bar { max-height: 82px; }
+.analytics-content .bar-wrap > span {
+  font-size: 8px;
+}
+
+/* Финансы */
+.finance-content .page-head > .secondary-button {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+.finance-period-grid {
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 5px;
+  margin-bottom: 9px;
+}
+.finance-period-grid .chip {
+  min-height: 35px;
+  padding: 5px 3px;
+  font-size: 9.5px;
+}
+.finance-summary-panel {
+  padding: 10px;
+}
+.finance-metrics {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+}
+.finance-metrics .metric {
+  padding: 8px 9px;
+  border-radius: 10px;
+}
+.finance-metrics .metric-label { font-size: 8px; }
+.finance-metrics .metric-value {
+  margin-top: 4px;
+  font-size: 17px;
+}
+.legacy-finance-actions {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.legacy-finance-actions button {
+  min-height: 40px;
+  font-size: 11px;
+}
+.finance-history-panel { padding: 11px 12px; }
+.finance-history-panel .panel-title { margin-bottom: 5px; }
+.legacy-finance-row {
+  grid-template-columns: 30px minmax(0,1fr) auto 28px;
+  gap: 7px;
+  min-height: 48px;
+  padding: 7px 0;
+}
+.finance-kind-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.finance-kind-icon .ui-icon { width: 15px; height: 15px; }
+.legacy-finance-row > div:nth-child(2) strong { font-size: 11px; }
+.legacy-finance-row .small { margin-top: 1px; font-size: 8.5px; }
+.finance-amount { font-size: 11px; white-space: nowrap; }
+.legacy-finance-row .remove-line {
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+}
+.legacy-finance-row .remove-line .ui-icon { width: 13px; height: 13px; }
+
+/* Прайс */
+.price-head {
+  align-items: flex-start;
+}
+.price-head-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+.price-head-actions button {
+  min-height: 36px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.price-search-row { margin-bottom: 7px; }
+.price-search-row .search {
+  min-height: 45px;
+  padding-left: 42px;
+  border-radius: 13px;
+  font-size: 12px;
+}
+.price-search-row > .ui-icon {
+  left: 15px;
+  width: 18px;
+  height: 18px;
+}
+.price-tech-filter { margin-bottom: 10px; }
+.price-tech-filter .field {
+  min-height: 42px;
+  font-size: 11px;
+}
+
+.price-category { margin-bottom: 13px; }
+.price-category h3 {
+  margin: 0 2px 5px;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+.price-catalog-list { gap: 5px; }
+.price-catalog-card {
+  min-height: 55px;
+  gap: 9px;
+  padding: 8px 11px;
+  border-radius: 12px;
+}
+.price-catalog-card strong {
+  font-size: 12px;
+  line-height: 1.2;
+}
+.price-catalog-card small {
+  margin-top: 2px;
+  font-size: 9px;
+}
+.price-catalog-card b {
+  font-size: 12px;
+}
+
+.custom-price-panel {
+  margin-top: 12px;
+  padding: 12px;
+}
+.custom-price-panel > .secondary-button {
+  min-height: 38px;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+.price-content .goods-sheet {
+  min-height: 48px;
+  padding: 7px 0;
+}
+.price-content .goods-sheet strong { font-size: 11px; }
+.price-content .goods-sheet small { margin-top: 1px; font-size: 8.5px; }
+.price-content .goods-sheet b { font-size: 11px; }
+
+@media (max-width: 380px) {
+  .warehouse-compat-list { grid-template-columns: 1fr; }
+
+  .stock-card-main {
+    grid-template-columns: 36px minmax(0,1fr);
+  }
+  .stock-quantity-block {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .analytics-kpi-panel .panel-title small {
+    display: none;
+  }
+  .analytics-work-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+  .analytics-work-grid .metric-label { font-size: 7px; }
+  .analytics-work-grid .metric-value { font-size: 14px; }
+
+  .finance-period-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .legacy-finance-row {
+    grid-template-columns: 28px minmax(0,1fr) 27px;
+  }
+  .finance-amount {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin-top: -3px;
+  }
+  .legacy-finance-row .remove-line {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+
+  .price-head {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+  }
+  .price-head-actions {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+}
