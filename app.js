@@ -474,13 +474,16 @@ function clientsPage() {
 }
 
 function financePage() {
-  const expenses = data.expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-  const incomes = data.incomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const expenseRows = data.expenses.filter((item) => withinPeriod(item.date, financePeriod));
+  const incomeRows = data.incomes.filter((item) => withinPeriod(item.date, financePeriod));
+  const expenses = expenseRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const incomes = incomeRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const rows = [
-    ...data.expenses.map((item) => ({ ...item, financeType: "expense" })),
-    ...data.incomes.map((item) => ({ ...item, financeType: "income" }))
+    ...expenseRows.map((item) => ({ ...item, financeType: "expense" })),
+    ...incomeRows.map((item) => ({ ...item, financeType: "income" }))
   ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   return `<main class="content"><div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="chips"><button class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button><button class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button><button class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button><button class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365">365 дней</button></div>
     <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Доходы</div><div class="metric-value green">${money(incomes)}</div></div><div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses)}</div></div><div class="metric"><div class="metric-label">Результат</div><div class="metric-value ${incomes - expenses >= 0 ? "green" : "red"}">${money(incomes - expenses)}</div></div><div class="metric"><div class="metric-label">Операций</div><div class="metric-value">${rows.length}</div></div></div></section>
     <div class="finance-actions"><button class="primary-button" data-action="add-finance" data-type="expense">− Добавить расход</button><button class="secondary-button" data-action="add-finance" data-type="income">+ Добавить доход</button></div>
     <section class="panel"><div class="panel-title">История операций</div>${rows.length ? `<ul class="list">${rows.map((item) => `<li class="finance-row"><div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div><div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div><button class="remove-line" data-delete-finance="${item.financeType}" data-id="${escapeHtml(item.id)}" aria-label="Удалить">×</button></li>`).join("")}</ul>` : `<div class="empty">Операций пока нет</div>`}</section>
