@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.45.2";
-const APP_BUILD = "2026.09.26.14";
+const APP_VERSION = "0.45.3";
+const APP_BUILD = "2026.09.26.15";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлена копия закрытой заявки: новая копия всегда активная и не наследует дату завершения";
+const APP_RELEASE = "Клиенты объединяются по нормализованному российскому номеру; фильтр техники прайса учитывает пользовательские услуги";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1139,7 +1139,10 @@ function availableServices() {
 }
 function priceList() {
   const query = priceSearch.trim().toLowerCase();
-  const techs = [...new Set(data.receipt_prices.map((item) => String(item.tech || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const techs = [...new Set([
+    ...data.receipt_prices.map((item) => String(item.tech || "").trim()),
+    ...(Array.isArray(data.service_custom) ? data.service_custom.map((item) => String(item.tech || "").trim()) : [])
+  ].filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
   const prices = data.receipt_prices.filter((item) => {
     const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
     const haystack = [item.name, item.category, item.tech, item.unit, item.kind].join(" ").toLowerCase();
@@ -1202,7 +1205,9 @@ function priceList() {
 }
 
 function clientKeyForOrder(order) {
-  return String(order.phone || order.name || order.id || "").trim().toLowerCase();
+  const phone = normalizeRussianPhone(order.phone || "");
+  if (phone) return phone;
+  return String(order.name || order.id || "").trim().toLowerCase();
 }
 
 function clientsPage() {
@@ -1213,14 +1218,14 @@ function clientsPage() {
     if (!key) return;
     const orderDate = orderDateValue(order);
     const orderTime = orderCreatedTimestamp(order) || 0;
-    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: orderDate, lastTime: orderTime };
+    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: normalizeRussianPhone(order.phone || "") || order.phone || "", address: order.address || "", orders: [], total: 0, last: orderDate, lastTime: orderTime };
     current.orders.push(order);
     current.total += Number(order.sum) || 0;
     if (orderTime > Number(current.lastTime || 0)) {
       current.last = orderDate;
       current.lastTime = orderTime;
       current.name = order.name || current.name;
-      current.phone = order.phone || current.phone;
+      current.phone = normalizeRussianPhone(order.phone || "") || order.phone || current.phone;
       current.address = order.address || current.address;
     }
     clients.set(key, current);
