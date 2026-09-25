@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.45.3";
-const APP_BUILD = "2026.09.26.15";
+const APP_VERSION = "0.45.4";
+const APP_BUILD = "2026.09.26.16";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Клиенты объединяются по нормализованному российскому номеру; фильтр техники прайса учитывает пользовательские услуги";
+const APP_RELEASE = "Удаление финансовых операций больше не зависит от наличия ID и безопасно работает со старыми бэкапами";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1270,8 +1270,12 @@ function clientsPage() {
 }
 
 function financePage() {
-  const expenseRows = data.expenses.filter((item) => withinPeriod(item.date, financePeriod));
-  const incomeRows = data.incomes.filter((item) => withinPeriod(item.date, financePeriod));
+  const expenseRows = data.expenses
+    .map((item, sourceIndex) => ({ ...item, sourceIndex }))
+    .filter((item) => withinPeriod(item.date, financePeriod));
+  const incomeRows = data.incomes
+    .map((item, sourceIndex) => ({ ...item, sourceIndex }))
+    .filter((item) => withinPeriod(item.date, financePeriod));
   const expenses = expenseRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const incomes = incomeRows.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const result = incomes - expenses;
@@ -1311,7 +1315,7 @@ function financePage() {
           <span class="finance-kind-icon ${item.financeType === "income" ? "income" : "expense"}">${icon(item.financeType === "income" ? "finance" : "receipt")}</span>
           <div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div>
           <div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div>
-          <button class="remove-line" data-delete-finance="${item.financeType}" data-id="${escapeHtml(item.id)}" aria-label="Удалить">${icon("trash")}</button>
+          <button class="remove-line" data-delete-finance="${item.financeType}" data-index="${item.sourceIndex}" aria-label="Удалить">${icon("trash")}</button>
         </div>`).join("")}</div>` : `<div class="empty">Операций пока нет</div>`}
     </section>
   </main>`;
@@ -2823,7 +2827,9 @@ app.addEventListener("click", async (event) => {
   const financeDelete = event.target.closest("[data-delete-finance]");
   if (financeDelete) {
     const key = financeDelete.dataset.deleteFinance === "income" ? "incomes" : "expenses";
-    data[key] = data[key].filter((item) => String(item.id) !== String(financeDelete.dataset.id));
+    const sourceIndex = Number(financeDelete.dataset.index);
+    if (!Number.isInteger(sourceIndex) || sourceIndex < 0 || sourceIndex >= data[key].length) return toast("Операция не найдена");
+    data[key].splice(sourceIndex, 1);
     await saveData();
     await render();
     toast("Операция удалена");
