@@ -171,6 +171,7 @@ h2 { margin: 0; font-size: 24px; }
 
 .empty { padding: 44px 18px; text-align: center; color: var(--muted); }
 .empty-icon { font-size: 52px; margin-bottom: 10px; }
+.empty-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 500px; margin: 22px auto 0; }
 .list { margin: 0; padding: 0; list-style: none; }
 .price-row { display: flex; justify-content: space-between; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--line); }
 .price-row:last-child { border-bottom: 0; }
@@ -200,6 +201,18 @@ h2 { margin: 0; font-size: 24px; }
 .form-group { display: grid; gap: 7px; }
 .form-group.full { grid-column: 1 / -1; }
 .form-group label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.textarea { min-height: 92px; padding-top: 15px; resize: vertical; font: inherit; }
+.form-section-title { margin: 26px 0 12px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--accent); font-size: 15px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.catalog-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 12px; }
+.catalog-add .secondary-button { white-space: nowrap; }
+.line-list { display: grid; gap: 9px; }
+.line-head, .line-item { display: grid; grid-template-columns: minmax(160px, 1fr) 92px 120px 44px; gap: 8px; align-items: center; }
+.line-head { padding: 0 4px; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+.line-item .field { min-height: 50px; padding: 0 12px; border-radius: 13px; }
+.remove-line { width: 44px; height: 44px; border: 1px solid rgba(255,95,103,.35); border-radius: 13px; background: rgba(255,95,103,.08); color: var(--red); font-size: 25px; }
+.calculated-total { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel-2); }
+.calculated-total strong { color: var(--accent); font-size: 22px; }
+.calculated-total button { grid-column: 1 / -1; }
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 
 .toast { position: fixed; z-index: 100; left: 50%; bottom: 104px; transform: translate(-50%, 20px); width: min(calc(100% - 32px), 540px); padding: 13px 16px; border: 1px solid var(--line); border-radius: 14px; background: #202830; color: white; opacity: 0; pointer-events: none; transition: .2s; text-align: center; }
@@ -213,6 +226,14 @@ h2 { margin: 0; font-size: 24px; }
   .actions { grid-template-columns: repeat(3, 1fr); }
   .form-grid { grid-template-columns: 1fr; }
   .form-group.full { grid-column: auto; }
+  .catalog-add { grid-template-columns: 1fr; }
+  .line-head { display: none; }
+  .line-item { grid-template-columns: minmax(0, 1fr) 78px 42px; padding: 10px; border: 1px solid var(--line); border-radius: 16px; }
+  .line-item [data-line="name"] { grid-column: 1 / -1; }
+  .line-item [data-line="price"], .line-item [data-line="unit-cost"] { grid-column: 1; }
+  .line-item [data-line="qty"] { grid-column: 2; grid-row: 2; }
+  .line-item .remove-line { grid-column: 3; grid-row: 2; }
   .backup-grid { grid-template-columns: 1fr; }
+  .empty-actions { grid-template-columns: 1fr; }
   .brand-subtitle { font-size: 10px; }
 }
