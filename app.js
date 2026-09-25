@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.35.0";
-const APP_BUILD = "2026.09.25.36";
+const APP_VERSION = "0.36.0";
+const APP_BUILD = "2026.09.25.37";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Клиенты и Финансы приведены к общей старой дизайн-системе: поиск, KPI, карточки и история операций";
+const APP_RELEASE = "Товарник приведён к общей старой дизайн-системе: KPI, карточка последнего расчёта, история и прайс";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1342,27 +1342,40 @@ function goodsPage() {
   const latest = sheets[0] || null;
   const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
   const productPrice = data.receipt_prices.filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар")).slice(0, 30);
+  const totalItems = sheets.reduce((sum, sheet) => sum + (Array.isArray(sheet.items) ? sheet.items.length : 0), 0);
 
   return `<main class="content goods-content">
     <div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
 
-    <section class="panel goods-create-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("goods")}</span> Новый товарник</div>
-      <div class="goods-create-actions">
-        <button class="primary-button" data-action="new-goods-sheet">+ Создать вручную</button>
-        <button class="secondary-button" data-action="open-product-price">${icon("price")}<span>Из прайса товаров</span></button>
+    <section class="panel goods-stats-panel">
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Расчётов</div><div class="metric-value">${sheets.length}</div></div>
+        <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value blue">${totalItems}</div></div>
+        <div class="metric"><div class="metric-label">Последняя сумма</div><div class="metric-value green">${latest ? money(latest.total || 0) : money(0)}</div></div>
+        <div class="metric"><div class="metric-label">Цель</div><div class="metric-value yellow">${latest ? money(latest.target || 0) : money(0)}</div></div>
       </div>
-      <p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
     </section>
 
-    ${latest ? `<section class="panel goods-edit-summary">
-      <div class="panel-title"><span class="badge-icon">${icon("edit")}</span> Редактирование товарника</div>
-      <div class="goods-summary-row"><span>Название</span><strong>${escapeHtml(latest.title || "Товарник")}</strong></div>
-      <div class="goods-summary-row"><span>Позиций</span><strong>${latestItems.length}</strong></div>
-      <div class="goods-summary-row"><span>Текущая сумма</span><strong>${money(latest.total || 0)}</strong></div>
-      <div class="goods-summary-row"><span>Целевая сумма</span><strong class="yellow">${money(latest.target || 0)}</strong></div>
-      <button class="secondary-button wide" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
-    </section>
+    <div class="goods-create-actions legacy-goods-actions">
+      <button class="primary-button" data-action="new-goods-sheet">+ Создать товарник</button>
+      <button class="secondary-button" data-action="open-product-price">${icon("price")}<span>Из прайса товаров</span></button>
+    </div>
+
+    ${latest ? `<article class="panel legacy-goods-card">
+      <div class="goods-card-main">
+        <span class="goods-card-icon">${icon("goods")}</span>
+        <div class="goods-card-copy">
+          <div class="goods-card-title">${escapeHtml(latest.title || "Товарник")}</div>
+          <div class="small">${latestItems.length} позиций · ${shortDate(latest.updatedAt || latest.createdAt)}</div>
+        </div>
+        <strong class="goods-card-total">${money(latest.total || 0)}</strong>
+      </div>
+      <div class="goods-card-meta">
+        <span>Текущая сумма: <strong>${money(latest.total || 0)}</strong></span>
+        <span>Цель: <strong class="yellow">${money(latest.target || 0)}</strong></span>
+      </div>
+      <button class="primary-button wide" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть товарник</button>
+    </article>
 
     <section class="panel goods-preview-panel" id="goods-inline-preview">
       <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Предпросмотр</div>
@@ -1373,16 +1386,19 @@ function goodsPage() {
         </table>
       </div>
       <div class="goods-preview-total"><strong>Итого</strong><strong>${money(latest.total || 0)}</strong></div>
-    </section>` : ""}
+    </section>` : emptyState("goods", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
 
-    ${sheets.length > 1 ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.slice(1).map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div></section>` : ""}
+    ${sheets.length > 1 ? `<section class="panel goods-history-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История расчётов</div>
+      <div class="goods-list legacy-goods-list">${sheets.slice(1).map((sheet) => `<button class="goods-sheet legacy-goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span class="goods-sheet-icon">${icon("document")}</span><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>
+    </section>` : ""}
 
     <details class="panel goods-price-panel" id="product-price-panel">
       <summary><span class="panel-title"><span class="badge-icon">${icon("price")}</span> Прайс товаров</span><span class="chevron">${icon("chevron")}</span></summary>
       ${productPrice.length ? `<div class="goods-price-list">${productPrice.map((item) => `<div class="goods-price-row"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<div class="small">В прайс-листе пока нет товарных позиций.</div>`}
     </details>
 
-    ${!sheets.length ? emptyState("goods", "Товарников пока нет", "Создай первый расчёт товаров или материалов.") : ""}
+    <p class="small goods-note">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
   </main>`;
 }
 function settingsPage() {
