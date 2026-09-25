@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.41.0";
-const APP_BUILD = "2026.09.26.01";
+const APP_VERSION = "0.41.1";
+const APP_BUILD = "2026.09.26.02";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новые заявки теперь сверху; интерфейс уменьшен; раздел Ещё упрощён; печать акта ужата в одну A4-страницу";
+const APP_RELEASE = "Режим применения услуг без подгонки перенесён из каталога в настройки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -30,6 +30,7 @@ const defaultData = () => ({
     autoBackup: false,
     autoBackupDays: 1,
     lastBackupAt: null,
+    catalogApplyWithoutFit: false,
     companyName: "CRM by Romanychev",
     name: "",
     phone: ""
@@ -1414,6 +1415,14 @@ function settingsPage() {
         <div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div>
         <div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div>
       </div>
+      <label class="settings-check-row">
+        <input type="checkbox" name="catalogApplyWithoutFit" ${settings.catalogApplyWithoutFit ? "checked" : ""} />
+        <span class="settings-checkbox"></span>
+        <span>
+          <strong>Применять услуги без подгонки</strong>
+          <small>Сохранять цены из прайса как есть, не подгоняя их под сумму заявки</small>
+        </span>
+      </label>
       <button class="primary-button wide settings-save" type="submit">Сохранить</button>
     </form>
 
@@ -1829,8 +1838,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
       <div><span>Разница:</span><strong id="catalog-diff-total">0 ₽</strong></div>
     </div>
     <div class="catalog-modal-actions">
-      <button class="secondary-button" id="catalog-apply-original" type="button">Применить без подгонки</button>
-      <button class="primary-button" id="catalog-apply-fit" type="button">✓ Применить и подогнать под сумму заявки</button>
+      <button class="primary-button" id="catalog-apply" type="button">Применить выбранные услуги</button>
     </div>
   </div>`;
   document.body.appendChild(modal);
@@ -1933,8 +1941,9 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     renderCatalog();
   });
   modal.querySelector(".catalog-close").addEventListener("click", () => modal.remove());
-  modal.querySelector("#catalog-apply-original").addEventListener("click", () => applySelection(false));
-  modal.querySelector("#catalog-apply-fit").addEventListener("click", () => applySelection(true));
+  modal.querySelector("#catalog-apply").addEventListener("click", () => {
+    applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
+  });
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   renderCatalog();
 }
@@ -2789,7 +2798,15 @@ app.addEventListener("submit", async (event) => {
   if (event.target.id !== "settings-form") return;
   event.preventDefault();
   const form = new FormData(event.target);
-  data.settings = { ...data.settings, companyName: form.get("companyName"), name: form.get("name"), phone: form.get("phone"), companyAddress: form.get("companyAddress"), inn: form.get("inn") };
+  data.settings = {
+    ...data.settings,
+    companyName: form.get("companyName"),
+    name: form.get("name"),
+    phone: form.get("phone"),
+    companyAddress: form.get("companyAddress"),
+    inn: form.get("inn"),
+    catalogApplyWithoutFit: form.get("catalogApplyWithoutFit") === "on"
+  };
   await saveData();
   toast("Настройки сохранены");
 });
