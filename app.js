@@ -3,8 +3,8 @@ const DB_VERSION = 1;
 const STORE = "keyval";
 const DATA_KEY = "crm-data";
 const DIRECTORY_KEY = "backup-directory";
-const APP_VERSION = "0.18.0";
-const APP_BUILD = "2026.09.25.18";
+const APP_VERSION = "0.19.0";
+const APP_BUILD = "2026.09.25.19";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 
 const defaultData = () => ({
