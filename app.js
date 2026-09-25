@@ -1122,6 +1122,7 @@ function newOrderModal(existing = null, options = {}) {
 
 function receiptModal(existing = null, receiptIndex = -1) {
   const item = existing || {};
+  const isStored = receiptIndex >= 0;
   const view = receiptSummary(item);
   const rawDate = String(view.date || "");
   const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
@@ -1129,7 +1130,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
   modal.innerHTML = `<form class="modal compact-modal" id="receipt-form">
-    <h2>${existing ? "Редактировать документ" : "Новый документ"}</h2>
+    <h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2>
     <div class="form-grid">
       <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Чек, квитанция, заказ-наряд…" /></div>
       <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" /></div>
@@ -1138,7 +1139,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
       <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(view.note)}</textarea></div>
     </div>
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <div class="modal-actions">${isStored ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
