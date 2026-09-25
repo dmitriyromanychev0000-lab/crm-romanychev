@@ -394,7 +394,7 @@ function warehousePage() {
 }
 
 function analyticsPage() {
-  const closed = data.orders.filter((order) => normalizeStatus(order.status) === "closed" && withinPeriod(order.created, analyticsPeriod));
+  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && withinPeriod(order.created, analyticsPeriod));
   const periodExpenses = data.expenses.filter((item) => withinPeriod(item.date, analyticsPeriod));
   const revenue = closed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
   const expenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
@@ -457,6 +457,7 @@ function clientKeyForOrder(order) {
 function clientsPage() {
   const clients = new Map();
   data.orders.forEach((order) => {
+    if (order.archived) return;
     const key = clientKeyForOrder(order);
     if (!key) return;
     const current = clients.get(key) || { key, name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: order.created };
@@ -497,7 +498,7 @@ function financePage() {
 }
 
 function actPage() {
-  const orders = [...data.orders].reverse();
+  const orders = [...data.orders].filter((item) => !item.archived).reverse();
   if (!selectedActOrderId && orders.length) selectedActOrderId = String(orders[0].id);
   const order = orders.find((item) => String(item.id) === String(selectedActOrderId));
   const actItems = order ? [
@@ -1332,11 +1333,15 @@ async function handleOrderAction(action, id) {
     order.status = normalizeStatus(order.status) === "closed" ? "В работе" : "Закрыта";
   }
   if (action === "copy") {
-    data.orders.push({ ...structuredClone(order), id: String(Date.now()).slice(-6), created: new Date().toISOString(), status: "В работе" });
+    data.orders.push({ ...structuredClone(order), id: String(Date.now()).slice(-6), created: new Date().toISOString(), status: "В работе", archived: false, archivedAt: null });
+  }
+  if (action === "archive") {
+    order.archived = !order.archived;
+    order.archivedAt = order.archived ? new Date().toISOString() : null;
   }
   await saveData();
   render();
-  toast(action === "copy" ? "Создана копия заявки" : "Статус обновлён");
+  toast(action === "copy" ? "Создана копия заявки" : action === "archive" ? (order.archived ? "Заявка перемещена в архив" : "Заявка возвращена") : "Статус обновлён");
 }
 
 async function adjustStock(id, direction) {
