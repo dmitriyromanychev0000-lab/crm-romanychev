@@ -374,7 +374,8 @@ function ordersPage() {
       ? isArchived
       : !isArchived && (orderFilter === "all" || orderFilter === status);
     const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id].join(" ").toLowerCase();
-    return filterMatch && (!query || haystack.includes(query));
+    const periodMatch = withinPeriod(order.created, orderPeriod);
+    return filterMatch && periodMatch && (!query || haystack.includes(query));
   });
   return `<main class="content">
     <div class="page-head"><div><h1>Заявки</h1><p class="lead">Все ремонты в одном месте</p></div><button class="icon-button" data-action="new-order" aria-label="Новая заявка">+</button></div>
@@ -385,6 +386,13 @@ function ordersPage() {
       <button class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
       <button class="chip ${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
       <button class="chip ${orderFilter === "archived" ? "active" : ""}" data-filter="archived">Архив</button>
+    </div>
+    <div class="chips">
+      <button class="chip ${orderPeriod === "all" ? "active" : ""}" data-order-period="all">Всё время</button>
+      <button class="chip ${orderPeriod === "7" ? "active" : ""}" data-order-period="7">7 дней</button>
+      <button class="chip ${orderPeriod === "30" ? "active" : ""}" data-order-period="30">30 дней</button>
+      <button class="chip ${orderPeriod === "90" ? "active" : ""}" data-order-period="90">90 дней</button>
+      <button class="chip ${orderPeriod === "365" ? "active" : ""}" data-order-period="365">365 дней</button>
     </div>
     ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">▣</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
