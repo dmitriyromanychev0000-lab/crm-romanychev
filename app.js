@@ -47,6 +47,8 @@ let data = defaultData();
 let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
 let orderFilter = ["all", "closed", "active", "declined"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
+let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
+let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
@@ -57,6 +59,8 @@ function saveUiState(extra = {}) {
       activePage,
       orderFilter,
       searchQuery,
+      warehouseSearch,
+      clientSearch,
       moreSection,
       selectedActOrderId,
       scrollY: window.scrollY,
