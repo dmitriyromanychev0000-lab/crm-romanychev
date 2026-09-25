@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.40.2";
-const APP_BUILD = "2026.09.25.47";
+const APP_VERSION = "0.40.3";
+const APP_BUILD = "2026.09.25.48";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Удалён мёртвый фильтр заявок; навигация и периодные фильтры получили корректные accessibility-состояния";
+const APP_RELEASE = "Исправлены дата закрытия заявки и сохранение режима «Без гарантии»";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -220,6 +220,19 @@ const normalizeStatus = (status) => {
   if (value.includes("отказ")) return "declined";
   return "active";
 };
+
+function syncOrderCompletion(next, previous = null) {
+  const isClosed = normalizeStatus(next.status) === "closed";
+  const wasClosed = previous ? normalizeStatus(previous.status) === "closed" : false;
+  if (!isClosed) {
+    next.completed = null;
+  } else if (!wasClosed) {
+    next.completed = new Date().toISOString();
+  } else {
+    next.completed = previous.completed || null;
+  }
+  return next;
+}
 
 function newOrderId() {
   const used = new Set(data.orders.map((item) => String(item.id ?? "")));
@@ -1739,11 +1752,14 @@ async function compressPhotoFile(file) {
   };
 }
 function warrantyUntilText(order = {}) {
-  const months = Number(order.guarantee) || 6;
+  const months = order.guarantee === undefined || order.guarantee === null || order.guarantee === ""
+    ? 6
+    : Number(order.guarantee);
+  if (!Number.isFinite(months) || months <= 0) return "без гарантии";
   const base = new Date(order.completed || order.updatedAt || order.created || Date.now());
   if (Number.isNaN(base.getTime())) return "";
   base.setMonth(base.getMonth() + months);
-  return new Intl.DateTimeFormat("ru-RU").format(base);
+  return `до ${new Intl.DateTimeFormat("ru-RU").format(base)}`;
 }
 
 
@@ -1892,6 +1908,9 @@ function newOrderModal(existing = null, options = {}) {
   const previousMaterials = forceNew ? [] : (Array.isArray(order.materials) ? order.materials : []);
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
+  const guaranteeMonths = order.guarantee === undefined || order.guarantee === null || order.guarantee === ""
+    ? 6
+    : Number(order.guarantee);
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
   const serviceOptions = serviceCatalog
@@ -1943,7 +1962,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>💰 Итоговая сумма для клиента (₽)</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>💳 Предоплата (₽)</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
       <div class="form-group"><label>🎁 Скидка (₽)</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>🛡️ Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${Number(order.guarantee || 6) === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${Number(order.guarantee || 6) === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${Number(order.guarantee || 6) === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${Number(order.guarantee || 6) === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${Number(order.guarantee || 6) === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${Number(order.guarantee || 6) === 24 ? "selected" : ""}>24 месяца</option></select></div>
+      <div class="form-group"><label>🛡️ Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${guaranteeMonths === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${guaranteeMonths === 24 ? "selected" : ""}>24 месяца</option></select></div>
       <div class="form-group"><label>🧾 Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
       <div class="form-group"><label>📄 Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
       <div class="form-group"><label>📊 Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
@@ -1951,7 +1970,7 @@ function newOrderModal(existing = null, options = {}) {
     </div>
 
     <section class="legacy-guarantee-card">
-      <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">до ${escapeHtml(warrantyUntilText(order))}</span></div>
+      <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">${escapeHtml(warrantyUntilText(order))}</span></div>
       <label>Что покрывает</label>
       <textarea class="field textarea" name="guaranteeNote" placeholder="Опиши условия гарантии">${escapeHtml(order.guaranteeNote || "")}</textarea>
     </section>
@@ -2114,6 +2133,7 @@ function newOrderModal(existing = null, options = {}) {
     const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
     if (!stockSync.ok) return toast(stockSync.message);
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
+    syncOrderCompletion(next, index >= 0 ? data.orders[index] : null);
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
     await saveData();
     modal.remove();
@@ -2437,7 +2457,9 @@ async function handleOrderAction(action, id) {
   if (action === "edit") return newOrderModal(order);
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
   if (action === "toggle") {
-    order.status = normalizeStatus(order.status) === "closed" ? "В работе" : "Закрыта";
+    const wasClosed = normalizeStatus(order.status) === "closed";
+    order.status = wasClosed ? "В работе" : "Закрыта";
+    syncOrderCompletion(order, { ...order, status: wasClosed ? "Закрыта" : "В работе" });
   }
   if (action === "copy") {
     const copy = {
