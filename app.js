@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.39.2";
-const APP_BUILD = "2026.09.25.44";
+const APP_VERSION = "0.40.0";
+const APP_BUILD = "2026.09.25.45";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Визуальный фундамент и Черновики выровнены; удалён неиспользуемый старый редактор товарника";
+const APP_RELEASE = "Восстановлен раздел Бэкапы; служебные экраны Покупки и Инструменты приведены к общей системе";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1523,15 +1523,53 @@ function receiptsPage() {
 function toolsPage() {
   const tools = Array.isArray(data.tools) ? data.tools : [];
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
-  return `<main class="content">
+  return `<main class="content tools-content">
     <div class="page-head"><div><h1>Инструменты</h1><p class="lead">Учёт рабочего инструмента и оборудования</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
-    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
-    ${tools.length ? `<section class="panel"><div class="goods-list">${tools.map((item, index) => {
+    <section class="panel tools-stats-panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
+    ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${tools.map((item, index) => {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button class="goods-sheet" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
+      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
+  </main>`;
+}
+
+async function backupSettings() {
+  const directory = await dbGet(DIRECTORY_KEY);
+  const rollback = await dbGet(PRE_IMPORT_KEY);
+  return `<main class="content backup-content">
+    <div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel backup-main-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
+      <div class="backup-grid">
+        <button class="primary-button" data-action="import">Импортировать JSON</button>
+        <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
+        <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
+        <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
+        <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
+        <button class="secondary-button" data-action="backup-self-test">Проверить бэкап</button>
+        <button class="secondary-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
+      </div>
+      <div class="backup-settings-list">
+        <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
+        <div class="setting-row"><div><strong>Автоматический бэкап</strong><div class="small">Проверяется при открытии приложения</div></div><button class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" aria-label="Автоматический бэкап"></button></div>
+        <div class="setting-row"><div><strong>Периодичность</strong></div><select id="backup-days">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
+        <div class="setting-row"><div><strong>Последний бэкап</strong><div class="small">${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</div></div></div>
+        <div class="setting-row"><div><strong>Точка отката импорта</strong><div class="small">${rollback ? `Есть · ${rollback.orders?.length || 0} заявок` : "Ещё не создавалась"}</div></div></div>
+      </div>
+    </section>
+    <section class="panel backup-content-panel">
+      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Содержимое</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Заявки</div><div class="metric-value">${data.orders.length}</div></div>
+        <div class="metric"><div class="metric-label">Склад</div><div class="metric-value">${data.warehouse.length}</div></div>
+        <div class="metric"><div class="metric-label">Движения</div><div class="metric-value">${data.warehouse_movements.length}</div></div>
+        <div class="metric"><div class="metric-label">Прайс</div><div class="metric-value">${data.receipt_prices.length}</div></div>
+        <div class="metric"><div class="metric-label">Документы</div><div class="metric-value">${data.receipts.length}</div></div>
+        <div class="metric"><div class="metric-label">Черновики</div><div class="metric-value">${draftRecords().length}</div></div>
+      </div>
+    </section>
   </main>`;
 }
 
@@ -1539,10 +1577,10 @@ function shoppingPage() {
   const items = data.warehouse
     .filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0))
     .sort((a, b) => (Number(a.quantity) - Number(a.min || 0)) - (Number(b.quantity) - Number(b.min || 0)));
-  return `<main class="content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+  return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     ${items.length ? `<div class="client-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
-      return `<article class="panel shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
+      return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
