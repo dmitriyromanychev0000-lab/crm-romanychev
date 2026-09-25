@@ -47,6 +47,7 @@ const initialUiState = readUiState();
 let data = defaultData();
 let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
 let orderFilter = ["all", "closed", "active", "declined", "archived"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
+let orderPeriod = ["all", "7", "30", "90", "365"].includes(String(initialUiState.orderPeriod)) ? String(initialUiState.orderPeriod) : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -61,6 +62,7 @@ function saveUiState(extra = {}) {
     localStorage.setItem(UI_STATE_KEY, JSON.stringify({
       activePage,
       orderFilter,
+      orderPeriod,
       searchQuery,
       warehouseSearch,
       clientSearch,
