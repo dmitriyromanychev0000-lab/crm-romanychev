@@ -736,6 +736,68 @@ h2 { margin: 0; font-size: 24px; }
 .menu-icon-goods { color: #bd82ff; background: rgba(142,85,220,.16); }
 .menu-icon-settings { color: #b0b7bd; background: rgba(145,155,165,.12); }
 
+.price-content { padding-top: 28px; }
+.price-search-row .search {
+  min-height: 68px;
+  border-color: rgba(255,107,79,.72);
+  box-shadow: 0 0 0 3px rgba(255,107,79,.07);
+}
+.price-tech-filter {
+  position: relative;
+  margin-bottom: 18px;
+}
+.price-tech-filter .field {
+  min-height: 62px;
+  padding-right: 56px;
+  appearance: none;
+  border-radius: 18px;
+  background: #181f26;
+  font-size: 17px;
+}
+.price-groups { display: grid; gap: 22px; }
+.price-category h3 {
+  margin: 0 0 10px 4px;
+  color: #969ea5;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.price-catalog-list { display: grid; gap: 10px; }
+.price-catalog-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 88px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(145deg,#171e25,#141b21);
+  color: var(--text);
+  text-align: left;
+}
+.price-catalog-card > span { min-width: 0; }
+.price-catalog-card strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+.price-catalog-card small {
+  display: block;
+  margin-top: 5px;
+  color: #8f979e;
+  font-size: 13px;
+}
+.price-catalog-card b {
+  color: var(--accent);
+  font-size: 19px;
+  white-space: nowrap;
+}
+.custom-price-panel { margin-top: 24px; }
+.custom-price-panel > .secondary-button { margin-bottom: 12px; }
+
 .goods-content { padding-top: 28px; }
 .goods-create-panel .small { margin: 12px 0 0; }
 .goods-create-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -1596,6 +1658,8 @@ h2 { margin: 0; font-size: 24px; }
   .warehouse-create-card { padding: 22px 22px 24px; }
   .warehouse-group { padding: 18px; }
   .goods-create-actions { grid-template-columns: 1fr; }
+  .price-catalog-card { min-height: 82px; padding: 15px 17px; }
+  .price-catalog-card strong { font-size: 17px; }
   .legacy-stock-card { padding: 17px 16px 17px 20px; }
   .stock-card-main { grid-template-columns: 58px minmax(0,1fr) auto; gap: 11px; }
   .stock-box-icon { width: 54px; height: 54px; }
