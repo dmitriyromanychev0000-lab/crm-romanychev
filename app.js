@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.45.0";
-const APP_BUILD = "2026.09.26.12";
+const APP_VERSION = "0.45.1";
+const APP_BUILD = "2026.09.26.13";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Форма заявки очищена от дублирующего быстрого добавления услуг; печать акта сведена к единому одностраничному A4-режиму";
+const APP_RELEASE = "Даты старых и импортированных заявок унифицированы во всех экранах; редактирование больше не меняет их исходную хронологию";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -632,14 +632,15 @@ function telegramPhoneLink(phone) {
   return digits ? `tg://resolve?phone=${digits}` : "";
 }
 
+function orderDateValue(order = {}) {
+  return order.created || order.createdAt || order.date || order.created_at || order.updatedAt || "";
+}
+
 function orderCreatedTimestamp(order = {}) {
-  const candidates = [order.created, order.createdAt, order.date, order.created_at];
-  for (const value of candidates) {
-    if (!value) continue;
-    const time = new Date(value).getTime();
-    if (Number.isFinite(time)) return time;
-  }
-  return null;
+  const value = orderDateValue(order);
+  if (!value) return null;
+  const time = new Date(value).getTime();
+  return Number.isFinite(time) ? time : null;
 }
 
 function ordersNewestFirst(source = data.orders) {
@@ -687,7 +688,7 @@ function orderCard(order) {
   return `<article class="panel order-card ${cardClass}">
     <div class="order-top">
       <div class="order-person"><span class="order-number">№${escapeHtml(order.id || "—")}</span><span class="order-name">${escapeHtml(order.name || "Без имени")}</span></div>
-      <div class="order-state"><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : isDeclined ? "declined" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
+      <div class="order-state"><div class="order-date">${shortDate(orderDateValue(order))}</div><span class="status ${isClosed ? "closed" : isDeclined ? "declined" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
     </div>
 
     <div class="appliance">
@@ -943,7 +944,7 @@ function calendarDayTime(value) {
 function revenueBarsForOrders(orders) {
   const grouped = new Map();
   orders.forEach((order) => {
-    const dayTime = calendarDayTime(order.completed || order.created);
+    const dayTime = calendarDayTime(order.completed || orderDateValue(order));
     if (dayTime === null) return;
     grouped.set(dayTime, (grouped.get(dayTime) || 0) + (Number(order.sum) || 0));
   });
@@ -988,7 +989,7 @@ function analyticsRangeModal() {
 
 function analyticsPage() {
   const range = analyticsRange();
-  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && inAnalyticsRange(order.completed || order.created, range));
+  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && inAnalyticsRange(order.completed || orderDateValue(order), range));
   const activeOrders = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "active");
   const periodExpenses = data.expenses.filter((item) => inAnalyticsRange(item.date, range));
   const periodIncomes = data.incomes.filter((item) => inAnalyticsRange(item.date, range));
@@ -1006,7 +1007,7 @@ function analyticsPage() {
   const overdueVisits = activeOrders.filter((order) => order.nextVisit && new Date(order.nextVisit).getTime() < now).length;
   const lowStock = data.warehouse.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
   const activeOrderAges = activeOrders
-    .map((order) => new Date(order.created || "").getTime())
+    .map((order) => orderCreatedTimestamp(order))
     .filter(Number.isFinite)
     .map((created) => Math.max(0, Math.floor((now - created) / 86400000)));
   const oldestActiveDays = activeOrderAges.length ? Math.max(...activeOrderAges) : 0;
@@ -1210,17 +1211,21 @@ function clientsPage() {
     if (order.archived) return;
     const key = clientKeyForOrder(order);
     if (!key) return;
-    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: order.created };
+    const orderDate = orderDateValue(order);
+    const orderTime = orderCreatedTimestamp(order) || 0;
+    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: orderDate, lastTime: orderTime };
     current.orders.push(order);
     current.total += Number(order.sum) || 0;
-    if (new Date(order.created || 0) > new Date(current.last || 0)) {
-      current.last = order.created;
+    if (orderTime > Number(current.lastTime || 0)) {
+      current.last = orderDate;
+      current.lastTime = orderTime;
       current.name = order.name || current.name;
+      current.phone = order.phone || current.phone;
       current.address = order.address || current.address;
     }
     clients.set(key, current);
   });
-  const sorted = [...clients.values()].sort((a, b) => new Date(b.last || 0) - new Date(a.last || 0));
+  const sorted = [...clients.values()].sort((a, b) => Number(b.lastTime || 0) - Number(a.lastTime || 0));
   const query = clientSearch.trim().toLowerCase();
   const filtered = sorted.filter((client) => !query || [client.name, client.phone, client.address].join(" ").toLowerCase().includes(query));
   const closedOrders = data.orders.filter((item) => !item.archived && normalizeStatus(item.status) === "closed").length;
@@ -1327,7 +1332,7 @@ function actPage() {
 
     <section class="panel no-print act-control-panel">
       <div class="panel-title"><span class="badge-icon">${icon("printer")}</span> Акт выполненных работ (A4)</div>
-      <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(item.created)})</option>`).join("")}</select></label>
+      <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
       <button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / сохранить PDF</span></button>
     </section>
 
@@ -1835,7 +1840,7 @@ function warrantyUntilText(order = {}) {
     ? 6
     : Number(order.guarantee);
   if (!Number.isFinite(months) || months <= 0) return "без гарантии";
-  const base = new Date(order.completed || order.updatedAt || order.created || Date.now());
+  const base = new Date(order.completed || order.updatedAt || orderDateValue(order) || Date.now());
   if (Number.isNaN(base.getTime())) return "";
   base.setMonth(base.getMonth() + months);
   return `до ${new Intl.DateTimeFormat("ru-RU").format(base)}`;
@@ -2151,7 +2156,7 @@ function newOrderModal(existing = null, options = {}) {
     return {
       ...order,
       id: asDraft ? crypto.randomUUID() : (order.id || newOrderId()),
-      created: order.created || new Date().toISOString(),
+      created: orderDateValue(order) || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       draft: asDraft || undefined,
       sourceOrderId: asDraft && order.id ? order.id : (order.sourceOrderId || null),
@@ -2400,7 +2405,7 @@ function priceModal(existing = null, priceIndex = -1) {
 function clientModal(clientKey) {
   const orders = data.orders
     .filter((order) => !order.archived && clientKeyForOrder(order) === clientKey)
-    .sort((a, b) => new Date(b.created || 0) - new Date(a.created || 0));
+    .sort((a, b) => (orderCreatedTimestamp(b) || 0) - (orderCreatedTimestamp(a) || 0));
   if (!orders.length) return;
   const client = orders[0];
   const total = orders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
