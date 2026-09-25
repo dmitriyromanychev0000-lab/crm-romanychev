@@ -16,6 +16,7 @@ const defaultData = () => ({
   receipts: [],
   receipt_prices: [],
   tools: [],
+  goods_sheets: [],
   draft: [],
   settings: {
     autoBackup: false,
@@ -384,6 +385,22 @@ function actPage() {
   </main>`;
 }
 
+function goodsPage() {
+  const sheets = Array.isArray(data.goods_sheets) ? [...data.goods_sheets].reverse() : [];
+  return `<main class="content"><div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel"><div class="panel-title"><span class="badge-icon">◇</span> Новый товарник</div><p class="small">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p><button class="primary-button wide" data-action="new-goods-sheet">+ Создать вручную</button></section>
+    ${sheets.length ? `<section class="panel"><div class="panel-title">Сохранённые расчёты</div><div class="goods-list">${sheets.map((sheet) => `<button class="goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span>›</span></button>`).join("")}</div></section>` : emptyState("◇", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
+  </main>`;
+}
+
+function settingsPage() {
+  const settings = data.settings || {};
+  return `<main class="content"><div class="page-head"><div><h1>Настройки</h1><p class="lead">Данные мастера и оформление документов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <form class="panel" id="settings-form"><div class="panel-title">Реквизиты исполнителя</div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div><div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div><div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(settings.phone || "")}" inputmode="tel" /></div><div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div><div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div></div><button class="primary-button wide settings-save" type="submit">Сохранить настройки</button></form>
+    <section class="panel"><div class="panel-title">О данных</div><p class="small">Все данные находятся только в браузере устройства. Для переноса и защиты используй раздел «Бэкапы».</p></section>
+  </main>`;
+}
+
 async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   return `<main class="content"><div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
@@ -410,6 +427,7 @@ function moreMenu() {
     ["prices", "◇", "Прайс-лист", "Каталог услуг и материалов"],
     ["clients", "♙", "Клиенты", "История обращений и ремонтов"],
     ["finance", "₽", "Финансы", "Расходы и дополнительные доходы"],
+    ["goods", "◇", "Товарник", "Отдельный расчёт товаров"],
     ["act", "▤", "Акт", "Подготовка и печать документа"],
     ["settings", "⚙", "Настройки", "Оформление и параметры приложения"]
   ];
@@ -421,7 +439,9 @@ async function morePage() {
   if (moreSection === "prices") return priceList();
   if (moreSection === "clients") return clientsPage();
   if (moreSection === "finance") return financePage();
+  if (moreSection === "goods") return goodsPage();
   if (moreSection === "act") return actPage();
+  if (moreSection === "settings") return settingsPage();
   return moreMenu();
 }
 
@@ -606,6 +626,69 @@ function financeModal(type) {
   });
 }
 
+const goodsLine = (item = {}) => `<div class="line-item" data-goods-row>
+  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
+  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+  <input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" />
+  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
+</div>`;
+
+function goodsModal(existing = null) {
+  const sheet = existing || { id: crypto.randomUUID(), title: "Новый товарник", items: [], target: 0, createdAt: new Date().toISOString() };
+  const options = data.receipt_prices.map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal" id="goods-form"><h2>Товарник</h2><div class="form-grid"><div class="form-group full"><label>Название расчёта</label><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></div></div>
+    <div class="form-section-title">Позиции</div><div class="catalog-add"><select class="field" id="goods-picker"><option value="">— Выбрать из прайс-листа —</option>${options}</select><button type="button" class="secondary-button" id="add-goods-line">+ Добавить</button></div><div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div><div class="line-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
+    <div class="form-section-title">Итог</div><div class="form-grid"><div class="form-group"><label>Целевая сумма</label><input class="field" id="goods-target" name="target" type="number" min="0" value="${Number(sheet.target) || 0}" /></div><div class="form-group"><label>Текущая сумма</label><div class="field readonly-field" id="goods-total">0 ₽</div></div></div><div class="goods-adjust"><button type="button" class="secondary-button" id="adjust-goods-prices">Подогнать цены под цель</button><button type="button" class="danger-button" id="delete-goods-sheet" ${existing ? "" : "disabled"}>Удалить товарник</button></div>
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  document.body.appendChild(modal);
+  const calculate = () => {
+    const total = [...modal.querySelectorAll("[data-goods-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
+    modal.querySelector("#goods-total").textContent = money(total);
+    return total;
+  };
+  modal.querySelector("#add-goods-line").addEventListener("click", () => {
+    const picker = modal.querySelector("#goods-picker");
+    const item = picker.value === "" ? null : data.receipt_prices[Number(picker.value)];
+    modal.querySelector("#goods-lines").insertAdjacentHTML("beforeend", goodsLine(item ? { name: item.name, qty: 1, price: item.price } : {}));
+    calculate();
+  });
+  modal.addEventListener("click", (event) => {
+    if (event.target.closest("[data-remove-line]")) { event.target.closest(".line-item").remove(); calculate(); }
+  });
+  modal.addEventListener("input", (event) => { if (event.target.closest("[data-goods-row]")) calculate(); });
+  modal.querySelector("#adjust-goods-prices").addEventListener("click", () => {
+    const rows = [...modal.querySelectorAll("[data-goods-row]")];
+    const target = Number(modal.querySelector("#goods-target").value);
+    const current = calculate();
+    if (!rows.length || !Number.isFinite(target) || target < 0) return toast("Добавь позиции и укажи целевую сумму");
+    rows.forEach((row) => {
+      const qty = Number(row.querySelector('[data-line="qty"]').value) || 1;
+      const price = Number(row.querySelector('[data-line="price"]').value) || 0;
+      row.querySelector('[data-line="price"]').value = Math.round(current ? price * target / current : target / rows.length / qty);
+    });
+    calculate();
+  });
+  modal.querySelector("#delete-goods-sheet").addEventListener("click", async () => {
+    if (!existing || !confirm("Удалить этот товарник?")) return;
+    data.goods_sheets = (data.goods_sheets || []).filter((item) => String(item.id) !== String(sheet.id));
+    await saveData(); modal.remove(); await render(); toast("Товарник удалён");
+  });
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = { ...sheet, title: form.get("title"), target: Number(form.get("target")) || 0, items: [...modal.querySelectorAll("[data-goods-row]")].map((row) => ({ name: row.querySelector('[data-line="name"]').value, qty: Number(row.querySelector('[data-line="qty"]').value) || 1, price: Number(row.querySelector('[data-line="price"]').value) || 0 })).filter((item) => item.name.trim()), total: calculate(), updatedAt: new Date().toISOString() };
+    const index = (data.goods_sheets || []).findIndex((item) => String(item.id) === String(next.id));
+    if (!Array.isArray(data.goods_sheets)) data.goods_sheets = [];
+    if (index >= 0) data.goods_sheets[index] = next; else data.goods_sheets.push(next);
+    await saveData(); modal.remove(); await render(); toast("Товарник сохранён");
+  });
+  calculate();
+}
+
 async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
@@ -653,6 +736,12 @@ app.addEventListener("click", async (event) => {
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "more-menu") { moreSection = "menu"; return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "new-goods-sheet") return goodsModal();
+  if (action === "edit-goods-sheet") {
+    const id = event.target.closest("[data-action]").dataset.id;
+    const sheet = (data.goods_sheets || []).find((item) => String(item.id) === String(id));
+    if (sheet) return goodsModal(sheet);
+  }
   if (action === "print-act") return window.print();
   if (action === "toggle-auto") {
     data.settings.autoBackup = !data.settings.autoBackup;
@@ -663,7 +752,7 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    if (["backup", "prices", "clients", "finance", "act"].includes(more)) moreSection = more;
+    if (["backup", "prices", "clients", "finance", "goods", "act", "settings"].includes(more)) moreSection = more;
     else toast("Раздел будет восстановлен на следующем этапе");
     await render();
     return;
@@ -692,6 +781,15 @@ app.addEventListener("input", (event) => {
       input?.setSelectionRange(cursor, cursor);
     });
   }
+});
+
+app.addEventListener("submit", async (event) => {
+  if (event.target.id !== "settings-form") return;
+  event.preventDefault();
+  const form = new FormData(event.target);
+  data.settings = { ...data.settings, companyName: form.get("companyName"), name: form.get("name"), phone: form.get("phone"), companyAddress: form.get("companyAddress"), inn: form.get("inn") };
+  await saveData();
+  toast("Настройки сохранены");
 });
 
 app.addEventListener("change", async (event) => {
