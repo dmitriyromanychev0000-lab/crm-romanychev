@@ -1,5 +1,5 @@
-const CACHE = "crm-romanychev-v65";
-const ASSETS = ["./", "./index.html", "./styles.css?v=38", "./app.js?v=61", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "crm-romanychev-v66";
+const ASSETS = ["./", "./index.html", "./styles.css?v=39", "./app.js?v=62", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
