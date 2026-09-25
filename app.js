@@ -1395,20 +1395,38 @@ function financePage() {
   </main>`;
 }
 
+function rublesInWords(value) {
+  const n = Math.max(0, Math.round(Number(value) || 0));
+  const oneM = ["","один","два","три","четыре","пять","шесть","семь","восемь","девять"];
+  const oneF = ["","одна","две","три","четыре","пять","шесть","семь","восемь","девять"];
+  const teen = ["десять","одиннадцать","двенадцать","тринадцать","четырнадцать","пятнадцать","шестнадцать","семнадцать","восемнадцать","девятнадцать"];
+  const ten = ["","","двадцать","тридцать","сорок","пятьдесят","шестьдесят","семьдесят","восемьдесят","девяносто"];
+  const hundred = ["","сто","двести","триста","четыреста","пятьсот","шестьсот","семьсот","восемьсот","девятьсот"];
+  const form = (num, forms) => { const a=num%100,b=num%10; if(a>=11&&a<=19)return forms[2]; if(b===1)return forms[0]; if(b>=2&&b<=4)return forms[1]; return forms[2]; };
+  const tri = (num, female=false) => { const out=[hundred[Math.floor(num/100)]]; const r=num%100; if(r>=10&&r<=19) out.push(teen[r-10]); else { out.push(ten[Math.floor(r/10)]); out.push((female?oneF:oneM)[r%10]); } return out.filter(Boolean); };
+  if (!n) return "ноль рублей";
+  const out=[]; const th=Math.floor(n/1000); const rest=n%1000;
+  if (th) { out.push(...tri(th,true), form(th,["тысяча","тысячи","тысяч"])); }
+  if (rest) { out.push(...tri(rest,false), form(rest,["рубль","рубля","рублей"])); } else { out.push("рублей"); }
+  return out.join(" ");
+}
+
 function actPage() {
   const orders = ordersNewestFirst().filter((item) => !item.archived);
   if (orders.length && !orders.some((item) => String(item.id) === String(selectedActOrderId))) selectedActOrderId = String(orders[0].id);
   const order = orders.find((item) => String(item.id) === String(selectedActOrderId));
-  const actItems = order ? [
-    ...(Array.isArray(order.services) ? order.services.map((item) => ({ ...item, actType: "service" })) : []),
-    ...(Array.isArray(order.materials) ? order.materials.map((item) => ({ name: item.name, qty: item.qty, price: item.unitCost, actType: "material" })) : [])
-  ] : [];
+  const actItems = order
+    ? (Array.isArray(order.services) ? order.services.map((item) => ({ ...item, actType: "service" })) : [])
+    : [];
   if (order && !actItems.length) actItems.push({ name: "Ремонт техники", qty: 1, price: Number(order.sum) || 0, actType: "service" });
 
   const date = new Date();
   const day = String(date.getDate()).padStart(2, "0");
   const month = new Intl.DateTimeFormat("ru-RU", { month: "long" }).format(date);
   const year = date.getFullYear();
+  const itemsTotal = actItems.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
+  const actTotal = Number(order?.sum) || itemsTotal;
+  const amountWords = rublesInWords(actTotal);
 
   return `<main class="content act-content">
     <div class="page-head no-print"><div><h1>Акт</h1><p class="lead">Подготовка и печать документа</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
@@ -1430,20 +1448,23 @@ function actPage() {
         <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
       </div>
 
-      <table><thead><tr><th>№</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table>
+      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table>
 
-      <div class="act-total"><b>Итого к оплате:</b><strong>${money(order.sum)}</strong></div>
-      ${order.guaranteeNote ? `<div class="act-warranty"><b>Условия гарантии:</b><span>${escapeHtml(order.guaranteeNote)}</span></div>` : ""}
-
-      <div class="act-party-details">
-        <div><b>Исполнитель:</b><span>${escapeHtml(data.settings.companyName || data.settings.name || "—")}</span></div>
-        <div><b>Мастер / телефон:</b><span>${escapeHtml([data.settings.name, data.settings.phone].filter(Boolean).join(" · ") || "—")}</span></div>
-        ${data.settings.inn ? `<div><b>ИНН:</b><span>${escapeHtml(data.settings.inn)}</span></div>` : ""}
-        <div><b>Заказчик:</b><span>${escapeHtml([order.name, order.phone].filter(Boolean).join(" · ") || "—")}</span></div>
-        ${order.address ? `<div class="act-party-wide"><b>Адрес:</b><span>${escapeHtml(order.address)}</span></div>` : ""}
+      <div class="act-totals">
+        <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
+        <div><b>Итого к оплате:</b><strong>${money(actTotal)}</strong></div>
+        <div class="act-total-words"><b>Сумма прописью:</b><span>${escapeHtml(amountWords)}</span></div>
       </div>
 
-      <div class="act-acceptance"><h3>АКТ СДАЧИ-ПРИЁМКИ ОКАЗАННЫХ УСЛУГ</h3><p>Исполнитель выполнил работы по обслуживанию указанного оборудования. Заказчик с условиями обслуживания и оплаты ознакомлен, к качеству работ и состоянию оборудования претензий не имеет.</p><div class="act-signatures"><div><b>Исполнитель:</b><br>${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________</div><div><b>Заказчик:</b><br>${escapeHtml(order.name || "________________")}<br>${escapeHtml(order.phone || "")}<br>Подпись: ____________</div></div></div>
+      <section class="act-acceptance">
+        <h3>АКТ СДАЧИ-ПРИЕМКИ ОКАЗАННЫХ УСЛУГ</h3>
+        <div class="act-acceptance-date">от «${day}» ${month} ${year} г.</div>
+        <p>Мы, нижеподписавшиеся, <b>Исполнитель ${escapeHtml(data.settings.name || data.settings.companyName || "________________")}</b> с одной стороны, и представитель Заказчика <b>${escapeHtml(order.name || "________________")}</b> с другой стороны, составили настоящий Акт о том, что в соответствии с настоящим договором Исполнителем выполнен в полном объёме перечень работ по обслуживанию оборудования, указанного в данном договоре. С условиями обслуживания и оплаты Заказчик ознакомлен. К качеству работ (услуг) и состоянию оборудования заказчик претензий не имеет.</p>
+        <div class="act-signatures">
+          <div><b>Исполнитель:</b><br>Ф.И.О.: ${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________<br><br>Адрес оказания услуг:<br>${escapeHtml(order.address || "________________")}</div>
+          <div><b>Заказчик:</b><br>Ф.И.О.: ${escapeHtml(order.name || "________________")}<br>Телефон: ${escapeHtml(order.phone || "________________")}<br>Подпись: ____________</div>
+        </div>
+      </section>
     </article>` : emptyState("document", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
   </main>`;
 }
@@ -2632,41 +2653,14 @@ function printActOnePage() {
   if (!sheet) return;
   const rows = sheet.querySelectorAll("tbody tr").length;
   const textLength = (sheet.innerText || "").length;
-  let zoom = 0.78;
-  if (rows > 5 || textLength > 1800) zoom = 0.72;
-  if (rows > 8 || textLength > 2400) zoom = 0.66;
-  if (rows > 11 || textLength > 3200) zoom = 0.58;
-  if (rows > 15 || textLength > 4200) zoom = 0.50;
+  let zoom = 0.96;
+  if (rows > 10 || textLength > 2500) zoom = 0.88;
+  if (rows > 13 || textLength > 3200) zoom = 0.79;
+  if (rows > 17 || textLength > 3900) zoom = 0.69;
+  if (rows > 21 || textLength > 4700) zoom = 0.59;
+  if (rows > 26 || textLength > 5600) zoom = 0.50;
   document.documentElement.style.setProperty("--act-print-zoom", String(zoom));
   requestAnimationFrame(() => window.print());
-}
-
-function orderActionsSheet(order) {
-  const telegram = telegramPhoneLink(order.phone);
-  const isArchived = Boolean(order.archived);
-  const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop order-actions-backdrop";
-  backdrop.innerHTML = `<div class="order-actions-sheet" role="dialog" aria-modal="true" aria-label="Дополнительные действия заявки">
-    <div class="order-actions-head"><div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>${escapeHtml(order.name || "Без имени")}</small></div><button type="button" class="order-actions-close" aria-label="Закрыть">×</button></div>
-    <div class="order-actions-grid">
-      <button type="button" data-extra-order-action="receipt"><span>${icon("document")}</span><b>Документ</b></button>
-      ${telegram ? `<a href="${escapeHtml(telegram)}"><span>${icon("telegram")}</span><b>Telegram</b></a>` : `<button type="button" disabled><span>${icon("telegram")}</span><b>Telegram</b></button>`}
-      <button type="button" data-extra-order-action="archive"><span>${icon(isArchived ? "restore" : "archive")}</span><b>${isArchived ? "Вернуть" : "В архив"}</b></button>
-      <button type="button" class="danger" data-extra-order-action="delete"><span>${icon("trash")}</span><b>Удалить</b></button>
-    </div>
-  </div>`;
-  document.body.appendChild(backdrop);
-
-  const close = () => backdrop.remove();
-  backdrop.querySelector(".order-actions-close").addEventListener("click", close);
-  backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(); });
-  backdrop.querySelectorAll("[data-extra-order-action]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const nextAction = button.dataset.extraOrderAction;
-      close();
-      await handleOrderAction(nextAction, order.id);
-    });
-  });
 }
 
 async function handleOrderAction(action, id) {
