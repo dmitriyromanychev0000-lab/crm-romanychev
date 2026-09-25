@@ -2428,3 +2428,40 @@ body {
   .appliance-icon { width: 66px; height: 66px; flex-basis: 66px; }
   .appliance-icon .ui-icon { width: 36px; height: 36px; }
 }
+
+
+/* 0.39.1 · Черновики */
+.drafts-content { padding-top: 28px; }
+.draft-card {
+  margin-bottom: 14px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--card-gradient);
+}
+.client-top,
+.draft-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.draft-top > div { min-width: 0; }
+.draft-top > strong {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: 19px;
+  white-space: nowrap;
+}
+.draft-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 16px;
+}
+.draft-actions button { min-height: 54px; }
+
+@media (max-width: 380px) {
+  .draft-top { display: grid; gap: 7px; }
+  .draft-top > strong { justify-self: start; }
+  .draft-actions { grid-template-columns: 1fr; }
+}
