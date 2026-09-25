@@ -549,7 +549,7 @@ async function start() {
   }
   await render();
   await maybeAutoBackup();
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(console.warn);
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(console.warn);
 }
 
 start();
