@@ -140,6 +140,16 @@ const normalizeStatus = (status) => {
   return "active";
 };
 
+function newOrderId() {
+  const used = new Set(data.orders.map((item) => String(item.id ?? "")));
+  const base = Number(String(Date.now()).slice(-6));
+  for (let offset = 0; offset < 1000000; offset += 1) {
+    const candidate = String((base + offset) % 1000000).padStart(6, "0");
+    if (!used.has(candidate)) return candidate;
+  }
+  return crypto.randomUUID();
+}
+
 function toast(message) {
   toastElement.textContent = message;
   toastElement.classList.add("show");
@@ -1045,7 +1055,7 @@ function newOrderModal(existing = null, options = {}) {
     const form = new FormData(formElement);
     return {
       ...order,
-      id: asDraft ? crypto.randomUUID() : (order.id || String(Date.now()).slice(-6)),
+      id: asDraft ? crypto.randomUUID() : (order.id || newOrderId()),
       created: order.created || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       draft: asDraft || undefined,
@@ -1438,7 +1448,7 @@ async function handleOrderAction(action, id) {
   if (action === "copy") {
     const copy = {
       ...structuredClone(order),
-      id: String(Date.now()).slice(-6),
+      id: newOrderId(),
       created: new Date().toISOString(),
       status: "В работе",
       archived: false,
