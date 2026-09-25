@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.45.4";
-const APP_BUILD = "2026.09.26.16";
+const APP_VERSION = "0.46.0";
+const APP_BUILD = "2026.09.26.17";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Удаление финансовых операций больше не зависит от наличия ID и безопасно работает со старыми бэкапами";
+const APP_RELEASE = "Старые складские позиции без ID автоматически получают внутренний UUID при загрузке, импорте и откате";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -268,6 +268,24 @@ function validateBackup(candidate) {
     ...candidate,
     settings: { ...defaultData().settings, ...candidate.settings }
   };
+}
+
+function ensureWarehouseIds() {
+  let changed = false;
+  const used = new Set();
+  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+    const current = String(item?.id || "").trim();
+    if (current) {
+      used.add(current);
+      return;
+    }
+    let next = crypto.randomUUID();
+    while (used.has(next)) next = crypto.randomUUID();
+    item.id = next;
+    used.add(next);
+    changed = true;
+  });
+  return changed;
 }
 
 function backupWarnings(candidate) {
@@ -2719,6 +2737,7 @@ app.addEventListener("click", async (event) => {
     if (!confirm("Вернуть данные, которые были до последнего импорта?")) return;
     const current = structuredClone(data);
     data = validateBackup(structuredClone(rollback));
+    ensureWarehouseIds();
     await saveData();
     await dbSet(PRE_IMPORT_KEY, current);
     activePage = "orders";
@@ -2985,6 +3004,7 @@ fileInput.addEventListener("change", async () => {
     if (!confirmed) return;
     await dbSet(PRE_IMPORT_KEY, structuredClone(data));
     data = restored;
+    ensureWarehouseIds();
     await saveData();
     activePage = "orders";
     moreSection = "menu";
@@ -3002,7 +3022,10 @@ fileInput.addEventListener("change", async () => {
 async function start() {
   try {
     const stored = await dbGet(DATA_KEY);
-    if (stored) data = validateBackup(stored);
+    if (stored) {
+      data = validateBackup(stored);
+      if (ensureWarehouseIds()) await saveData();
+    }
   } catch (error) {
     console.error("Не удалось прочитать локальную базу", error);
     toast("Не удалось открыть локальную базу");
