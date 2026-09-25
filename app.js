@@ -761,11 +761,25 @@ function warehousePage() {
       <a class="warehouse-shortcut" href="#warehouse-shopping">${icon("shopping")}<span>Список покупок</span></a>
     </div>
 
-    <button class="panel warehouse-new-card" data-action="new-stock">
-      <span class="warehouse-new-icon">${icon("box")}</span>
-      <span><strong>Новая позиция</strong><small>Добавить запчасть или расходный материал</small></span>
-      <span class="chevron">${icon("chevron")}</span>
-    </button>
+    <form class="panel warehouse-create-card" id="warehouse-inline-form">
+      <div class="warehouse-create-title"><span class="warehouse-new-icon">${icon("box")}</span><strong>Новая позиция</strong></div>
+      <div class="warehouse-create-grid">
+        <div class="form-group"><label>Название</label><input class="field" name="name" required placeholder="Двигатель стиральной машины" /></div>
+        <div class="form-group"><label>Категория склада</label><input class="field" name="category" value="Запчасти" placeholder="Запчасти" /></div>
+      </div>
+      <div class="warehouse-compat-title">Подходит для техники</div>
+      <div class="warehouse-compat-list">
+        ${["Холодильники","Коммерческое холод. оборудование","Стиральные машины","Посудомоечные машины","Сушильные машины","Плиты и духовки","Кондиционеры","Мелкая бытовая техника"].map((value) => `<label class="warehouse-compat-option"><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" /><span class="warehouse-check"></span><span>${escapeHtml(value)}</span></label>`).join("")}
+      </div>
+      <div class="warehouse-create-grid warehouse-create-numbers">
+        <div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option>${value}</option>`).join("")}</select></div>
+        <div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="0" /></div>
+        <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="0" /></div>
+        <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="0" /></div>
+        <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="0" /></div>
+      </div>
+      <button class="primary-button warehouse-create-submit" type="submit">Добавить позицию</button>
+    </form>
 
     <section id="warehouse-shopping" class="panel warehouse-shopping-panel ${lowItems.length ? "" : "warehouse-section-muted"}">
       <div class="panel-title"><span class="badge-icon">${icon("shopping")}</span> Список покупок</div>
@@ -2096,6 +2110,42 @@ app.addEventListener("input", (event) => {
 });
 
 app.addEventListener("submit", async (event) => {
+  if (event.target.id === "warehouse-inline-form") {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const quantity = Number(form.get("quantity")) || 0;
+    const item = {
+      id: crypto.randomUUID(),
+      name: String(form.get("name") || "").trim(),
+      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
+      unit: String(form.get("unit") || "шт."),
+      quantity,
+      min: Number(form.get("min")) || 0,
+      price: Number(form.get("price")) || 0,
+      lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0,
+      compatibility: form.getAll("compatibility").map(String).filter(Boolean),
+      archived: false,
+      hiddenFromOrders: false,
+      tracking: "exact",
+      consumeUnit: String(form.get("unit") || "шт.")
+    };
+    if (!item.name) return toast("Укажи название позиции");
+    data.warehouse.push(item);
+    if (quantity > 0) data.warehouse_movements.push({
+      id: crypto.randomUUID(),
+      warehouseId: item.id,
+      name: item.name,
+      qty: quantity,
+      type: "initial",
+      date: new Date().toISOString()
+    });
+    await saveData();
+    event.target.reset();
+    event.target.querySelector('[name="category"]').value = "Запчасти";
+    await render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return toast("Позиция добавлена на склад");
+  }
   if (event.target.id !== "settings-form") return;
   event.preventDefault();
   const form = new FormData(event.target);
