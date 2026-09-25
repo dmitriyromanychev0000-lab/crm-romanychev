@@ -981,6 +981,7 @@ function newOrderModal(existing = null, options = {}) {
   modal.querySelector("#save-order-draft").addEventListener("click", async () => {
     const draft = collectOrderForm({ asDraft: true });
     if (Array.isArray(data.draft)) data.draft.push(draft);
+    else if (looksLikeOrderDraft(data.draft)) data.draft = [structuredClone(data.draft), draft];
     else if (data.draft && typeof data.draft === "object") data.draft[`draft_${Date.now()}`] = draft;
     else data.draft = [draft];
     await saveData();
