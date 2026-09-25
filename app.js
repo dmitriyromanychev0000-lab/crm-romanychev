@@ -132,7 +132,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll("'", "&#039;");
 
 const ICONS = {
-  logo: '<path d="M14.7 6.3a5 5 0 0 0-6.9 6.9L3.5 17.5a2.1 2.1 0 0 0 3 3l4.3-4.3a5 5 0 0 0 6.9-6.9l-3.1 3.1-3-3 3.1-3.1Z"/>',
+  logo: '<path d="m12 2 8.5 5v10L12 22 3.5 17V7Z"/><path d="M16 7.2a3.5 3.5 0 0 0-4.9 4.9L7 16.2 8.8 18l4.1-4.1a3.5 3.5 0 0 0 4.9-4.9l-2.2 2.2-2.4-2.4Z"/><circle cx="8.2" cy="16.8" r=".7" fill="currentColor" stroke="none"/>',
   orders: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8 9h8M8 13h8M8 17h5"/>',
   warehouse: '<path d="m4 9 8-5 8 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M4 9h16M9 21v-7h6v7"/>',
   analytics: '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
@@ -551,7 +551,7 @@ function header() {
     <div class="logo">${icon("logo")}</div>
     <div class="brand">
       <div class="brand-title">CRM by <span>Romanychev</span> 😎</div>
-      <div class="brand-subtitle">Личный кабинет мастера</div>
+      <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
     </div>
   </header>`;
 }
