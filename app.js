@@ -398,11 +398,16 @@ function warehousePage() {
 function analyticsPage() {
   const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && withinPeriod(order.created, analyticsPeriod));
   const periodExpenses = data.expenses.filter((item) => withinPeriod(item.date, analyticsPeriod));
+  const periodIncomes = data.incomes.filter((item) => withinPeriod(item.date, analyticsPeriod));
   const revenue = closed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
-  const expenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-  const materialCost = closed.reduce((sum, order) => sum + (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0), 0);
-  const profit = revenue - expenses - materialCost;
+  const repairCosts = closed.reduce((sum, order) => sum + (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0), 0);
+  const repairResult = revenue - repairCosts;
+  const personalExpenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const personalIncome = periodIncomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const personalResult = personalIncome - personalExpenses;
+  const totalResult = repairResult + personalResult;
   const average = closed.length ? revenue / closed.length : 0;
+
   const grouped = new Map();
   closed.forEach((order) => {
     const date = shortDate(order.created);
@@ -410,24 +415,67 @@ function analyticsPage() {
   });
   const bars = [...grouped.entries()].slice(-7);
   const max = Math.max(...bars.map(([, value]) => value), 1);
+
+  const techMap = new Map();
+  closed.forEach((order) => {
+    const key = String(order.tech || "Другое").trim() || "Другое";
+    const current = techMap.get(key) || { name: key, count: 0, revenue: 0, costs: 0 };
+    current.count += 1;
+    current.revenue += Number(order.sum) || 0;
+    current.costs += (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0);
+    techMap.set(key, current);
+  });
+  const techStats = [...techMap.values()].sort((a, b) => b.revenue - a.revenue);
+
+  const usageMap = new Map();
+  data.warehouse_movements
+    .filter((movement) => withinPeriod(movement.date, analyticsPeriod))
+    .forEach((movement) => {
+      let delta = 0;
+      if (movement.type === "order_out" || movement.type === "manual_out") delta = Number(movement.qty) || 0;
+      if (movement.type === "order_return") delta = -(Number(movement.qty) || 0);
+      if (!delta) return;
+      const key = String(movement.warehouseId || movement.name || "unknown");
+      const stockItem = data.warehouse.find((item) => String(item.id) === String(movement.warehouseId));
+      const current = usageMap.get(key) || {
+        name: movement.name || stockItem?.name || "Материал",
+        unit: stockItem?.unit || "шт.",
+        qty: 0,
+        operations: 0
+      };
+      current.qty += delta;
+      current.operations += 1;
+      usageMap.set(key, current);
+    });
+  const materialUsage = [...usageMap.values()]
+    .filter((item) => item.qty > 0)
+    .sort((a, b) => b.qty - a.qty)
+    .slice(0, 10);
+
   return `<main class="content">
-    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
+    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Ремонты, личные финансы и склад отдельно</p></div></div>
     <div class="chips"><button class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all">Всё время</button><button class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30">30 дней</button><button class="chip ${analyticsPeriod === "90" ? "active" : ""}" data-analytics-period="90">90 дней</button><button class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365">365 дней</button></div>
     <section class="panel">
       <div class="panel-title"><span class="badge-icon">◇</span> Главные показатели</div>
       <div class="metrics">
         <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value">${closed.length}</div></div>
-        <div class="metric"><div class="metric-label">Выручка</div><div class="metric-value blue">${money(revenue)}</div></div>
-        <div class="metric"><div class="metric-label">Чистый результат</div><div class="metric-value green">${money(profit)}</div></div>
-        <div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses + materialCost)}</div></div>
+        <div class="metric"><div class="metric-label">Выручка ремонтов</div><div class="metric-value blue">${money(revenue)}</div></div>
+        <div class="metric"><div class="metric-label">Результат ремонтов</div><div class="metric-value ${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</div></div>
+        <div class="metric"><div class="metric-label">Расходы ремонтов</div><div class="metric-value red">${money(repairCosts)}</div></div>
+        <div class="metric"><div class="metric-label">Личные финансы</div><div class="metric-value ${personalResult >= 0 ? "green" : "red"}">${money(personalResult)}</div></div>
+        <div class="metric"><div class="metric-label">Общий результат</div><div class="metric-value ${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</div></div>
         <div class="metric"><div class="metric-label">Средний чек</div><div class="metric-value yellow">${money(average)}</div></div>
-        <div class="metric"><div class="metric-label">Склад</div><div class="metric-value purple">${data.warehouse.length}</div></div>
+        <div class="metric"><div class="metric-label">Склад</div><div class="metric-value purple">${data.warehouse.filter((item) => !item.archived).length}</div></div>
       </div>
     </section>
     <section class="panel"><div class="panel-title">⌁ Динамика выручки</div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
+    <section class="panel"><div class="panel-title">Доходность по типам техники</div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
+      const result = item.revenue - item.costs;
+      return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
+    }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</section>
+    <section class="panel"><div class="panel-title">Расход материалов</div>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</section>
   </main>`;
 }
-
 
 function availableServices() {
   const regular = data.receipt_prices
