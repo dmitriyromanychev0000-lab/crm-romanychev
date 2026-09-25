@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.44.0";
-const APP_BUILD = "2026.09.26.09";
+const APP_VERSION = "0.44.1";
+const APP_BUILD = "2026.09.26.10";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Оставшиеся разделы уплотнены; товарники и документы сортируются по дате, инструменты по имени, телефон мастера валидируется как российский";
+const APP_RELEASE = "Товарник теперь использует только товары и материалы; черновики сортируются по дате; телефон мастера очищается при вводе";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1518,7 +1518,7 @@ function draftSummary(item = {}) {
 }
 
 function draftsPage() {
-  const drafts = draftRecords();
+  const drafts = draftRecords().sort((a, b) => new Date(draftSummary(b.value).date || 0) - new Date(draftSummary(a.value).date || 0));
   return `<main class="content drafts-content">
     <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
@@ -1677,7 +1677,7 @@ function moreMenu() {
     ["backup", "backup", "Бэкапы", "Импорт, экспорт и защита данных"],
     ["settings", "settings", "Настройки", "Реквизиты и параметры приложения"]
   ];
-  const cards = (items) => items.map(([id, iconName, name, description]) => `<button class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
+  const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
   return `<main class="content more-content">
     <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы и настройки</p></div></div>
     <div class="more-section-label">РАБОТА</div>
@@ -2494,7 +2494,11 @@ const goodsLine = (item = {}) => `<div class="line-item" data-goods-row>
 
 function goodsModal(existing = null) {
   const sheet = existing || { id: crypto.randomUUID(), title: "Новый товарник", items: [], target: 0, createdAt: new Date().toISOString() };
-  const options = data.receipt_prices.map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
+  const goodsPriceEntries = data.receipt_prices
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
+    .sort((a, b) => String(a.item.name || "").localeCompare(String(b.item.name || ""), "ru"));
+  const options = goodsPriceEntries.map(({ item, index }) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
   modal.innerHTML = `<form class="modal" id="goods-form"><h2>Товарник</h2><div class="form-grid"><div class="form-group full"><label>Название расчёта</label><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></div></div>
@@ -2822,6 +2826,10 @@ app.addEventListener("click", async (event) => {
 });
 
 app.addEventListener("input", (event) => {
+  if (event.target.closest("#settings-form") && event.target.name === "phone") {
+    sanitizeRussianPhoneField(event.target);
+    return;
+  }
   if (event.target.closest("#warehouse-inline-form") && ["quantity", "purchaseTotal"].includes(event.target.name)) {
     const form = event.target.closest("#warehouse-inline-form");
     const quantity = Number(form.elements.quantity.value) || 0;
