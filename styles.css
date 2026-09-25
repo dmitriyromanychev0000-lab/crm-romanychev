@@ -5219,3 +5219,7 @@ body,
     grid-template-columns: minmax(0,1fr) auto;
   }
 }
+
+
+/* 0.44.1 · Навигационная мелочь */
+#product-price-panel { scroll-margin-top: 96px; }
