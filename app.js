@@ -448,6 +448,21 @@ async function backupSettings() {
   </main>`;
 }
 
+
+function toolsPage() {
+  const tools = Array.isArray(data.tools) ? data.tools : [];
+  const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
+  return `<main class="content">
+    <div class="page-head"><div><h1>Инструменты</h1><p class="lead">Учёт рабочего инструмента и оборудования</p></div><div class="finance-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
+    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
+    ${tools.length ? `<section class="panel"><div class="goods-list">${tools.map((item, index) => {
+      const name = item.name || item.title || item.tool || "Инструмент";
+      const status = item.status || item.state || "В наличии";
+      const category = item.category || item.type || "";
+      return `<button class="goods-sheet" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span>›</span></button>`;
+    }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
+  </main>`;
+}
 function moreMenu() {
   const items = [
     ["backup", "▧", "Бэкапы", "Импорт, экспорт и автосохранение"],
