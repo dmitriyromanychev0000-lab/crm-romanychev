@@ -3218,3 +3218,61 @@ h1 { font-size: clamp(30px, 6vw, 36px); }
 .menu-icon-receipts { color: #62d591; background: rgba(98,213,145,.12); }
 .menu-icon-drafts { color: #e6b85e; background: rgba(230,184,94,.12); }
 .menu-icon-backup { color: #ae83ff; background: rgba(174,131,255,.13); }
+
+
+/* 0.41.1 · Настройка применения услуг */
+.settings-check-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0,1fr);
+  gap: 11px;
+  align-items: start;
+  margin: 15px 0 16px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(255,255,255,.018);
+  cursor: pointer;
+}
+.settings-check-row > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.settings-checkbox {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 1px solid #56616a;
+  border-radius: 6px;
+  background: #171e25;
+}
+.settings-check-row > input:checked + .settings-checkbox {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.settings-check-row > input:checked + .settings-checkbox::after {
+  content: "✓";
+  color: #101418;
+  font-size: 15px;
+  font-weight: 900;
+}
+.settings-check-row strong {
+  display: block;
+  font-size: 14px;
+}
+.settings-check-row small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.catalog-modal-actions {
+  grid-template-columns: 1fr;
+}
+.catalog-modal-actions .primary-button {
+  width: 100%;
+}
