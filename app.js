@@ -146,17 +146,36 @@ function toast(message) {
 }
 
 function validateBackup(candidate) {
-  if (!candidate || typeof candidate !== "object") throw new Error("Файл не содержит объект CRM");
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("Файл не содержит объект CRM");
   const required = ["orders", "warehouse", "warehouse_movements", "expenses", "receipt_prices"];
   for (const key of required) {
-    if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует раздел ${key}`);
+    if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  if (!candidate.settings || typeof candidate.settings !== "object") candidate.settings = {};
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets"];
+  for (const key of optionalArrays) {
+    if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
+  }
+  if (!candidate.settings || typeof candidate.settings !== "object" || Array.isArray(candidate.settings)) candidate.settings = {};
   return {
     ...defaultData(),
     ...candidate,
     settings: { ...defaultData().settings, ...candidate.settings }
   };
+}
+
+function backupWarnings(candidate) {
+  const warnings = [];
+  const duplicateCount = (items) => {
+    const ids = items.map((item) => item?.id).filter((id) => id !== undefined && id !== null && String(id) !== "");
+    return ids.length - new Set(ids.map(String)).size;
+  };
+  const orderDuplicates = duplicateCount(candidate.orders || []);
+  const warehouseDuplicates = duplicateCount(candidate.warehouse || []);
+  if (orderDuplicates > 0) warnings.push(`дубли ID заявок: ${orderDuplicates}`);
+  if (warehouseDuplicates > 0) warnings.push(`дубли ID склада: ${warehouseDuplicates}`);
+  const ordersWithoutId = (candidate.orders || []).filter((item) => !item?.id).length;
+  if (ordersWithoutId > 0) warnings.push(`заявок без ID: ${ordersWithoutId}`);
+  return warnings;
 }
 
 async function saveData() {
