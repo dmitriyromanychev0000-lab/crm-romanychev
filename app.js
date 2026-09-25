@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.39.0";
-const APP_BUILD = "2026.09.25.42";
+const APP_VERSION = "0.39.1";
+const APP_BUILD = "2026.09.25.43";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Нормализован визуальный фундамент: поверхности, радиусы, тени, высоты контролов, типографика и мобильный ритм";
+const APP_RELEASE = "Визуальный фундамент нормализован; Черновики приведены к общей карточной системе";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1497,13 +1497,13 @@ function draftSummary(item = {}) {
 
 function draftsPage() {
   const drafts = draftRecords();
-  return `<main class="content">
+  return `<main class="content drafts-content">
     <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
     ${drafts.length ? `<div class="client-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
       const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
-      return `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(view.title)}</div><div class="small">${escapeHtml(meta || "Старый формат черновика")}</div></div>${view.sum ? `<strong>${money(view.sum)}</strong>` : ""}</div><div class="finance-actions"><button class="primary-button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button class="danger-button" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div></article>`;
+      return `<article class="panel draft-card"><div class="client-top draft-top"><div><div class="client-name">${escapeHtml(view.title)}</div><div class="small">${escapeHtml(meta || "Старый формат черновика")}</div></div>${view.sum ? `<strong>${money(view.sum)}</strong>` : ""}</div><div class="draft-actions"><button class="primary-button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button class="danger-button" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div></article>`;
     }).join("")}</div>` : emptyState("✎", "Черновиков пока нет", "Черновики можно сохранять из формы новой заявки.")}
   </main>`;
 }
