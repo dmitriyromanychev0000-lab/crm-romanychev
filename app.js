@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.30.0";
-const APP_BUILD = "2026.09.25.31";
+const APP_VERSION = "0.31.0";
+const APP_BUILD = "2026.09.25.32";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад как в старой CRM: раскрывающаяся новая позиция, расчёт закупки и группированные карточки по категориям";
+const APP_RELEASE = "Товарник и Акт приведены к старому виду: предпросмотр, прайс товаров и A4-документ";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
