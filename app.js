@@ -1605,8 +1605,11 @@ fileInput.addEventListener("change", async () => {
   try {
     const candidate = JSON.parse(await file.text());
     const restored = validateBackup(candidate);
-    const confirmed = confirm(`Восстановить ${restored.orders.length} заявок, ${restored.warehouse.length} складских позиций и ${restored.receipt_prices.length} цен? Текущие данные будут заменены.`);
+    const warnings = backupWarnings(restored);
+    const warningText = warnings.length ? `\n\nПредупреждения:\n• ${warnings.join("\n• ")}` : "";
+    const confirmed = confirm(`Восстановить ${restored.orders.length} заявок, ${restored.warehouse.length} складских позиций и ${restored.receipt_prices.length} цен?\n\nТекущие данные будут сохранены как точка отката перед заменой.${warningText}`);
     if (!confirmed) return;
+    await dbSet(PRE_IMPORT_KEY, structuredClone(data));
     data = restored;
     await saveData();
     activePage = "orders";
