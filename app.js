@@ -45,7 +45,7 @@ function readUiState() {
 const initialUiState = readUiState();
 let data = defaultData();
 let activePage = ["orders", "warehouse", "analytics", "more"].includes(initialUiState.activePage) ? initialUiState.activePage : "orders";
-let orderFilter = ["all", "closed", "active", "declined"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
+let orderFilter = ["all", "closed", "active", "declined", "archived"].includes(initialUiState.orderFilter) ? initialUiState.orderFilter : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -299,11 +299,12 @@ function emptyState(icon, title, description) {
 function orderCard(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
+  const isArchived = Boolean(order.archived);
   const photos = Array.isArray(order.photos) ? order.photos.length : 0;
   return `<article class="panel order-card ${isClosed ? "closed" : ""}">
     <div class="order-top">
       <div><span class="order-number">№${escapeHtml(order.id || "—")}</span><span class="order-name">${escapeHtml(order.name || "Без имени")}</span></div>
-      <div><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : ""}">${escapeHtml(order.status || "В работе")}</span></div>
+      <div><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
     </div>
     <div class="appliance">
       <div class="appliance-main"><div class="appliance-icon">▥</div><div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div></div>
@@ -320,6 +321,7 @@ function orderCard(order) {
       <button class="action" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${isClosed ? "↻" : "✓"}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
       <button class="action" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>▣</span>Копия</button>
       <button class="action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>▤</span>Документ</button>
+      <button class="action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${isArchived ? "↩" : "⌫"}</span>${isArchived ? "Вернуть" : "В архив"}</button>
       ${order.phone ? `<a class="action" href="tel:${escapeHtml(order.phone)}"><span>☎</span>Позвонить</a>` : `<button class="action" disabled><span>☎</span>Позвонить</button>`}
     </div>
   </article>`;
@@ -329,7 +331,10 @@ function ordersPage() {
   const query = searchQuery.trim().toLowerCase();
   const filtered = [...data.orders].reverse().filter((order) => {
     const status = normalizeStatus(order.status);
-    const filterMatch = orderFilter === "all" || orderFilter === status;
+    const isArchived = Boolean(order.archived);
+    const filterMatch = orderFilter === "archived"
+      ? isArchived
+      : !isArchived && (orderFilter === "all" || orderFilter === status);
     const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id].join(" ").toLowerCase();
     return filterMatch && (!query || haystack.includes(query));
   });
@@ -341,6 +346,7 @@ function ordersPage() {
       <button class="chip ${orderFilter === "closed" ? "active" : ""}" data-filter="closed">Закрыты</button>
       <button class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
       <button class="chip ${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
+      <button class="chip ${orderFilter === "archived" ? "active" : ""}" data-filter="archived">Архив</button>
     </div>
     ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">▣</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
