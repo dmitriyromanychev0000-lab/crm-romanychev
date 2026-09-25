@@ -32,6 +32,7 @@ let activePage = "orders";
 let orderFilter = "all";
 let searchQuery = "";
 let moreSection = "menu";
+let selectedActOrderId = null;
 
 const app = document.querySelector("#app");
 const fileInput = document.querySelector("#backup-file");
@@ -336,6 +337,53 @@ function priceList() {
     <section class="panel">${prices.length ? `<ul class="list">${prices.map((item) => `<li class="price-row"><div><strong>${escapeHtml(item.name)}</strong><div class="small">${escapeHtml(item.category || item.tech || "")}</div></div><strong class="accent">${money(item.price)}</strong></li>`).join("")}</ul>` : `<div class="empty">Прайс пуст</div>`}</section></main>`;
 }
 
+function clientsPage() {
+  const clients = new Map();
+  data.orders.forEach((order) => {
+    const key = String(order.phone || order.name || order.id || "").trim().toLowerCase();
+    if (!key) return;
+    const current = clients.get(key) || { name: order.name || "Без имени", phone: order.phone || "", address: order.address || "", orders: [], total: 0, last: order.created };
+    current.orders.push(order);
+    current.total += Number(order.sum) || 0;
+    if (new Date(order.created || 0) > new Date(current.last || 0)) {
+      current.last = order.created;
+      current.name = order.name || current.name;
+      current.address = order.address || current.address;
+    }
+    clients.set(key, current);
+  });
+  const sorted = [...clients.values()].sort((a, b) => new Date(b.last || 0) - new Date(a.last || 0));
+  return `<main class="content"><div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div><div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.length}</div></div></div></section>
+    ${sorted.length ? `<div class="client-list">${sorted.map((client) => `<article class="panel client-card"><div class="client-top"><div><div class="client-name">${escapeHtml(client.name)}</div><div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div></div><strong>${money(client.total)}</strong></div><div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>${client.address ? `<div class="small client-address">⌖ ${escapeHtml(client.address)}</div>` : ""}${client.phone ? `<a class="secondary-button client-call" href="tel:${escapeHtml(client.phone)}">☎ Позвонить</a>` : ""}</article>`).join("")}</div>` : emptyState("♙", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок.")}
+  </main>`;
+}
+
+function financePage() {
+  const expenses = data.expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const incomes = data.incomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const rows = [
+    ...data.expenses.map((item) => ({ ...item, financeType: "expense" })),
+    ...data.incomes.map((item) => ({ ...item, financeType: "income" }))
+  ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  return `<main class="content"><div class="page-head"><div><h1>Финансы</h1><p class="lead">Личные расходы и дополнительные доходы</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel"><div class="metrics"><div class="metric"><div class="metric-label">Доходы</div><div class="metric-value green">${money(incomes)}</div></div><div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses)}</div></div><div class="metric"><div class="metric-label">Результат</div><div class="metric-value ${incomes - expenses >= 0 ? "green" : "red"}">${money(incomes - expenses)}</div></div><div class="metric"><div class="metric-label">Операций</div><div class="metric-value">${rows.length}</div></div></div></section>
+    <div class="finance-actions"><button class="primary-button" data-action="add-finance" data-type="expense">− Добавить расход</button><button class="secondary-button" data-action="add-finance" data-type="income">+ Добавить доход</button></div>
+    <section class="panel"><div class="panel-title">История операций</div>${rows.length ? `<ul class="list">${rows.map((item) => `<li class="finance-row"><div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div><div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div><button class="remove-line" data-delete-finance="${item.financeType}" data-id="${escapeHtml(item.id)}" aria-label="Удалить">×</button></li>`).join("")}</ul>` : `<div class="empty">Операций пока нет</div>`}</section>
+  </main>`;
+}
+
+function actPage() {
+  const orders = [...data.orders].reverse();
+  if (!selectedActOrderId && orders.length) selectedActOrderId = String(orders[0].id);
+  const order = orders.find((item) => String(item.id) === String(selectedActOrderId));
+  const services = order ? (Array.isArray(order.services) && order.services.length ? order.services : [{ name: "Ремонт техники", qty: 1, price: Number(order.sum) || 0 }]) : [];
+  return `<main class="content"><div class="page-head no-print"><div><h1>Акт</h1><p class="lead">Подготовка и печать документа</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <section class="panel no-print"><label class="form-group"><span class="small">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} · ${escapeHtml(item.name || "Без имени")} · ${money(item.sum)}</option>`).join("")}</select></label><button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>Печать / сохранить PDF</button></section>
+    ${order ? `<article class="act-sheet"><h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2><div class="act-subtitle">от «${new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "long", year: "numeric" }).format(new Date())}»</div><div class="act-fields"><div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div><div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div><div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div><div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div></div><table><thead><tr><th>№</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${services.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table><div class="act-total"><b>Итого к оплате:</b><strong>${money(order.sum)}</strong></div><div class="act-acceptance"><h3>АКТ СДАЧИ-ПРИЁМКИ ОКАЗАННЫХ УСЛУГ</h3><p>Исполнитель выполнил работы по обслуживанию указанного оборудования. Заказчик с условиями обслуживания и оплаты ознакомлен, к качеству работ и состоянию оборудования претензий не имеет.</p><div class="act-signatures"><div><b>Исполнитель:</b><br>${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________</div><div><b>Заказчик:</b><br>${escapeHtml(order.name || "________________")}<br>${escapeHtml(order.phone || "")}<br>Подпись: ____________</div></div></div></article>` : emptyState("▤", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
+  </main>`;
+}
+
 async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   return `<main class="content"><div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
@@ -371,6 +419,9 @@ function moreMenu() {
 async function morePage() {
   if (moreSection === "backup") return backupSettings();
   if (moreSection === "prices") return priceList();
+  if (moreSection === "clients") return clientsPage();
+  if (moreSection === "finance") return financePage();
+  if (moreSection === "act") return actPage();
   return moreMenu();
 }
 
@@ -535,6 +586,26 @@ function newOrderModal(existing = null) {
   });
 }
 
+function financeModal(type) {
+  const isIncome = type === "income";
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="finance-form"><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2><div class="form-grid"><div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" required /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div><div class="form-group full"><label>Описание</label><input class="field" name="description" required /></div><div class="form-group full"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  document.body.appendChild(modal);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const item = { id: crypto.randomUUID(), amount: Number(form.get("amount")) || 0, category: form.get("category"), description: form.get("description"), date: new Date(`${form.get("date")}T12:00:00`).toISOString(), source: "manual" };
+    data[isIncome ? "incomes" : "expenses"].push(item);
+    await saveData();
+    modal.remove();
+    await render();
+    toast(isIncome ? "Доход добавлен" : "Расход добавлен");
+  });
+}
+
 async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
@@ -581,6 +652,8 @@ app.addEventListener("click", async (event) => {
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "more-menu") { moreSection = "menu"; return render(); }
+  if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "print-act") return window.print();
   if (action === "toggle-auto") {
     data.settings.autoBackup = !data.settings.autoBackup;
     await saveData();
@@ -590,7 +663,7 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    if (["backup", "prices"].includes(more)) moreSection = more;
+    if (["backup", "prices", "clients", "finance", "act"].includes(more)) moreSection = more;
     else toast("Раздел будет восстановлен на следующем этапе");
     await render();
     return;
@@ -599,6 +672,14 @@ app.addEventListener("click", async (event) => {
   if (orderAction) return handleOrderAction(orderAction.dataset.orderAction, orderAction.dataset.id);
   const stock = event.target.closest("[data-stock]");
   if (stock) return adjustStock(stock.dataset.id, stock.dataset.stock);
+  const financeDelete = event.target.closest("[data-delete-finance]");
+  if (financeDelete) {
+    const key = financeDelete.dataset.deleteFinance === "income" ? "incomes" : "expenses";
+    data[key] = data[key].filter((item) => String(item.id) !== String(financeDelete.dataset.id));
+    await saveData();
+    await render();
+    toast("Операция удалена");
+  }
 });
 
 app.addEventListener("input", (event) => {
@@ -614,6 +695,11 @@ app.addEventListener("input", (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  if (event.target.id === "act-order-select") {
+    selectedActOrderId = event.target.value;
+    await render();
+    return;
+  }
   if (event.target.id === "backup-days") {
     data.settings.autoBackupDays = Number(event.target.value);
     await saveData();
