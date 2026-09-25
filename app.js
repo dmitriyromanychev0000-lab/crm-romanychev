@@ -2137,7 +2137,7 @@ function newOrderModal(existing = null, options = {}) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop order-editor-backdrop";
   modal.innerHTML = `<form class="modal order-editor-modal" id="order-form">
-    <h2>${existing && !forceNew ? "Редактировать заявку" : "Новая заявка"}</h2>
+    <div class="order-editor-head"><h2>${existing && !forceNew ? "Редактировать заявку" : "Новая заявка"}</h2><button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
     <div class="form-section-title">Клиент и техника</div>
     <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
@@ -2147,7 +2147,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
-      <div class="form-group"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
+      <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
       <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${order.nextVisit ? escapeHtml(String(order.nextVisit).slice(0, 16)) : ""}" /></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
     </div>
@@ -2166,31 +2166,39 @@ function newOrderModal(existing = null, options = {}) {
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
     <details class="manual-material-details"><summary>Добавить материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
 
-    <div class="form-section-title">Фотографии</div>
-    <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото уменьшаются перед сохранением и остаются только в локальной CRM и бэкапе.</div></div>
-    <div class="photo-grid" id="order-photo-list"></div>
+    <details class="order-extra-details" ${orderPhotos.length ? "open" : ""}>
+      <summary>Фотографии</summary>
+      <div class="order-extra-body">
+        <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото хранятся только в локальной CRM и бэкапе.</div></div>
+        <div class="photo-grid" id="order-photo-list"></div>
+      </div>
+    </details>
 
     <div class="calculated-total order-calculation-summary"><div><span>Итого услуг</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Общий расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
 
     <div class="form-section-title">Расчёт и гарантия</div>
     <div class="form-grid legacy-payment-grid">
-      <div class="form-group"><label>💰 Итоговая сумма для клиента (₽)</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
-      <div class="form-group"><label>💳 Предоплата (₽)</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
-      <div class="form-group"><label>🎁 Скидка (₽)</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>🛡️ Гарантия (мес.)</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${guaranteeMonths === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${guaranteeMonths === 24 ? "selected" : ""}>24 месяца</option></select></div>
-      <div class="form-group"><label>🧾 Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
-      <div class="form-group"><label>📄 Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
-      <div class="form-group"><label>📊 Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
-      <div class="form-group"><label>🏷️ Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
+      <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
+      <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
+      <div class="form-group"><label>Гарантия</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${guaranteeMonths === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${guaranteeMonths === 24 ? "selected" : ""}>24 месяца</option></select></div>
+      <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+      <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
+      <div class="form-group"><label>Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
+      <div class="form-group"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
 
-    <section class="legacy-guarantee-card">
-      <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">${escapeHtml(warrantyUntilText(order))}</span></div>
-      <label>Что покрывает</label>
-      <textarea class="field textarea" name="guaranteeNote" placeholder="Опиши условия гарантии">${escapeHtml(order.guaranteeNote || "")}</textarea>
-    </section>
-
-    <div class="form-group order-comment"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
+    <details class="order-extra-details" ${order.guaranteeNote || order.comment ? "open" : ""}>
+      <summary>Гарантия и комментарий</summary>
+      <div class="order-extra-body">
+        <section class="legacy-guarantee-card">
+          <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">${escapeHtml(warrantyUntilText(order))}</span></div>
+          <label>Что покрывает</label>
+          <textarea class="field textarea" name="guaranteeNote" placeholder="Опиши условия гарантии">${escapeHtml(order.guaranteeNote || "")}</textarea>
+        </section>
+        <div class="form-group order-comment"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
+      </div>
+    </details>
     <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">В черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
@@ -2276,7 +2284,7 @@ function newOrderModal(existing = null, options = {}) {
   });
   modal.querySelector("#use-calculated-total").addEventListener("click", () => { formElement.elements.sum.value = calculateLines(); });
   calculateLines();
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   const collectOrderForm = ({ asDraft = false } = {}) => {
     const form = new FormData(formElement);
