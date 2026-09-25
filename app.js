@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.41.1";
-const APP_BUILD = "2026.09.26.02";
+const APP_VERSION = "0.42.0";
+const APP_BUILD = "2026.09.26.03";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Режим применения услуг без подгонки перенесён из каталога в настройки";
+const APP_RELEASE = "Карточка заявки упрощена до 5 действий; форма и каталог услуг стали компактнее; добавлена строгая валидация российского телефона";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -344,7 +344,7 @@ async function inspectBackupFile() {
       modal.innerHTML = `<div class="modal compact-modal"><h2>Проверка бэкапа</h2><div class="goods-list">${rows.map(([name, value]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="green">✓</b><span></span></div>`).join("")}</div>${warnings.length ? `<div class="form-section-title">Предупреждения</div><div class="panel">${warnings.map((item) => `<div class="small">• ${escapeHtml(item)}</div>`).join("")}</div>` : `<div class="panel"><strong class="green">Файл совместим с текущей CRM</strong></div>`}<div class="modal-actions"><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
       document.body.appendChild(modal);
       modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
-      modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+      modal.addEventListener("click", (event) => { if (event.target === modal) closeCatalog(); });
     } catch (error) {
       console.error(error);
       toast(`Файл не прошёл проверку: ${error.message}`);
@@ -654,6 +654,26 @@ function ordersNewestFirst(source = data.orders) {
     .map((entry) => entry.order);
 }
 
+function normalizeRussianPhone(value = "") {
+  let digits = String(value || "").replace(/\D/g, "").slice(0, 11);
+  if (!digits) return "";
+  if (digits[0] === "8") digits = "7" + digits.slice(1);
+  if (digits[0] !== "7") return "";
+  return "+" + digits;
+}
+
+function isValidRussianPhone(value = "") {
+  return /^\+7\d{10}$/.test(String(value || ""));
+}
+
+function sanitizeRussianPhoneField(input) {
+  if (!input) return "";
+  const normalized = normalizeRussianPhone(input.value);
+  input.value = normalized;
+  input.setCustomValidity(normalized && !isValidRussianPhone(normalized) ? "Введите российский номер: +7XXXXXXXXXX" : "");
+  return normalized;
+}
+
 function orderCard(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
@@ -661,7 +681,6 @@ function orderCard(order) {
   const isArchived = Boolean(order.archived);
   const photos = Array.isArray(order.photos) ? order.photos.length : 0;
   const net = orderNetAmount(order);
-  const telegram = telegramPhoneLink(order.phone);
   const applianceIcon = applianceIconName(order.tech);
   const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "";
 
@@ -695,11 +714,7 @@ function orderCard(order) {
       <button class="action action-close" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${icon(isClosed ? "reopen" : "check")}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
       <button class="action action-copy" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>${icon("copy")}</span>Копия</button>
       ${order.phone ? `<a class="action action-call" href="tel:${escapeHtml(order.phone)}"><span>${icon("phone")}</span>Позвонить</a>` : `<button class="action action-call" disabled><span>${icon("phone")}</span>Позвонить</button>`}
-      ${telegram ? `<a class="action action-telegram" href="${escapeHtml(telegram)}"><span>${icon("telegram")}</span>Telegram</a>` : `<button class="action action-telegram" disabled><span>${icon("telegram")}</span>Telegram</button>`}
-    </div>
-    <div class="order-secondary-actions">
-      <button class="action secondary-order-action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>${icon("document")}</span>Документ</button>
-      <button class="action secondary-order-action danger-action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${icon(isArchived ? "restore" : "trash")}</span>${isArchived ? "Вернуть" : "Удалить"}</button>
+      <button class="action action-more" data-order-action="more" data-id="${escapeHtml(order.id)}"><span>${icon("more")}</span>Ещё</button>
     </div>
   </article>`;
 }
@@ -1829,7 +1844,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop catalog-modal-backdrop";
   modal.innerHTML = `<div class="modal catalog-modal">
-    <div class="catalog-modal-head"><div><div class="small">Каталог услуг</div><h2>Выбрать услуги</h2></div><button class="secondary-button catalog-close" type="button">Закрыть</button></div>
+    <div class="catalog-modal-head"><div><div class="small">Каталог услуг</div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
     <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
     <div class="catalog-service-list" id="catalog-service-list"></div>
     <div class="catalog-fit-summary">
@@ -1841,7 +1856,13 @@ function openServiceCatalog(orderModal, serviceCatalog) {
       <button class="primary-button" id="catalog-apply" type="button">Применить выбранные услуги</button>
     </div>
   </div>`;
+  const previousBodyOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
   document.body.appendChild(modal);
+  const closeCatalog = () => {
+    document.body.style.overflow = previousBodyOverflow;
+    modal.remove();
+  };
 
   const list = modal.querySelector("#catalog-service-list");
   const search = modal.querySelector("#catalog-service-search");
@@ -1922,7 +1943,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     orderModal.querySelector("#service-lines").innerHTML = rows.map(orderServiceRow).join("");
     const sumInput = orderModal.querySelector('[name="sum"]');
     if (sumInput) sumInput.dispatchEvent(new Event("input", { bubbles: true }));
-    modal.remove();
+    closeCatalog();
   };
 
   search.addEventListener("input", renderCatalog);
@@ -1940,7 +1961,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     }
     renderCatalog();
   });
-  modal.querySelector(".catalog-close").addEventListener("click", () => modal.remove());
+  modal.querySelector(".catalog-close").addEventListener("click", closeCatalog);
   modal.querySelector("#catalog-apply").addEventListener("click", () => {
     applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
   });
@@ -1972,13 +1993,13 @@ function newOrderModal(existing = null, options = {}) {
     <div class="form-section-title">Клиент и техника</div>
     <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
-      <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(order.phone || "")}" inputmode="tel" /></div>
+      <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group"><label>Модель</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" /></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
-      <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
+      <div class="form-group"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
       <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${order.nextVisit ? escapeHtml(String(order.nextVisit).slice(0, 16)) : ""}" /></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
     </div>
@@ -2027,6 +2048,12 @@ function newOrderModal(existing = null, options = {}) {
   </form>`;
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
+  const phoneInput = formElement.elements.phone;
+  phoneInput?.addEventListener("input", () => sanitizeRussianPhoneField(phoneInput));
+  phoneInput?.addEventListener("blur", () => {
+    const normalized = sanitizeRussianPhoneField(phoneInput);
+    if (normalized && !isValidRussianPhone(normalized)) toast("Телефон: только российский номер +7XXXXXXXXXX");
+  });
   const photoList = modal.querySelector("#order-photo-list");
   const photoInput = modal.querySelector("#order-photo-input");
   const renderPhotos = () => {
@@ -2175,6 +2202,11 @@ function newOrderModal(existing = null, options = {}) {
 
   formElement.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const normalizedPhone = sanitizeRussianPhoneField(formElement.elements.phone);
+    if (formElement.elements.phone.value && !isValidRussianPhone(normalizedPhone)) {
+      formElement.elements.phone.focus();
+      return toast("Введите российский номер в формате +7XXXXXXXXXX");
+    }
     const next = collectOrderForm();
     delete next.draft;
     const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
@@ -2509,11 +2541,40 @@ function printActOnePage() {
   window.print();
 }
 
+function orderActionsSheet(order) {
+  const telegram = telegramPhoneLink(order.phone);
+  const isArchived = Boolean(order.archived);
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop order-actions-backdrop";
+  backdrop.innerHTML = `<div class="order-actions-sheet" role="dialog" aria-modal="true" aria-label="Дополнительные действия заявки">
+    <div class="order-actions-head"><div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>${escapeHtml(order.name || "Без имени")}</small></div><button type="button" class="order-actions-close" aria-label="Закрыть">×</button></div>
+    <div class="order-actions-grid">
+      <button type="button" data-extra-order-action="receipt"><span>${icon("document")}</span><b>Документ</b></button>
+      ${telegram ? `<a href="${escapeHtml(telegram)}"><span>${icon("telegram")}</span><b>Telegram</b></a>` : `<button type="button" disabled><span>${icon("telegram")}</span><b>Telegram</b></button>`}
+      <button type="button" data-extra-order-action="archive"><span>${icon(isArchived ? "restore" : "archive")}</span><b>${isArchived ? "Вернуть" : "В архив"}</b></button>
+      <button type="button" class="danger" data-extra-order-action="delete"><span>${icon("trash")}</span><b>Удалить</b></button>
+    </div>
+  </div>`;
+  document.body.appendChild(backdrop);
+
+  const close = () => backdrop.remove();
+  backdrop.querySelector(".order-actions-close").addEventListener("click", close);
+  backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(); });
+  backdrop.querySelectorAll("[data-extra-order-action]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const nextAction = button.dataset.extraOrderAction;
+      close();
+      await handleOrderAction(nextAction, order.id);
+    });
+  });
+}
+
 async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
   const order = data.orders[index];
   if (action === "edit") return newOrderModal(order);
+  if (action === "more") return orderActionsSheet(order);
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
   if (action === "toggle") {
     const wasClosed = normalizeStatus(order.status) === "closed";
@@ -2537,6 +2598,15 @@ async function handleOrderAction(action, id) {
   if (action === "archive") {
     order.archived = !order.archived;
     order.archivedAt = order.archived ? new Date().toISOString() : null;
+  }
+  if (action === "delete") {
+    if (!confirm(`Удалить заявку №${order.id || "—"} навсегда? Это действие нельзя отменить.`)) return;
+    const stockSync = syncOrderStock(Array.isArray(order.materials) ? order.materials : [], [], order.id);
+    if (!stockSync.ok) return toast(stockSync.message);
+    data.orders.splice(index, 1);
+    await saveData();
+    await render();
+    return toast("Заявка удалена");
   }
   await saveData();
   render();
