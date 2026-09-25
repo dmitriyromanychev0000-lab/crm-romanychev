@@ -1596,6 +1596,144 @@ function warrantyUntilText(order = {}) {
   return new Intl.DateTimeFormat("ru-RU").format(base);
 }
 
+
+function openServiceCatalog(orderModal, serviceCatalog) {
+  const currentRows = [...orderModal.querySelectorAll("[data-service-row]")].map((row) => ({
+    name: row.querySelector('[data-line="name"]').value.trim(),
+    qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
+    price: Number(row.querySelector('[data-line="price"]').value) || 0
+  })).filter((item) => item.name);
+  const currentByName = new Map(currentRows.map((item) => [item.name.toLowerCase(), item]));
+  const catalogNames = new Set(serviceCatalog.map((item) => String(item.name || "").trim().toLowerCase()).filter(Boolean));
+  const customRows = currentRows.filter((item) => !catalogNames.has(item.name.toLowerCase()));
+  const selected = new Map();
+
+  serviceCatalog.forEach((item, index) => {
+    const existing = currentByName.get(String(item.name || "").trim().toLowerCase());
+    if (existing) selected.set(index, { ...item, name: existing.name, qty: existing.qty, price: existing.price });
+  });
+
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop catalog-modal-backdrop";
+  modal.innerHTML = `<div class="modal catalog-modal">
+    <div class="catalog-modal-head"><div><div class="small">Каталог услуг</div><h2>Выбрать услуги</h2></div><button class="secondary-button catalog-close" type="button">Закрыть</button></div>
+    <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
+    <div class="catalog-service-list" id="catalog-service-list"></div>
+    <div class="catalog-fit-summary">
+      <div><span>Услуг выбрано на:</span><strong id="catalog-selected-total">0 ₽</strong></div>
+      <div><span>Цель:</span><strong id="catalog-target-total">0 ₽</strong></div>
+      <div><span>Разница:</span><strong id="catalog-diff-total">0 ₽</strong></div>
+    </div>
+    <div class="catalog-modal-actions">
+      <button class="secondary-button" id="catalog-apply-original" type="button">Применить без подгонки</button>
+      <button class="primary-button" id="catalog-apply-fit" type="button">✓ Применить и подогнать под сумму заявки</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+
+  const list = modal.querySelector("#catalog-service-list");
+  const search = modal.querySelector("#catalog-service-search");
+  const target = Number(orderModal.querySelector('[name="sum"]')?.value) || 0;
+
+  const selectedTotal = () => [...selected.values()].reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
+  const updateSummary = () => {
+    const total = selectedTotal();
+    modal.querySelector("#catalog-selected-total").textContent = money(total);
+    modal.querySelector("#catalog-target-total").textContent = money(target);
+    const diff = target - total;
+    const diffEl = modal.querySelector("#catalog-diff-total");
+    diffEl.textContent = `${diff > 0 ? "+" : ""}${money(diff)}`;
+    diffEl.className = Math.abs(diff) < 0.01 ? "green" : diff < 0 ? "red" : "yellow";
+  };
+
+  const renderCatalog = () => {
+    const query = search.value.trim().toLowerCase();
+    const visible = serviceCatalog
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => !query || [item.name, item.category, item.tech].join(" ").toLowerCase().includes(query));
+
+    const groups = visible.reduce((map, entry) => {
+      const group = String(entry.item.category || entry.item.tech || "Услуги").trim() || "Услуги";
+      if (!map.has(group)) map.set(group, []);
+      map.get(group).push(entry);
+      return map;
+    }, new Map());
+
+    list.innerHTML = groups.size ? [...groups.entries()].map(([group, entries]) => `
+      <section class="catalog-service-group">
+        <h3>📁 ${escapeHtml(group)}</h3>
+        ${entries.map(({ item, index }) => {
+          const active = selected.has(index);
+          const value = selected.get(index) || item;
+          return `<label class="catalog-service-option ${active ? "selected" : ""}">
+            <input type="checkbox" data-service-index="${index}" ${active ? "checked" : ""} />
+            <span class="catalog-check">${active ? "✓" : ""}</span>
+            <span class="catalog-service-copy"><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.tech || item.category || "")}</small></span>
+            <span class="catalog-service-price">${money(value.price || 0)}</span>
+          </label>`;
+        }).join("")}
+      </section>`).join("") : `<div class="empty">Услуги не найдены</div>`;
+    updateSummary();
+  };
+
+  const applySelection = (fitToTarget) => {
+    const chosen = [...selected.values()].map((item) => ({
+      name: item.name || "Услуга",
+      qty: Number(item.qty) || 1,
+      price: Number(item.price) || 0,
+      basePrice: Number(item.price) || 0
+    }));
+
+    if (fitToTarget && target > 0 && chosen.length) {
+      const total = chosen.reduce((sum, item) => sum + item.qty * item.price, 0);
+      if (total > 0) {
+        let assigned = 0;
+        chosen.forEach((item, index) => {
+          if (index === chosen.length - 1) {
+            item.price = Math.max(0, (target - assigned) / item.qty);
+          } else {
+            item.price = Math.max(0, Math.round((item.price * target / total)));
+            assigned += item.price * item.qty;
+          }
+        });
+      } else {
+        const each = target / chosen.length;
+        chosen.forEach((item, index) => {
+          item.price = index === chosen.length - 1
+            ? Math.max(0, target - each * (chosen.length - 1))
+            : Math.max(0, Math.round(each));
+        });
+      }
+    }
+
+    const rows = [...customRows, ...chosen];
+    orderModal.querySelector("#service-lines").innerHTML = rows.map(orderServiceRow).join("");
+    orderModal.dispatchEvent(new Event("input", { bubbles: true }));
+    modal.remove();
+  };
+
+  search.addEventListener("input", renderCatalog);
+  list.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("[data-service-index]");
+    if (!checkbox) return;
+    const index = Number(checkbox.dataset.serviceIndex);
+    const item = serviceCatalog[index];
+    if (!item) return;
+    if (checkbox.checked) {
+      const existing = currentByName.get(String(item.name || "").trim().toLowerCase());
+      selected.set(index, existing ? { ...item, ...existing } : { ...item, qty: 1, price: Number(item.price) || 0 });
+    } else {
+      selected.delete(index);
+    }
+    renderCatalog();
+  });
+  modal.querySelector(".catalog-close").addEventListener("click", () => modal.remove());
+  modal.querySelector("#catalog-apply-original").addEventListener("click", () => applySelection(false));
+  modal.querySelector("#catalog-apply-fit").addEventListener("click", () => applySelection(true));
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  renderCatalog();
+}
+
 function newOrderModal(existing = null, options = {}) {
   const forceNew = Boolean(options.forceNew);
   const sourceOrder = existing || {};
@@ -1629,10 +1767,8 @@ function newOrderModal(existing = null, options = {}) {
     </div>
 
     <div class="form-section-title">Выбранные услуги</div>
-    <details class="legacy-catalog-picker">
-      <summary class="legacy-catalog-button">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></summary>
-      <div class="catalog-add legacy-catalog-content"><select class="field" id="service-picker"><option value="">— Выбрать услугу из прайса —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
-    </details>
+    <button type="button" class="legacy-catalog-button legacy-service-catalog-open" id="open-service-catalog">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></button>
+    <div class="legacy-catalog-fallback"><select class="field" id="service-picker"><option value="">— Быстро добавить услугу —</option>${serviceOptions}</select><button type="button" class="secondary-button" id="add-service">+ Добавить</button></div>
     <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
     <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
 
@@ -1727,6 +1863,7 @@ function newOrderModal(existing = null, options = {}) {
     }
     return total;
   };
+  modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
   modal.querySelector("#add-service").addEventListener("click", () => {
     const picker = modal.querySelector("#service-picker");
     const item = picker.value === "" ? null : serviceCatalog[Number(picker.value)];
