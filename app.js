@@ -182,7 +182,8 @@ const ICONS = {
   oven: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01M16 5h.01"/><rect x="7" y="11" width="10" height="7" rx="1"/>',
   history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   shopping: '<path d="M8 6h13l-2 8H9L7 3H3"/><circle cx="10" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/>',
-  box: '<path d="m3 7 9-4 9 4-9 4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>'
+  box: '<path d="m3 7 9-4 9 4-9 4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>',
+  gem: '<path d="M4 8 8 3h8l4 5-8 13Z"/><path d="m4 8 8 5 8-5M8 3l4 10 4-10"/>'
 };
 
 function icon(name, className = "") {
@@ -936,6 +937,21 @@ function analyticsPage() {
   });
   const materialUsage = [...usageMap.values()].filter((item) => item.qty > 0).sort((a, b) => b.qty - a.qty).slice(0, 10);
 
+  const serviceMap = new Map();
+  closed.forEach((order) => {
+    (Array.isArray(order.services) ? order.services : []).forEach((service) => {
+      const name = String(service.name || "Услуга").trim() || "Услуга";
+      const current = serviceMap.get(name) || { name, qty: 0, revenue: 0 };
+      const qty = Number(service.qty) || 1;
+      current.qty += qty;
+      current.revenue += qty * (Number(service.price) || 0);
+      serviceMap.set(name, current);
+    });
+  });
+  const serviceRanking = [...serviceMap.values()].sort((a, b) => b.revenue - a.revenue || b.qty - a.qty).slice(0, 5);
+  const warehouseActive = data.warehouse.filter((item) => !item.archived);
+  const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
+
   return `<main class="content analytics-content">
     <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
 
@@ -955,14 +971,14 @@ function analyticsPage() {
     </div>
 
     <section class="panel analytics-kpi-panel">
-      <div class="panel-title"><span class="badge-icon">◇</span> Главные показатели <small>по закрытым заявкам</small></div>
+      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong></div>
-        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong></div>
-        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО</span><strong class="red">${money(totalSpent)}</strong></div>
-        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
       </div>
     </section>
 
@@ -980,6 +996,20 @@ function analyticsPage() {
       <div class="metrics">
         <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
         <div class="metric"><div class="metric-label">Сумма активных</div><div class="metric-value blue">${money(activeSum)}</div></div>
+      </div>
+    </section>
+
+    <section class="panel analytics-ranking">
+      <div class="panel-title"><span class="badge-icon">${icon("price")}</span> Рейтинг услуг</div>
+      ${serviceRanking.length ? `<div class="analytics-ranking-list">${serviceRanking.map((item, index) => `<div class="analytics-ranking-row"><span class="ranking-place">${index + 1}</span><span><strong>${escapeHtml(item.name)}</strong><small>${item.qty} шт. за период</small></span><b>${money(item.revenue)}</b></div>`).join("")}</div>` : `<div class="small">Нет услуг в закрытых заявках за выбранный период.</div>`}
+    </section>
+
+    <section class="panel analytics-stock-summary">
+      <div class="panel-title"><span class="badge-icon">${icon("warehouse")}</span> Склад</div>
+      <div class="analytics-work-grid">
+        <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value">${warehouseActive.length}</div></div>
+        <div class="metric"><div class="metric-label">Заканчивается</div><div class="metric-value yellow">${lowStock}</div></div>
+        <div class="metric"><div class="metric-label">Стоимость остатков</div><div class="metric-value purple">${money(warehouseValue)}</div></div>
       </div>
     </section>
 
