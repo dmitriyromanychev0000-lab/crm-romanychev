@@ -516,6 +516,7 @@ function moreMenu() {
     ["clients", "♙", "Клиенты", "История обращений и ремонтов"],
     ["finance", "₽", "Финансы", "Расходы и дополнительные доходы"],
     ["goods", "◇", "Товарник", "Отдельный расчёт товаров"],
+    ["tools", "🛠", "Инструменты", "Учёт рабочего инструмента"],
     ["act", "▤", "Акт", "Подготовка и печать документа"],
     ["settings", "⚙", "Настройки", "Оформление и параметры приложения"]
   ];
@@ -528,6 +529,7 @@ async function morePage() {
   if (moreSection === "clients") return clientsPage();
   if (moreSection === "finance") return financePage();
   if (moreSection === "goods") return goodsPage();
+  if (moreSection === "tools") return toolsPage();
   if (moreSection === "act") return actPage();
   if (moreSection === "settings") return settingsPage();
   return moreMenu();
@@ -1037,7 +1039,7 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    if (["backup", "prices", "clients", "finance", "goods", "act", "settings"].includes(more)) moreSection = more;
+    if (["backup", "prices", "clients", "finance", "goods", "tools", "act", "settings"].includes(more)) moreSection = more;
     else toast("Раздел будет восстановлен на следующем этапе");
     await render();
     return;
