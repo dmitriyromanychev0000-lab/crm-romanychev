@@ -1340,6 +1340,20 @@ app.addEventListener("click", async (event) => {
   if (action === "check-update") return checkForAppUpdate();
   if (action === "new-price") return priceModal();
   if (action === "new-receipt") return receiptModal();
+  if (action === "continue-draft") {
+    const key = event.target.closest("[data-action]").dataset.key;
+    const draft = getDraftRecord(key);
+    if (draft && typeof draft === "object") return newOrderModal(draft, { forceNew: true });
+    return toast("Этот черновик нельзя продолжить как заявку");
+  }
+  if (action === "delete-draft") {
+    const key = event.target.closest("[data-action]").dataset.key;
+    if (!confirm("Удалить этот черновик?")) return;
+    removeDraftRecord(key);
+    await saveData();
+    await render();
+    return toast("Черновик удалён");
+  }
   if (action === "edit-receipt") {
     const index = Number(event.target.closest("[data-action]").dataset.index);
     const item = data.receipts[index];
