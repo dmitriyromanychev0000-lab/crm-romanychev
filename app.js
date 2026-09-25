@@ -162,7 +162,14 @@ const ICONS = {
   camera: '<path d="M4 7h4l2-3h4l2 3h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>',
   location: '<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
   shield: '<path d="M12 3 20 6v6c0 5-3.4 8-8 10-4.6-2-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/>',
-  chevron: '<path d="m9 18 6-6-6-6"/>'
+  chevron: '<path d="m9 18 6-6-6-6"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+  telegram: '<path d="m21 4-4 16-6-5-4 3 1-5 9-6-11 5-4-2Z"/><path d="m8 13 9-6"/>',
+  trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/>',
+  washer: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01"/><circle cx="12" cy="15" r="4.5"/>',
+  fridge: '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M15 6v2M15 13v2"/>',
+  dishwasher: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01"/><path d="M8 14c1 2 7 2 8 0"/>',
+  oven: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 8h16M8 5h.01M12 5h.01M16 5h.01"/><rect x="7" y="11" width="10" height="7" rx="1"/>'
 };
 
 function icon(name, className = "") {
@@ -563,33 +570,79 @@ function emptyState(iconValue, title, description) {
   return `<div class="panel empty"><div class="empty-icon">${graphic}</div><h2>${title}</h2><p>${description}</p></div>`;
 }
 
+function applianceIconName(tech) {
+  const value = String(tech || "").toLowerCase();
+  if (value.includes("стира")) return "washer";
+  if (value.includes("посуд")) return "dishwasher";
+  if (value.includes("холод") || value.includes("мороз")) return "fridge";
+  if (value.includes("плит") || value.includes("дух") || value.includes("печ")) return "oven";
+  return "appliance";
+}
+
+function orderNetAmount(order) {
+  return Math.max(0, (Number(order.sum) || 0) - (Number(order.expense_gray) || 0) - (Number(order.expense_white) || 0));
+}
+
+function formatVisitDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
+  }).format(date).replace(",", "");
+}
+
+function telegramPhoneLink(phone) {
+  const digits = String(phone || "").replace(/\D/g, "");
+  return digits ? `tg://resolve?phone=${digits}` : "";
+}
+
 function orderCard(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
+  const isDeclined = statusType === "declined";
   const isArchived = Boolean(order.archived);
   const photos = Array.isArray(order.photos) ? order.photos.length : 0;
-  return `<article class="panel order-card ${isClosed ? "closed" : ""}">
+  const net = orderNetAmount(order);
+  const telegram = telegramPhoneLink(order.phone);
+  const applianceIcon = applianceIconName(order.tech);
+  const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "";
+
+  return `<article class="panel order-card ${cardClass}">
     <div class="order-top">
-      <div><span class="order-number">№${escapeHtml(order.id || "—")}</span><span class="order-name">${escapeHtml(order.name || "Без имени")}</span></div>
-      <div><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
+      <div class="order-person"><span class="order-number">№${escapeHtml(order.id || "—")}</span><span class="order-name">${escapeHtml(order.name || "Без имени")}</span></div>
+      <div class="order-state"><div class="order-date">${shortDate(order.created)}</div><span class="status ${isClosed ? "closed" : isDeclined ? "declined" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
     </div>
+
     <div class="appliance">
-      <div class="appliance-main"><div class="appliance-icon">${icon("appliance")}</div><div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div></div>
-      <div class="sum">${money(order.sum)}</div>
+      <div class="appliance-main">
+        <div class="appliance-icon">${icon(applianceIcon)}</div>
+        <div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div>
+      </div>
     </div>
+
+    <div class="order-money">
+      <div class="money-box"><div class="money-label">СУММА КЛИЕНТА</div><div class="money-value">${money(order.sum)}</div></div>
+      <div class="money-box money-box-net"><div class="money-label"><span class="money-gem">◇</span> НА РУКИ</div><div class="money-value ${isClosed ? "green" : ""}">${isClosed ? money(net) : "После закрытия"}</div></div>
+    </div>
+
     <div class="meta">
       ${order.phone ? `<span class="meta-item">${icon("phone")} ${escapeHtml(order.phone)}</span>` : ""}
-      ${order.address ? `<span class="meta-item">${icon("location")} ${escapeHtml(order.address)}</span>` : ""}
+      ${order.address ? `<span class="meta-item address-meta">${icon("location")} ${escapeHtml(order.address)}</span>` : ""}
       <span class="meta-item">${icon("shield")} ${escapeHtml(order.guarantee || 0)} мес.</span>
       ${photos ? `<span class="meta-item">${icon("camera")} ${photos} фото</span>` : ""}
     </div>
-    <div class="actions">
-      <button class="action" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>${icon("edit")}</span>Изменить</button>
-      <button class="action" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${icon(isClosed ? "reopen" : "check")}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
-      <button class="action" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>${icon("copy")}</span>Копия</button>
-      <button class="action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>${icon("document")}</span>Документ</button>
-      <button class="action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${icon(isArchived ? "restore" : "archive")}</span>${isArchived ? "Вернуть" : "В архив"}</button>
-      ${order.phone ? `<a class="action" href="tel:${escapeHtml(order.phone)}"><span>${icon("phone")}</span>Позвонить</a>` : `<button class="action" disabled><span>${icon("phone")}</span>Позвонить</button>`}
+
+    <div class="actions order-main-actions">
+      <button class="action action-edit" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>${icon("edit")}</span>Изменить</button>
+      <button class="action action-close" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${icon(isClosed ? "reopen" : "check")}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
+      <button class="action action-copy" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>${icon("copy")}</span>Копия</button>
+      ${order.phone ? `<a class="action action-call" href="tel:${escapeHtml(order.phone)}"><span>${icon("phone")}</span>Позвонить</a>` : `<button class="action action-call" disabled><span>${icon("phone")}</span>Позвонить</button>`}
+      ${telegram ? `<a class="action action-telegram" href="${escapeHtml(telegram)}"><span>${icon("telegram")}</span>Telegram</a>` : `<button class="action action-telegram" disabled><span>${icon("telegram")}</span>Telegram</button>`}
+    </div>
+    <div class="order-secondary-actions">
+      <button class="action secondary-order-action" data-order-action="receipt" data-id="${escapeHtml(order.id)}"><span>${icon("document")}</span>Документ</button>
+      <button class="action secondary-order-action danger-action" data-order-action="archive" data-id="${escapeHtml(order.id)}"><span>${icon(isArchived ? "restore" : "trash")}</span>${isArchived ? "Вернуть" : "Удалить"}</button>
     </div>
   </article>`;
 }
@@ -606,23 +659,45 @@ function ordersPage() {
     const periodMatch = withinPeriod(order.created, orderPeriod);
     return filterMatch && periodMatch && (!query || haystack.includes(query));
   });
-  return `<main class="content">
-    <div class="page-head"><div><h1>Заявки</h1><p class="lead">Все ремонты в одном месте</p></div><button class="icon-button" data-action="new-order" aria-label="Новая заявка">+</button></div>
-    <div class="search-row"><input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" /></div>
-    <div class="chips">
+
+  const now = Date.now();
+  const nearestVisit = data.orders
+    .filter((order) => !order.archived && normalizeStatus(order.status) === "active" && order.nextVisit && new Date(order.nextVisit).getTime() >= now)
+    .sort((a, b) => new Date(a.nextVisit) - new Date(b.nextVisit))[0];
+
+  return `<main class="content orders-content">
+    <div class="page-head orders-head"><div><h1>Заявки</h1><p class="lead">Все ремонты в одном месте</p></div><button class="icon-button order-add-button" data-action="new-order" aria-label="Новая заявка">+</button></div>
+
+    ${nearestVisit ? `<section class="next-visit-card">
+      <div class="next-visit-title">${icon("calendar")}<strong>Ближайшие визиты</strong></div>
+      <div class="next-visit-line"><strong>${escapeHtml(formatVisitDate(nearestVisit.nextVisit))}</strong><span>·</span><span>${escapeHtml(nearestVisit.name || "Клиент")}</span>${nearestVisit.address ? `<span class="visit-address">· ${escapeHtml(nearestVisit.address)}</span>` : ""}<span class="visit-id">№${escapeHtml(nearestVisit.id || "—")}</span></div>
+    </section>` : ""}
+
+    <div class="search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" /></div>
+
+    <div class="chips order-status-chips">
       <button class="chip ${orderFilter === "all" ? "active" : ""}" data-filter="all">Все</button>
       <button class="chip ${orderFilter === "closed" ? "active" : ""}" data-filter="closed">Закрыты</button>
       <button class="chip ${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
-      <button class="chip ${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
-      <button class="chip ${orderFilter === "archived" ? "active" : ""}" data-filter="archived">Архив</button>
     </div>
-    <div class="chips">
-      <button class="chip ${orderPeriod === "all" ? "active" : ""}" data-order-period="all">Всё время</button>
-      <button class="chip ${orderPeriod === "7" ? "active" : ""}" data-order-period="7">7 дней</button>
-      <button class="chip ${orderPeriod === "30" ? "active" : ""}" data-order-period="30">30 дней</button>
-      <button class="chip ${orderPeriod === "90" ? "active" : ""}" data-order-period="90">90 дней</button>
-      <button class="chip ${orderPeriod === "365" ? "active" : ""}" data-order-period="365">365 дней</button>
+
+    <div class="order-date-filter">
+      <select class="field" id="order-period-select">
+        <option value="all" ${orderPeriod === "all" ? "selected" : ""}>Все даты визита</option>
+        <option value="7" ${orderPeriod === "7" ? "selected" : ""}>Последние 7 дней</option>
+        <option value="30" ${orderPeriod === "30" ? "selected" : ""}>Последние 30 дней</option>
+        <option value="90" ${orderPeriod === "90" ? "selected" : ""}>Последние 90 дней</option>
+        <option value="365" ${orderPeriod === "365" ? "selected" : ""}>Последний год</option>
+      </select>
+      <span class="select-chevron">${icon("chevron")}</span>
     </div>
+
+    <div class="orders-aux-filters">
+      <button class="${orderFilter === "declined" ? "active" : ""}" data-filter="declined">Отказы</button>
+      <span>·</span>
+      <button class="${orderFilter === "archived" ? "active" : ""}" data-filter="archived">Архив</button>
+    </div>
+
     ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
 }
@@ -1862,6 +1937,12 @@ app.addEventListener("submit", async (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  if (event.target.id === "order-period-select") {
+    orderPeriod = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
   if (event.target.id === "act-order-select") {
     selectedActOrderId = event.target.value;
     saveUiState();
