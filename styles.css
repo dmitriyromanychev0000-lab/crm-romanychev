@@ -138,6 +138,13 @@ h2 { margin: 0; font-size: 24px; }
 .appliance-model { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sum { font-size: 24px; font-weight: 780; white-space: nowrap; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.meta-item { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.meta-item .ui-icon { width: 16px; height: 16px; }
+.icon-text-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.icon-text-button .ui-icon { width: 18px; height: 18px; }
+.chevron { display: grid; place-items: center; color: var(--muted); }
+.chevron .ui-icon { width: 20px; height: 20px; }
+.photo-missing .ui-icon { width: 34px; height: 34px; }
 .actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
 .action { min-height: 58px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel-2); color: var(--muted); font-size: 12px; }
 .action span { display: block; margin-bottom: 4px; font-size: 20px; color: var(--accent); }
