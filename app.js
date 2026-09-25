@@ -9,7 +9,7 @@ const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "0.42.1";
 const APP_BUILD = "2026.09.26.05";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Проведён полный аудит мобильных форм: устранены горизонтальные вылеты модалок, строк услуг, материалов и товарника";
+const APP_RELEASE = "Проведён аудит мобильных форм и переполнений; добавлено безопасное закрытие верхней модалки по Escape";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
