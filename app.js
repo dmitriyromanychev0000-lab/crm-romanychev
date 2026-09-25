@@ -143,6 +143,21 @@ function downloadBackup() {
   toast("Бэкап скачан на устройство");
 }
 
+
+async function checkForAppUpdate() {
+  toast("Проверяем обновление…");
+  try {
+    if ("serviceWorker" in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) await registration.update();
+    }
+    await fetch("./index.html", { cache: "no-store" });
+    window.location.replace(APP_URL);
+  } catch (error) {
+    console.warn("Не удалось проверить обновление", error);
+    toast("Не удалось проверить обновление. Проверь интернет.");
+  }
+}
 async function chooseBackupFolder() {
   if (!("showDirectoryPicker" in window)) {
     toast("Этот браузер не поддерживает выбор папки. Используем скачивание файла.");
