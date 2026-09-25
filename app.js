@@ -215,20 +215,31 @@ function backupPayload() {
   return JSON.stringify({ ...data, date: new Date().toISOString() }, null, 2);
 }
 
-function runBackupSelfTest() {
+async function runBackupSelfTest() {
   try {
     const payload = backupPayload();
     const parsed = JSON.parse(payload);
     const restored = validateBackup(structuredClone(parsed));
     const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft"];
-    const mismatches = sections.filter((key) => JSON.stringify(parsed[key] ?? defaultData()[key]) !== JSON.stringify(restored[key] ?? defaultData()[key]));
-    if (mismatches.length) throw new Error(`Содержимое изменилось после восстановления: ${mismatches.join(", ")}`);
+    const compare = (left, right) => sections.filter((key) => JSON.stringify(left[key] ?? defaultData()[key]) !== JSON.stringify(right[key] ?? defaultData()[key]));
+
+    const memoryMismatches = compare(parsed, restored);
+    if (memoryMismatches.length) throw new Error(`Содержимое изменилось после восстановления: ${memoryMismatches.join(", ")}`);
+
+    await dbSet(BACKUP_TEST_KEY, restored);
+    const storedTest = await dbGet(BACKUP_TEST_KEY);
+    const reread = validateBackup(structuredClone(storedTest));
+    const storageMismatches = compare(restored, reread);
+    await dbDelete(BACKUP_TEST_KEY);
+    if (storageMismatches.length) throw new Error(`IndexedDB изменила разделы: ${storageMismatches.join(", ")}`);
+
     const warnings = backupWarnings(restored);
     const sizeMb = new Blob([payload]).size / 1024 / 1024;
     const photoCount = restored.orders.reduce((sum, order) => sum + (Array.isArray(order.photos) ? order.photos.length : 0), 0);
     const details = `${restored.orders.length} заявок · ${photoCount} фото · ${sizeMb.toFixed(1)} МБ`;
-    toast(warnings.length ? `Бэкап читается (${details}), предупреждений: ${warnings.length}` : `Бэкап полностью проверен · ${details}`);
+    toast(warnings.length ? `Бэкап и IndexedDB исправны (${details}), предупреждений: ${warnings.length}` : `Бэкап и IndexedDB полностью проверены · ${details}`);
   } catch (error) {
+    await dbDelete(BACKUP_TEST_KEY).catch(() => {});
     console.error(error);
     toast(`Проверка бэкапа не пройдена: ${error.message}`);
   }
