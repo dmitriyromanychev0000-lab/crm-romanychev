@@ -311,7 +311,69 @@ h2 { margin: 0; font-size: 24px; }
 .danger-action span { color: var(--red); }
 .order-secondary-actions .secondary-order-action:first-child { grid-column: 1 / span 1; }
 
+.warehouse-content { padding-top: 28px; }
+.warehouse-head { margin-bottom: 18px; }
+.warehouse-search .search { min-height: 64px; }
+.warehouse-filter { margin-bottom: 18px; }
+.warehouse-shortcuts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.warehouse-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 74px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #181f26;
+  color: #f0f2f3;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+}
+.warehouse-shortcut .ui-icon { width: 25px; height: 25px; }
+.warehouse-new-card {
+  display: grid;
+  grid-template-columns: 56px minmax(0,1fr) 24px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 18px;
+  text-align: left;
+  color: var(--text);
+}
+.warehouse-new-card strong { display: block; font-size: 22px; }
+.warehouse-new-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+.warehouse-new-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  color: var(--accent);
+  border: 1px solid rgba(255,107,79,.30);
+  background: rgba(255,107,79,.08);
+}
+.warehouse-new-icon .ui-icon { width: 28px; height: 28px; }
+.warehouse-shopping-panel,
+.warehouse-movements { scroll-margin-top: 150px; }
+.warehouse-section-muted { opacity: .76; }
+.warehouse-items { margin-top: 2px; }
 .stock-card { border-left: 4px solid var(--green); }
+.archived-stock { opacity: .62; border-left-color: var(--muted); }
+.stock-compatibility {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
 .stock-name { font-size: 20px; font-weight: 750; }
 .stock-category, .small { color: var(--muted); font-size: 13px; }
 .quantity { color: var(--green); font-size: 22px; font-weight: 800; }
@@ -471,6 +533,11 @@ h2 { margin: 0; font-size: 24px; }
   .line-item [data-line="price"], .line-item [data-line="unit-cost"] { grid-column: 1; }
   .line-item [data-line="qty"] { grid-column: 2; grid-row: 2; }
   .line-item .remove-line { grid-column: 3; grid-row: 2; }
+  .warehouse-shortcuts { grid-template-columns: 1fr 1fr; gap: 9px; }
+  .warehouse-shortcut { min-height: 68px; padding: 10px 8px; gap: 8px; font-size: 14px; }
+  .warehouse-shortcut .ui-icon { width: 21px; height: 21px; }
+  .warehouse-new-card { grid-template-columns: 52px minmax(0,1fr) 20px; padding: 17px; }
+  .warehouse-new-card strong { font-size: 19px; }
   .backup-grid { grid-template-columns: 1fr; }
   .empty-actions { grid-template-columns: 1fr; }
   .finance-actions { grid-template-columns: 1fr; }
