@@ -14976,3 +14976,323 @@ body.modal-open {
     padding: 18px 14px 14px;
   }
 }
+
+
+/* 0.85.0 · Вторичные разделы: читаемость, плотность и единые touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-periods {
+    gap: 5px;
+    margin-bottom: 9px;
+  }
+
+  .legacy-finance-periods button {
+    min-height: 38px;
+    padding: 5px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+
+  .legacy-finance-summary,
+  .legacy-clients-stats,
+  .legacy-service-stats {
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+
+  .legacy-finance-summary > div,
+  .legacy-clients-stats > div,
+  .legacy-service-stats > div {
+    padding: 10px 9px;
+    border-color: var(--crm-line);
+    border-radius: 11px;
+    background: var(--crm-surface-2);
+  }
+
+  .legacy-finance-summary span,
+  .legacy-clients-stats span,
+  .legacy-service-stats span {
+    color: var(--crm-muted);
+    font-size: 8px;
+    letter-spacing: .055em;
+  }
+
+  .legacy-finance-summary strong {
+    margin-top: 6px;
+    font-size: 17px;
+  }
+
+  .legacy-clients-stats strong,
+  .legacy-service-stats strong {
+    margin-top: 5px;
+    font-size: 15px;
+  }
+
+  .legacy-finance-actions > button {
+    min-height: 46px;
+    font-size: 10px;
+  }
+
+  .legacy-finance-history {
+    padding: 11px;
+  }
+
+  .legacy-finance-history-head h2 {
+    font-size: 13px;
+  }
+
+  .legacy-finance-row {
+    grid-template-columns: 36px minmax(0,1fr) auto 36px;
+    gap: 8px;
+    min-height: 64px;
+    padding: 8px 0;
+    border-color: var(--crm-line-soft);
+  }
+
+  .legacy-finance-kind {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background: #1a242c;
+  }
+
+  .legacy-finance-copy strong {
+    font-size: 10.5px;
+  }
+
+  .legacy-finance-copy small {
+    margin-top: 3px;
+    font-size: 8.5px;
+  }
+
+  .legacy-finance-row > b {
+    font-size: 10px;
+  }
+
+  .legacy-finance-row > button {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .legacy-client-card {
+    border-color: var(--crm-line);
+    border-radius: 15px;
+    background: linear-gradient(160deg,#151d23,#10161b);
+  }
+
+  .legacy-client-main {
+    grid-template-columns: 44px minmax(0,1fr) auto;
+    min-height: 82px;
+    padding: 10px 11px 9px;
+  }
+
+  .legacy-client-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .legacy-client-copy strong {
+    font-size: 12px;
+  }
+
+  .legacy-client-copy small {
+    font-size: 9px;
+  }
+
+  .legacy-client-copy em,
+  .legacy-client-side small,
+  .legacy-client-meta {
+    font-size: 8px;
+  }
+
+  .legacy-client-side b {
+    font-size: 11px;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    min-height: 44px;
+    border-color: var(--crm-line);
+    border-radius: 10px;
+    background: var(--crm-surface-2);
+    font-size: 9px;
+  }
+
+  .legacy-goods-panel {
+    margin-bottom: 9px;
+    padding: 12px;
+  }
+
+  .legacy-section-title h2 {
+    font-size: 13px;
+  }
+
+  .legacy-goods-help,
+  .legacy-goods-intro {
+    color: var(--crm-muted);
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .legacy-goods-create-grid button,
+  .legacy-open-editor {
+    min-height: 46px;
+    border-radius: 11px;
+    font-size: 9.5px;
+  }
+
+  .legacy-goods-position {
+    min-height: 54px;
+    border-color: var(--crm-line-soft);
+  }
+
+  .legacy-goods-position strong,
+  .legacy-product-price-list strong {
+    font-size: 10px;
+  }
+
+  .legacy-goods-position small,
+  .legacy-product-price-list small {
+    font-size: 8.5px;
+  }
+
+  .legacy-document-row {
+    grid-template-columns: 38px minmax(0,1fr) auto 16px;
+    min-height: 66px;
+    padding: 9px 10px;
+    border-color: var(--crm-line);
+    border-radius: 12px;
+    background: var(--crm-surface-2);
+  }
+
+  .legacy-document-icon {
+    width: 37px;
+    height: 37px;
+    border-radius: 10px;
+  }
+
+  .legacy-document-row strong {
+    font-size: 10.5px;
+  }
+
+  .legacy-document-row small {
+    font-size: 8.5px;
+  }
+
+  .legacy-document-row > b {
+    font-size: 10px;
+  }
+
+  .legacy-draft-card {
+    padding: 11px;
+    border-color: var(--crm-line);
+    border-radius: 12px;
+    background: var(--crm-surface-2);
+  }
+
+  .legacy-draft-card strong {
+    font-size: 10.5px;
+  }
+
+  .legacy-draft-card small {
+    font-size: 8.5px;
+  }
+
+  .legacy-draft-actions button {
+    min-height: 44px;
+    font-size: 9px;
+  }
+
+  .legacy-settings-card {
+    margin-bottom: 9px;
+    padding: 12px;
+  }
+
+  .legacy-settings-grid {
+    gap: 8px;
+  }
+
+  .legacy-settings-grid label > span,
+  .legacy-settings-toggle-row small {
+    font-size: 8px;
+  }
+
+  .legacy-settings-grid .field {
+    min-height: 46px;
+    font-size: 10.5px;
+  }
+
+  .legacy-settings-toggle-row {
+    min-height: 58px;
+    border-color: var(--crm-line);
+    background: #11181e;
+  }
+
+  .legacy-settings-toggle-row strong {
+    font-size: 10px;
+  }
+
+  .legacy-settings-save {
+    min-height: 46px;
+    font-size: 10px;
+  }
+
+  .legacy-settings-row {
+    min-height: 62px;
+    border-color: var(--crm-line-soft);
+  }
+
+  .legacy-settings-row strong,
+  .legacy-settings-links strong {
+    font-size: 10px;
+  }
+
+  .legacy-settings-row small,
+  .legacy-settings-links small {
+    font-size: 8.5px;
+  }
+
+  .legacy-settings-row > button:not(.toggle) {
+    min-height: 40px;
+    padding: 6px 10px;
+    border-color: var(--crm-line);
+    border-radius: 10px;
+    font-size: 8.5px;
+  }
+
+  .legacy-settings-links {
+    gap: 7px;
+  }
+
+  .legacy-settings-links > button {
+    min-height: 64px;
+    padding: 9px 10px;
+    border-color: var(--crm-line);
+    border-radius: 12px;
+    background: var(--crm-surface-2);
+  }
+
+  .legacy-settings-links .settings-link-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .legacy-settings-links > button > b {
+    font-size: 9px;
+  }
+
+  .legacy-backup-main-actions button,
+  .legacy-backup-grid button {
+    min-height: 44px;
+    font-size: 8.5px;
+  }
+
+  .legacy-service-note,
+  .legacy-service-empty,
+  .legacy-client-empty,
+  .legacy-finance-empty {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+}
