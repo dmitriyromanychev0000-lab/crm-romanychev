@@ -6975,3 +6975,117 @@
     grid-column: 1 / -1 !important;
   }
 }
+
+
+/* 0.96.0 · Финальный проход склада: плотность, семантика и 320 px. */
+@media screen and (max-width: 520px) {
+  .legacy-stock-copy {
+    min-width: 0;
+  }
+
+  .legacy-stock-copy strong,
+  .legacy-stock-copy small,
+  .legacy-stock-copy em {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-stock-main {
+    min-height: 70px !important;
+  }
+
+  .legacy-stock-actions-v2 button {
+    min-width: 0;
+    font-size: 11px !important;
+  }
+
+  .stock-detail-hero > div {
+    min-width: 0;
+  }
+
+  .stock-detail-hero h2,
+  .stock-detail-hero p,
+  .stock-detail-sale-price {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stock-detail-status {
+    white-space: nowrap;
+  }
+
+  .movement-copy,
+  .shopping-card > div:nth-child(2) {
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-stock-actions-v2 {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .legacy-stock-actions-v2 button {
+    min-height: 44px !important;
+    font-size: 11px !important;
+  }
+
+  .stock-detail-hero {
+    grid-template-columns: 40px minmax(0,1fr) !important;
+    gap: 8px !important;
+  }
+
+  .stock-detail-status {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    margin-top: 2px;
+  }
+
+  .stock-detail-kpis {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .stock-detail-kpis .primary {
+    grid-column: 1 / -1 !important;
+  }
+
+  .stock-detail-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stock-detail-actions .stock-detail-archive {
+    grid-column: auto !important;
+  }
+
+  .stock-editor-modal .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stock-editor-modal .form-group.full {
+    grid-column: auto !important;
+  }
+
+  .stock-editor-compat {
+    grid-template-columns: 1fr !important;
+  }
+
+  .movement-card,
+  .shopping-card {
+    grid-template-columns: 36px minmax(0,1fr) !important;
+    gap: 8px !important;
+  }
+
+  .movement-card > b,
+  .shopping-need {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .shopping-page-actions {
+    grid-template-columns: 1fr !important;
+  }
+}
