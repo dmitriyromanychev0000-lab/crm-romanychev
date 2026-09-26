@@ -13832,3 +13832,124 @@ body.modal-open {
     font-weight: 700 !important;
   }
 }
+
+
+/* 0.84.3 · Единая мобильная механика каталогов и нижних шторок. */
+@media screen and (max-width: 520px) {
+  .catalog-modal-backdrop,
+  .material-catalog-backdrop {
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal,
+  .material-catalog-modal {
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #0b1014 !important;
+  }
+
+  .catalog-modal-head,
+  .material-catalog-head {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    flex: 0 0 auto !important;
+    box-sizing: border-box !important;
+    min-height: 58px !important;
+    margin: 0 -12px 8px !important;
+    padding: 10px 12px !important;
+    border-bottom: 1px solid #232c33 !important;
+    background: rgba(11,16,20,.985) !important;
+  }
+
+  .material-catalog-head {
+    display: grid !important;
+    grid-template-columns: 32px minmax(0,1fr) 36px !important;
+  }
+
+  .material-catalog-head-close {
+    display: grid !important;
+    place-items: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    border: 1px solid #303940 !important;
+    border-radius: 11px !important;
+    background: #181f26 !important;
+    color: #e9ecee !important;
+    font-size: 22px !important;
+  }
+
+  .catalog-search-row,
+  .material-catalog-search {
+    flex: 0 0 auto !important;
+    margin-bottom: 8px !important;
+  }
+
+  .catalog-service-list,
+  .material-catalog-list {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px !important;
+  }
+
+  .catalog-fit-summary {
+    position: static !important;
+    flex: 0 0 auto !important;
+    margin: 4px 0 7px !important;
+  }
+
+  .catalog-modal-actions {
+    position: static !important;
+    flex: 0 0 auto !important;
+    display: grid !important;
+    grid-template-columns: .8fr 1.2fr !important;
+    gap: 7px !important;
+    margin: 0 -12px !important;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #283139 !important;
+    background: rgba(8,13,17,.985) !important;
+  }
+
+  .catalog-modal-actions button {
+    min-height: 45px !important;
+    min-width: 0 !important;
+    border-radius: 11px !important;
+    font-size: 10px !important;
+  }
+
+  .material-catalog-close {
+    flex: 0 0 auto !important;
+    min-height: 48px !important;
+    margin: 0 -12px !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    border-radius: 0 !important;
+  }
+
+  .stock-adjust-modal,
+  .legacy-analytics-range-modal,
+  .legacy-order-actions-backdrop .order-actions-sheet {
+    max-height: calc(100dvh - 12px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+  }
+}
