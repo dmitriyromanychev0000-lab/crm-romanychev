@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.60.0";
-const APP_BUILD = "2026.09.26.29";
+const APP_VERSION = "0.61.0";
+const APP_BUILD = "2026.09.26.30";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 04: отдельная история движений и список покупок с копированием и отправкой";
+const APP_RELEASE = "Редизайн Sheet 05: компактный аналитический центр, KPI, фокус и динамика выручки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1101,12 +1101,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong><small>по закрытым заявкам</small></div>
+        <div class="analytics-kpi"><span>ЧИСТЫМИ С РЕМОНТОВ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>выручка минус расходы</small></div>
+        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>ремонты + личные</small></div>
+        <div class="analytics-kpi"><span>ИТОГОВЫЙ РЕЗУЛЬТАТ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>с учётом личных финансов</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>на закрытую заявку</small></div>
       </div>
     </section>
 
