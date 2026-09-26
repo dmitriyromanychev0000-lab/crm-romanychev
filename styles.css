@@ -6022,7 +6022,39 @@ button.warehouse-shortcut {
 /* Карточка материала не должна наследовать сетку технического .line-item.
    Иначе заголовок и блок контролов делят одну строку и сжимают подписи. */
 .order-editor-modal .legacy-material-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 14px;
+}
+.order-editor-modal .material-card-head {
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 8px;
+}
+.order-editor-modal .material-card-head small {
+  margin: 2px 0 0;
+  font-size: 9px;
+  line-height: 1.25;
+}
+.order-editor-modal .material-card-controls {
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 0;
+}
+.order-editor-modal .material-card-controls label > span {
+  overflow: hidden;
+  font-size: 8px;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.order-editor-modal .material-card-controls .field {
+  min-height: 40px !important;
+  padding: 0 5px;
+  font-size: 11px;
 }
 
 /* 0.48.0 · Канонический A4 по эталонному акту — последний CSS-блок */
