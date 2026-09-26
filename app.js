@@ -1265,7 +1265,7 @@ function analyticsPage() {
       </div>
     </details>
 
-    <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Динамика выручки<small>закрытые заявки по календарю</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
+    <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Динамика выручки<small>закрытые заявки по календарю</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(6, value / max * 84)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
     <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Доходность по технике<small>выручка минус расходы ремонта</small></span></span>${icon("chevron")}</summary>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
       const result = item.revenue - item.costs;
       return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;

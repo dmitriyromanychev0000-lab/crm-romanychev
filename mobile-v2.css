@@ -7966,3 +7966,60 @@
   }
 }
 
+/* 1.0.3 · Аналитика: компактный график без большого пустого поля. */
+@media screen and (max-width: 520px) {
+  .analytics-chart-panel .bars {
+    min-height: 120px !important;
+    height: 120px !important;
+    gap: 6px !important;
+    padding: 6px 4px 0 !important;
+    align-items: stretch !important;
+  }
+
+  .analytics-chart-panel .bar-wrap {
+    display: grid !important;
+    grid-template-rows: 18px minmax(0,1fr) 16px !important;
+    flex: 1 0 40px !important;
+    min-width: 40px !important;
+    height: 100% !important;
+    align-items: end !important;
+    justify-items: center !important;
+  }
+
+  .analytics-chart-panel .bar-wrap > span:first-child {
+    align-self: end !important;
+    margin-bottom: 3px !important;
+    font-size: 8.5px !important;
+    line-height: 1 !important;
+  }
+
+  .analytics-chart-panel .bar-wrap > span:last-child {
+    align-self: center !important;
+    max-width: 56px !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+
+  .analytics-chart-panel .bar {
+    width: 70% !important;
+    max-width: 28px !important;
+    align-self: end !important;
+  }
+
+  .analytics-chart-panel .bars:has(.bar-wrap:only-child) {
+    justify-content: center !important;
+  }
+
+  .analytics-chart-panel .bar-wrap:only-child {
+    flex: 0 0 84px !important;
+    min-width: 84px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .analytics-chart-panel .bars {
+    min-height: 112px !important;
+    height: 112px !important;
+  }
+}
+
