@@ -3032,7 +3032,9 @@ function stockModal(existing = null) {
     </div>
 
     <p class="stock-editor-intro">${existing ? "Измени параметры позиции, совместимость и цены." : "Добавь запчасть или расходный материал на склад."}</p>
-    <div class="stock-editor-section-title">Основное</div>
+    <div class="stock-editor-body">
+    <section class="stock-editor-section">
+    <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("box")}</span><span>Основное</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
       <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div>
@@ -3040,20 +3042,26 @@ function stockModal(existing = null) {
       <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
       <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div>
     </div>
+    </section>
 
-    <div class="stock-editor-section-title">Цены и учёт</div>
+    <section class="stock-editor-section">
+    <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("finance")}</span><span>Цены и учёт</span></div>
     <div class="form-grid">
       <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
       <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="${Number(item.lastPurchasePrice) || 0}" /></div>
       <div class="form-group full"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
     </div>
+    </section>
 
-    <div class="stock-editor-section-title">Подходит для техники</div>
+    <section class="stock-editor-section">
+    <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("tools")}</span><span>Совместимость</span></div>
     <div class="stock-editor-compat">
       ${commonCompatibility.map((value) => `<label><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" ${currentCompatibility.includes(value) ? "checked" : ""}/><span class="warehouse-check"></span><b>${escapeHtml(value)}</b></label>`).join("")}
     </div>
     <div class="form-group stock-editor-custom-compat"><label>Дополнительно</label><input class="field" name="compatibilityExtra" value="${escapeHtml(customCompatibility)}" placeholder="Через запятую" /></div>
     <label class="stock-editor-toggle"><input type="checkbox" name="hiddenFromOrders" ${item.hiddenFromOrders ? "checked" : ""}/><span class="warehouse-check"></span><span><b>Скрыть в заявках</b><small>Не предлагать эту позицию при добавлении материалов</small></span></label>
+    </section>
+    </div>
 
     <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
