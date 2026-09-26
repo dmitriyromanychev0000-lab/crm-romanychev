@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.80.0";
-const APP_BUILD = "2026.09.26.49";
+const APP_VERSION = "0.81.0";
+const APP_BUILD = "2026.09.26.50";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: каталог материалов по технике";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: восстановлена структура экрана Ещё";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1908,19 +1908,33 @@ function shoppingPage(backAction = "more-menu") {
   </main>`;
 }
 function moreMenu() {
-  const workItems = [
-    ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
-    ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
+  const primaryItems = [
+    ["finance", "finance", "Финансы", "Расходы и дополнительные приходы"],
+    ["report", "analytics", "Отчёт", "Выручка, прибыль и статистика"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
-    ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
-    ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
+    ["settings", "settings", "Настройки", "Каталог, бэкапы и оформление"]
   ];
-  const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
+  const extraItems = [
+    ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
+    ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
+    ["goods", "tag", "Товарник", "Товары из заявки или вручную"]
+  ];
+
+  const card = ([id, iconName, name, description]) => {
+    const attrs = id === "report" ? 'data-action="analytics-screen"' : `data-more="${id}"`;
+    return `<button type="button" class="menu-item menu-${id}" ${attrs}>
+      <span class="menu-icon menu-icon-${id}">${icon(iconName)}</span>
+      <span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span>
+      <span class="chevron">${icon("chevron")}</span>
+    </button>`;
+  };
+
   return `<main class="content more-content legacy-more-page">
-    <div class="legacy-more-head"><h1>Ещё</h1><p>Финансы, документы, прайс и настройки</p></div>
-    <div class="menu-list legacy-more-list">${cards(workItems)}</div>
+    <div class="legacy-more-head"><h1>Ещё</h1><p>Финансы, отчёты и настройки</p></div>
+    <div class="menu-list legacy-more-list">${primaryItems.map(card).join("")}</div>
+    <div class="legacy-more-extra-title">Дополнительно</div>
+    <div class="menu-list legacy-more-list legacy-more-extra">${extraItems.map(card).join("")}</div>
   </main>`;
 }
 
@@ -3568,6 +3582,15 @@ app.addEventListener("click", async (event) => {
     activePage = "more";
     moreReturnSection = "menu";
     moreSection = "settings";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (action === "analytics-screen") {
+    activePage = "analytics";
+    moreSection = "menu";
+    moreReturnSection = "menu";
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
