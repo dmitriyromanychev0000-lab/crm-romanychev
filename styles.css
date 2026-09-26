@@ -5993,6 +5993,32 @@ button.warehouse-shortcut {
 }
 
 
+/* 0.50.1 · Строки услуг в редакторе заявки
+   Старый mobile-слой переносил название и цену на разные ряды. Сбрасываем
+   эти координаты: чекбокс, название, количество, цена и удаление всегда
+   остаются в одной компактной строке. */
+@media (max-width: 520px) {
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 18px minmax(0, 1fr) 42px 65px 32px;
+    gap: 3px;
+  }
+  .order-editor-modal .legacy-service-row .service-check,
+  .order-editor-modal .legacy-service-row .service-name-field,
+  .order-editor-modal .legacy-service-row .service-qty-field,
+  .order-editor-modal .legacy-service-row .service-price-field,
+  .order-editor-modal .legacy-service-row .service-remove {
+    grid-column: auto;
+    grid-row: auto;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 18px minmax(0, 1fr) 40px 60px 30px;
+  }
+}
+
 /* 0.48.0 · Канонический A4 по эталонному акту — последний CSS-блок */
 @media print {
   @page { size: A4 portrait; margin: 7mm 10mm; }
