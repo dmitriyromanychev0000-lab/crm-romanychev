@@ -4079,8 +4079,29 @@ body,
    экрана накладываться на форму или принимать нажатия. */
 .modal-backdrop {
   z-index: 95;
+  top: var(--modal-top);
+  bottom: var(--modal-bottom);
   background: #050b0f;
   isolation: isolate;
+}
+
+:root {
+  --modal-top: 88px;
+  --modal-bottom: calc(68px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 520px) {
+  :root {
+    --modal-top: 82px;
+    --modal-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --modal-top: 78px;
+    --modal-bottom: calc(62px + env(safe-area-inset-bottom));
+  }
 }
 
 /* 0.42.2 · Финальная стабилизация модальных футеров */
