@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.64.0";
-const APP_BUILD = "2026.09.26.33";
+const APP_VERSION = "0.65.0";
+const APP_BUILD = "2026.09.26.34";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 08: акт, A4/PDF и документы с мобильным редактором квитанций";
+const APP_RELEASE = "Редизайн Sheet 09: меню Ещё и рабочие инструменты с мобильным редактором";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1689,7 +1689,7 @@ function toolsPage() {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
+      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span class="tool-row-icon">${icon("tools")}</span><span class="tool-row-copy"><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small>${item.serial || item.serialNumber ? `<em>№ ${escapeHtml(item.serial || item.serialNumber)}</em>` : ""}</span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
   </main>`;
 }
@@ -1843,11 +1843,13 @@ function moreMenu() {
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
     ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
+    ["tools", "tools", "Инструменты", "Рабочий инструмент и оборудование"],
     ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
   const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
   return `<main class="content more-content">
-    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div>
+    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы, документы и настройки</p></div></div>
+    <div class="more-section-caption"><span>Рабочие инструменты</span><b>${workItems.length}</b></div>
     <div class="menu-list legacy-more-list">${cards(workItems)}</div>
   </main>`;
 }
@@ -2463,16 +2465,17 @@ function receiptModal(existing = null, receiptIndex = -1) {
 function toolModal(existing = null, toolIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal" id="tool-form">
-    <h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2>
+  modal.className = "modal-backdrop tool-editor-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
+    <div class="tool-editor-head"><div><small>Рабочие инструменты</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
     <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Электроинструмент, измерительный…" /></div>
-      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" /></div>
-      <div class="form-group"><label>Стоимость</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" /></div>
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Измерительный" /></div>
+      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" list="tool-status-options" /><datalist id="tool-status-options"><option value="В наличии"></option><option value="В ремонте"></option><option value="На выезде"></option><option value="Списан"></option></datalist></div>
+      <div class="form-group"><label>Стоимость</label><input class="field tool-editor-price" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" inputmode="decimal" /></div>
       <div class="form-group"><label>Серийный номер</label><input class="field" name="serial" value="${escapeHtml(item.serial || item.serialNumber || "")}" /></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(item.note || item.comment || "")}</textarea></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
     </div>
     <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-tool">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2490,14 +2493,15 @@ function toolModal(existing = null, toolIndex = -1) {
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
-      name: form.get("name"),
-      category: form.get("category"),
-      status: form.get("status"),
+      name: String(form.get("name") || "").trim(),
+      category: String(form.get("category") || "").trim(),
+      status: String(form.get("status") || "В наличии").trim() || "В наличии",
       price: Number(form.get("price")) || 0,
-      serial: form.get("serial"),
-      note: form.get("note"),
+      serial: String(form.get("serial") || "").trim(),
+      note: String(form.get("note") || "").trim(),
       updatedAt: new Date().toISOString()
     };
+    if (!next.name) return toast("Укажи название инструмента");
     if (!Array.isArray(data.tools)) data.tools = [];
     if (toolIndex >= 0) data.tools[toolIndex] = next; else data.tools.push({ ...next, createdAt: new Date().toISOString() });
     await saveData(); modal.remove(); await render(); toast("Инструмент сохранён");
