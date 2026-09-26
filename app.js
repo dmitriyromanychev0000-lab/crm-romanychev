@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.76.0";
-const APP_BUILD = "2026.09.26.45";
+const APP_VERSION = "0.77.0";
+const APP_BUILD = "2026.09.26.46";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: клиенты и финансы";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: настройки и служебные экраны";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1555,57 +1555,45 @@ function goodsPage() {
 }
 function settingsPage() {
   const settings = data.settings || {};
-  return `<main class="content settings-content">
-    <div class="page-head"><div><h1>Настройки</h1><p class="lead">Реквизиты и приложение</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+  return `<main class="content legacy-settings-page">
+    <div class="legacy-subpage-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>Настройки</h1><p>Реквизиты и приложение</p></div>
+    </div>
 
-    <form class="panel settings-profile-panel" id="settings-form">
-      <div class="panel-title"><span class="badge-icon">${icon("settings")}</span> Реквизиты исполнителя</div>
-      <div class="form-grid">
-        <div class="form-group full"><label>Название</label><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Например: Ремонт бытовой техники" /></div>
-        <div class="form-group"><label>Исполнитель</label><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></div>
-        <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
-        <div class="form-group full"><label>Адрес</label><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></div>
-        <div class="form-group"><label>ИНН</label><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></div>
+    <form class="legacy-settings-card" id="settings-form">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("settings")}</span><h2>Реквизиты исполнителя</h2></div>
+      <div class="legacy-settings-grid">
+        <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
+        <label><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
+        <label><span>ТЕЛЕФОН</span><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></label>
+        <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
+        <label><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
       </div>
-      <label class="settings-check-row">
+      <label class="legacy-settings-toggle-row">
         <input type="checkbox" name="catalogApplyWithoutFit" ${settings.catalogApplyWithoutFit ? "checked" : ""} />
         <span class="settings-checkbox"></span>
-        <span>
-          <strong>Применять услуги без подгонки</strong>
-          <small>Сохранять цены из прайса как есть, не подгоняя их под сумму заявки</small>
-        </span>
+        <span><strong>Применять услуги без подгонки</strong><small>Оставлять цену прайса без автоматического изменения под сумму заявки</small></span>
       </label>
-      <button class="primary-button wide settings-save" type="submit">Сохранить</button>
+      <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>
 
-    <section class="panel settings-system-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Приложение</div>
-      <div class="settings-system-list">
-        <div class="setting-row legacy-setting-row settings-version-row">
-          <span class="setting-icon">${icon("document")}</span>
-          <div><strong>CRM by Romanychev ${APP_VERSION}</strong><div class="small">Сборка ${APP_BUILD}</div><div class="small">${escapeHtml(APP_RELEASE)}</div></div>
-          <button class="secondary-button" data-action="check-update">Обновить</button>
-        </div>
-        <div class="setting-row legacy-setting-row">
-          <span class="setting-icon">${icon("analytics")}</span>
-          <div><strong>Диагностика</strong><div class="small">Кэш, база и хранилище</div></div>
-          <button class="secondary-button" data-action="run-diagnostics">Проверить</button>
-        </div>
-        <div class="setting-row legacy-setting-row">
-          <span class="setting-icon">${icon("backup")}</span>
-          <div><strong>Локальные данные</strong><div class="small">${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</div></div>
-          <button class="secondary-button" data-action="protect-storage">Защитить</button>
-        </div>
+    <section class="legacy-settings-card">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("document")}</span><h2>Приложение</h2></div>
+      <div class="legacy-settings-list">
+        <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>CRM by Romanychev ${APP_VERSION}</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Обновить</button></div>
+        <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("analytics")}</span><span><strong>Диагностика</strong><small>Кэш, база и хранилище</small></span><button type="button" data-action="run-diagnostics">Проверить</button></div>
+        <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("backup")}</span><span><strong>Локальные данные</strong><small>${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</small></span><button type="button" data-action="protect-storage">Защитить</button></div>
       </div>
     </section>
 
-    <section class="panel settings-sections-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("more")}</span> Данные и служебные разделы</div>
+    <section class="legacy-settings-card">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Данные и разделы</h2></div>
       <div class="legacy-settings-links">
-        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><b>${draftRecords().length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><b>${draftRecords().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
     </section>
   </main>`;
@@ -1649,14 +1637,21 @@ function draftSummary(item = {}) {
 
 function draftsPage() {
   const drafts = draftRecords().sort((a, b) => new Date(draftSummary(b.value).date || 0) - new Date(draftSummary(a.value).date || 0));
-  return `<main class="content drafts-content">
-    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
-    <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
-    ${drafts.length ? `<div class="client-list">${drafts.map((record) => {
+  return `<main class="content legacy-service-page legacy-drafts-page">
+    <div class="legacy-subpage-head">
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <div><h1>Черновики</h1><p>Незавершённые заявки</p></div>
+    </div>
+    <div class="legacy-service-note">Черновик остаётся сохранённым, пока ты не удалишь его вручную.</div>
+    ${drafts.length ? `<div class="legacy-service-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
       const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
-      return `<article class="panel draft-card"><div class="client-top draft-top"><div><div class="client-name">${escapeHtml(view.title)}</div><div class="small">${escapeHtml(meta || "Старый формат черновика")}</div></div>${view.sum ? `<strong>${money(view.sum)}</strong>` : ""}</div><div class="draft-actions"><button class="primary-button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button class="danger-button" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div></article>`;
-    }).join("")}</div>` : emptyState("✎", "Черновиков пока нет", "Черновики можно сохранять из формы новой заявки.")}
+      return `<article class="legacy-draft-card">
+        <div><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || "Старый формат черновика")}</small></div>
+        ${view.sum ? `<b>${money(view.sum)}</b>` : ""}
+        <div class="legacy-draft-actions"><button type="button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button type="button" class="danger" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div>
+      </article>`;
+    }).join("")}</div>` : `<div class="legacy-service-empty">Черновиков пока нет.</div>`}
   </main>`;
 }
 
@@ -1696,88 +1691,96 @@ function receiptsPage() {
     .sort((a, b) => new Date(b.view.date || b.item.updatedAt || 0) - new Date(a.view.date || a.item.updatedAt || 0));
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
-  return `<main class="content receipts-content">
-    <div class="page-head receipts-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и документы CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
-
-    <section class="panel receipt-stats-panel">
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Документов</div><div class="metric-value">${receipts.length}</div></div>
-        <div class="metric"><div class="metric-label">Сумма</div><div class="metric-value blue">${money(total)}</div></div>
-        <div class="metric"><div class="metric-label">К заявкам</div><div class="metric-value green">${linked}</div></div>
-        <div class="metric"><div class="metric-label">Без заявки</div><div class="metric-value yellow">${Math.max(0, receipts.length - linked)}</div></div>
-      </div>
+  return `<main class="content legacy-service-page legacy-receipts-page">
+    <div class="legacy-subpage-head legacy-service-head-with-add">
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <div><h1>Документы</h1><p>Квитанции, чеки и документы</p></div>
+      <button type="button" class="legacy-page-add" data-action="new-receipt" aria-label="Новый документ">+</button>
+    </div>
+    <section class="legacy-service-stats">
+      <div><span>ДОКУМЕНТОВ</span><strong>${receipts.length}</strong></div>
+      <div><span>СУММА</span><strong class="blue">${money(total)}</strong></div>
+      <div><span>К ЗАЯВКАМ</span><strong class="green">${linked}</strong></div>
     </section>
-
-    <button class="primary-button wide receipt-add-button" data-action="new-receipt">+ Добавить документ</button>
-
-    ${receipts.length ? `<section class="panel receipt-history-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История документов</div>
-      <div class="receipt-list">${receiptEntries.map(({ item, index, view }) => {
-        const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
-        return `<button class="receipt-row" data-action="edit-receipt" data-index="${index}">
-          <span class="receipt-row-icon">${icon("receipt")}</span>
-          <span class="receipt-row-copy"><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span>
-          <b>${view.amount ? money(view.amount) : "—"}</b>
-          <span class="chevron">${icon("chevron")}</span>
-        </button>`;
-      }).join("")}</div>
-    </section>` : emptyState("receipt", "Документов пока нет", "Добавь документ вручную или импортируй старый бэкап.")}
+    ${receipts.length ? `<div class="legacy-service-list">${receiptEntries.map(({ index, view }) => {
+      const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
+      return `<button type="button" class="legacy-document-row" data-action="edit-receipt" data-index="${index}">
+        <span class="legacy-document-icon">${icon("receipt")}</span>
+        <span><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span>
+        <b>${view.amount ? money(view.amount) : "—"}</b>
+        <span class="chevron">${icon("chevron")}</span>
+      </button>`;
+    }).join("")}</div>` : `<div class="legacy-service-empty">Документов пока нет.</div>`}
   </main>`;
 }
+
 function toolsPage() {
   const tools = Array.isArray(data.tools) ? data.tools : [];
   const toolEntries = tools
     .map((item, index) => ({ item, index }))
     .sort((a, b) => String(a.item.name || a.item.title || a.item.tool || "").localeCompare(String(b.item.name || b.item.title || b.item.tool || ""), "ru"));
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
-  return `<main class="content tools-content">
-    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-back">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
-    <section class="panel tools-stats-panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
-    ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${toolEntries.map(({ item, index }) => {
+  return `<main class="content legacy-service-page legacy-tools-page">
+    <div class="legacy-subpage-head legacy-service-head-with-add">
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <div><h1>Инструменты</h1><p>Рабочий инструмент и оборудование</p></div>
+      <button type="button" class="legacy-page-add" data-action="new-tool" aria-label="Добавить инструмент">+</button>
+    </div>
+    <section class="legacy-service-stats two">
+      <div><span>ВСЕГО</span><strong>${tools.length}</strong></div>
+      <div><span>АКТИВНЫХ</span><strong class="green">${active}</strong></div>
+    </section>
+    ${tools.length ? `<div class="legacy-service-list">${toolEntries.map(({item,index}) => {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span class="tool-row-icon">${icon("tools")}</span><span class="tool-row-copy"><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small>${item.serial || item.serialNumber ? `<em>№ ${escapeHtml(item.serial || item.serialNumber)}</em>` : ""}</span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
-    }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
+      return `<button type="button" class="legacy-document-row tool" data-action="edit-tool" data-index="${index}">
+        <span class="legacy-document-icon">${icon("tools")}</span>
+        <span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category,status].filter(Boolean).join(" · "))}${item.serial || item.serialNumber ? ` · № ${escapeHtml(item.serial || item.serialNumber)}` : ""}</small></span>
+        <b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b>
+        <span class="chevron">${icon("chevron")}</span>
+      </button>`;
+    }).join("")}</div>` : `<div class="legacy-service-empty">Инструментов пока нет.</div>`}
   </main>`;
 }
 
 async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   const rollback = await dbGet(PRE_IMPORT_KEY);
-  return `<main class="content backup-content">
-    <div class="page-head backup-head"><div><h1>Бэкапы</h1><p class="lead">Резервные копии и восстановление данных</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
-    <section class="panel backup-main-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
-      <div class="backup-primary-actions">
-        <button class="primary-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
-        <button class="secondary-button" data-action="import">${icon("document")}<span>Импортировать JSON</span></button>
+  return `<main class="content legacy-service-page legacy-backup-page">
+    <div class="legacy-subpage-head">
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <div><h1>Бэкапы</h1><p>Резервные копии и восстановление</p></div>
+    </div>
+
+    <section class="legacy-settings-card">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("backup")}</span><h2>Резервная копия</h2></div>
+      <div class="legacy-backup-main-actions">
+        <button type="button" class="legacy-orange-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
+        <button type="button" class="legacy-dark-button" data-action="import">${icon("document")}<span>Импорт JSON</span></button>
       </div>
-      <div class="backup-grid">
-        <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
-        <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
-        <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
-        <button class="secondary-button" data-action="backup-self-test">Самопроверка</button>
-        <button class="secondary-button backup-restore-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить последний импорт</button>
-      </div>
-      <div class="backup-settings-list">
-        <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
-        <div class="setting-row"><div><strong>Автоматический бэкап</strong><div class="small">Проверяется при открытии приложения</div></div><button class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" aria-label="Автоматический бэкап"></button></div>
-        <div class="setting-row"><div><strong>Периодичность</strong></div><select id="backup-days">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
-        <div class="setting-row"><div><strong>Последний бэкап</strong><div class="small">${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</div></div></div>
-        <div class="setting-row"><div><strong>Точка отката импорта</strong><div class="small">${rollback ? `Есть · ${rollback.orders?.length || 0} заявок` : "Ещё не создавалась"}</div></div></div>
+      <div class="legacy-backup-grid">
+        <button type="button" data-action="inspect-backup-file">Проверить файл</button>
+        <button type="button" data-action="choose-folder">Выбрать папку</button>
+        <button type="button" data-action="folder-backup">Сохранить в папку</button>
+        <button type="button" data-action="backup-self-test">Самопроверка</button>
+        <button type="button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
       </div>
     </section>
-    <section class="panel backup-content-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Содержимое</div>
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Заявки</div><div class="metric-value">${data.orders.length}</div></div>
-        <div class="metric"><div class="metric-label">Склад</div><div class="metric-value">${data.warehouse.length}</div></div>
-        <div class="metric"><div class="metric-label">Движения</div><div class="metric-value">${data.warehouse_movements.length}</div></div>
-        <div class="metric"><div class="metric-label">Прайс</div><div class="metric-value">${data.receipt_prices.length}</div></div>
-        <div class="metric"><div class="metric-label">Документы</div><div class="metric-value">${data.receipts.length}</div></div>
-        <div class="metric"><div class="metric-label">Черновики</div><div class="metric-value">${draftRecords().length}</div></div>
+
+    <section class="legacy-settings-card">
+      <div class="legacy-settings-list">
+        <div class="legacy-settings-row plain"><span><strong>Папка</strong><small>${directory ? escapeHtml(directory.name) : "Не выбрана"}</small></span></div>
+        <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>Проверяется при открытии приложения</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" aria-label="Автоматический бэкап"></button></div>
+        <div class="legacy-settings-row plain"><span><strong>Периодичность</strong></span><select id="backup-days">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
+        <div class="legacy-settings-row plain"><span><strong>Последний бэкап</strong><small>${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</small></span></div>
       </div>
+    </section>
+
+    <section class="legacy-service-stats backup">
+      <div><span>ЗАЯВКИ</span><strong>${data.orders.length}</strong></div>
+      <div><span>СКЛАД</span><strong>${data.warehouse.length}</strong></div>
+      <div><span>ПРАЙС</span><strong>${data.receipt_prices.length}</strong></div>
     </section>
   </main>`;
 }
@@ -2466,7 +2469,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
   const orderOptions = ordersNewestFirst().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop receipt-editor-backdrop";
+  modal.className = "modal-backdrop receipt-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
     <div class="receipt-editor-head"><div><small>Документы и чеки</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
     <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
@@ -2513,7 +2516,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
 function toolModal(existing = null, toolIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop tool-editor-backdrop";
+  modal.className = "modal-backdrop tool-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
     <div class="tool-editor-head"><div><small>Рабочие инструменты</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
     <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
