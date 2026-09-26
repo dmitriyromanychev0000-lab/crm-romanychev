@@ -7210,3 +7210,147 @@
     text-align: left !important;
   }
 }
+
+
+/* 0.98.0 · Прайс и товарник: единые иконки и устойчивый 320 px. */
+@media screen and (max-width: 520px) {
+  .legacy-price-head > div,
+  .goods-modal-head > div,
+  .legacy-goods-current-summary > span,
+  .legacy-goods-position > span,
+  .legacy-product-price-list > div > span {
+    min-width: 0;
+  }
+
+  .legacy-price-head h1,
+  .goods-modal-head h1,
+  .legacy-goods-current-summary strong,
+  .legacy-goods-position strong,
+  .legacy-product-price-list strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-goods-editor-actions button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+  }
+
+  .legacy-goods-editor-actions .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px;
+  }
+
+  .legacy-section-icon .ui-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .legacy-price-row > span,
+  .legacy-goods-position > span,
+  .legacy-product-price-list > div > span {
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-price-head {
+    grid-template-columns: 40px minmax(0,1fr) 40px !important;
+    gap: 7px !important;
+  }
+
+  .legacy-price-add,
+  .legacy-price-head .legacy-back-button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .legacy-price-filters {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-price-row {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 4px !important;
+  }
+
+  .legacy-price-row > b {
+    justify-self: start !important;
+  }
+
+  .legacy-price-editor-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-price-editor-grid .full {
+    grid-column: auto !important;
+  }
+
+  .legacy-price-editor {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-price-editor-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .legacy-price-editor-actions .legacy-editor-save {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-goods-create-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-goods-create-grid button {
+    min-height: 48px !important;
+  }
+
+  .legacy-goods-add-line {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-goods-add-line button {
+    min-height: 44px !important;
+  }
+
+  .legacy-goods-row-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-goods-editor-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-goods-savebar,
+  .legacy-goods-savebar:has(.legacy-delete-goods) {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .legacy-goods-savebar .legacy-save-goods {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-goods-savebar .legacy-delete-goods {
+    grid-column: auto !important;
+  }
+
+  .legacy-goods-editor {
+    padding-bottom: calc(126px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-goods-position,
+  .legacy-product-price-list > div {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 4px !important;
+  }
+
+  .legacy-goods-position > b,
+  .legacy-product-price-list > div > b {
+    justify-self: start !important;
+  }
+}
