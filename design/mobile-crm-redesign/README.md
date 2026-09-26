@@ -103,10 +103,10 @@ This is a personal mobile CRM for one technician, used primarily from a phone.
 - Main actions in one row:
   - Изменить
   - Открыть/Закрыть
-  - Копия
   - Позвонить
   - Ещё
-- Overflow menu contains secondary actions such as document, Telegram, archive/restore and delete.
+- «Копия» находится в меню «Ещё», чтобы не сжимать основные действия на 320 px.
+- Overflow menu contains secondary actions such as copy, document, Telegram, archive/restore and delete.
 
 ### Order editor
 Use two columns for short fields where practical:
