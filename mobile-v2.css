@@ -7761,3 +7761,26 @@
     font-size: 9.5px !important;
   }
 }
+
+
+/* 0.99.13 · Never truncate client money values. */
+@media screen and (max-width: 520px) {
+  .legacy-order-money > div:first-child strong,
+  .legacy-expanded-money > div:first-child strong {
+    overflow: visible !important;
+    max-width: 100% !important;
+    font-size: clamp(13px, 4.6vw, 17px) !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-money > div:first-child,
+  .legacy-expanded-money > div:first-child {
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+  }
+}
