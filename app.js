@@ -1184,17 +1184,18 @@ function analyticsPage() {
     </div>
 
     <section class="panel analytics-kpi-panel">
-      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
+      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>результат выбранного периода</small></span></div>
       <div class="analytics-kpis">
+        <div class="analytics-kpi primary revenue"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div>
+        <div class="analytics-kpi primary result"><span>ОСТАЛОСЬ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div>
+        <div class="analytics-kpi"><span>ЧИСТЫМИ С РЕМОНТА</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>без личных финансов</small></div>
+        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>всего за период</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>закрытые заявки</small></div>
         <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>оборот за период</small></div>
-        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>после расходов ремонта</small></div>
-        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные расходы</small></div>
-        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>итог за период</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div>
       </div>
     </section>
 
+    <div class="analytics-ops-grid">
     <section class="panel analytics-focus">
       <div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Фокус внимания</div>
       <div class="focus-grid">
@@ -1212,6 +1213,7 @@ function analyticsPage() {
         <div class="metric"><div class="metric-label">Просрочено визитов</div><div class="metric-value yellow">${overdueVisits}</div></div>
       </div>
     </section>
+    </div>
 
     <section class="panel analytics-ranking">
       <div class="panel-title"><span class="badge-icon">${icon("price")}</span> Рейтинг услуг</div>
@@ -1227,12 +1229,12 @@ function analyticsPage() {
       </div>
     </section>
 
-    <section class="panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span> Динамика выручки</div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
-    <section class="panel"><div class="panel-title">Доходность по типам техники</div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
+    <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Динамика выручки<small>закрытые заявки по календарю</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
+    <section class="panel analytics-list-panel"><div class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Доходность по технике<small>выручка минус расходы ремонта</small></span></div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
       const result = item.revenue - item.costs;
       return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
     }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</section>
-    <section class="panel"><div class="panel-title">Расход материалов</div>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</section>
+    <section class="panel analytics-list-panel"><div class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></div>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</section>
   </main>`;
 }
 
