@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.11";
-const APP_BUILD = "2026.09.26.91";
+const APP_VERSION = "0.99.12";
+const APP_BUILD = "2026.09.26.92";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Убран реальный CSS-конфликт в просмотре заявки: action-кнопка закрытия больше не наследует псевдоэлемент системного toggle и не рисует белый круг";
+const APP_RELEASE = "Финальный стресс-проход: подписи action-кнопок не ломаются внутри слов, switch CSS изолирован, QA проверяет длинные данные, пустые состояния и A4 PDF";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
