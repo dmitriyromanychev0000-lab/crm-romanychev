@@ -150,6 +150,9 @@ async function inspect(page, label, width) {
 
 async function shot(page, width, label, fullPage = true) {
   const result = await inspect(page, label, width);
+  if (result.tooSmall.length) {
+    report.failures.push({ width, type: "small-touch-target", label, items: result.tooSmall });
+  }
   await page.screenshot({ path: outDir + "/" + width + "-" + label + ".png", fullPage });
   return result;
 }
@@ -174,6 +177,7 @@ const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, resul
     ["tools", uiState({ activePage: "more", moreSection: "tools" })],
     ["receipts", uiState({ activePage: "more", moreSection: "receipts" })],
     ["settings", uiState({ activePage: "more", moreSection: "settings" })],
+    ["backup", uiState({ activePage: "more", moreSection: "backup" })],
     ["act", uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" })]
   ];
 
@@ -225,9 +229,51 @@ const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, resul
       if (nested.count !== 2 || !nested.firstInert || nested.firstHidden !== "true") report.failures.push({ width, type: "nested-modal", nested });
       report.results.push(await shot(page, width, "service-catalog", false));
       await page.keyboard.press("Escape");
+      let nestedClose = await page.evaluate(() => ({
+        count: document.querySelectorAll(".modal-backdrop").length,
+        locked: document.body.classList.contains("modal-open")
+      }));
+      if (nestedClose.count !== 1 || !nestedClose.locked) report.failures.push({ width, type: "service-catalog-close", nestedClose });
+
+      await page.locator("#open-material-catalog").click();
+      await page.waitForTimeout(100);
+      const materialNested = await page.evaluate(() => {
+        const layers = [...document.querySelectorAll(".modal-backdrop")];
+        return { count: layers.length, firstInert: Boolean(layers[0] && layers[0].inert), firstHidden: layers[0] && layers[0].getAttribute("aria-hidden") };
+      });
+      if (materialNested.count !== 2 || !materialNested.firstInert || materialNested.firstHidden !== "true") report.failures.push({ width, type: "material-nested-modal", materialNested });
+      report.results.push(await shot(page, width, "material-catalog", false));
+      await page.keyboard.press("Escape");
+      nestedClose = await page.evaluate(() => ({
+        count: document.querySelectorAll(".modal-backdrop").length,
+        locked: document.body.classList.contains("modal-open")
+      }));
+      if (nestedClose.count !== 1 || !nestedClose.locked) report.failures.push({ width, type: "material-catalog-close", nestedClose });
+      await page.keyboard.press("Escape");
+      const editorClosed = await page.evaluate(() => ({
+        count: document.querySelectorAll(".modal-backdrop").length,
+        locked: document.body.classList.contains("modal-open"),
+        fixed: getComputedStyle(document.body).position === "fixed"
+      }));
+      if (editorClosed.count !== 0 || editorClosed.locked || editorClosed.fixed) report.failures.push({ width, type: "order-editor-unlock", editorClosed });
+
+      await setState(page, uiState({ activePage: "orders" }));
+      await page.locator(".legacy-order-card").first().click();
+      await page.waitForTimeout(80);
+      const detailActions = await page.locator(".legacy-expanded-actions > button, .legacy-expanded-actions > a").count();
+      if (detailActions !== 4) report.failures.push({ width, type: "order-detail-actions", count: detailActions });
+      report.results.push(await shot(page, width, "order-detail", false));
+      await page.locator('[data-detail-action="more"]').click();
+      await page.waitForTimeout(80);
+      const copyAction = await page.locator('[data-order-sheet-action="copy"]').count();
+      if (copyAction !== 1) report.failures.push({ width, type: "order-actions-copy", count: copyAction });
+      report.results.push(await shot(page, width, "order-actions", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+      await page.locator("[data-stock-detail]").first().click();
+      report.results.push(await shot(page, width, "stock-detail", false));
+      await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
       report.results.push(await shot(page, width, "stock-editor", false));
       await page.keyboard.press("Escape");
@@ -240,6 +286,16 @@ const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, resul
       await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
       await page.locator('[data-action="new-price"]').click();
       report.results.push(await shot(page, width, "price-editor", false));
+      await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "more", moreSection: "clients" }));
+      await page.locator('[data-action="open-client"]').first().click();
+      report.results.push(await shot(page, width, "client-profile", false));
+      await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
+      await page.locator('[data-action="new-goods-sheet"]').click();
+      report.results.push(await shot(page, width, "goods-editor", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
