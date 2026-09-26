@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.13
+# Design QA — Release candidate 0.99.14
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -72,3 +72,5 @@ final result: automated release QA passed
 - Version 0.99.12 scopes switch CSS away from generic `.toggle`, prevents narrow action labels from breaking inside words, and adds 320 px long-data/empty-state stress fixtures plus an A4 PDF smoke artifact.
 
 - Version 0.99.13 keeps client-facing money values complete under long-data stress by replacing ellipsis truncation with responsive numeric sizing.
+
+- Version 0.99.14 extends backup self-test equality checks to `settings`, so company/user details and backup preferences are covered by the JSON → validate → IndexedDB → validate round-trip.
