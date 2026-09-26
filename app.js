@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.65.0";
-const APP_BUILD = "2026.09.26.34";
+const APP_VERSION = "0.66.0";
+const APP_BUILD = "2026.09.26.35";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 09: меню Ещё и рабочие инструменты с мобильным редактором";
+const APP_RELEASE = "Редизайн Sheet 10: настройки, служебные разделы и компактный центр резервных копий";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1554,10 +1554,10 @@ function settingsPage() {
     <section class="panel settings-sections-panel">
       <div class="panel-title"><span class="badge-icon">${icon("more")}</span> Данные и служебные разделы</div>
       <div class="legacy-settings-links">
-        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><b>${draftRecords().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
     </section>
   </main>`;
@@ -1698,17 +1698,19 @@ async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content backup-content">
-    <div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="page-head backup-head"><div><h1>Бэкапы</h1><p class="lead">Резервные копии и восстановление данных</p></div><button class="secondary-button" data-action="settings-screen">Назад</button></div>
     <section class="panel backup-main-panel">
       <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
+      <div class="backup-primary-actions">
+        <button class="primary-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
+        <button class="secondary-button" data-action="import">${icon("document")}<span>Импортировать JSON</span></button>
+      </div>
       <div class="backup-grid">
-        <button class="primary-button" data-action="import">Импортировать JSON</button>
         <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
-        <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
         <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
         <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
-        <button class="secondary-button" data-action="backup-self-test">Проверить бэкап</button>
-        <button class="secondary-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
+        <button class="secondary-button" data-action="backup-self-test">Самопроверка</button>
+        <button class="secondary-button backup-restore-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить последний импорт</button>
       </div>
       <div class="backup-settings-list">
         <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
@@ -3262,6 +3264,14 @@ app.addEventListener("click", async (event) => {
     return toast("Данные до импорта восстановлены");
   }
   if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
+  if (action === "settings-screen") {
+    activePage = "more";
+    moreSection = "settings";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
