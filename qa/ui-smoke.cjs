@@ -369,8 +369,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       if (width === 390) {
-        await writeSeed(page, seed);
+        const printSeed = structuredClone(seed);
+        printSeed.orders[0].services = Array.from({ length: 22 }, (_, index) => ({
+          name: `Тестовая работа №${index + 1} с расширенным наименованием для проверки печати`,
+          qty: 1,
+          price: 1000 + index * 125
+        }));
+        printSeed.orders[0].materials = Array.from({ length: 8 }, (_, index) => ({
+          name: `Материал №${index + 1} для проверки одностраничного акта`,
+          qty: 1,
+          unit: "шт.",
+          unitCost: 500 + index * 50
+        }));
+        await writeSeed(page, printSeed);
         await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
+        await page.evaluate(() => {
+          window.print = () => {};
+          document.querySelector('[data-action="print-act"]')?.click();
+        });
+        await page.waitForTimeout(60);
+        const printZoom = await page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue("--act-print-zoom")) || 1);
+        if (printZoom >= 1) report.failures.push({ width, type: "act-print-zoom", zoom: printZoom });
         await page.emulateMedia({ media: "print" });
         await page.pdf({ path: outDir + "/act-a4.pdf", format: "A4", printBackground: true, preferCSSPageSize: true });
         await page.emulateMedia({ media: "screen" });
