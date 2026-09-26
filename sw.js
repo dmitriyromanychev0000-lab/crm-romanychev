@@ -1,5 +1,5 @@
-const CACHE = "crm-romanychev-v150";
-const ASSETS = ["./", "./index.html", "./styles.css?v=96", "./mobile-v2.css?v=18", "./app.js?v=137", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "crm-romanychev-v151";
+const ASSETS = ["./", "./index.html", "./styles.css?v=96", "./mobile-v2.css?v=18", "./app.js?v=138", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
@@ -17,11 +17,24 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+      .then(async (response) => {
+        if (response.ok && response.status !== 206) {
+          try {
+            const cache = await caches.open(CACHE);
+            await cache.put(event.request, response.clone());
+          } catch (error) {
+            console.warn("Не удалось обновить offline-кэш", error);
+          }
+        }
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match(new URL("./index.html", self.registration.scope))))
+      .catch(async () => {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        if (event.request.mode === "navigate") {
+          return caches.match(new URL("./index.html", self.registration.scope));
+        }
+        return Response.error();
+      })
   );
 });
