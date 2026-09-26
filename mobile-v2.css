@@ -6765,3 +6765,104 @@
     text-rendering: optimizeLegibility;
   }
 }
+
+
+/* 0.95.0 · Заявки и оставшиеся текстовые иконки: меньше тесноты, чище мобильные действия. */
+@media screen and (max-width: 520px) {
+  .legacy-order-actions {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    min-height: 52px !important;
+    padding: 6px 3px !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-order-actions .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+    stroke-width: 1.9;
+  }
+
+  .legacy-nearest-line {
+    display: grid !important;
+    grid-template-columns: auto minmax(0,1fr) auto !important;
+    gap: 5px !important;
+    align-items: center !important;
+  }
+
+  .legacy-nearest-line > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-special-filter button,
+  .legacy-custom-price-head button,
+  .manual-material-details > .secondary-button,
+  .legacy-goods-add-line button,
+  .legacy-manual-add,
+  .empty-actions .primary-button[data-action="new-order"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+
+  .legacy-special-filter button {
+    min-height: 36px !important;
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .legacy-special-filter button .ui-icon,
+  .legacy-custom-price-head button .ui-icon,
+  .manual-material-details > .secondary-button .ui-icon,
+  .legacy-goods-add-line button .ui-icon,
+  .legacy-manual-add .ui-icon,
+  .empty-actions .primary-button[data-action="new-order"] .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px;
+  }
+
+  .legacy-group-chevron {
+    font-size: 0 !important;
+  }
+
+  .legacy-group-chevron .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .order-editor-head {
+    margin-right: -9px !important;
+    margin-left: -9px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .order-editor-modal .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .order-editor-modal .form-group.full {
+    grid-column: auto !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    font-size: 10px !important;
+  }
+}
