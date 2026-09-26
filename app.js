@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.83.0";
-const APP_BUILD = "2026.09.26.52";
+const APP_VERSION = "0.84.0";
+const APP_BUILD = "2026.09.26.53";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: история движения и список покупок";
+const APP_RELEASE = "Исправлена механика мобильных редакторов: один скролл, замороженный фон и доступные кнопки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3494,9 +3494,29 @@ function closeTopModalFromKeyboard() {
   return true;
 }
 
+let modalLockScrollY = 0;
+
 const syncModalScrollLock = () => {
-  document.body.classList.toggle("modal-open", Boolean(document.querySelector(".modal-backdrop")));
+  const hasModal = Boolean(document.querySelector(".modal-backdrop"));
+  const locked = document.body.classList.contains("modal-open");
+
+  if (hasModal && !locked) {
+    modalLockScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+    document.body.style.top = `-${modalLockScrollY}px`;
+    return;
+  }
+
+  if (!hasModal && locked) {
+    const restoreY = modalLockScrollY;
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
+    document.body.style.top = "";
+    requestAnimationFrame(() => window.scrollTo(0, restoreY));
+  }
 };
+
 const modalScrollObserver = new MutationObserver(syncModalScrollLock);
 modalScrollObserver.observe(document.body, { childList: true });
 syncModalScrollLock();
