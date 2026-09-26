@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.56.0";
-const APP_BUILD = "2026.09.26.25";
+const APP_VERSION = "0.57.0";
+const APP_BUILD = "2026.09.26.26";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 02: полноэкранный каталог услуг и рабочее меню действий заявки";
+const APP_RELEASE = "Редизайн Sheet 02: workflow заявок, ближайшие выезды, состояния списка и восстановленное меню действий";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -796,7 +796,7 @@ function ordersPage() {
       || (orderVisitFilter === "today" && Number.isFinite(visitTime) && visitTime >= todayStart && visitTime < tomorrowStart)
       || (orderVisitFilter === "upcoming" && Number.isFinite(visitTime) && visitTime >= Date.now())
       || (orderVisitFilter === "overdue" && Number.isFinite(visitTime) && visitTime < Date.now() && status === "active");
-    return filterMatch && visitMatch && (!query || haystack.includes(query));
+    return filterMatch && visitMatch && searchMatch;
   });
 
   const now = Date.now();
@@ -806,7 +806,7 @@ function ordersPage() {
 
   return `<main class="content orders-content">
     ${nearestVisits.length ? `<section class="next-visit-card">
-      <div class="next-visit-title"><strong>Ближайшие выезды</strong><span>Все ${icon("chevron")}</span></div>
+      <div class="next-visit-title"><strong>Ближайшие выезды</strong><button type="button" data-visit-filter="upcoming">Все ${icon("chevron")}</button></div>
       <div class="next-visit-list">${nearestVisits.map((order, index) => {
         const visit = visitTimeParts(order.nextVisit);
         return `<button class="next-visit-item visit-${index}" data-order-action="view" data-id="${escapeHtml(order.id)}">
@@ -842,7 +842,9 @@ function ordersPage() {
       <button type="button" class="${orderFilter === "archived" ? "active" : ""}" data-filter="archived" aria-pressed="${orderFilter === "archived"}">Архив</button>
     </div>
 
-    ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
+    ${filtered.length ? filtered.map(orderCard).join("") : data.orders.length
+      ? `<div class="panel empty orders-filter-empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>По текущему поиску и фильтрам заявок нет.</p><div class="empty-actions"><button class="secondary-button" data-action="reset-order-filters">Сбросить фильтры</button><button class="primary-button" data-action="new-order">+ Новая заявка</button></div></div>`
+      : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
 }
 
@@ -2681,6 +2683,44 @@ function goodsModal(existing = null) {
   calculate();
 }
 
+function orderActionsSheet(order) {
+  const tg = telegramPhoneLink(order.phone);
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop order-actions-backdrop";
+  modal.innerHTML = `<section class="order-actions-sheet" aria-label="Действия заявки №${escapeHtml(order.id)}">
+    <div class="order-actions-head">
+      <div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>Дополнительные действия</small></div>
+      <button type="button" class="order-actions-close" aria-label="Закрыть">×</button>
+    </div>
+    <div class="order-actions-grid">
+      <button type="button" data-order-sheet-action="receipt">${icon("document")}<b>Квитанция</b></button>
+      <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт / PDF</b></button>
+      ${tg ? `<a href="${escapeHtml(tg)}">${icon("telegram")}<b>Telegram</b></a>` : `<button type="button" disabled>${icon("telegram")}<b>Telegram</b></button>`}
+      <button type="button" data-order-sheet-action="archive">${icon(order.archived ? "reopen" : "archive")}<b>${order.archived ? "Вернуть" : "В архив"}</b></button>
+      <button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить заявку</b></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const close = () => modal.remove();
+  modal.querySelector(".order-actions-close").addEventListener("click", close);
+  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
+  modal.querySelectorAll("[data-order-sheet-action]").forEach((button) => button.addEventListener("click", async () => {
+    const action = button.dataset.orderSheetAction;
+    close();
+    if (action === "act") {
+      selectedActOrderId = String(order.id);
+      activePage = "more";
+      moreSection = "act";
+      saveUiState({ scrollY: 0 });
+      await render();
+      window.scrollTo(0, 0);
+      return;
+    }
+    return handleOrderAction(action, order.id);
+  }));
+}
+
 function orderDetailModal(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
@@ -2828,6 +2868,14 @@ app.addEventListener("click", async (event) => {
   }
   const filter = event.target.closest("[data-filter]");
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
+  const visitFilter = event.target.closest("[data-visit-filter]");
+  if (visitFilter) {
+    orderVisitFilter = visitFilter.dataset.visitFilter || "all";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) {
     const period = analyticsFilter.dataset.analyticsPeriod;
@@ -2860,6 +2908,15 @@ app.addEventListener("click", async (event) => {
   }
   if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
   if (action === "new-order") return newOrderModal();
+  if (action === "reset-order-filters") {
+    orderFilter = "all";
+    orderVisitFilter = "all";
+    searchQuery = "";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "import") return fileInput.click();
   if (action === "inspect-backup-file") return inspectBackupFile();
   if (action === "download-backup") return downloadBackup();
