@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.84.0";
-const APP_BUILD = "2026.09.26.53";
+const APP_VERSION = "0.84.1";
+const APP_BUILD = "2026.09.26.54";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлена механика мобильных редакторов: один скролл, замороженный фон и доступные кнопки";
+const APP_RELEASE = "Исправлены мобильные редакторы и кнопки Отмена во всех модальных окнах";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3524,6 +3524,15 @@ syncModalScrollLock();
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   if (closeTopModalFromKeyboard()) event.preventDefault();
+});
+
+document.addEventListener("click", (event) => {
+  const closeButton = event.target.closest("[data-close-modal]");
+  if (!closeButton) return;
+  const backdrop = closeButton.closest(".modal-backdrop");
+  if (!backdrop) return;
+  event.preventDefault();
+  backdrop.remove();
 });
 
 app.addEventListener("click", async (event) => {
