@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.69.0";
-const APP_BUILD = "2026.09.26.38";
+const APP_VERSION = "0.70.0";
+const APP_BUILD = "2026.09.26.39";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новая мобильная сборка по архивным скриншотам: шапка, заявки и нижняя навигация";
+const APP_RELEASE = "Новая мобильная сборка по архивным скриншотам: заявки и склад";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -891,47 +891,49 @@ function warehousePage() {
     .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
+  return `<main class="content legacy-warehouse-page">
+    <button type="button" class="legacy-stock-new" data-action="new-stock"><span>＋</span>Новая позиция</button>
 
-
-  return `<main class="content warehouse-content">
-    <div class="page-head warehouse-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div></div>
-
-    <div class="search-row search-with-icon warehouse-search">${icon("search")}<input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" /></div>
-
-    <div class="warehouse-filter-chips" role="group" aria-label="Фильтр склада">
-      <button type="button" class="${warehouseFilter === "active" ? "active" : ""}" data-warehouse-filter="active" aria-pressed="${warehouseFilter === "active"}">В наличии <span>${activeItems.length}</span></button>
-      <button type="button" class="${warehouseFilter === "low" ? "active" : ""}" data-warehouse-filter="low" aria-pressed="${warehouseFilter === "low"}">Мало <span>${lowItems.length}</span></button>
-      <button type="button" class="${warehouseFilter === "all" ? "active" : ""}" data-warehouse-filter="all" aria-pressed="${warehouseFilter === "all"}">Все <span>${data.warehouse.length}</span></button>
+    <div class="legacy-warehouse-shortcuts">
+      <button type="button" data-action="open-warehouse-movements">${icon("calendar")}<span>История движения</span></button>
+      <button type="button" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
-    <div class="warehouse-shortcuts">
-      <button type="button" class="warehouse-shortcut" data-action="open-warehouse-movements">${icon("history")}<span>История движения</span></button>
-      <button type="button" class="warehouse-shortcut" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
-    </div>
-
-    <button class="primary-button warehouse-new-button" data-action="new-stock" type="button">${icon("box")}<span>Новая позиция</span></button>
-
-    <section class="warehouse-items">
-      ${groupedItems.length ? groupedItems.map(([category, group]) => {
+    <section class="legacy-warehouse-groups">
+      ${groupedItems.length ? groupedItems.map(([category, group], groupIndex) => {
         const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
-        return `<section class="panel warehouse-group">
-          <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div></div>
-          <div class="warehouse-group-list">${group.map((item) => {
-            const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
-            return `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""} ${isLow ? "low-stock" : ""}">
-              <button type="button" class="stock-card-main stock-card-open" data-stock-detail="${escapeHtml(item.id)}">
-                <span class="stock-box-icon">${icon("box")}</span>
-                <span class="stock-copy"><strong class="stock-name">${escapeHtml(item.name || "Без названия")}</strong><small class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")}</small><small class="stock-cost">себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</small></span>
-                <span class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small><i>${icon("chevron")}</i></span>
-              </button>
-              <div class="stock-actions legacy-stock-actions stock-quick-actions">
-                <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button>
-                <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button>
-              </div>
-            </article>`;
-          }).join("")}</div>
-        </section>`;
-      }).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
+        return `<details class="legacy-warehouse-group" ${groupIndex === 0 ? "open" : ""}>
+          <summary>
+            <span class="legacy-folder-icon">${icon("document")}</span>
+            <span class="legacy-group-copy"><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></span>
+            <span class="legacy-group-chevron">⌄</span>
+          </summary>
+          <div class="legacy-stock-list">
+            ${group.map((item) => {
+              const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
+              const compatibility = Array.isArray(item.compatibility) ? item.compatibility[0] : "";
+              return `<article class="legacy-stock-card-v2 ${item.archived ? "archived" : ""} ${isLow ? "low" : ""}">
+                <button type="button" class="legacy-stock-main" data-stock-detail="${escapeHtml(item.id)}">
+                  <span class="legacy-stock-icon">${icon("box")}</span>
+                  <span class="legacy-stock-copy">
+                    <strong>${escapeHtml(item.name || "Без названия")}</strong>
+                    <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(item.unit || "шт.")}` : "себестоимость не задана"}</small>
+                    <em>${item.archived ? "в архиве" : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}` : `доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}`}</em>
+                    <small>последняя закупка ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)}/${escapeHtml(item.unit || "шт.")}` : "—"}</small>
+                  </span>
+                  <span class="legacy-stock-qty"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small></span>
+                </button>
+                <div class="legacy-stock-actions-v2">
+                  <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span>＋</span>Приход</button>
+                  <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span>−</span>Списать</button>
+                  <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon("archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
+                  <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
+                </div>
+              </article>`;
+            }).join("")}
+          </div>
+        </details>`;
+      }).join("") : `<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Склад пуст</h2><p>Добавь первую позицию.</p></div>`}
     </section>
   </main>`;
 }
