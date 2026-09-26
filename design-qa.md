@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.5
+# Design QA — Release candidate 0.99.6
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -55,3 +55,5 @@ The real-phone screenshot provided usable evidence for the header, period contro
 - Fix any P1/P2 differences and repeat the comparison.
 
 final result: blocked
+
+- Version 0.99.6 blocks ambiguous duplicate IDs during backup import, reports them during backup inspection, and exposes ID integrity in app diagnostics.
