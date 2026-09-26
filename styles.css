@@ -7142,3 +7142,154 @@ button.warehouse-shortcut {
     background: #0d141a;
   }
 }
+
+
+/* 0.60.0 · Лист 04: история движения и список покупок. */
+@media screen and (max-width: 520px) {
+  .warehouse-support-content,
+  .shopping-content {
+    padding-top: 0;
+  }
+  .support-page-head {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr);
+    gap: 9px;
+    align-items: center;
+    min-height: 58px;
+    margin: 0 -10px 9px;
+    padding: 7px 12px;
+    border-bottom: 1px solid #1c2832;
+    background: #091018;
+  }
+  .support-page-head h1 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.1;
+  }
+  .support-page-head p {
+    margin: 2px 0 0;
+    color: #8f9ba4;
+    font-size: 7px;
+  }
+  .support-back {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: #182331;
+    color: #dce4ea;
+    font-size: 30px;
+    line-height: 1;
+  }
+
+  .movement-filter-chips {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+  .movement-filter-chips button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 34px;
+    padding: 5px;
+    border: 1px solid #293641;
+    border-radius: 10px;
+    background: #111a22;
+    color: #9da8b0;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .movement-filter-chips span {
+    display: grid;
+    place-items: center;
+    min-width: 17px;
+    height: 17px;
+    border-radius: 6px;
+    background: #1d2832;
+    font-size: 7px;
+  }
+  .movement-filter-chips button.active {
+    border-color: rgba(82,166,255,.45);
+    background: rgba(82,166,255,.09);
+    color: #63adff;
+  }
+
+  .movement-list { display: grid; gap: 5px; }
+  .movement-card {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr) auto;
+    gap: 8px;
+    align-items: center;
+    min-height: 58px;
+    padding: 8px 9px;
+    border: 1px solid #26333e;
+    border-radius: 11px;
+    background: #111a22;
+  }
+  .movement-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 19px;
+    font-weight: 500;
+  }
+  .movement-icon.incoming { background: rgba(82,212,135,.11); color: #52d487; }
+  .movement-icon.outgoing { background: rgba(255,105,92,.1); color: #ff6b5b; }
+  .movement-copy { min-width: 0; }
+  .movement-copy strong,
+  .movement-copy small,
+  .movement-copy time {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .movement-copy strong { font-size: 10px; }
+  .movement-copy small { margin-top: 2px; color: #98a3ac; font-size: 7px; }
+  .movement-copy time { margin-top: 2px; color: #6f7c86; font-size: 7px; }
+  .movement-card > b { font-size: 10px; white-space: nowrap; }
+  .warehouse-support-empty { margin-top: 8px; }
+
+  .shopping-page-actions {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .shopping-page-actions button {
+    min-height: 40px;
+    gap: 6px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+  .shopping-page-actions .ui-icon { width: 15px; height: 15px; }
+  .shopping-content .client-list {
+    display: grid;
+    gap: 5px;
+  }
+  .shopping-content .legacy-shopping-card {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 8px;
+    align-items: center;
+    min-height: 58px;
+    padding: 8px 10px;
+    border-radius: 11px;
+  }
+  .shopping-content .stock-name { font-size: 10px; }
+  .shopping-content .legacy-shopping-card .small {
+    margin-top: 2px;
+    font-size: 7px;
+  }
+  .shopping-need { text-align: right; }
+  .shopping-need span { display: block; color: #87939c; font-size: 7px; }
+  .shopping-need strong { display: block; margin-top: 3px; color: #ffc45c; font-size: 10px; white-space: nowrap; }
+}
