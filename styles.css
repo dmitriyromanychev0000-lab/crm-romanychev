@@ -8380,3 +8380,212 @@ button.warehouse-shortcut {
     grid-template-columns: repeat(2,minmax(0,1fr));
   }
 }
+
+
+/* 0.64.0 · Лист 08: документы, акт и квитанции. */
+@media screen and (max-width: 520px) {
+  .act-content {
+    padding-top: 9px;
+  }
+  .act-content .page-head {
+    margin-bottom: 7px;
+  }
+  .act-content .page-head h1 { font-size: 17px; }
+  .act-content .lead { font-size: 8px; }
+  .act-content .page-head > .secondary-button {
+    min-height: 32px;
+    padding: 5px 8px;
+    border-radius: 9px;
+    font-size: 8px;
+  }
+  .act-control-panel {
+    padding: 9px !important;
+    border-radius: 12px;
+  }
+  .act-control-panel .panel-title {
+    margin-bottom: 7px;
+    font-size: 10px;
+  }
+  .act-picker-label { font-size: 8px; }
+  .act-control-panel .field {
+    min-height: 39px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+  .act-control-actions {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 5px;
+    margin-top: 7px;
+  }
+  .act-control-actions button {
+    min-height: 39px;
+    gap: 6px;
+    border-radius: 10px;
+    font-size: 8px;
+  }
+  .act-control-actions .ui-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .receipts-content {
+    padding-top: 9px;
+  }
+  .receipts-head {
+    margin-bottom: 7px;
+  }
+  .receipts-head h1 { font-size: 17px; }
+  .receipts-head .lead { font-size: 8px; }
+  .receipts-head > .secondary-button {
+    min-height: 32px;
+    padding: 5px 8px;
+    border-radius: 9px;
+    font-size: 7.5px;
+  }
+  .receipt-stats-panel {
+    margin-bottom: 7px;
+    padding: 8px;
+  }
+  .receipt-stats-panel .metrics {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 4px;
+  }
+  .receipt-stats-panel .metric {
+    min-width: 0;
+    min-height: 48px;
+    padding: 6px 4px;
+    border-radius: 9px;
+  }
+  .receipt-stats-panel .metric-label {
+    font-size: 6px;
+    line-height: 1.1;
+  }
+  .receipt-stats-panel .metric-value {
+    overflow: hidden;
+    margin-top: 4px;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .receipt-add-button {
+    min-height: 37px;
+    margin-bottom: 7px;
+    border-radius: 10px;
+    font-size: 8px;
+  }
+  .receipt-history-panel {
+    padding: 9px;
+    border-radius: 11px;
+  }
+  .receipt-history-panel .panel-title {
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+  .receipt-row {
+    grid-template-columns: 30px minmax(0,1fr) auto 14px;
+    gap: 7px;
+    min-height: 47px;
+    padding: 6px 0;
+  }
+  .receipt-row-icon {
+    width: 29px;
+    height: 29px;
+    border-radius: 8px;
+  }
+  .receipt-row-icon .ui-icon { width: 15px; height: 15px; }
+  .receipt-row-copy strong { font-size: 9px; }
+  .receipt-row-copy small { margin-top: 2px; font-size: 7px; }
+  .receipt-row > b { font-size: 9px; white-space: nowrap; }
+  .receipt-row .chevron .ui-icon { width: 12px; height: 12px; }
+
+  .receipt-editor-backdrop {
+    z-index: 130;
+    top: 0 !important;
+    bottom: 0 !important;
+    align-items: stretch;
+    padding: 0;
+    background: #070c10;
+  }
+  .receipt-editor-modal {
+    width: 100%;
+    max-width: none;
+    min-height: 100%;
+    margin: 0;
+    padding: 0 12px calc(18px + env(safe-area-inset-bottom));
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(180deg,#091018,#080d12);
+  }
+  .receipt-editor-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 61px;
+    margin: 0 -12px 10px;
+    padding: 9px 12px;
+    border-bottom: 1px solid #1c2832;
+  }
+  .receipt-editor-head small { color: #8c98a1; font-size: 7px; }
+  .receipt-editor-head h2 { margin: 2px 0 0; font-size: 15px; }
+  .receipt-editor-close {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: #182331;
+    color: #dce4ea;
+    font-size: 22px;
+  }
+  .receipt-editor-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    margin-bottom: 9px;
+    padding: 7px 9px;
+    border: 1px solid #27343f;
+    border-radius: 10px;
+    background: #101820;
+    color: #929da6;
+    font-size: 8px;
+  }
+  .receipt-editor-type .ui-icon {
+    width: 18px;
+    height: 18px;
+    color: #63adff;
+  }
+  .receipt-editor-modal .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+  }
+  .receipt-editor-modal .form-group.full { grid-column: 1 / -1; }
+  .receipt-editor-modal .form-group label { font-size: 8px; }
+  .receipt-editor-modal .field {
+    min-height: 41px;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+  .receipt-editor-modal .textarea {
+    min-height: 72px;
+    padding-top: 9px;
+  }
+  .receipt-editor-amount {
+    font-size: 13px !important;
+    font-weight: 800;
+  }
+  .receipt-editor-modal .modal-actions {
+    position: sticky;
+    bottom: 0;
+    margin: 12px -12px -18px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid #1f2b34;
+    background: rgba(8,13,18,.96);
+  }
+  .receipt-editor-modal .modal-actions button {
+    min-height: 42px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+}
