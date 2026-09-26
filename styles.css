@@ -9051,7 +9051,7 @@ button.warehouse-shortcut {
     text-decoration:none;
   }
   .legacy-expanded-actions .ui-icon { width:18px;height:18px;color:#ff7153; }
-  .legacy-expanded-actions .toggle .ui-icon { color:#55d686; }
+  .legacy-expanded-actions .action-toggle .ui-icon { color:#55d686; }
   .legacy-expanded-actions .copy .ui-icon { color:#e0ae45; }
   .legacy-expanded-actions .phone .ui-icon { color:#4fa7ff; }
   .legacy-expanded-actions .telegram .ui-icon { color:#38b9ff; }
