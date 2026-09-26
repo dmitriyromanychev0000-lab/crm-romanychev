@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.70.0";
-const APP_BUILD = "2026.09.26.39";
+const APP_VERSION = "0.71.0";
+const APP_BUILD = "2026.09.26.40";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новая мобильная сборка по архивным скриншотам: заявки и склад";
+const APP_RELEASE = "Новая мобильная сборка по архивным скриншотам: четыре основные вкладки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1121,12 +1121,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong><small>по закрытым заявкам</small></div>
-        <div class="analytics-kpi"><span>ЧИСТЫМИ С РЕМОНТОВ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>выручка минус расходы</small></div>
-        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>ремонты + личные</small></div>
-        <div class="analytics-kpi"><span>ИТОГОВЫЙ РЕЗУЛЬТАТ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>с учётом личных финансов</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>на закрытую заявку</small></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
       </div>
     </section>
 
@@ -1863,13 +1863,11 @@ function moreMenu() {
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
     ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
-    ["tools", "tools", "Инструменты", "Рабочий инструмент и оборудование"],
     ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
   const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
-  return `<main class="content more-content">
-    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы, документы и настройки</p></div></div>
-    <div class="more-section-caption"><span>Рабочие инструменты</span><b>${workItems.length}</b></div>
+  return `<main class="content more-content legacy-more-page">
+    <div class="legacy-more-head"><h1>Ещё</h1><p>Финансы, документы, прайс и настройки</p></div>
     <div class="menu-list legacy-more-list">${cards(workItems)}</div>
   </main>`;
 }
