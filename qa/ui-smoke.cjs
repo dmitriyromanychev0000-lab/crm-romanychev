@@ -113,9 +113,9 @@ async function writeSeed(page) {
 }
 
 async function setState(page, state) {
-  await page.evaluate((stateValue) => localStorage.setItem("crm-ui-state", JSON.stringify(stateValue)), state);
+  await page.evaluate((stateValue) => sessionStorage.setItem("__crm_qa_next_state", JSON.stringify(stateValue)), state);
   await page.reload({ waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(60);
+  await page.waitForTimeout(100);
 }
 
 async function inspect(page, label, width) {
@@ -154,9 +154,11 @@ async function shot(page, width, label, fullPage = true) {
   return result;
 }
 
+let activeBrowser = null;
+const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, results: [], failures: [] };
+
 (async () => {
-  const browser = await chromium.launch({ headless: true });
-  const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, results: [], failures: [] };
+  const browser = activeBrowser = await chromium.launch({ headless: true });
 
   const screens = [
     ["orders", uiState({ activePage: "orders" })],
@@ -180,6 +182,12 @@ async function shot(page, width, label, fullPage = true) {
       viewport: { width, height: 900 },
       deviceScaleFactor: 1,
       serviceWorkers: "block"
+    });
+    await context.addInitScript(() => {
+      const nextState = sessionStorage.getItem("__crm_qa_next_state");
+      if (!nextState) return;
+      localStorage.setItem("crm-ui-state", nextState);
+      sessionStorage.removeItem("__crm_qa_next_state");
     });
     const page = await context.newPage();
     page.setDefaultTimeout(8000);
@@ -251,9 +259,14 @@ async function shot(page, width, label, fullPage = true) {
   fs.writeFileSync(outDir + "/report.json", JSON.stringify(report, null, 2));
   console.log(JSON.stringify({ failures: report.failures, checked: report.results.length }, null, 2));
   await browser.close();
+  activeBrowser = null;
   if (report.failures.length) process.exitCode = 1;
-})().catch((error) => {
+})().catch(async (error) => {
+  report.failures.push({ type: "fatal", message: String(error && error.message || error) });
+  fs.writeFileSync(outDir + "/report.json", JSON.stringify(report, null, 2));
   fs.writeFileSync(outDir + "/fatal.txt", String(error && error.stack || error));
   console.error(error);
+  try { await activeBrowser?.close(); } catch {}
+  activeBrowser = null;
   process.exitCode = 1;
 });
