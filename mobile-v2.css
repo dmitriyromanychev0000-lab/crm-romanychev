@@ -5868,3 +5868,129 @@
     font-size: 9px !important;
   }
 }
+
+@media screen and (min-width: 521px) {
+  .stock-editor-modal {
+    width: min(620px,calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+  }
+
+  .stock-editor-head {
+    display: grid;
+    grid-template-columns: 42px minmax(0,1fr) 38px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .stock-editor-close {
+    display: grid;
+    grid-column: 3;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    justify-self: end;
+    border: 1px solid #303940;
+    border-radius: 10px;
+    background: #181f26;
+    color: #dbe3e9;
+  }
+
+  .stock-editor-close .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stock-editor-compat-details {
+    overflow: hidden;
+    border: 1px solid #303940;
+    border-radius: 11px;
+    background: #11181e;
+  }
+
+  .stock-editor-compat-details > summary {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 18px;
+    align-items: center;
+    min-height: 50px;
+    padding: 9px 11px;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .stock-editor-compat-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .stock-editor-compat-details > summary b,
+  .stock-editor-compat-details > summary small {
+    display: block;
+  }
+
+  .stock-editor-compat-details > summary small {
+    margin-top: 3px;
+    color: #89949d;
+    font-size: 11px;
+  }
+
+  .stock-editor-compat-details > summary .ui-icon {
+    width: 16px;
+    height: 16px;
+    color: #89949d;
+    transition: transform .16s ease;
+  }
+
+  .stock-editor-compat-details[open] > summary .ui-icon {
+    transform: rotate(90deg);
+  }
+
+  .stock-editor-compat-content {
+    padding: 10px;
+    border-top: 1px solid #26333e;
+  }
+
+  .stock-editor-compat {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+  }
+
+  .stock-editor-compat label,
+  .stock-editor-toggle {
+    display: grid;
+    grid-template-columns: 24px minmax(0,1fr);
+    gap: 8px;
+    align-items: center;
+    min-height: 46px;
+    padding: 8px 10px;
+    border: 1px solid #303940;
+    border-radius: 10px;
+    background: #151d23;
+  }
+
+  .stock-editor-compat input,
+  .stock-editor-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .stock-editor-custom-compat {
+    margin-top: 8px;
+  }
+
+  .stock-editor-toggle {
+    margin-top: 9px;
+  }
+
+  .stock-editor-toggle b,
+  .stock-editor-toggle small {
+    display: block;
+  }
+
+  .stock-editor-toggle small {
+    margin-top: 3px;
+    color: #89949d;
+    font-size: 10px;
+  }
+}
