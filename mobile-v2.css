@@ -7550,3 +7550,81 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* 0.99.2 · Release hardening: читаемость, touch-targets и защита от старых каскадов. */
+@media screen and (max-width: 520px) {
+  .movement-filter-chips button,
+  .analytics-period-grid .chip,
+  .legacy-special-filter button,
+  .stock-detail-actions .stock-detail-archive {
+    min-height: 44px !important;
+  }
+
+  .analytics-period-grid .chip {
+    font-size: 11px !important;
+  }
+
+  .analytics-kpi > div > span,
+  .analytics-kpi > div > small,
+  .analytics-summary-strip small,
+  .analytics-focus-row small,
+  .stock-detail-kpis span,
+  .stock-detail-actions small,
+  .stock-editor-compat-details > summary small,
+  .order-editor-modal .material-card-controls label > span,
+  .catalog-modal .catalog-fit-summary span {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .stock-detail-actions button > span:last-child b,
+  .stock-editor-compat-details > summary b {
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-name-field,
+  .order-editor-modal .legacy-service-row .service-price-field input,
+  .order-editor-modal .material-card-head .material-name-field,
+  .order-editor-modal .material-card-controls .field {
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a,
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    font-size: 11px !important;
+  }
+
+  .legacy-settings-row > button:not(.toggle),
+  .legacy-backup-grid button {
+    min-height: 44px !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .analytics-period-grid .chip {
+    font-size: 10.5px !important;
+  }
+
+  .analytics-kpi > div > small,
+  .analytics-summary-strip small,
+  .stock-detail-kpis span,
+  .stock-editor-compat label,
+  .order-editor-modal .material-card-controls label > span {
+    font-size: 10px !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a,
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    font-size: 10.5px !important;
+  }
+
+  .legacy-settings-row:not(.plain) > button:not(.toggle) {
+    min-height: 44px !important;
+  }
+}
