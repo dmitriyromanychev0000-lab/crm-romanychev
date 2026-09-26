@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-26T22:21:10.617Z",
-  "testedSha": "21a2b0ec0b044c4c584a14b862cb14370af995b2",
+  "generatedAt": "2026-09-26T22:26:31.128Z",
+  "testedSha": "b988326912e4d214a088c822821448fb50f75d3f",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -897,12 +897,18 @@
       "tooSmall": [],
       "backupRoundtripOk": true,
       "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "type": "fatal",
-      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"networkidle\"\n"
-    }
-  ]
+  "failures": []
 }
