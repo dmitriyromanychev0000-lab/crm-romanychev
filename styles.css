@@ -6413,3 +6413,177 @@ button.warehouse-shortcut {
   .detail-lines b { font-size: 10px; white-space: nowrap; }
   .detail-empty { margin: 0; padding: 12px 0; color: #8f9aa3; font-size: 10px; }
 }
+
+
+/* 0.56.0 · Лист 02: workflow заявки и каталог услуг. */
+@media screen and (max-width: 520px) {
+  .catalog-modal-backdrop {
+    z-index: 120;
+    top: 0 !important;
+    right: 0;
+    bottom: 0 !important;
+    left: 0;
+    display: block;
+    padding: 0;
+    background: #070c10;
+  }
+  .catalog-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0 0 env(safe-area-inset-bottom);
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(180deg,#091018 0%,#080d12 100%);
+    box-shadow: none;
+  }
+  .catalog-modal-head {
+    min-height: 61px;
+    margin: 0;
+    padding: 9px 12px;
+    border-bottom: 1px solid #1c2832;
+    background: rgba(9,15,22,.97);
+  }
+  .catalog-modal-head h2 {
+    margin: 1px 0 0;
+    font-size: 17px;
+    line-height: 1.1;
+  }
+  .catalog-modal-head .small {
+    color: #97a3ad;
+    font-size: 8px;
+    letter-spacing: .02em;
+  }
+  .catalog-close {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 10px;
+    background: #182331;
+    font-size: 22px;
+  }
+  .catalog-search-row {
+    margin: 0;
+    padding: 9px 12px 7px;
+    background: #091018;
+  }
+  .catalog-search-row .search {
+    min-height: 39px;
+    padding-left: 39px;
+    border-color: #293744;
+    border-radius: 11px;
+    background: #111a23;
+    font-size: 11px;
+  }
+  .catalog-search-row > .ui-icon {
+    left: 25px;
+    width: 16px;
+    height: 16px;
+  }
+  .catalog-service-list {
+    gap: 8px;
+    padding: 2px 12px 10px;
+    scrollbar-width: thin;
+  }
+  .catalog-service-group {
+    overflow: hidden;
+    border: 1px solid #23303b;
+    border-radius: 12px;
+    background: #101821;
+  }
+  .catalog-service-group h3 {
+    margin: 0;
+    padding: 8px 10px 6px;
+    border-bottom: 1px solid #202c36;
+    color: #b7c2cb;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .catalog-service-option {
+    grid-template-columns: 26px minmax(0,1fr) auto;
+    gap: 8px;
+    min-height: 45px;
+    padding: 6px 9px;
+    border-top: 1px solid rgba(42,55,66,.7);
+  }
+  .catalog-service-option:first-of-type { border-top: 0; }
+  .catalog-service-option.selected {
+    background: linear-gradient(90deg,rgba(255,107,87,.11),rgba(255,107,87,.025));
+  }
+  .catalog-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    border-color: #43505c;
+    background: #19232d;
+    font-size: 14px;
+  }
+  .catalog-service-option.selected .catalog-check {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #170806;
+  }
+  .catalog-service-copy strong { font-size: 11px; }
+  .catalog-service-copy small {
+    margin-top: 2px;
+    color: #8f9aa4;
+    font-size: 8px;
+  }
+  .catalog-service-price {
+    padding-left: 7px;
+    color: #eef2f5;
+    font-size: 11px;
+    font-weight: 750;
+  }
+  .catalog-fit-summary {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 0;
+    margin: 0 12px;
+    padding: 8px 0;
+    border: 1px solid #263440;
+    border-radius: 11px;
+    background: #111a23;
+  }
+  .catalog-fit-summary > div {
+    padding: 0 8px;
+    border-left: 1px solid #263440;
+  }
+  .catalog-fit-summary > div:first-child { border-left: 0; }
+  .catalog-fit-summary span {
+    display: block;
+    color: #8f9aa4;
+    font-size: 7px;
+  }
+  .catalog-fit-summary strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .catalog-modal-actions {
+    margin: 7px 12px 0;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .catalog-modal-actions .primary-button {
+    min-height: 43px;
+    border-radius: 11px;
+    font-size: 11px;
+  }
+
+  .order-actions-backdrop { z-index: 125; }
+  .order-actions-sheet {
+    padding: 12px;
+    border-radius: 16px;
+  }
+  .order-actions-grid { gap: 6px; }
+  .order-actions-grid button,
+  .order-actions-grid a {
+    min-height: 45px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+  .order-actions-grid b { font-size: 10px; }
+  .order-actions-grid .ui-icon { width: 17px; height: 17px; }
+}
