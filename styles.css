@@ -9559,3 +9559,240 @@ button.warehouse-shortcut {
   }
   .nav-button.active { color: var(--legacy-orange); }
 }
+
+
+/* 0.70.0 · Склад по архивному мобильному экрану. */
+@media screen and (max-width: 520px) {
+  .legacy-warehouse-page {
+    padding: 0 9px 18px;
+  }
+  .legacy-stock-new {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 48px;
+    margin: 0 0 8px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 0 0 13px 13px;
+    background: var(--legacy-orange);
+    color: #18100d;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .legacy-stock-new > span {
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 300;
+  }
+
+  .legacy-warehouse-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+    margin: 7px 0 9px;
+  }
+  .legacy-warehouse-shortcuts button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 7px;
+    border: 1px solid #2c353d;
+    border-radius: 12px;
+    background: #171e25;
+    color: #eef0f2;
+    font-size: 10px;
+    font-weight: 650;
+  }
+  .legacy-warehouse-shortcuts .ui-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .legacy-warehouse-groups {
+    display: grid;
+    gap: 9px;
+  }
+  .legacy-warehouse-group {
+    overflow: hidden;
+    border: 1px solid #2a333b;
+    border-radius: 14px;
+    background: #10161b;
+  }
+  .legacy-warehouse-group > summary {
+    display: grid;
+    grid-template-columns: 30px minmax(0,1fr) 32px;
+    gap: 8px;
+    align-items: center;
+    min-height: 68px;
+    padding: 11px 12px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .legacy-warehouse-group > summary::-webkit-details-marker { display: none; }
+  .legacy-folder-icon {
+    display: grid;
+    place-items: center;
+    color: #edf0f2;
+  }
+  .legacy-folder-icon .ui-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .legacy-group-copy {
+    min-width: 0;
+  }
+  .legacy-group-copy strong {
+    display: block;
+    overflow: hidden;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legacy-group-copy small {
+    color: #818990;
+    font-size: 8px;
+  }
+  .legacy-group-chevron {
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 38px;
+    border-radius: 10px;
+    background: #171e25;
+    color: #8c959c;
+    font-size: 14px;
+    transition: transform .18s ease;
+  }
+  .legacy-warehouse-group[open] .legacy-group-chevron {
+    transform: rotate(180deg);
+  }
+
+  .legacy-stock-list {
+    display: grid;
+    gap: 7px;
+    padding: 0 11px 11px 20px;
+  }
+  .legacy-stock-card-v2 {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #2a333b;
+    border-radius: 13px;
+    background: linear-gradient(180deg,#11181e,#0f151a);
+  }
+  .legacy-stock-card-v2::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: #49d17c;
+  }
+  .legacy-stock-card-v2.low::before { background: #f0b84d; }
+  .legacy-stock-card-v2.archived::before { background: #65707a; }
+
+  .legacy-stock-main {
+    display: grid;
+    grid-template-columns: 42px minmax(0,1fr) auto;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    min-height: 84px;
+    padding: 11px 10px 9px 12px;
+    border: 0;
+    border-bottom: 1px solid #222b32;
+    background: transparent;
+    color: #edf0f2;
+    text-align: left;
+  }
+  .legacy-stock-icon {
+    display: grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    border: 1px solid rgba(255,114,85,.25);
+    border-radius: 11px;
+    background: rgba(255,114,85,.06);
+    color: #ff8b70;
+  }
+  .legacy-stock-icon .ui-icon { width: 22px; height: 22px; }
+  .legacy-stock-copy {
+    min-width: 0;
+  }
+  .legacy-stock-copy strong,
+  .legacy-stock-copy small,
+  .legacy-stock-copy em {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legacy-stock-copy strong { font-size: 12px; }
+  .legacy-stock-copy small {
+    margin-top: 2px;
+    color: #7f888f;
+    font-size: 7.5px;
+  }
+  .legacy-stock-copy em {
+    margin-top: 4px;
+    color: #4ed17e;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 700;
+  }
+  .legacy-stock-card-v2.low .legacy-stock-copy em { color: #e5b34a; }
+  .legacy-stock-card-v2.archived .legacy-stock-copy em { color: #818a91; }
+
+  .legacy-stock-qty {
+    display: grid;
+    justify-items: end;
+    gap: 3px;
+    padding-left: 6px;
+  }
+  .legacy-stock-qty strong {
+    color: #4ed17e;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .legacy-stock-qty small {
+    color: #80888e;
+    font-size: 7px;
+    letter-spacing: .07em;
+  }
+  .legacy-stock-card-v2.low .legacy-stock-qty strong { color: #e9b84e; }
+  .legacy-stock-card-v2.archived .legacy-stock-qty strong { color: #899299; }
+
+  .legacy-stock-actions-v2 {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 6px;
+    padding: 8px 10px 10px 12px;
+  }
+  .legacy-stock-actions-v2 button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 38px;
+    min-width: 0;
+    padding: 5px 5px;
+    border: 1px solid #2b343c;
+    border-radius: 10px;
+    background: #171e25;
+    color: #e8ebed;
+    font-size: 9px;
+    font-weight: 650;
+  }
+  .legacy-stock-actions-v2 button:nth-child(4) {
+    grid-column: 1 / 2;
+  }
+  .legacy-stock-actions-v2 .ui-icon {
+    width: 14px;
+    height: 14px;
+  }
+  .legacy-stock-actions-v2 button:nth-child(1) > span { font-size: 17px; font-weight: 300; }
+  .legacy-stock-actions-v2 button:nth-child(2) > span { font-size: 17px; font-weight: 300; }
+}
