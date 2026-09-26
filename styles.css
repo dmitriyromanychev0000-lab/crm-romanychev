@@ -12647,3 +12647,204 @@ button.warehouse-shortcut {
     grid-column:auto;
   }
 }
+
+
+/* 0.79.0 · Верх склада и редактор позиции по архивным мобильным скриншотам. */
+@media screen and (max-width:520px) {
+  .legacy-warehouse-page {
+    padding: 15px 9px 20px;
+  }
+  .legacy-warehouse-head {
+    margin: 0 2px 13px;
+  }
+  .legacy-warehouse-head h1 {
+    margin:0;
+    font-size:23px;
+    line-height:1.08;
+    font-weight:720;
+  }
+  .legacy-warehouse-head p {
+    margin:5px 0 0;
+    color:#848c92;
+    font-size:10px;
+  }
+
+  .legacy-warehouse-search {
+    margin:0 0 9px;
+  }
+  .legacy-warehouse-search .search {
+    min-height:47px;
+    padding-left:45px;
+    border:1px solid #2d363e;
+    border-radius:13px;
+    background:#181f26;
+    color:#edf0f2;
+    font-size:11px;
+  }
+  .legacy-warehouse-search > .ui-icon {
+    left:15px;
+    width:20px;
+    height:20px;
+    color:#9aa2a9;
+  }
+  .legacy-warehouse-search .search::placeholder { color:#606970; }
+
+  .legacy-warehouse-filter {
+    position:relative;
+    margin-bottom:9px;
+  }
+  .legacy-warehouse-filter .field {
+    width:100%;
+    min-height:45px;
+    padding:0 39px 0 13px;
+    appearance:none;
+    border:1px solid #2d363e;
+    border-radius:11px;
+    background:#181f26;
+    color:#e9ecee;
+    font-size:11px;
+  }
+  .legacy-warehouse-filter > span {
+    position:absolute;
+    top:50%;
+    right:13px;
+    display:grid;
+    transform:translateY(-50%);
+    color:#a3abb1;
+    pointer-events:none;
+  }
+  .legacy-warehouse-filter .ui-icon { width:14px;height:14px; }
+
+  .legacy-warehouse-shortcuts {
+    margin:0 0 9px;
+  }
+  .legacy-warehouse-shortcuts button {
+    min-height:46px;
+    font-size:10px;
+  }
+  .legacy-stock-new {
+    min-height:48px;
+    margin:0 0 10px;
+    border-radius:12px;
+  }
+
+  .stock-editor-backdrop {
+    z-index:95;
+    top:96px !important;
+    bottom:calc(68px + env(safe-area-inset-bottom)) !important;
+    align-items:stretch;
+    padding:0 9px 8px;
+    overflow:auto;
+    background:#080d11;
+  }
+  .stock-editor-modal {
+    width:100%;
+    max-width:none;
+    min-height:auto;
+    margin:0;
+    padding:12px 12px 14px;
+    border:1px solid #2b343c;
+    border-radius:14px;
+    background:linear-gradient(180deg,#131a20,#10161b);
+    box-shadow:none;
+  }
+  .stock-editor-head {
+    position:static;
+    display:grid;
+    grid-template-columns:38px minmax(0,1fr) 34px;
+    gap:9px;
+    align-items:center;
+    min-height:48px;
+    margin:0 0 6px;
+    padding:0;
+    border:0;
+    background:transparent;
+  }
+  .stock-editor-title-icon {
+    display:grid;
+    place-items:center;
+    width:37px;
+    height:37px;
+    border:1px solid rgba(255,113,83,.3);
+    border-radius:11px;
+    background:rgba(255,113,83,.08);
+    color:#ff795e;
+  }
+  .stock-editor-title-icon .ui-icon { width:20px;height:20px; }
+  .stock-editor-head small {
+    color:#8d949a;
+    font-size:7px;
+  }
+  .stock-editor-head h2 {
+    margin:2px 0 0;
+    font-size:15px;
+  }
+  .stock-editor-close {
+    width:34px;
+    height:34px;
+    border:1px solid #303940;
+    border-radius:10px;
+    background:#181f26;
+  }
+  .stock-editor-intro {
+    margin:0 0 10px;
+    color:#848c92;
+    font-size:8px;
+    line-height:1.4;
+  }
+  .stock-editor-section-title {
+    margin:11px 0 6px;
+    color:#969da2;
+    font-size:7px;
+  }
+  .stock-editor-modal .form-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+  }
+  .stock-editor-modal .form-group label {
+    margin-bottom:5px;
+    color:#969da2;
+    font-size:7px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .stock-editor-modal .field {
+    min-height:45px;
+    border:1px solid #303940;
+    border-radius:11px;
+    background:#181f26;
+    font-size:10px;
+  }
+  .stock-editor-compat {
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+  .stock-editor-compat label,
+  .stock-editor-toggle {
+    min-height:42px;
+    padding:7px 9px;
+    border-color:#303940;
+    border-radius:10px;
+    background:#181f26;
+  }
+  .stock-editor-compat b,
+  .stock-editor-toggle b { font-size:9px; }
+  .stock-editor-modal .modal-actions {
+    position:sticky;
+    bottom:-14px;
+    margin:13px -12px -14px;
+    padding:8px 12px 9px;
+    border-top:1px solid #283139;
+    background:rgba(16,22,27,.98);
+  }
+  .stock-editor-modal .modal-actions button {
+    min-height:42px;
+    border-radius:10px;
+    font-size:9px;
+  }
+  .stock-editor-modal .modal-actions .primary-button {
+    border-color:#ff7153;
+    background:#ff7153;
+    color:#17110f;
+  }
+}
