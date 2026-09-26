@@ -5645,3 +5645,226 @@
     font-size: 10px !important;
   }
 }
+
+/* 0.92.1 · Склад: компактная деталка и редактор. */
+@media screen and (max-width: 520px) {
+  .stock-detail-hero {
+    grid-template-columns: 44px minmax(0,1fr) auto !important;
+    align-items: center !important;
+  }
+
+  .stock-detail-sale-price {
+    display: block;
+    margin-top: 5px;
+    color: var(--crm-accent);
+    font-size: 10px;
+    font-weight: 750;
+  }
+
+  .stock-detail-kpis {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .stock-detail-kpis > div {
+    min-height: 68px !important;
+    padding: 9px 7px !important;
+    text-align: center;
+  }
+
+  .stock-detail-kpis span {
+    display: grid;
+    min-height: 27px;
+    place-items: center;
+    font-size: 9px !important;
+    line-height: 1.25;
+  }
+
+  .stock-detail-kpis strong {
+    font-size: 13px !important;
+  }
+
+  .stock-detail-kpis .primary strong {
+    color: var(--crm-green);
+  }
+
+  .stock-detail-kpis .minimum strong {
+    color: var(--crm-accent);
+  }
+
+  .stock-detail-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .stock-detail-actions button:not(.stock-detail-archive) {
+    display: grid !important;
+    grid-template-columns: 34px minmax(0,1fr) !important;
+    align-items: center !important;
+    gap: 8px;
+    min-height: 58px !important;
+    padding: 8px 10px !important;
+    text-align: left !important;
+  }
+
+  .stock-action-icon {
+    display: grid !important;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 10px;
+  }
+
+  .stock-detail-actions .incoming .stock-action-icon {
+    background: rgba(89,216,137,.12);
+    color: var(--crm-green);
+  }
+
+  .stock-detail-actions .outgoing .stock-action-icon {
+    background: rgba(255,113,83,.12);
+    color: var(--crm-accent);
+  }
+
+  .stock-action-icon .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .stock-detail-actions button > span:last-child b,
+  .stock-detail-actions button > span:last-child small {
+    display: block;
+  }
+
+  .stock-detail-actions button > span:last-child b {
+    font-size: 10px;
+  }
+
+  .stock-detail-actions small {
+    margin-top: 2px;
+    color: var(--crm-muted);
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  .stock-detail-actions .stock-detail-archive {
+    display: flex !important;
+    grid-column: 1 / -1 !important;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px !important;
+    background: transparent !important;
+    color: var(--crm-muted) !important;
+  }
+
+  .stock-detail-archive .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .stock-editor-section {
+    padding: 11px !important;
+  }
+
+  .stock-editor-compat-details {
+    overflow: hidden;
+    border: 1px solid var(--crm-line-soft);
+    border-radius: 11px;
+    background: #11181e;
+  }
+
+  .stock-editor-compat-details > summary {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 18px;
+    align-items: center;
+    min-height: 48px;
+    padding: 8px 10px;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .stock-editor-compat-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .stock-editor-compat-details > summary b,
+  .stock-editor-compat-details > summary small {
+    display: block;
+  }
+
+  .stock-editor-compat-details > summary b {
+    font-size: 10px;
+  }
+
+  .stock-editor-compat-details > summary small {
+    margin-top: 3px;
+    color: var(--crm-muted);
+    font-size: 8px;
+  }
+
+  .stock-editor-compat-details > summary .ui-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--crm-muted);
+    transition: transform .16s ease;
+  }
+
+  .stock-editor-compat-details[open] > summary .ui-icon {
+    transform: rotate(90deg);
+  }
+
+  .stock-editor-compat-content {
+    padding: 0 8px 8px;
+    border-top: 1px solid var(--crm-line-soft);
+  }
+
+  .stock-editor-compat {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+    padding-top: 8px;
+  }
+
+  .stock-editor-compat label {
+    min-height: 44px !important;
+    padding: 7px !important;
+  }
+
+  .stock-editor-custom-compat {
+    margin-top: 7px !important;
+  }
+
+  .stock-editor-toggle {
+    min-height: 52px !important;
+  }
+
+  .stock-editor-close .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .stock-detail-kpis > div {
+    padding: 8px 5px !important;
+  }
+
+  .stock-detail-kpis span {
+    font-size: 8px !important;
+  }
+
+  .stock-detail-kpis strong {
+    font-size: 12px !important;
+  }
+
+  .stock-detail-actions small {
+    display: none;
+  }
+
+  .stock-editor-compat {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .stock-editor-compat label {
+    font-size: 9px !important;
+  }
+}

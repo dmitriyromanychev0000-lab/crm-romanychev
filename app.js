@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.92.0";
-const APP_BUILD = "2026.09.26.69";
+const APP_VERSION = "0.92.1";
+const APP_BUILD = "2026.09.26.70";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Обновлены меню, кнопки и иконки: быстрый вход в инструменты, цветовые акценты и единые мобильные состояния";
+const APP_RELEASE = "Переработаны карточка и редактор склада: компактные показатели, удобные операции и сворачиваемая совместимость";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -159,7 +159,9 @@ const ICONS = {
   analytics: '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
   more: '<circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
   back: '<path d="m15 18-6-6 6-6"/>',
+  close: '<path d="m6 6 12 12M18 6 6 18"/>',
   backup: '<path d="M12 3v12M8 11l4 4 4-4"/><path d="M5 21h14a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2"/>',
   price: '<path d="M20 13 13 20a2 2 0 0 1-3 0l-6-6a2 2 0 0 1 0-3l7-7h7a2 2 0 0 1 2 2Z"/><circle cx="15.5" cy="8.5" r="1.2"/>',
   clients: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
@@ -2982,19 +2984,18 @@ function stockDetailModal(item) {
     <main class="stock-detail-content">
       <section class="stock-detail-hero">
         <span class="stock-detail-icon">${icon("box")}</span>
-        <div><h2>${escapeHtml(item.name || "Без названия")}</h2><p>${escapeHtml(Array.isArray(item.compatibility) && item.compatibility.length ? item.compatibility.join(" · ") : "Универсальная позиция")}</p></div>
+        <div><h2>${escapeHtml(item.name || "Без названия")}</h2><p>${escapeHtml(Array.isArray(item.compatibility) && item.compatibility.length ? item.compatibility.join(" · ") : "Универсальная позиция")}</p><span class="stock-detail-sale-price">Продажа · ${money(item.price || 0)}</span></div>
         <span class="stock-detail-status ${isLow ? "low" : ""}">${item.archived ? "Архив" : isLow ? "Мало" : "В наличии"}</span>
       </section>
       <section class="stock-detail-kpis">
-        <div><span>Остаток</span><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div><span>Продажа</span><strong>${money(item.price || 0)}</strong></div>
+        <div class="primary"><span>Текущий остаток</span><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
+        <div class="minimum"><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
         <div><span>Себестоимость</span><strong>${money(item.lastPurchasePrice || 0)}</strong></div>
       </section>
       <div class="stock-detail-actions">
-        <button type="button" data-stock-detail-action="in"><span>+</span><b>Приход</b></button>
-        <button type="button" data-stock-detail-action="out"><span>−</span><b>Списать</b></button>
-        <button type="button" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть" : "В архив"}</b></button>
+        <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
+        <button type="button" class="outgoing" data-stock-detail-action="out"><span class="stock-action-icon">${icon("minus")}</span><span><b>Списать</b><small>Уменьшить остаток</small></span></button>
+        <button type="button" class="stock-detail-archive" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть из архива" : "Переместить в архив"}</b></button>
       </div>
       <section class="stock-detail-history">
         <h3>Последние движения</h3>
@@ -3043,7 +3044,7 @@ function stockModal(existing = null) {
     <div class="stock-editor-head">
       <span class="stock-editor-title-icon">${icon("box")}</span>
       <div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div>
-      <button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button>
+      <button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
 
     <p class="stock-editor-intro">${existing ? "Измени параметры позиции, совместимость и цены." : "Добавь запчасть или расходный материал на склад."}</p>
@@ -3070,10 +3071,15 @@ function stockModal(existing = null) {
 
     <section class="stock-editor-section">
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("tools")}</span><span>Совместимость</span></div>
+    <details class="stock-editor-compat-details" ${currentCompatibility.length ? "open" : ""}>
+    <summary><span><b>Типы техники</b><small>${currentCompatibility.length ? `Выбрано: ${currentCompatibility.length}` : "Не выбрано · универсальная позиция"}</small></span>${icon("chevron")}</summary>
+    <div class="stock-editor-compat-content">
     <div class="stock-editor-compat">
       ${commonCompatibility.map((value) => `<label><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" ${currentCompatibility.includes(value) ? "checked" : ""}/><span class="warehouse-check"></span><b>${escapeHtml(value)}</b></label>`).join("")}
     </div>
     <div class="form-group stock-editor-custom-compat"><label>Дополнительно</label><input class="field" name="compatibilityExtra" value="${escapeHtml(customCompatibility)}" placeholder="Через запятую" /></div>
+    </div>
+    </details>
     <label class="stock-editor-toggle"><input type="checkbox" name="hiddenFromOrders" ${item.hiddenFromOrders ? "checked" : ""}/><span class="warehouse-check"></span><span><b>Скрыть в заявках</b><small>Не предлагать эту позицию при добавлении материалов</small></span></label>
     </section>
     </div>
