@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.49.0";
-const APP_BUILD = "2026.09.26.24";
+const APP_VERSION = "0.56.0";
+const APP_BUILD = "2026.09.26.25";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Функциональная доводка: единый список покупок с копированием, упрощённая форма заявки, компактные рабочие экраны и полноразмерный A4";
+const APP_RELEASE = "Редизайн Sheet 02: полноэкранный каталог услуг и рабочее меню действий заявки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1990,7 +1990,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop catalog-modal-backdrop";
   modal.innerHTML = `<div class="modal catalog-modal">
-    <div class="catalog-modal-head"><div><div class="small">Каталог услуг</div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
+    <div class="catalog-modal-head"><div><div class="small">Каталог услуг · <span id="catalog-selected-count">0 выбрано</span></div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
     <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
     <div class="catalog-service-list" id="catalog-service-list"></div>
     <div class="catalog-fit-summary">
@@ -2018,6 +2018,8 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const updateSummary = () => {
     const total = selectedTotal();
     modal.querySelector("#catalog-selected-total").textContent = money(total);
+    const countEl = modal.querySelector("#catalog-selected-count");
+    if (countEl) countEl.textContent = `${selected.size} выбрано`;
     modal.querySelector("#catalog-target-total").textContent = money(target);
     const diff = target - total;
     const diffEl = modal.querySelector("#catalog-diff-total");
@@ -2711,7 +2713,7 @@ function orderDetailModal(order) {
   const run = (action) => {
     modal.remove();
     if (action === "edit") return newOrderModal(order);
-    if (action === "more") return toast("Дополнительные действия появятся здесь");
+    if (action === "more") return orderActionsSheet(order);
     return handleOrderAction(action, order.id);
   };
   modal.querySelectorAll("[data-detail-action]").forEach((button) => button.addEventListener("click", () => run(button.dataset.detailAction)));
