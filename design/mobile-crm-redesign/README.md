@@ -1,3 +1,13 @@
+# STATUS: superseded visual direction
+
+**2026-09-26:** The user asked to return to the original/archived CRM appearance first and make only point changes afterward.
+
+The active baseline is now the restored pre-`Visual_koncept` interface. See `../../WORK_START_HERE.md`.
+
+The material below is retained only as historical/reference documentation and is **not** the current automatic implementation target.
+
+---
+
 # Mobile CRM redesign — approved visual direction
 
 ## READ THIS BEFORE CHANGING UI
