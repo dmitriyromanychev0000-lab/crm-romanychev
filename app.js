@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.88.0";
-const APP_BUILD = "2026.09.26.63";
+const APP_VERSION = "0.89.0";
+const APP_BUILD = "2026.09.26.64";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Упрощены прайс и товарник: меньше дублей, чище редакторы и компактнее рабочий сценарий";
+const APP_RELEASE = "Доведены служебные разделы: документы, инструменты, акт, настройки и бэкапы в едином мобильном стиле";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1516,7 +1516,7 @@ function actPage() {
     </div>
 
     <section class="legacy-act-control no-print">
-      <div class="legacy-act-control-title"><span>${icon("printer")}</span><h2>Акт выполненных работ (A4)</h2></div>
+      <div class="legacy-act-control-title"><span>${icon("printer")}</span><div><h2>Акт выполненных работ</h2><small>Формат A4 · печать или PDF</small></div></div>
       <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
       <div class="legacy-act-control-actions">
         <button type="button" class="legacy-dark-button" data-action="open-receipts">${icon("receipt")}<span>Документы</span></button>
@@ -1644,7 +1644,7 @@ function settingsPage() {
     </section>
 
     <section class="legacy-settings-card">
-      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Данные и разделы</h2></div>
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Рабочие данные</h2></div>
       <div class="legacy-settings-links">
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -1698,7 +1698,7 @@ function draftsPage() {
       <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
       <div><h1>Черновики</h1><p>Незавершённые заявки</p></div>
     </div>
-    <div class="legacy-service-note">Черновик остаётся сохранённым, пока ты не удалишь его вручную.</div>
+    <div class="legacy-service-note">Сохранённые незавершённые заявки. Продолжи работу или удали ненужное.</div>
     ${drafts.length ? `<div class="legacy-service-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
       const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
@@ -1753,10 +1753,10 @@ function receiptsPage() {
       <div><h1>Документы</h1><p>Квитанции, чеки и документы</p></div>
       <button type="button" class="legacy-page-add" data-action="new-receipt" aria-label="Новый документ">+</button>
     </div>
-    <section class="legacy-service-stats">
-      <div><span>ДОКУМЕНТОВ</span><strong>${receipts.length}</strong></div>
-      <div><span>СУММА</span><strong class="blue">${money(total)}</strong></div>
-      <div><span>К ЗАЯВКАМ</span><strong class="green">${linked}</strong></div>
+    <section class="legacy-service-stats receipts-stats">
+      <div class="service-stat-primary"><span>ДОКУМЕНТОВ</span><strong>${receipts.length}</strong><small>всего сохранено</small></div>
+      <div><span>СУММА</span><strong class="blue">${money(total)}</strong><small>по документам</small></div>
+      <div><span>К ЗАЯВКАМ</span><strong class="green">${linked}</strong><small>связанных</small></div>
     </section>
     ${receipts.length ? `<div class="legacy-service-list">${receiptEntries.map(({ index, view }) => {
       const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
@@ -1782,9 +1782,9 @@ function toolsPage() {
       <div><h1>Инструменты</h1><p>Рабочий инструмент и оборудование</p></div>
       <button type="button" class="legacy-page-add" data-action="new-tool" aria-label="Добавить инструмент">+</button>
     </div>
-    <section class="legacy-service-stats two">
-      <div><span>ВСЕГО</span><strong>${tools.length}</strong></div>
-      <div><span>АКТИВНЫХ</span><strong class="green">${active}</strong></div>
+    <section class="legacy-service-stats two tools-stats">
+      <div class="service-stat-primary"><span>ИНСТРУМЕНТОВ</span><strong>${tools.length}</strong><small>в учёте</small></div>
+      <div><span>АКТИВНЫХ</span><strong class="green">${active}</strong><small>доступно в работе</small></div>
     </section>
     ${tools.length ? `<div class="legacy-service-list">${toolEntries.map(({item,index}) => {
       const name = item.name || item.title || item.tool || "Инструмент";
@@ -1810,7 +1810,7 @@ async function backupSettings() {
     </div>
 
     <section class="legacy-settings-card">
-      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("backup")}</span><h2>Резервная копия</h2></div>
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("backup")}</span><h2>Сохранение и восстановление</h2></div>
       <div class="legacy-backup-main-actions">
         <button type="button" class="legacy-orange-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
         <button type="button" class="legacy-dark-button" data-action="import">${icon("document")}<span>Импорт JSON</span></button>
@@ -2647,7 +2647,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop receipt-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
-    <div class="receipt-editor-head"><div><small>Документы и чеки</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="receipt-editor-head"><span class="service-editor-head-icon receipt">${icon("receipt")}</span><div><small>ДОКУМЕНТЫ</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
     <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
@@ -2694,7 +2694,7 @@ function toolModal(existing = null, toolIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop tool-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
-    <div class="tool-editor-head"><div><small>Рабочие инструменты</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="tool-editor-head"><span class="service-editor-head-icon tool">${icon("tools")}</span><div><small>ИНСТРУМЕНТЫ</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
     <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
