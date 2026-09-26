@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.1";
-const APP_BUILD = "2026.09.26.81";
+const APP_VERSION = "0.99.2";
+const APP_BUILD = "2026.09.26.82";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы и акт доведены до мобильного и печатного режима: карточки и редактор не сжимаются на 320 px, A4 масштаб учитывает объём документа";
+const APP_RELEASE = "Релизный hardening: локальные даты без UTC-сдвига, доступные состояния фильтров, явные типы кнопок и финальный минимум читаемости/touch-targets";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -213,6 +213,15 @@ function icon(name, className = "") {
 
 const money = (value) => `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(Number(value) || 0)} ₽`;
 
+function localDateInputValue(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const shortDate = (value) => {
   if (!value) return "—";
   const date = new Date(value);
@@ -409,7 +418,7 @@ async function saveData() {
 }
 
 function backupFilename() {
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = localDateInputValue();
   return `CRM_BT_backup_${stamp}.json`;
 }
 
@@ -883,16 +892,16 @@ function ordersPage() {
       <div class="legacy-nearest-line"><strong>${escapeHtml(formatVisitDate(nearestVisit.nextVisit))}</strong><span>· ${escapeHtml(nearestVisit.name || "Клиент")} · ${escapeHtml(nearestVisit.address || nearestVisit.tech || "")}</span><em>№${escapeHtml(nearestVisit.id)}</em></div>
     </button>` : ""}
 
-    <div class="legacy-order-search search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" /></div>
+    <div class="legacy-order-search search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" aria-label="Поиск заявок" /></div>
 
     <div class="legacy-order-filters">
-      <button type="button" class="${orderFilter === "all" ? "active" : ""}" data-filter="all">Все</button>
-      <button type="button" class="${orderFilter === "closed" ? "active" : ""}" data-filter="closed">Закрыты</button>
-      <button type="button" class="${orderFilter === "active" ? "active" : ""}" data-filter="active">В работе</button>
+      <button type="button" class="${orderFilter === "all" ? "active" : ""}" data-filter="all" aria-pressed="${orderFilter === "all"}">Все</button>
+      <button type="button" class="${orderFilter === "closed" ? "active" : ""}" data-filter="closed" aria-pressed="${orderFilter === "closed"}">Закрыты</button>
+      <button type="button" class="${orderFilter === "active" ? "active" : ""}" data-filter="active" aria-pressed="${orderFilter === "active"}">В работе</button>
     </div>
 
     <div class="legacy-visit-filter">
-      <select class="field" id="order-visit-filter">
+      <select class="field" id="order-visit-filter" aria-label="Фильтр по дате визита">
         <option value="all" ${orderVisitFilter === "all" ? "selected" : ""}>Все даты визита</option>
         <option value="today" ${orderVisitFilter === "today" ? "selected" : ""}>Сегодня</option>
         <option value="upcoming" ${orderVisitFilter === "upcoming" ? "selected" : ""}>Предстоящие визиты</option>
@@ -905,8 +914,8 @@ function ordersPage() {
 
     <section class="legacy-orders-list">
       ${filtered.length ? filtered.map(orderCard).join("") : data.orders.length
-        ? `<div class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button class="secondary-button" data-action="reset-order-filters">Сбросить</button><button class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button></div></div>`
-        : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button><button class="secondary-button" data-action="import">Импортировать</button></div></div>`}
+        ? `<div class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button type="button" class="secondary-button" data-action="reset-order-filters">Сбросить</button><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button></div></div>`
+        : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button><button type="button" class="secondary-button" data-action="import">Импортировать</button></div></div>`}
     </section>
   </main>`;
 }
@@ -938,11 +947,11 @@ function warehousePage() {
 
     <div class="legacy-warehouse-search search-row search-with-icon">
       ${icon("search")}
-      <input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" />
+      <input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" aria-label="Поиск по складу" />
     </div>
 
     <div class="legacy-warehouse-filter">
-      <select class="field" id="warehouse-filter-select">
+      <select class="field" id="warehouse-filter-select" aria-label="Фильтр склада">
         <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
         <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Заканчиваются</option>
         <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
@@ -1182,9 +1191,9 @@ function analyticsPage() {
     </div>
 
     <div class="analytics-range-nav">
-      <button class="analytics-arrow" data-analytics-shift="-1" aria-label="Предыдущий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" ? "disabled" : ""}>${icon("back")}</button>
+      <button type="button" class="analytics-arrow" data-analytics-shift="-1" aria-label="Предыдущий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" ? "disabled" : ""}>${icon("back")}</button>
       <div><strong>${escapeHtml(analyticsPeriodTitle(range))}</strong><small>${range ? `${shortDate(new Date(range.start))} — ${shortDate(new Date(range.end - 1))}` : "Все данные CRM"}</small></div>
-      <button class="analytics-arrow" data-analytics-shift="1" aria-label="Следующий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>${icon("chevron")}</button>
+      <button type="button" class="analytics-arrow" data-analytics-shift="1" aria-label="Следующий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>${icon("chevron")}</button>
     </div>
 
     <section class="panel analytics-kpi-panel">
@@ -1290,7 +1299,7 @@ function priceList() {
       <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">${icon("plus")}</button>
     </div>
 
-    <div class="legacy-price-search search-row search-with-icon">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название товара или услуги" /></div>
+    <div class="legacy-price-search search-row search-with-icon">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название товара или услуги" aria-label="Поиск по прайсу" /></div>
 
     <div class="legacy-price-filters">
       <label><span>ТИП</span><select class="field" id="price-kind-filter">
@@ -1390,7 +1399,7 @@ function clientsPage() {
       <div><h1>Клиенты</h1><p>История обращений и ремонтов</p></div>
     </div>
 
-    <div class="legacy-client-search search-row search-with-icon">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
+    <div class="legacy-client-search search-row search-with-icon">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" aria-label="Поиск клиентов" /></div>
 
     <section class="legacy-clients-stats">
       <div class="clients-stat-primary"><span>КЛИЕНТОВ</span><strong>${sorted.length}</strong><small>${activeOrders.length} обращений всего</small></div>
@@ -1448,10 +1457,10 @@ function financePage() {
     </div>
 
     <div class="legacy-finance-periods">
-      <button type="button" class="${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button>
-      <button type="button" class="${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button>
-      <button type="button" class="${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button>
-      <button type="button" class="${financePeriod === "365" ? "active" : ""}" data-finance-period="365">Год</button>
+      <button type="button" class="${financePeriod === "all" ? "active" : ""}" data-finance-period="all" aria-pressed="${financePeriod === "all"}">Всё время</button>
+      <button type="button" class="${financePeriod === "30" ? "active" : ""}" data-finance-period="30" aria-pressed="${financePeriod === "30"}">30 дней</button>
+      <button type="button" class="${financePeriod === "90" ? "active" : ""}" data-finance-period="90" aria-pressed="${financePeriod === "90"}">90 дней</button>
+      <button type="button" class="${financePeriod === "365" ? "active" : ""}" data-finance-period="365" aria-pressed="${financePeriod === "365"}">Год</button>
     </div>
 
     <section class="legacy-finance-summary">
@@ -1901,9 +1910,9 @@ function warehouseMovementsPage() {
     </div>
 
     <div class="movement-filter-chips">
-      <button type="button" class="${warehouseMovementFilter === "all" ? "active" : ""}" data-movement-filter="all">Все <span>${source.length}</span></button>
-      <button type="button" class="${warehouseMovementFilter === "in" ? "active" : ""}" data-movement-filter="in">Приход <span>${inCount}</span></button>
-      <button type="button" class="${warehouseMovementFilter === "out" ? "active" : ""}" data-movement-filter="out">Расход <span>${outCount}</span></button>
+      <button type="button" class="${warehouseMovementFilter === "all" ? "active" : ""}" data-movement-filter="all" aria-pressed="${warehouseMovementFilter === "all"}">Все <span>${source.length}</span></button>
+      <button type="button" class="${warehouseMovementFilter === "in" ? "active" : ""}" data-movement-filter="in" aria-pressed="${warehouseMovementFilter === "in"}">Приход <span>${inCount}</span></button>
+      <button type="button" class="${warehouseMovementFilter === "out" ? "active" : ""}" data-movement-filter="out" aria-pressed="${warehouseMovementFilter === "out"}">Расход <span>${outCount}</span></button>
     </div>
 
     <section class="movement-list">
@@ -1939,7 +1948,7 @@ function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
   return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">${icon("back")}</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
     <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${items.length} ${items.length === 1 ? "позицию" : items.length >= 2 && items.length <= 4 ? "позиции" : "позиций"}</strong></span></section>
-    <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
+    <div class="shopping-page-actions"><button type="button" class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button type="button" class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="shopping-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
       return `<article class="shopping-card legacy-shopping-card"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · осталось ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
@@ -2645,7 +2654,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const isStored = receiptIndex >= 0;
   const view = receiptSummary(item);
   const rawDate = String(view.date || "");
-  const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : localDateInputValue();
   const orderOptions = ordersNewestFirst().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop receipt-editor-backdrop legacy-service-editor-backdrop";
@@ -2927,7 +2936,7 @@ function financeModal(type) {
     <div class="finance-entry-type ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}<span>${isIncome ? "Пополнение личных финансов" : "Личный расход вне заявки"}</span></div>
     <div class="form-grid">
       <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" inputmode="decimal" required placeholder="0" /></div>
-      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" required /></div>
+      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${localDateInputValue()}" required /></div>
       <div class="form-group full"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div>
       <div class="form-group full"><label>Описание</label><input class="field" name="description" required placeholder="${isIncome ? "Например, продажа запчасти" : "Например, топливо"}" /></div>
     </div>
