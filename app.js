@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.8";
-const APP_BUILD = "2026.09.26.88";
+const APP_VERSION = "0.99.9";
+const APP_BUILD = "2026.09.26.89";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Расширен релизный QA и добит touch-target прайса: автоматическая проверка охватывает основные страницы, детали, action sheet, вложенные каталоги и ключевые редакторы";
+const APP_RELEASE = "Исправлено двойное закрытие вложенного каталога по Escape: теперь закрывается только верхний слой, редактор заявки остаётся открыт и scroll-lock сохраняется";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2308,7 +2308,6 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
   });
   modal.addEventListener("click", (event) => { if (event.target === modal) closeCatalog(); });
-  modal.addEventListener("keydown", (event) => { if (event.key === "Escape") closeCatalog(); });
   renderCatalog();
 }
 
