@@ -12997,3 +12997,49 @@ button.warehouse-shortcut {
     font-weight:680;
   }
 }
+
+
+/* 0.81.0 · Структура "Ещё" по архивному экрану. */
+@media screen and (max-width:520px) {
+  .legacy-more-page {
+    padding-top:18px;
+  }
+  .legacy-more-list .menu-item {
+    min-height:70px;
+  }
+  .legacy-more-list .menu-icon-report {
+    background:rgba(255,113,83,.12);
+    color:#ff8066;
+  }
+  .legacy-more-extra-title {
+    margin:17px 4px 8px;
+    color:#767f86;
+    font-size:8px;
+    font-weight:740;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  .legacy-more-extra {
+    gap:7px;
+  }
+  .legacy-more-extra .menu-item {
+    min-height:62px;
+    background:#0f151a;
+  }
+  .legacy-more-extra .menu-icon {
+    width:39px;
+    height:39px;
+    border-radius:11px;
+  }
+  .legacy-more-extra .menu-icon .ui-icon {
+    width:21px;
+    height:21px;
+  }
+  .legacy-more-extra .menu-name {
+    font-size:11px;
+  }
+  .legacy-more-extra .menu-description {
+    margin-top:3px;
+    font-size:8px;
+  }
+}
