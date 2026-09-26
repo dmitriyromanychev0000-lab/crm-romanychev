@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.84.3";
-const APP_BUILD = "2026.09.26.56";
+const APP_VERSION = "0.84.4";
+const APP_BUILD = "2026.09.26.57";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Унифицированы мобильные каталоги и нижние шторки: нормальный скролл, отмена и безопасные зоны";
+const APP_RELEASE = "Исправлены слои мобильных окон и меню действий: верхнее окно всегда кликабельно, нижнее заблокировано";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3242,6 +3242,7 @@ function orderActionsSheet(order) {
       <button type="button" data-order-sheet-action="archive">${icon(order.archived ? "reopen" : "archive")}<b>${order.archived ? "Вернуть" : "В архив"}</b></button>
       <button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить заявку</b></button>
     </div>
+    <button type="button" class="order-actions-cancel" data-close-modal>Отмена</button>
   </section>`;
   document.body.appendChild(modal);
 
@@ -3504,7 +3505,11 @@ function closeTopModalFromKeyboard() {
 let modalLockScrollY = 0;
 
 const syncModalScrollLock = () => {
-  const hasModal = Boolean(document.querySelector(".modal-backdrop"));
+  const backdrops = [...document.querySelectorAll(".modal-backdrop")];
+  backdrops.forEach((backdrop, index) => {
+    backdrop.classList.toggle("modal-underlay", index < backdrops.length - 1);
+  });
+  const hasModal = backdrops.length > 0;
   const locked = document.body.classList.contains("modal-open");
 
   if (hasModal && !locked) {
