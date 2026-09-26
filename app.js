@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.61.0";
-const APP_BUILD = "2026.09.26.30";
+const APP_VERSION = "0.62.0";
+const APP_BUILD = "2026.09.26.31";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 05: компактный аналитический центр, KPI, фокус и динамика выручки";
+const APP_RELEASE = "Редизайн Sheet 06: компактные финансы, список клиентов и мобильный профиль с историей ремонтов";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2568,49 +2568,91 @@ function clientModal(clientKey) {
   const client = orders[0];
   const total = orders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
   const closed = orders.filter((order) => normalizeStatus(order.status) === "closed").length;
+  const active = orders.filter((order) => normalizeStatus(order.status) === "active").length;
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<div class="modal compact-modal">
-    <h2>${escapeHtml(client.name || "Клиент")}</h2>
-    <div class="form-grid">
-      <div class="form-group"><label>Телефон</label><div class="field readonly-field">${escapeHtml(client.phone || "—")}</div></div>
-      <div class="form-group"><label>Обращений</label><div class="field readonly-field">${orders.length}</div></div>
-      <div class="form-group"><label>Закрыто</label><div class="field readonly-field">${closed}</div></div>
-      <div class="form-group"><label>Общая сумма</label><div class="field readonly-field">${money(total)}</div></div>
-      ${client.address ? `<div class="form-group full"><label>Последний адрес</label><div class="field readonly-field">${escapeHtml(client.address)}</div></div>` : ""}
-    </div>
-    <div class="form-section-title">История заявок</div>
-    <div class="goods-list">${orders.map((order) => `<button class="goods-sheet" data-client-order="${escapeHtml(order.id)}"><span><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(order.created)} · ${escapeHtml(order.status || "В работе")}</small></span><b>${money(order.sum)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>
-    <div class="modal-actions">
-      ${client.phone ? `<a class="secondary-button icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}
-      <button type="button" class="primary-button" data-close-modal>Закрыть</button>
-    </div>
-  </div>`;
+  modal.className = "modal-backdrop client-profile-backdrop";
+  modal.innerHTML = `<section class="modal client-profile-modal" aria-label="Профиль клиента">
+    <header class="client-profile-head">
+      <button type="button" class="client-profile-back" data-close-modal aria-label="Назад">‹</button>
+      <div><strong>Клиент</strong><small>История обращений и ремонтов</small></div>
+      ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : `<span></span>`}
+    </header>
+    <main class="client-profile-content">
+      <section class="client-profile-hero">
+        <span class="client-profile-avatar">${icon("clients")}</span>
+        <div><h2>${escapeHtml(client.name || "Клиент")}</h2><p>${escapeHtml(client.phone || "Телефон не указан")}</p></div>
+      </section>
+
+      ${client.address ? `<div class="client-profile-address">${icon("location")}<span><small>Последний адрес</small><strong>${escapeHtml(client.address)}</strong></span></div>` : ""}
+
+      <section class="client-profile-kpis">
+        <div><span>Обращений</span><strong>${orders.length}</strong></div>
+        <div><span>Закрыто</span><strong class="green">${closed}</strong></div>
+        <div><span>В работе</span><strong class="blue">${active}</strong></div>
+        <div><span>Общая сумма</span><strong class="yellow">${money(total)}</strong></div>
+      </section>
+
+      <section class="client-profile-history">
+        <h3>История ремонтов</h3>
+        <div class="client-profile-orders">${orders.map((order) => {
+          const status = normalizeStatus(order.status);
+          return `<button type="button" data-client-order="${escapeHtml(order.id)}">
+            <span class="client-order-icon">${icon(applianceIconName(order.tech))}</span>
+            <span class="client-order-copy"><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(orderDateValue(order))} · ${escapeHtml(order.status || "В работе")}</small><em>${escapeHtml(order.brand || order.issue || "")}</em></span>
+            <span class="client-order-side"><b>${money(order.sum)}</b><i class="${status === "closed" ? "green" : status === "declined" ? "red" : "blue"}">${escapeHtml(order.status || "В работе")}</i></span>
+          </button>`;
+        }).join("")}</div>
+      </section>
+    </main>
+  </section>`;
   document.body.appendChild(modal);
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  const close = () => modal.remove();
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
   modal.addEventListener("click", (event) => {
-    if (event.target === modal) return modal.remove();
+    if (event.target === modal) return close();
     const orderButton = event.target.closest("[data-client-order]");
     if (!orderButton) return;
     const order = data.orders.find((item) => String(item.id) === String(orderButton.dataset.clientOrder));
     if (!order) return;
-    modal.remove();
-    newOrderModal(order);
+    close();
+    orderDetailModal(order);
   });
 }
 
 function financeModal(type) {
   const isIncome = type === "income";
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal" id="finance-form"><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2><div class="form-grid"><div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" required /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div><div class="form-group full"><label>Описание</label><input class="field" name="description" required /></div><div class="form-group full"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  modal.className = "modal-backdrop finance-entry-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal finance-entry-modal" id="finance-form">
+    <div class="finance-entry-head">
+      <div><small>Финансы</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
+      <button type="button" class="finance-entry-close" data-close-modal aria-label="Закрыть">×</button>
+    </div>
+    <div class="finance-entry-type ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}<span>${isIncome ? "Пополнение личных финансов" : "Личный расход вне заявки"}</span></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" inputmode="decimal" required placeholder="0" /></div>
+      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" required /></div>
+      <div class="form-group full"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div>
+      <div class="form-group full"><label>Описание</label><input class="field" name="description" required placeholder="${isIncome ? "Например, продажа запчасти" : "Например, топливо"}" /></div>
+    </div>
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+  </form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const item = { id: crypto.randomUUID(), amount: Number(form.get("amount")) || 0, category: form.get("category"), description: form.get("description"), date: new Date(`${form.get("date")}T12:00:00`).toISOString(), source: "manual" };
+    const amount = Number(form.get("amount")) || 0;
+    if (amount <= 0) return toast("Укажи сумму");
+    const item = {
+      id: crypto.randomUUID(),
+      amount,
+      category: String(form.get("category") || "").trim() || (isIncome ? "Дополнительный доход" : "Личные расходы"),
+      description: String(form.get("description") || "").trim(),
+      date: new Date(`${form.get("date")}T12:00:00`).toISOString(),
+      source: "manual"
+    };
     data[isIncome ? "incomes" : "expenses"].push(item);
     await saveData();
     modal.remove();
