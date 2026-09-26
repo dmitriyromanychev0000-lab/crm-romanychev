@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.77.0";
-const APP_BUILD = "2026.09.26.46";
+const APP_VERSION = "0.78.0";
+const APP_BUILD = "2026.09.26.47";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: настройки и служебные экраны";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: просмотр заявки как старая карточка";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3122,31 +3122,92 @@ function orderDetailModal(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
   const isDeclined = statusType === "declined";
-  const statusClass = isClosed ? "closed" : isDeclined ? "declined" : "";
-  const visit = visitTimeParts(order.nextVisit);
+  const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "active";
+  const statusText = order.archived ? "Архив" : (order.status || "В работе");
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
-  const photos = Array.isArray(order.photos) ? order.photos : [];
-  const firstPhoto = photos.map(photoSource).find(Boolean);
+  const photos = (Array.isArray(order.photos) ? order.photos : []).map(photoSource).filter(Boolean);
+  const net = orderNetAmount(order);
+  const phoneHref = String(order.phone || "").replace(/[^+\d]/g, "");
+  const telegram = telegramPhoneLink(order.phone);
+  const guaranteeText = Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "без гарантии";
+  const serviceTotal = services.reduce((sum,item) => sum + (Number(item.qty)||1) * (Number(item.price)||0), 0);
+  const materialTotal = materials.reduce((sum,item) => sum + (Number(item.qty)||1) * (Number(item.unitCost)||0), 0);
+
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop order-detail-backdrop";
-  modal.innerHTML = `<section class="modal order-detail-modal" aria-label="Заявка №${escapeHtml(order.id)}">
-    <header class="order-detail-head"><button type="button" class="order-detail-back" data-close-modal aria-label="Назад">‹</button><div><strong>CRM <span>by</span> Romanychev😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></div><button type="button" class="order-detail-more" data-detail-action="more" aria-label="Действия">${icon("more")}</button></header>
-    <main class="order-detail-content">
-      <div class="order-detail-title"><div><h2>Заявка №${escapeHtml(order.id || "—")}</h2><small>Создана ${escapeHtml(shortDate(orderDateValue(order)) || "—")}</small></div><span class="status ${statusClass}">${escapeHtml(order.status || "В работе")}</span></div>
-      <button type="button" class="order-detail-appliance" data-detail-action="edit"><span class="detail-appliance-icon">${firstPhoto ? `<img src="${escapeHtml(firstPhoto)}" alt="Техника" />` : icon(applianceIconName(order.tech))}</span><span><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || "Модель не указана")}</small></span><i>${icon("chevron")}</i></button>
-      <section class="order-detail-info">
-        <div class="detail-row"><span>${icon("clients")}</span><div><strong>${escapeHtml(order.name || "Клиент")}</strong>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${escapeHtml(order.phone)}</a>` : ""}</div>${order.phone ? `<a class="detail-round-action" href="tel:${escapeHtml(order.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : ""}</div>
-        ${order.address ? `<div class="detail-row"><span>${icon("location")}</span><div><strong>${escapeHtml(order.address)}</strong><small>Адрес выезда</small></div></div>` : ""}
-        ${order.nextVisit ? `<div class="detail-row"><span>${icon("calendar")}</span><div><strong>${escapeHtml(visit.day)}</strong><small>${escapeHtml(visit.time)}</small></div></div>` : ""}
-        ${order.issue ? `<div class="detail-row"><span>${icon("document")}</span><div><strong>${escapeHtml(order.issue)}</strong><small>${escapeHtml(order.diagnosis || "Неисправность со слов клиента")}</small></div></div>` : ""}
+  modal.className = "modal-backdrop order-detail-backdrop legacy-order-detail-backdrop";
+  modal.innerHTML = `<section class="modal order-detail-modal legacy-order-detail-modal" aria-label="Заявка №${escapeHtml(order.id)}">
+    <header class="legacy-order-detail-brand">
+      <button type="button" class="legacy-detail-back" data-close-modal aria-label="Назад">‹</button>
+      <span class="legacy-detail-logo">${icon("logo")}</span>
+      <span class="legacy-detail-brand-copy"><strong>CRM by <b>Romanychev</b> 😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></span>
+      <button type="button" class="legacy-detail-more" data-detail-action="more" aria-label="Ещё">${icon("more")}</button>
+    </header>
+
+    <main class="legacy-order-detail-content">
+      <article class="legacy-expanded-order-card ${cardClass}">
+        <span class="legacy-expanded-accent"></span>
+
+        <div class="legacy-expanded-head">
+          <div class="legacy-expanded-title"><b>№${escapeHtml(order.id || "—")}</b><strong>${escapeHtml(order.name || "Без имени")}</strong></div>
+          <div class="legacy-expanded-head-side"><time>${shortDate(orderDateValue(order))}</time><span class="legacy-expanded-status ${cardClass}">${escapeHtml(statusText)}</span></div>
+        </div>
+
+        <div class="legacy-expanded-device">
+          <span class="legacy-expanded-device-icon">${icon(applianceIconName(order.tech))}</span>
+          <span class="legacy-expanded-device-copy"><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || "Модель не указана")}</small></span>
+        </div>
+
+        <div class="legacy-expanded-money">
+          <div><span>СУММА КЛИЕНТА</span><strong>${money(order.sum)}</strong></div>
+          <div><span class="net">${icon("goods")} НА РУКИ</span><strong class="${isClosed ? "green" : ""}">${isClosed ? money(net) : "После закрытия"}</strong></div>
+        </div>
+
+        <div class="legacy-expanded-meta">
+          ${order.phone ? `<span>${icon("phone")}<b>${escapeHtml(order.phone)}</b></span>` : ""}
+          ${order.address ? `<span class="address">${icon("location")}<b>${escapeHtml(order.address)}</b></span>` : ""}
+          <span>${icon("shield")}<b>${guaranteeText}</b></span>
+        </div>
+        ${order.nextVisit ? `<div class="legacy-expanded-visit">${icon("calendar")}<span>Следующий визит: ${escapeHtml(formatVisitDate(order.nextVisit))}</span></div>` : ""}
+
+        ${photos.length ? `<div class="legacy-expanded-photos">${photos.slice(0,6).map((src,index)=>`<button type="button" class="legacy-expanded-photo" aria-label="Фото ${index+1}"><img src="${src}" alt="" /></button>`).join("")}</div>` : ""}
+
+        <div class="legacy-expanded-actions">
+          <button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button>
+          <button type="button" data-detail-action="toggle" class="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
+          <button type="button" data-detail-action="copy" class="copy">${icon("copy")}<span>Копия</span></button>
+          ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" class="phone" disabled>${icon("phone")}<span>Позвонить</span></button>`}
+          ${telegram ? `<a href="${escapeHtml(telegram)}" class="telegram">${icon("telegram")}<span>Telegram</span></a>` : `<button type="button" class="telegram" disabled>${icon("telegram")}<span>Telegram</span></button>`}
+          <button type="button" data-detail-action="delete" class="delete">${icon("trash")}<span>Удалить</span></button>
+        </div>
+      </article>
+
+      <section class="legacy-detail-section">
+        <div class="legacy-detail-section-head"><span>${icon("tools")}</span><h3>Работы и услуги</h3><b>${money(serviceTotal)}</b></div>
+        ${services.length ? `<div class="legacy-detail-lines">${services.map(item=>`<div><span><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт.</small></span><b>${money((Number(item.qty)||1)*(Number(item.price)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Работы пока не добавлены.</p>`}
       </section>
-      <div class="detail-actions"><button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button><button type="button" data-detail-action="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button><button type="button" data-detail-action="copy">${icon("copy")}<span>Копия</span></button>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}</div>
-      <section class="detail-total"><div><span>Стоимость работ</span><strong>${money(services.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.price) || 0), 0))}</strong></div><div><span>Стоимость запчастей</span><strong>${money(materials.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.unitCost) || 0), 0))}</strong></div><div><span>Итого</span><strong>${money(order.sum)}</strong></div></section>
-      <section class="detail-lines"><h3>Работы и услуги</h3>${services.length ? services.map(item => `<div><span>${icon("tools")}</span><p><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт.</small></p><b>${money((Number(item.qty) || 1) * (Number(item.price) || 0))}</b></div>`).join("") : `<p class="detail-empty">Работы пока не добавлены</p>`}</section>
+
+      <section class="legacy-detail-section">
+        <div class="legacy-detail-section-head"><span>${icon("warehouse")}</span><h3>Запчасти и материалы</h3><b>${money(materialTotal)}</b></div>
+        ${materials.length ? `<div class="legacy-detail-lines">${materials.map(item=>`<div><span><strong>${escapeHtml(item.name || "Материал")}</strong><small>${escapeHtml(item.qty || 1)} ${escapeHtml(item.unit || "шт.")}</small></span><b>${money((Number(item.qty)||1)*(Number(item.unitCost)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Материалы пока не добавлены.</p>`}
+      </section>
+
+      ${order.issue || order.diagnosis || order.defects || order.comment ? `<section class="legacy-detail-section legacy-detail-notes">
+        <div class="legacy-detail-section-head"><span>${icon("document")}</span><h3>Описание ремонта</h3></div>
+        ${order.issue ? `<div><span>НЕИСПРАВНОСТЬ</span><p>${escapeHtml(order.issue)}</p></div>` : ""}
+        ${order.diagnosis ? `<div><span>ДИАГНОСТИКА</span><p>${escapeHtml(order.diagnosis)}</p></div>` : ""}
+        ${order.defects ? `<div><span>ВНЕШНИЕ ДЕФЕКТЫ</span><p>${escapeHtml(order.defects)}</p></div>` : ""}
+        ${order.comment ? `<div><span>КОММЕНТАРИЙ</span><p>${escapeHtml(order.comment)}</p></div>` : ""}
+      </section>` : ""}
+
+      <section class="legacy-detail-total-row">
+        <span>Итого по заявке</span><strong>${money(order.sum)}</strong>
+      </section>
     </main>
   </section>`;
+
   document.body.appendChild(modal);
+
   const run = (action) => {
     modal.remove();
     if (action === "edit") return newOrderModal(order);
