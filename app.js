@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.86.0";
-const APP_BUILD = "2026.09.26.61";
+const APP_VERSION = "0.87.0";
+const APP_BUILD = "2026.09.26.62";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Крупно переработаны форма и просмотр заявки: секции, иерархия, действия и мобильная читаемость";
+const APP_RELEASE = "Переработаны финансы и клиенты: главный результат, компактная история и быстрый повторный заказ из профиля клиента";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1392,9 +1392,9 @@ function clientsPage() {
     <div class="legacy-client-search search-row search-with-icon">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
 
     <section class="legacy-clients-stats">
-      <div><span>КЛИЕНТОВ</span><strong>${sorted.length}</strong></div>
-      <div><span>В РАБОТЕ</span><strong class="blue">${activeNow}</strong></div>
-      <div><span>ЗАКРЫТО</span><strong class="green">${closedOrders}</strong></div>
+      <div class="clients-stat-primary"><span>КЛИЕНТОВ</span><strong>${sorted.length}</strong><small>${activeOrders.length} обращений всего</small></div>
+      <div><span>В РАБОТЕ</span><strong class="blue">${activeNow}</strong><small>активные заявки</small></div>
+      <div><span>ЗАКРЫТО</span><strong class="green">${closedOrders}</strong><small>завершённые ремонты</small></div>
     </section>
 
     ${filtered.length ? `<div class="legacy-client-list">${filtered.map((client) => {
@@ -1454,9 +1454,9 @@ function financePage() {
     </div>
 
     <section class="legacy-finance-summary">
-      <div class="income"><span>ДОХОДЫ</span><strong>+${money(incomes)}</strong></div>
-      <div class="expense"><span>РАСХОДЫ</span><strong>−${money(expenses)}</strong></div>
-      <div class="result"><span>РЕЗУЛЬТАТ</span><strong class="${result >= 0 ? "green" : "red"}">${money(result)}</strong></div>
+      <div class="result finance-result-hero"><span>РЕЗУЛЬТАТ ПЕРИОДА</span><strong class="${result >= 0 ? "green" : "red"}">${money(result)}</strong><small>${rows.length} операций</small></div>
+      <div class="income"><span>ДОХОДЫ</span><strong>+${money(incomes)}</strong><small>${incomeRows.length} поступлений</small></div>
+      <div class="expense"><span>РАСХОДЫ</span><strong>−${money(expenses)}</strong><small>${expenseRows.length} списаний</small></div>
     </section>
 
     <div class="legacy-finance-actions">
@@ -2869,6 +2869,11 @@ function clientModal(clientKey) {
 
       ${client.address ? `<div class="client-profile-address">${icon("location")}<span><small>Последний адрес</small><strong>${escapeHtml(client.address)}</strong></span></div>` : ""}
 
+      <div class="client-profile-actions">
+        ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled>${icon("phone")}<span>Нет телефона</span></button>`}
+        <button type="button" data-client-new-order>${icon("orders")}<span>Новая заявка</span></button>
+      </div>
+
       <section class="client-profile-kpis">
         <div><span>Обращений</span><strong>${orders.length}</strong></div>
         <div><span>Закрыто</span><strong class="green">${closed}</strong></div>
@@ -2894,6 +2899,20 @@ function clientModal(clientKey) {
   modal.querySelector("[data-close-modal]").addEventListener("click", close);
   modal.addEventListener("click", (event) => {
     if (event.target === modal) return close();
+    const newOrderButton = event.target.closest("[data-client-new-order]");
+    if (newOrderButton) {
+      close();
+      return newOrderModal({
+        name: client.name || "",
+        phone: client.phone || "",
+        address: client.address || "",
+        status: "В работе",
+        guarantee: 6,
+        services: [],
+        materials: [],
+        photos: []
+      }, { forceNew: true });
+    }
     const orderButton = event.target.closest("[data-client-order]");
     if (!orderButton) return;
     const order = data.orders.find((item) => String(item.id) === String(orderButton.dataset.clientOrder));
@@ -2909,7 +2928,8 @@ function financeModal(type) {
   modal.className = "modal-backdrop finance-entry-backdrop legacy-finance-entry-backdrop";
   modal.innerHTML = `<form class="modal compact-modal finance-entry-modal" id="finance-form">
     <div class="finance-entry-head">
-      <div><small>Финансы</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
+      <span class="finance-entry-head-icon ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}</span>
+      <div><small>ФИНАНСЫ</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
       <button type="button" class="finance-entry-close" data-close-modal aria-label="Закрыть">×</button>
     </div>
     <div class="finance-entry-type ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}<span>${isIncome ? "Пополнение личных финансов" : "Личный расход вне заявки"}</span></div>
