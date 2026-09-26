@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.91.0";
-const APP_BUILD = "2026.09.26.66";
+const APP_VERSION = "0.91.1";
+const APP_BUILD = "2026.09.26.67";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Нормализован мобильный масштаб интерфейса: крупнее текст, понятнее мета-информация и удобнее элементы управления";
+const APP_RELEASE = "Исправлены каталог услуг и выбранные услуги: полноэкранный каталог, нижний футер и компактные строки без огромных полей";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
