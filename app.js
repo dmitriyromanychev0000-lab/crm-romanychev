@@ -1937,10 +1937,11 @@ async function shareShoppingList() {
 function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
   return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">‹</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
-    <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать</span></button></div>
-    ${items.length ? `<div class="client-list">${items.map((item) => {
+    <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${items.length} ${items.length === 1 ? "позицию" : items.length >= 2 && items.length <= 4 ? "позиции" : "позиций"}</strong></span></section>
+    <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
+    ${items.length ? `<div class="shopping-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
-      return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
+      return `<article class="shopping-card legacy-shopping-card"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · осталось ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
