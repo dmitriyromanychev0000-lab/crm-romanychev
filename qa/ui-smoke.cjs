@@ -92,9 +92,9 @@ function uiState(extra) {
   }, extra || {});
 }
 
-async function writeSeed(page) {
+async function writeSeed(page, payload = seed) {
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
-  await page.evaluate(async (payload) => {
+  await page.evaluate(async (payloadValue) => {
     await new Promise((resolve, reject) => {
       const request = indexedDB.open("crm-romanychev", 1);
       request.onupgradeneeded = () => {
@@ -104,12 +104,12 @@ async function writeSeed(page) {
       request.onsuccess = () => {
         const db = request.result;
         const tx = db.transaction("keyval", "readwrite");
-        tx.objectStore("keyval").put(payload, "crm-data");
+        tx.objectStore("keyval").put(payloadValue, "crm-data");
         tx.oncomplete = () => { db.close(); resolve(); };
         tx.onerror = () => reject(tx.error);
       };
     });
-  }, seed);
+  }, payload);
 }
 
 async function setState(page, state) {
@@ -307,6 +307,74 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator('[data-action="new-receipt"]').click();
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
+
+      if (width === 320) {
+        const stressSeed = structuredClone(seed);
+        Object.assign(stressSeed.orders[0], {
+          name: "Александр Константинопольский-Смирнов Очень Длинное Имя Клиента",
+          brand: "Samsung Bespoke Family Hub RB38A7B6BB1/WT очень длинная модель холодильника",
+          address: "Санкт-Петербург, внутригородское муниципальное образование, проспект Испытателей, дом 124 корпус 7 строение 2 квартира 987",
+          issue: "Периодически полностью перестаёт охлаждать верхняя камера, появляется громкий посторонний шум и ошибка на дисплее после длительной работы",
+          sum: 987654321,
+          expense_gray: 12345678,
+          expense_white: 8765432
+        });
+        stressSeed.warehouse[0].name = "Вентилятор испарителя Samsung оригинальный с длинным заводским артикулом DA31-00334D и дополнительным описанием";
+        stressSeed.receipt_prices[0].name = "Диагностика холодильника с полной проверкой электронного модуля управления и температурных датчиков";
+        await writeSeed(page, stressSeed);
+
+        for (const [stressLabel, stressState] of [
+          ["stress-orders", uiState({ activePage: "orders" })],
+          ["stress-warehouse", uiState({ activePage: "warehouse", warehouseSection: "list" })],
+          ["stress-prices", uiState({ activePage: "more", moreSection: "prices" })]
+        ]) {
+          await setState(page, stressState);
+          const stressResult = await shot(page, width, stressLabel, true);
+          report.results.push(stressResult);
+          if (stressResult.overflow > 2) report.failures.push({ width, type: "stress-horizontal-overflow", label: stressLabel, overflow: stressResult.overflow });
+        }
+
+        await setState(page, uiState({ activePage: "orders" }));
+        await page.locator(".legacy-order-card").first().click();
+        const stressDetail = await shot(page, width, "stress-order-detail", false);
+        report.results.push(stressDetail);
+        if (stressDetail.overflow > 2) report.failures.push({ width, type: "stress-horizontal-overflow", label: "stress-order-detail", overflow: stressDetail.overflow });
+        await page.keyboard.press("Escape");
+
+        const emptySeed = structuredClone(seed);
+        emptySeed.orders = [];
+        emptySeed.warehouse = [];
+        emptySeed.warehouse_movements = [];
+        emptySeed.expenses = [];
+        emptySeed.incomes = [];
+        emptySeed.service_custom = [];
+        emptySeed.receipts = [];
+        emptySeed.receipt_prices = [];
+        emptySeed.tools = [];
+        emptySeed.goods_sheets = [];
+        emptySeed.draft = [];
+        await writeSeed(page, emptySeed);
+
+        for (const [emptyLabel, emptyState] of [
+          ["empty-orders", uiState({ activePage: "orders" })],
+          ["empty-warehouse", uiState({ activePage: "warehouse", warehouseSection: "list" })],
+          ["empty-clients", uiState({ activePage: "more", moreSection: "clients" })],
+          ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })]
+        ]) {
+          await setState(page, emptyState);
+          const emptyResult = await shot(page, width, emptyLabel, true);
+          report.results.push(emptyResult);
+          if (emptyResult.overflow > 2) report.failures.push({ width, type: "empty-horizontal-overflow", label: emptyLabel, overflow: emptyResult.overflow });
+        }
+      }
+
+      if (width === 390) {
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
+        await page.emulateMedia({ media: "print" });
+        await page.pdf({ path: outDir + "/act-a4.pdf", format: "A4", printBackground: true, preferCSSPageSize: true });
+        await page.emulateMedia({ media: "screen" });
+      }
     }
 
     await context.close();
