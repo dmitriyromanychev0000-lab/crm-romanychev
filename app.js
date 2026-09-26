@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.63.0";
-const APP_BUILD = "2026.09.26.32";
+const APP_VERSION = "0.64.0";
+const APP_BUILD = "2026.09.26.33";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 07: прайс-лист, свои услуги и мобильный товарник с сохранением единиц измерения";
+const APP_RELEASE = "Редизайн Sheet 08: акт, A4/PDF и документы с мобильным редактором квитанций";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1402,7 +1402,7 @@ function actPage() {
     <section class="panel no-print act-control-panel">
       <div class="panel-title"><span class="badge-icon">${icon("printer")}</span> Акт выполненных работ (A4)</div>
       <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
-      <button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / сохранить PDF</span></button>
+      <div class="act-control-actions"><button class="secondary-button" type="button" data-action="open-receipts">${icon("receipt")}<span>Документы и чеки</span></button><button class="primary-button act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button></div>
     </section>
 
     ${order ? `<article class="act-sheet">
@@ -1416,7 +1416,7 @@ function actPage() {
         <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
       </div>
 
-      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table>
+      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "—"}</td></tr>`).join("")}</tbody></table>
 
       <div class="act-totals">
         <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
@@ -1649,7 +1649,7 @@ function receiptsPage() {
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content receipts-content">
-    <div class="page-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и старые документы CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="page-head receipts-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и документы CRM</p></div><button class="secondary-button" data-action="act-screen">Назад к акту</button></div>
 
     <section class="panel receipt-stats-panel">
       <div class="metrics">
@@ -2416,16 +2416,17 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
   const orderOptions = ordersNewestFirst().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal" id="receipt-form">
-    <h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2>
+  modal.className = "modal-backdrop receipt-editor-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
+    <div class="receipt-editor-head"><div><small>Документы и чеки</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
     <div class="form-grid">
-      <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Чек, квитанция, заказ-наряд…" /></div>
-      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" /></div>
+      <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
+      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" placeholder="Необязательно" /></div>
       <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${escapeHtml(dateValue)}" /></div>
-      <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" value="${view.amount}" /></div>
+      <div class="form-group"><label>Сумма</label><input class="field receipt-editor-amount" name="amount" type="number" min="0" step="1" value="${view.amount}" inputmode="decimal" /></div>
       <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(view.note)}</textarea></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Комментарий к документу">${escapeHtml(view.note)}</textarea></div>
     </div>
     <div class="modal-actions">${isStored ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2444,14 +2445,15 @@ function receiptModal(existing = null, receiptIndex = -1) {
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
-      title: form.get("title"),
-      number: form.get("number"),
+      title: String(form.get("title") || "").trim(),
+      number: String(form.get("number") || "").trim(),
       date: date ? new Date(`${date}T12:00:00`).toISOString() : null,
       amount: Number(form.get("amount")) || 0,
       orderId: form.get("orderId") || null,
-      note: form.get("note"),
+      note: String(form.get("note") || "").trim(),
       updatedAt: new Date().toISOString()
     };
+    if (!next.title) return toast("Укажи название документа");
     if (!Array.isArray(data.receipts)) data.receipts = [];
     if (receiptIndex >= 0) data.receipts[receiptIndex] = next;
     else data.receipts.push({ ...next, createdAt: new Date().toISOString() });
@@ -3261,6 +3263,22 @@ app.addEventListener("click", async (event) => {
   if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "protect-storage") return requestPersistentStorage();
   if (action === "new-price") return priceModal();
+  if (action === "open-receipts") {
+    activePage = "more";
+    moreSection = "receipts";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (action === "act-screen") {
+    activePage = "more";
+    moreSection = "act";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
     const key = event.target.closest("[data-action]").dataset.key;
