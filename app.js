@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.6";
-const APP_BUILD = "2026.09.26.86";
+const APP_VERSION = "0.99.7";
+const APP_BUILD = "2026.09.26.87";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Усилена целостность бэкапов: неоднозначные дубли ID заявок, склада и товарников блокируются до импорта, диагностика показывает состояние идентификаторов";
+const APP_RELEASE = "Дочищен 320 px интерфейс: активный денежный KPI больше не обрезается, отказ не показывает «после закрытия», каталог услуг получил короткие подписи и единые SVG-иконки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -181,6 +181,7 @@ const ICONS = {
   restore: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
   refresh: '<path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M6.1 8.2A7 7 0 0 1 18.4 6L20 8M4 16l1.6 2A7 7 0 0 0 18 15.8"/>',
   eye: '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  folder: '<path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/>',
   phone: '<path d="M6.6 2.8 9 7.6 6.8 9a15 15 0 0 0 8.2 8.2l1.4-2.2 4.8 2.4v3a2 2 0 0 1-2 2C9.5 22.4 1.6 14.5 1.6 4.8a2 2 0 0 1 2-2Z"/>',
   appliance: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M5 8h14M9 5h.01M13 5h.01"/><circle cx="12" cy="15" r="4"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
@@ -858,7 +859,7 @@ function orderCard(order) {
 
     <div class="legacy-order-money">
       <div><span>СУММА КЛИЕНТА</span><strong>${money(order.sum)}</strong></div>
-      <div><span class="legacy-net-label">${icon("goods")} НА РУКИ</span><strong class="${isClosed ? "green" : ""}">${isClosed ? money(net) : "После закрытия"}</strong></div>
+      <div><span class="legacy-net-label">${icon("goods")} НА РУКИ</span><strong class="${isClosed ? "green" : isDeclined ? "muted" : "pending"}">${isClosed ? money(net) : isDeclined ? "—" : "После закрытия"}</strong></div>
     </div>
 
     <div class="legacy-order-meta">
@@ -2187,7 +2188,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
     <div class="catalog-service-list" id="catalog-service-list"></div>
     <div class="catalog-fit-summary">
-      <div><span>Услуг выбрано на:</span><strong id="catalog-selected-total">0 ₽</strong></div>
+      <div><span>Выбрано:</span><strong id="catalog-selected-total">0 ₽</strong></div>
       <div><span>Цель:</span><strong id="catalog-target-total">0 ₽</strong></div>
       <div><span>Разница:</span><strong id="catalog-diff-total">0 ₽</strong></div>
     </div>
@@ -2234,13 +2235,13 @@ function openServiceCatalog(orderModal, serviceCatalog) {
 
     list.innerHTML = groups.size ? [...groups.entries()].map(([group, entries]) => `
       <section class="catalog-service-group">
-        <h3>📁 ${escapeHtml(group)}</h3>
+        <h3>${icon("folder")}<span>${escapeHtml(group)}</span></h3>
         ${entries.map(({ item, index }) => {
           const active = selected.has(index);
           const value = selected.get(index) || item;
           return `<label class="catalog-service-option ${active ? "selected" : ""}">
             <input type="checkbox" data-service-index="${index}" ${active ? "checked" : ""} />
-            <span class="catalog-check">${active ? "✓" : ""}</span>
+            <span class="catalog-check">${active ? icon("check") : ""}</span>
             <span class="catalog-service-copy"><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.tech || item.category || "")}</small></span>
             <span class="catalog-service-price">${money(value.price || 0)}</span>
           </label>`;
