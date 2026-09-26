@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.14
+# Design QA — Release 1.0.0
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -19,7 +19,7 @@ The real-phone screenshot provided usable evidence for the header, period contro
 ## Findings
 
 - Automated release QA: **passed**.
-  - Latest full Chromium smoke covers 97 states across 320 / 360 / 390 / 430 px with zero failures.
+  - Latest full Chromium smoke covers 99 states across 320 / 360 / 390 / 430 px with zero failures.
   - Coverage includes long-data stress, empty/archived states, order detail/actions, both nested catalogs, stock/client/goods/tool/receipt editors, navigation/search/filter clicks, modal inert + scroll-lock, PWA offline reload and A4 PDF.
   - Remaining non-automated check: subjective real-device density and Android/iOS virtual-keyboard behavior.
 
@@ -74,3 +74,5 @@ final result: automated release QA passed
 - Version 0.99.13 keeps client-facing money values complete under long-data stress by replacing ellipsis truncation with responsive numeric sizing.
 
 - Version 0.99.14 extends backup self-test equality checks to `settings`, so company/user details and backup preferences are covered by the JSON → validate → IndexedDB → validate round-trip.
+
+- Version 1.0.0 is the first release build after a 99-state zero-failure mobile regression pass covering long/empty/archive data, nested modals, keyboard-height reachability, backup round-trip including settings, PWA offline reload and one-page A4 PDF output.
