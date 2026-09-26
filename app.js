@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.9";
-const APP_BUILD = "2026.09.26.89";
+const APP_VERSION = "0.99.10";
+const APP_BUILD = "2026.09.26.90";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлено двойное закрытие вложенного каталога по Escape: теперь закрывается только верхний слой, редактор заявки остаётся открыт и scroll-lock сохраняется";
+const APP_RELEASE = "Финальный QA-polish: переключатель автобэкапа получил 44 px touch-target без растягивания на 320 px, расширенный Chromium-smoke контролирует 86+ состояний";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
