@@ -6406,3 +6406,239 @@
     font-size: 13px !important;
   }
 }
+
+/* 0.93.1 · Аналитика: плотность по скриншоту реального телефона. */
+@media screen and (max-width: 520px) {
+  .analytics-content {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .analytics-content .page-head {
+    margin-bottom: 8px !important;
+  }
+
+  .analytics-content .page-head h1 {
+    font-size: 25px !important;
+  }
+
+  .analytics-content .page-head .lead {
+    display: none;
+  }
+
+  .analytics-content .panel {
+    margin-bottom: 8px !important;
+    padding: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .analytics-content .panel-title {
+    margin-bottom: 8px !important;
+  }
+
+  .analytics-kpi-panel .panel-title > span:last-child > small,
+  .analytics-focus .panel-title > span:last-child > small {
+    display: none !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    grid-template-columns: 32px minmax(0,1fr);
+    gap: 7px;
+    min-height: 80px !important;
+    padding: 8px !important;
+  }
+
+  .analytics-kpi-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+
+  .analytics-kpi-icon .ui-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .analytics-kpi > div > strong {
+    margin-top: 4px;
+    font-size: clamp(14px,3.9vw,17px) !important;
+  }
+
+  .analytics-kpi > div > small {
+    margin-top: 4px;
+    font-size: 9px;
+  }
+
+  .analytics-summary-strip {
+    margin-top: 6px;
+  }
+
+  .analytics-summary-strip > span {
+    min-height: 35px;
+    padding: 6px 8px;
+  }
+
+  .analytics-focus-row {
+    grid-template-columns: 32px minmax(0,1fr) auto;
+    gap: 8px;
+    min-height: 52px;
+    padding: 6px 8px;
+  }
+
+  .analytics-focus-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+
+  .analytics-focus-icon .ui-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .analytics-focus-row b {
+    font-size: 11.5px;
+  }
+
+  .analytics-focus-row small {
+    font-size: 9.5px;
+  }
+
+  .analytics-focus-row > strong {
+    font-size: 17px;
+  }
+
+  .analytics-work .metric {
+    min-height: 80px !important;
+    padding: 8px !important;
+  }
+
+  .analytics-collapsible {
+    padding: 0 !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    grid-template-columns: 29px minmax(0,1fr);
+    gap: 6px;
+    min-height: 76px !important;
+    padding: 7px !important;
+  }
+
+  .analytics-kpi-icon {
+    width: 29px;
+    height: 29px;
+  }
+}
+
+/* 0.93.1 · Аналитика: единый вес и выравнивание иконок и текста. */
+@media screen and (max-width: 520px) {
+  .analytics-content .panel-title {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr);
+    gap: 9px !important;
+    align-items: center;
+    line-height: 1.15;
+  }
+
+  .analytics-content .panel-title > .badge-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+  }
+
+  .analytics-content .panel-title > .badge-icon .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 1.9;
+  }
+
+  .analytics-kpi-panel .badge-icon {
+    background: rgba(255,113,83,.13);
+    color: var(--crm-accent);
+  }
+
+  .analytics-focus .badge-icon {
+    background: rgba(255,102,112,.13);
+    color: var(--crm-red);
+  }
+
+  .analytics-work .badge-icon,
+  .analytics-list-panel .badge-icon {
+    background: rgba(168,138,240,.13);
+    color: var(--crm-purple);
+  }
+
+  .analytics-ranking .badge-icon {
+    background: rgba(231,180,80,.13);
+    color: var(--crm-yellow);
+  }
+
+  .analytics-stock-summary .badge-icon,
+  .analytics-chart-panel .badge-icon {
+    background: rgba(92,169,255,.13);
+    color: var(--crm-blue);
+  }
+
+  .analytics-content .panel-title > span:last-child {
+    min-width: 0;
+  }
+
+  .analytics-content .panel-title > span:last-child > small {
+    line-height: 1.2;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    align-items: center;
+  }
+
+  .analytics-kpi > div > span {
+    font-size: 10px;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .analytics-kpi > div > strong,
+  .analytics-kpi > div > small {
+    line-height: 1.15;
+  }
+
+  .analytics-work .metric-label {
+    letter-spacing: 0 !important;
+    line-height: 1.15 !important;
+    text-transform: none !important;
+  }
+
+  .analytics-summary-strip small,
+  .analytics-summary-strip b {
+    line-height: 1.15;
+  }
+
+  .nav-button .nav-icon {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    min-height: 28px !important;
+    margin: 0 auto 2px !important;
+    place-items: center;
+  }
+
+  .nav-button .nav-icon .ui-icon {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 1.85;
+  }
+
+  .nav-button > span:last-child {
+    display: block;
+    line-height: 1.1;
+  }
+}

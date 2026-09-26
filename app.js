@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.93.0";
-const APP_BUILD = "2026.09.26.72";
+const APP_VERSION = "0.93.1";
+const APP_BUILD = "2026.09.26.73";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Переработана мобильная аналитика: компактные периоды, четыре главных KPI, рабочий фокус и сворачиваемые подробности";
+const APP_RELEASE = "Уплотнена мобильная аналитика по проверке на реальном телефоне: меньше повторов, ниже KPI и безопасный отступ над навигацией";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -688,8 +688,8 @@ async function maybeAutoBackup() {
 function nav() {
   const items = [
     ["orders", "orders", "Заявки"],
-    ["warehouse", "warehouse", "Склад"],
-    ["analytics", "analytics", "Аналитика"],
+    ["warehouse", "box", "Склад"],
+    ["analytics", "chart", "Аналитика"],
     ["more", "more", "Ещё"]
   ];
   return `<nav class="bottom-nav">${items.map(([id, iconName, label]) => `
@@ -1190,10 +1190,10 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>${escapeHtml(analyticsPeriodTitle(range))}</small></span></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>ВЫРУЧКА</span><strong>${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div></div>
-        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("gem")}</span><div><span>ИТОГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div></div>
-        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные</small></div></div>
-        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div></div>
+        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Выручка</span><strong>${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div></div>
+        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("chart")}</span><div><span>Итог</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div></div>
+        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>Расходы</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные</small></div></div>
+        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>Средний чек</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div></div>
       </div>
       <div class="analytics-summary-strip"><span><small>Чистыми с ремонта</small><b class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</b></span><span><small>Личные финансы</small><b class="${personalResult >= 0 ? "green" : "red"}">${money(personalResult)}</b></span></div>
     </section>
@@ -1202,7 +1202,7 @@ function analyticsPage() {
       <div class="panel-title"><span class="badge-icon">${icon("warning")}</span><span>Фокус внимания<small>что требует проверки сейчас</small></span></div>
       <div class="analytics-focus-list">
         <div class="analytics-focus-row"><span class="analytics-focus-icon red">${icon("calendar")}</span><span><b>Просроченные визиты</b><small>назначенная дата уже прошла</small></span><strong>${overdueVisits}</strong></div>
-        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("warehouse")}</span><span><b>Заканчивается на складе</b><small>остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
+        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("box")}</span><span><b>Заканчивается на складе</b><small>остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
         <div class="analytics-focus-row"><span class="analytics-focus-icon blue">${icon("history")}</span><span><b>Самая старая заявка</b><small>дней находится в работе</small></span><strong>${oldestActiveDays}</strong></div>
       </div>
     </section>
@@ -1222,7 +1222,7 @@ function analyticsPage() {
     </section>
 
     <details class="panel analytics-collapsible analytics-stock-summary">
-      <summary><span class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Склад<small>остатки и стоимость</small></span></span>${icon("chevron")}</summary>
+      <summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Склад<small>остатки и стоимость</small></span></span>${icon("chevron")}</summary>
       <div class="analytics-work-grid">
         <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value">${warehouseActive.length}</div></div>
         <div class="metric"><div class="metric-label">Заканчивается</div><div class="metric-value yellow">${lowStock}</div></div>
@@ -1235,7 +1235,7 @@ function analyticsPage() {
       const result = item.revenue - item.costs;
       return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
     }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</details>
-    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></span>${icon("chevron")}</summary>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</details>
+    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></span>${icon("chevron")}</summary>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</details>
   </main>`;
 }
 
