@@ -13953,3 +13953,80 @@ body.modal-open {
     overscroll-behavior-y: contain !important;
   }
 }
+
+
+/* 0.84.4 · Верхняя модалка всегда активна, нижние слои не перехватывают жесты. */
+.modal-backdrop.modal-underlay {
+  pointer-events: none !important;
+}
+
+@media screen and (max-width: 520px) {
+  .catalog-modal-backdrop,
+  .material-catalog-backdrop {
+    z-index: 420 !important;
+  }
+
+  .catalog-modal-head,
+  .material-catalog-head {
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    padding-top: calc(10px + env(safe-area-inset-top)) !important;
+  }
+
+  .stock-adjust-backdrop,
+  .legacy-analytics-range-backdrop,
+  .legacy-order-actions-backdrop {
+    z-index: 410 !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  .stock-adjust-modal,
+  .legacy-analytics-range-modal,
+  .legacy-order-actions-backdrop .order-actions-sheet {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 520px !important;
+    max-height: calc(100dvh - env(safe-area-inset-top)) !important;
+    margin: 0 auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid button,
+  .legacy-order-actions-backdrop .order-actions-grid a {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    padding: 8px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid .ui-icon {
+    width: 22px !important;
+    height: 22px !important;
+    flex: 0 0 22px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid b {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .order-actions-cancel {
+    width: 100% !important;
+    min-height: 46px !important;
+    margin-top: 8px !important;
+    border: 1px solid #343d45 !important;
+    border-radius: 11px !important;
+    background: #181f26 !important;
+    color: #e9edef !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+}
