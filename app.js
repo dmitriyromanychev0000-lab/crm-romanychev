@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.84.1";
-const APP_BUILD = "2026.09.26.54";
+const APP_VERSION = "0.84.2";
+const APP_BUILD = "2026.09.26.55";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлены мобильные редакторы и кнопки Отмена во всех модальных окнах";
+const APP_RELEASE = "Мобильные редакторы: постоянные кнопки действий, быстрый скролл и полностью заблокированный фон";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3112,6 +3112,7 @@ function goodsModal(existing = null, seed = null) {
 
     <div class="legacy-goods-savebar">
       ${isStored ? '<button type="button" class="legacy-delete-goods" id="delete-goods-sheet">Удалить</button>' : ""}
+      <button type="button" class="legacy-dark-button legacy-goods-cancel" data-close-modal>Отмена</button>
       <button type="submit" class="legacy-save-goods">Сохранить товарник</button>
     </div>
   </form>`;
@@ -3518,7 +3519,7 @@ const syncModalScrollLock = () => {
 };
 
 const modalScrollObserver = new MutationObserver(syncModalScrollLock);
-modalScrollObserver.observe(document.body, { childList: true });
+modalScrollObserver.observe(document.body, { childList: true, subtree: true });
 syncModalScrollLock();
 
 document.addEventListener("keydown", (event) => {
@@ -3533,7 +3534,18 @@ document.addEventListener("click", (event) => {
   if (!backdrop) return;
   event.preventDefault();
   backdrop.remove();
+  syncModalScrollLock();
 });
+
+const stopBackgroundScrollWhileModalOpen = (event) => {
+  if (!document.body.classList.contains("modal-open")) return;
+  const target = event.target instanceof Element ? event.target : null;
+  if (target?.closest(".modal-backdrop")) return;
+  event.preventDefault();
+};
+
+document.addEventListener("touchmove", stopBackgroundScrollWhileModalOpen, { passive: false });
+document.addEventListener("wheel", stopBackgroundScrollWhileModalOpen, { passive: false });
 
 app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
