@@ -430,6 +430,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     await context.close();
   }
 
+  const pwaContext = await browser.newContext({
+    viewport: { width: 390, height: 900 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "allow"
+  });
+  const pwaPage = await pwaContext.newPage();
+  const pageErrorMessages = [];
+  pwaPage.on("pageerror", (error) => pageErrorMessages.push(String(error)));
+  await pwaPage.goto(BASE_URL, { waitUntil: "networkidle" });
+  const swReady = await pwaPage.evaluate(async () => {
+    if (!("serviceWorker" in navigator)) return false;
+    const registration = await navigator.serviceWorker.ready;
+    return Boolean(registration?.active);
+  });
+  if (!swReady) report.failures.push({ type: "pwa-service-worker", message: "Service worker did not become active" });
+  await pwaPage.reload({ waitUntil: "networkidle" });
+  await pwaContext.setOffline(true);
+  let offlineLoaded = true;
+  try {
+    await pwaPage.reload({ waitUntil: "domcontentloaded", timeout: 10000 });
+    await pwaPage.waitForSelector("#app .shell", { timeout: 5000 });
+  } catch (error) {
+    offlineLoaded = false;
+    report.failures.push({ type: "pwa-offline-reload", message: String(error && error.message || error) });
+  }
+  const offlineShell = offlineLoaded ? await pwaPage.locator("#app .shell").count() : 0;
+  if (offlineLoaded && offlineShell !== 1) report.failures.push({ type: "pwa-offline-shell", count: offlineShell });
+  if (pageErrorMessages.length) report.failures.push({ type: "pwa-pageerror", messages: pageErrorMessages });
+  report.results.push({ label: "pwa-offline", width: 390, bodyScrollWidth: null, viewportWidth: 390, overflow: 0, modalOpen: false, tooSmall: [], serviceWorkerReady: swReady, offlineLoaded });
+  await pwaContext.setOffline(false);
+  await pwaContext.close();
+
   fs.writeFileSync(outDir + "/report.json", JSON.stringify(report, null, 2));
   console.log(JSON.stringify({ failures: report.failures, checked: report.results.length }, null, 2));
   await browser.close();
