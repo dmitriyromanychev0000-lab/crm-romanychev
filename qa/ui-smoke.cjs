@@ -430,6 +430,81 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     await context.close();
   }
 
+  const utilityContext = await browser.newContext({
+    viewport: { width: 320, height: 520 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "block"
+  });
+  await utilityContext.addInitScript(() => {
+    const nextState = sessionStorage.getItem("__crm_qa_next_state");
+    if (!nextState) return;
+    localStorage.setItem("crm-ui-state", nextState);
+    sessionStorage.removeItem("__crm_qa_next_state");
+  });
+  const utilityPage = await utilityContext.newPage();
+  utilityPage.setDefaultTimeout(8000);
+  await writeSeed(utilityPage, seed);
+
+  await setState(utilityPage, uiState({ activePage: "orders" }));
+  await utilityPage.locator('[data-action="new-order"]').first().click();
+  await utilityPage.waitForTimeout(80);
+  const issueField = utilityPage.locator('.order-editor-modal [name="issue"]');
+  await issueField.scrollIntoViewIfNeeded();
+  await issueField.focus();
+  const saveButton = utilityPage.locator('.order-editor-modal .modal-actions .primary-button');
+  await saveButton.scrollIntoViewIfNeeded();
+  const keyboardMetrics = await saveButton.evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    return {
+      top: Math.round(rect.top),
+      bottom: Math.round(rect.bottom),
+      width: Math.round(rect.width),
+      height: Math.round(rect.height),
+      viewportHeight: window.innerHeight,
+      locked: document.body.classList.contains("modal-open"),
+      bodyFixed: getComputedStyle(document.body).position === "fixed"
+    };
+  });
+  const keyboardReachable = keyboardMetrics.height >= 44
+    && keyboardMetrics.top >= 0
+    && keyboardMetrics.bottom <= keyboardMetrics.viewportHeight + 1
+    && keyboardMetrics.locked
+    && keyboardMetrics.bodyFixed;
+  if (!keyboardReachable) report.failures.push({ type: "keyboard-height-order-editor", keyboardMetrics });
+  await utilityPage.screenshot({ path: outDir + "/320-keyboard-order-editor.png", fullPage: false });
+  report.results.push({
+    label: "keyboard-order-editor",
+    width: 320,
+    viewportHeight: 520,
+    bodyScrollWidth: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)),
+    viewportWidth: 320,
+    overflow: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth),
+    modalOpen: keyboardMetrics.locked,
+    tooSmall: [],
+    keyboardReachable,
+    keyboardMetrics
+  });
+  await utilityPage.keyboard.press("Escape");
+
+  await writeSeed(utilityPage, seed);
+  await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
+  await utilityPage.evaluate(async () => { await runBackupSelfTest(); });
+  const backupToast = (await utilityPage.locator("#toast").innerText()).trim();
+  const backupRoundtripOk = /(?:полностью проверены|исправны)/i.test(backupToast) && !/не пройдена/i.test(backupToast);
+  if (!backupRoundtripOk) report.failures.push({ type: "backup-roundtrip", toast: backupToast });
+  report.results.push({
+    label: "backup-roundtrip",
+    width: 320,
+    bodyScrollWidth: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)),
+    viewportWidth: 320,
+    overflow: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth),
+    modalOpen: false,
+    tooSmall: [],
+    backupRoundtripOk,
+    toast: backupToast
+  });
+  await utilityContext.close();
+
   const pwaContext = await browser.newContext({
     viewport: { width: 390, height: 900 },
     deviceScaleFactor: 1,
