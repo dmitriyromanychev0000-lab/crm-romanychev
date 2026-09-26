@@ -15886,3 +15886,358 @@ body.modal-open {
     font-size: 7.5px;
   }
 }
+
+
+/* 0.86.0 · Склад: карточка позиции и редактор в той же визуальной системе. */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal {
+    padding: 0 12px calc(82px + env(safe-area-inset-bottom)) !important;
+    background: #080d11 !important;
+  }
+
+  .stock-editor-head {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    grid-template-columns: 40px minmax(0,1fr) 38px !important;
+    gap: 10px !important;
+    min-height: calc(66px + env(safe-area-inset-top)) !important;
+    margin: 0 -12px 9px !important;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 10px !important;
+    border-bottom: 1px solid var(--crm-line-soft) !important;
+    background: rgba(8,13,17,.985) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.16) !important;
+  }
+
+  .stock-editor-title-icon {
+    width: 40px;
+    height: 40px;
+    border-color: rgba(255,113,83,.34);
+    border-radius: 12px;
+    background: rgba(255,113,83,.08);
+    color: var(--crm-accent);
+  }
+
+  .stock-editor-head small {
+    color: var(--crm-muted);
+    font-size: 8px;
+    font-weight: 720;
+    letter-spacing: .075em;
+    text-transform: uppercase;
+  }
+
+  .stock-editor-head h2 {
+    margin: 2px 0 0;
+    font-size: 16px;
+    font-weight: 760;
+  }
+
+  .stock-editor-close {
+    width: 38px;
+    height: 38px;
+    border-color: var(--crm-line);
+    border-radius: 11px;
+    background: var(--crm-surface-2);
+  }
+
+  .stock-editor-intro {
+    margin: 0 0 9px;
+    color: var(--crm-muted);
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  .stock-editor-body {
+    display: grid;
+    gap: 10px;
+  }
+
+  .stock-editor-section {
+    padding: 12px;
+    border: 1px solid var(--crm-line);
+    border-radius: 15px;
+    background: linear-gradient(160deg,#131b21,#0f151a);
+  }
+
+  .stock-editor-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 11px !important;
+    color: var(--crm-text);
+    font-size: 12px !important;
+    font-weight: 750;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+
+  .stock-editor-section-icon {
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    flex: 0 0 29px;
+    border-radius: 9px;
+    background: rgba(255,113,83,.085);
+    color: var(--crm-accent);
+  }
+
+  .stock-editor-section-icon .ui-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stock-editor-modal .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 9px 8px !important;
+  }
+
+  .stock-editor-modal .form-group.full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .stock-editor-modal .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #929da5;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+  }
+
+  .stock-editor-modal .field {
+    min-height: 46px !important;
+    padding: 0 11px !important;
+    border: 1px solid #303b44 !important;
+    border-radius: 11px !important;
+    background: #171f26 !important;
+    color: var(--crm-text) !important;
+    font-size: 11px !important;
+  }
+
+  .stock-editor-compat {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+  }
+
+  .stock-editor-compat label {
+    min-height: 46px;
+    padding: 8px 9px;
+    border: 1px solid var(--crm-line-soft);
+    border-radius: 10px;
+    background: #151d23;
+    font-size: 9px;
+  }
+
+  .stock-editor-custom-compat {
+    margin-top: 9px;
+  }
+
+  .stock-editor-toggle {
+    min-height: 58px;
+    margin-top: 9px;
+    padding: 9px 10px;
+    border-color: var(--crm-line);
+    border-radius: 11px;
+    background: #11181e;
+  }
+
+  .stock-editor-toggle b {
+    font-size: 9.5px;
+  }
+
+  .stock-editor-toggle small {
+    margin-top: 3px;
+    color: var(--crm-muted);
+    font-size: 8px;
+    line-height: 1.35;
+  }
+
+  .stock-editor-modal .modal-actions {
+    grid-template-columns: .9fr 1.1fr !important;
+    gap: 7px !important;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+    border-top-color: var(--crm-line) !important;
+    background: rgba(8,13,17,.985) !important;
+  }
+
+  .stock-editor-modal .modal-actions > * {
+    min-height: 46px !important;
+    border-radius: 11px !important;
+    font-size: 10px !important;
+  }
+
+  .stock-detail-modal {
+    padding: 0 12px calc(20px + env(safe-area-inset-bottom)) !important;
+    background: #080d11 !important;
+  }
+
+  .stock-detail-head {
+    grid-template-columns: 38px minmax(0,1fr) 38px !important;
+    gap: 9px !important;
+    min-height: calc(66px + env(safe-area-inset-top)) !important;
+    margin: 0 -12px 10px !important;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 10px !important;
+    border-bottom-color: var(--crm-line-soft) !important;
+    background: rgba(8,13,17,.985) !important;
+  }
+
+  .stock-detail-head strong {
+    display: block;
+    font-size: 13px;
+  }
+
+  .stock-detail-head small {
+    display: block;
+    margin-top: 2px;
+    color: var(--crm-muted);
+    font-size: 8px;
+  }
+
+  .stock-detail-back,
+  .stock-detail-edit {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--crm-line);
+    border-radius: 11px;
+    background: var(--crm-surface-2);
+    color: var(--crm-text);
+  }
+
+  .stock-detail-content {
+    padding: 0 0 calc(18px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .stock-detail-hero {
+    grid-template-columns: 46px minmax(0,1fr) auto;
+    gap: 10px;
+    min-height: 76px;
+    padding: 11px;
+    border: 1px solid var(--crm-line);
+    border-radius: 15px;
+    background: linear-gradient(160deg,#151d23,#10161b);
+  }
+
+  .stock-detail-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .stock-detail-hero h2 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .stock-detail-hero p {
+    margin: 4px 0 0;
+    color: var(--crm-muted);
+    font-size: 8.5px;
+    line-height: 1.3;
+  }
+
+  .stock-detail-status {
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 8px;
+  }
+
+  .stock-detail-kpis {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+    margin-top: 9px;
+  }
+
+  .stock-detail-kpis > div {
+    min-height: 61px;
+    padding: 9px 10px;
+    border: 1px solid var(--crm-line);
+    border-radius: 11px;
+    background: var(--crm-surface-2);
+  }
+
+  .stock-detail-kpis span {
+    font-size: 8px;
+  }
+
+  .stock-detail-kpis strong {
+    margin-top: 5px;
+    font-size: 14px;
+  }
+
+  .stock-detail-actions {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 7px;
+    margin-top: 9px;
+  }
+
+  .stock-detail-actions button {
+    min-height: 52px;
+    border: 1px solid var(--crm-line);
+    border-radius: 11px;
+    background: #151d23;
+    font-size: 8.5px;
+  }
+
+  .stock-detail-actions button > span,
+  .stock-detail-actions button .ui-icon {
+    font-size: 18px;
+  }
+
+  .stock-detail-history {
+    margin-top: 9px;
+    padding: 11px;
+    border: 1px solid var(--crm-line);
+    border-radius: 14px;
+    background: linear-gradient(160deg,#131b21,#0f151a);
+  }
+
+  .stock-detail-history h3 {
+    margin: 0 0 5px;
+    font-size: 11px;
+  }
+
+  .stock-detail-movement {
+    min-height: 49px;
+    padding: 7px 0;
+    border-top: 1px solid var(--crm-line-soft);
+  }
+
+  .stock-detail-movement > span {
+    font-size: 10px;
+  }
+
+  .stock-detail-movement strong {
+    font-size: 9.5px;
+  }
+
+  .stock-detail-movement small {
+    font-size: 8px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .stock-editor-modal,
+  .stock-detail-modal {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .stock-editor-head,
+  .stock-detail-head {
+    margin-right: -9px !important;
+    margin-left: -9px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .stock-editor-section {
+    padding: 10px;
+  }
+
+  .stock-editor-compat {
+    grid-template-columns: 1fr;
+  }
+}
