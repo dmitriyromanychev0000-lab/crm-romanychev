@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.2";
-const APP_BUILD = "2026.09.26.82";
+const APP_VERSION = "0.99.3";
+const APP_BUILD = "2026.09.26.83";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Релизный hardening: локальные даты без UTC-сдвига, доступные состояния фильтров, явные типы кнопок и финальный минимум читаемости/touch-targets";
+const APP_RELEASE = "Усилена безопасность релиза: подтверждение удаления финансов, корректная семантика и inert для вложенных модалок, доступные настройки автобэкапа";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1837,8 +1837,8 @@ async function backupSettings() {
     <section class="legacy-settings-card">
       <div class="legacy-settings-list">
         <div class="legacy-settings-row plain"><span><strong>Папка</strong><small>${directory ? escapeHtml(directory.name) : "Не выбрана"}</small></span></div>
-        <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>Проверяется при открытии приложения</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" aria-label="Автоматический бэкап"></button></div>
-        <div class="legacy-settings-row plain"><span><strong>Периодичность</strong></span><select id="backup-days">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
+        <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>Проверяется при открытии приложения</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" role="switch" aria-checked="${Boolean(data.settings.autoBackup)}" aria-label="Автоматический бэкап"></button></div>
+        <div class="legacy-settings-row plain"><span><strong>Периодичность</strong></span><select id="backup-days" aria-label="Периодичность автобэкапа">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
         <div class="legacy-settings-row plain"><span><strong>Последний бэкап</strong><small>${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</small></span></div>
       </div>
     </section>
@@ -3583,7 +3583,16 @@ let modalLockScrollY = 0;
 const syncModalScrollLock = () => {
   const backdrops = [...document.querySelectorAll(".modal-backdrop")];
   backdrops.forEach((backdrop, index) => {
-    backdrop.classList.toggle("modal-underlay", index < backdrops.length - 1);
+    const underlay = index < backdrops.length - 1;
+    backdrop.classList.toggle("modal-underlay", underlay);
+    backdrop.inert = underlay;
+    if (underlay) backdrop.setAttribute("aria-hidden", "true");
+    else backdrop.removeAttribute("aria-hidden");
+    const dialog = backdrop.querySelector('[role="dialog"], .modal, .order-actions-sheet, .catalog-modal, .crm-confirm-modal');
+    if (dialog) {
+      if (!dialog.hasAttribute("role")) dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", underlay ? "false" : "true");
+    }
   });
   const hasModal = backdrops.length > 0;
   const locked = document.body.classList.contains("modal-open");
@@ -3939,6 +3948,9 @@ app.addEventListener("click", async (event) => {
     const key = financeDelete.dataset.deleteFinance === "income" ? "incomes" : "expenses";
     const sourceIndex = Number(financeDelete.dataset.index);
     if (!Number.isInteger(sourceIndex) || sourceIndex < 0 || sourceIndex >= data[key].length) return toast("Операция не найдена");
+    const operation = data[key][sourceIndex];
+    const operationName = operation?.description || operation?.category || "операцию";
+    if (!(await confirmDialog(`Удалить финансовую операцию «${operationName}»?`))) return;
     data[key].splice(sourceIndex, 1);
     await saveData();
     await render();
