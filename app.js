@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.97.0";
-const APP_BUILD = "2026.09.26.78";
+const APP_VERSION = "0.98.0";
+const APP_BUILD = "2026.09.26.79";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансы и клиенты адаптированы для узких телефонов: фильтры, операции, карточки клиентов и история ремонтов больше не сжимают основной текст";
+const APP_RELEASE = "Прайс и товарник доведены до общей мобильной системы: убраны текстовые псевдоиконки, упрощены узкие раскладки и редакторы 320 px";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -179,6 +179,8 @@ const ICONS = {
   document: '<path d="M6 3h9l4 4v14H6Z"/><path d="M15 3v5h5M9 13h6M9 17h4"/>',
   archive: '<path d="M4 7h16v14H4Z"/><path d="M3 3h18v4H3ZM9 12h6"/>',
   restore: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  refresh: '<path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M6.1 8.2A7 7 0 0 1 18.4 6L20 8M4 16l1.6 2A7 7 0 0 0 18 15.8"/>',
+  eye: '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
   phone: '<path d="M6.6 2.8 9 7.6 6.8 9a15 15 0 0 0 8.2 8.2l1.4-2.2 4.8 2.4v3a2 2 0 0 1-2 2C9.5 22.4 1.6 14.5 1.6 4.8a2 2 0 0 1 2-2Z"/>',
   appliance: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M5 8h14M9 5h.01M13 5h.01"/><circle cx="12" cy="15" r="4"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
@@ -3165,13 +3167,13 @@ function goodsModal(existing = null, seed = null) {
 
       <div class="legacy-goods-editor-actions">
         <button type="button" class="legacy-purple-button" id="adjust-goods-prices">${icon("price")}<span>Подогнать цены</span></button>
-        <button type="button" class="legacy-dark-button" id="restore-goods-prices">↻<span>Вернуть исходные<br>цены</span></button>
-        <button type="button" class="legacy-orange-button" id="preview-goods">◉<span>К итогу</span></button>
+        <button type="button" class="legacy-dark-button" id="restore-goods-prices">${icon("refresh")}<span>Вернуть исходные<br>цены</span></button>
+        <button type="button" class="legacy-orange-button" id="preview-goods">${icon("eye")}<span>К итогу</span></button>
       </div>
     </section>
 
     <section class="legacy-goods-panel legacy-editor-preview" id="goods-editor-preview">
-      <div class="legacy-section-title"><span class="legacy-section-icon">◉</span><h2>Предпросмотр</h2></div>
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("eye")}</span><h2>Предпросмотр</h2></div>
       <div class="legacy-preview-table-wrap"><table class="legacy-preview-table"><thead><tr><th>ТОВАР</th><th>КОЛИЧЕСТВО</th><th>ЦЕНА</th></tr></thead><tbody id="goods-preview-body"></tbody></table></div>
       <div class="legacy-preview-total"><strong>Итого</strong><strong id="goods-preview-total">0 ₽</strong></div>
     </section>
