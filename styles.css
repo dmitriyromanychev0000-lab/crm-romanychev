@@ -6019,6 +6019,12 @@ button.warehouse-shortcut {
   }
 }
 
+/* Карточка материала не должна наследовать сетку технического .line-item.
+   Иначе заголовок и блок контролов делят одну строку и сжимают подписи. */
+.order-editor-modal .legacy-material-card {
+  display: block;
+}
+
 /* 0.48.0 · Канонический A4 по эталонному акту — последний CSS-блок */
 @media print {
   @page { size: A4 portrait; margin: 7mm 10mm; }
