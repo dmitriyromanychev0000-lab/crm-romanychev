@@ -7036,3 +7036,109 @@ button.warehouse-shortcut {
     font-size: 10px;
   }
 }
+
+
+/* 0.59.0 · Лист 03: финальная плотность, фильтры и редактор склада. */
+@media screen and (max-width: 520px) {
+  .warehouse-filter-chips {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+    margin-bottom: 7px;
+  }
+  .warehouse-filter-chips button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 34px;
+    padding: 5px 4px;
+    border: 1px solid #293641;
+    border-radius: 10px;
+    background: #111a22;
+    color: #9ca7af;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .warehouse-filter-chips button span {
+    display: grid;
+    place-items: center;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 6px;
+    background: #1d2832;
+    color: #c3ccd3;
+    font-size: 7px;
+  }
+  .warehouse-filter-chips button.active {
+    border-color: rgba(255,107,87,.5);
+    background: rgba(255,107,87,.1);
+    color: #ff8a72;
+  }
+  .warehouse-filter-chips button.active span {
+    background: rgba(255,107,87,.16);
+    color: #ff9a84;
+  }
+  .warehouse-content .warehouse-new-button { display: none; }
+
+  .stock-editor-section-title {
+    margin: 10px 0 6px;
+    color: #8d99a3;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .stock-editor-compat {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 5px;
+  }
+  .stock-editor-compat label,
+  .stock-editor-toggle {
+    display: grid;
+    grid-template-columns: 22px minmax(0,1fr);
+    gap: 7px;
+    align-items: center;
+    min-height: 39px;
+    padding: 6px 8px;
+    border: 1px solid #26333e;
+    border-radius: 10px;
+    background: #101820;
+  }
+  .stock-editor-compat input,
+  .stock-editor-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .stock-editor-compat b,
+  .stock-editor-toggle b {
+    font-size: 8px;
+    font-weight: 650;
+  }
+  .stock-editor-compat input:checked + .warehouse-check,
+  .stock-editor-toggle input:checked + .warehouse-check {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: inset 0 0 0 4px #101820;
+  }
+  .stock-editor-custom-compat { margin-top: 7px; }
+  .stock-editor-toggle {
+    margin-top: 7px;
+    grid-template-columns: 22px minmax(0,1fr);
+  }
+  .stock-editor-toggle span:last-child { min-width: 0; }
+  .stock-editor-toggle small {
+    display: block;
+    margin-top: 2px;
+    color: #7f8a93;
+    font-size: 7px;
+    line-height: 1.25;
+  }
+  .stock-editor-modal input[readonly] {
+    color: #8f9aa3;
+    background: #0d141a;
+  }
+}
