@@ -5994,3 +5994,415 @@
     font-size: 10px;
   }
 }
+
+/* 0.93.0 · Аналитика по листу 05: KPI, фокус и компактные подробности. */
+@media screen and (max-width: 520px) {
+  .analytics-content .page-head {
+    margin-bottom: 10px !important;
+  }
+
+  .analytics-content .page-head h1 {
+    font-size: 27px !important;
+  }
+
+  .analytics-period-grid {
+    display: grid;
+    grid-template-columns: repeat(5,minmax(0,1fr)) 38px !important;
+    gap: 3px !important;
+    margin-bottom: 7px !important;
+    overflow: visible;
+  }
+
+  .analytics-period-grid .chip {
+    min-width: 0;
+    min-height: 42px !important;
+    padding: 5px 2px !important;
+    border-radius: 10px !important;
+    font-size: 10px !important;
+    white-space: nowrap;
+  }
+
+  .analytics-period-grid .chip.calendar {
+    display: grid;
+    padding: 0 !important;
+    place-items: center;
+  }
+
+  .analytics-period-grid .chip.calendar .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .analytics-range-nav {
+    grid-template-columns: 38px minmax(0,1fr) 38px !important;
+    min-height: 44px !important;
+    margin-bottom: 8px !important;
+    padding: 3px !important;
+  }
+
+  .analytics-range-nav > div {
+    min-width: 0;
+  }
+
+  .analytics-range-nav strong,
+  .analytics-range-nav small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .analytics-range-nav strong {
+    font-size: 12px !important;
+  }
+
+  .analytics-range-nav small {
+    font-size: 10px !important;
+  }
+
+  .analytics-arrow {
+    display: grid;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    place-items: center;
+    border-radius: 9px !important;
+  }
+
+  .analytics-arrow .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .analytics-kpi-panel {
+    padding: 11px !important;
+  }
+
+  .analytics-kpis {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr);
+    gap: 8px;
+    align-items: start;
+    min-height: 94px !important;
+    padding: 10px 8px !important;
+    border-color: var(--crm-line-soft) !important;
+    background: #151d23 !important;
+  }
+
+  .analytics-kpi-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 10px;
+  }
+
+  .analytics-kpi-icon .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .analytics-kpi-icon.green {
+    background: rgba(89,216,137,.14);
+    color: var(--crm-green);
+  }
+
+  .analytics-kpi-icon.blue {
+    background: rgba(92,169,255,.14);
+    color: var(--crm-blue);
+  }
+
+  .analytics-kpi-icon.red {
+    background: rgba(255,102,112,.14);
+    color: var(--crm-red);
+  }
+
+  .analytics-kpi-icon.purple {
+    background: rgba(168,138,240,.14);
+    color: var(--crm-purple);
+  }
+
+  .analytics-kpi > div {
+    min-width: 0;
+  }
+
+  .analytics-kpi > div > span,
+  .analytics-kpi > div > strong,
+  .analytics-kpi > div > small {
+    display: block;
+  }
+
+  .analytics-kpi > div > span {
+    color: #98a2a9;
+    font-size: 9px;
+    font-weight: 760;
+    letter-spacing: .04em;
+  }
+
+  .analytics-kpi > div > strong {
+    overflow: hidden;
+    margin-top: 5px;
+    font-size: clamp(14px,4.1vw,18px) !important;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .analytics-kpi > div > small {
+    margin-top: 5px;
+    color: var(--crm-muted);
+    font-size: 9.5px;
+    line-height: 1.2;
+  }
+
+  .analytics-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+    margin-top: 7px;
+  }
+
+  .analytics-summary-strip > span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+    min-height: 39px;
+    padding: 7px 9px;
+    border: 1px solid var(--crm-line-soft);
+    border-radius: 10px;
+    background: #11181e;
+  }
+
+  .analytics-summary-strip small {
+    color: var(--crm-muted);
+    font-size: 9px;
+    line-height: 1.15;
+  }
+
+  .analytics-summary-strip b {
+    flex: 0 0 auto;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .analytics-focus-list {
+    overflow: hidden;
+    border: 1px solid var(--crm-line-soft);
+    border-radius: 11px;
+    background: #11181e;
+  }
+
+  .analytics-focus-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr) auto;
+    gap: 9px;
+    align-items: center;
+    min-height: 58px;
+    padding: 7px 9px;
+    border-top: 1px solid var(--crm-line-soft);
+  }
+
+  .analytics-focus-row:first-child {
+    border-top: 0;
+  }
+
+  .analytics-focus-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 10px;
+  }
+
+  .analytics-focus-icon .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .analytics-focus-icon.red {
+    background: rgba(255,102,112,.14);
+    color: var(--crm-red);
+  }
+
+  .analytics-focus-icon.yellow {
+    background: rgba(231,180,80,.14);
+    color: var(--crm-yellow);
+  }
+
+  .analytics-focus-icon.blue {
+    background: rgba(92,169,255,.14);
+    color: var(--crm-blue);
+  }
+
+  .analytics-focus-row > span:nth-child(2),
+  .analytics-focus-row b,
+  .analytics-focus-row small {
+    display: block;
+    min-width: 0;
+  }
+
+  .analytics-focus-row b {
+    font-size: 12px;
+  }
+
+  .analytics-focus-row small {
+    margin-top: 2px;
+    color: var(--crm-muted);
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .analytics-focus-row > strong {
+    min-width: 26px;
+    color: var(--crm-text);
+    font-size: 18px;
+    text-align: right;
+  }
+
+  .analytics-work .analytics-work-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .analytics-work .metric {
+    display: block;
+    min-height: 88px !important;
+    padding: 9px !important;
+  }
+
+  .analytics-work .metric-icon {
+    display: grid;
+    width: 29px;
+    height: 29px;
+    margin-bottom: 7px;
+    place-items: center;
+    border-radius: 9px;
+  }
+
+  .analytics-work .metric-icon .ui-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .analytics-work .metric-icon.green {
+    background: rgba(89,216,137,.14);
+    color: var(--crm-green);
+  }
+
+  .analytics-work .metric-icon.blue {
+    background: rgba(92,169,255,.14);
+    color: var(--crm-blue);
+  }
+
+  .analytics-work .metric-icon.yellow {
+    background: rgba(231,180,80,.14);
+    color: var(--crm-yellow);
+  }
+
+  .analytics-work .metric-label {
+    font-size: 10px !important;
+  }
+
+  .analytics-work .metric-value {
+    overflow: hidden;
+    margin-top: 3px;
+    font-size: 15px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .analytics-collapsible {
+    padding: 0 !important;
+  }
+
+  .analytics-collapsible > summary {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 18px;
+    align-items: center;
+    min-height: 58px;
+    padding: 10px 11px;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .analytics-collapsible > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .analytics-collapsible > summary .panel-title {
+    margin: 0 !important;
+  }
+
+  .analytics-collapsible > summary > .ui-icon {
+    width: 17px;
+    height: 17px;
+    color: var(--crm-muted);
+    transition: transform .16s ease;
+  }
+
+  .analytics-collapsible[open] > summary > .ui-icon {
+    transform: rotate(90deg);
+  }
+
+  .analytics-collapsible[open] > summary {
+    border-bottom: 1px solid var(--crm-line-soft);
+  }
+
+  .analytics-collapsible > .analytics-work-grid,
+  .analytics-collapsible > .goods-list,
+  .analytics-collapsible > .empty {
+    margin: 0 11px 11px;
+  }
+
+  .analytics-stock-summary .analytics-work-grid {
+    padding-top: 10px;
+  }
+
+  .legacy-range-head [data-close-modal] .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .analytics-period-grid .chip {
+    font-size: 9px !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    grid-template-columns: 31px minmax(0,1fr);
+    gap: 6px;
+    padding: 9px 7px !important;
+  }
+
+  .analytics-kpi-icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .analytics-kpi > div > small,
+  .analytics-summary-strip small {
+    font-size: 8.5px;
+  }
+
+  .analytics-summary-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-work .metric {
+    padding: 8px 7px !important;
+  }
+
+  .analytics-work .metric-value {
+    font-size: 13px !important;
+  }
+}

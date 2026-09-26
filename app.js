@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.92.1";
-const APP_BUILD = "2026.09.26.71";
+const APP_VERSION = "0.93.0";
+const APP_BUILD = "2026.09.26.72";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Переработаны карточка и редактор склада: компактные показатели, удобные операции и сворачиваемая совместимость";
+const APP_RELEASE = "Переработана мобильная аналитика: компактные периоды, четыре главных KPI, рабочий фокус и сворачиваемые подробности";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1071,7 +1071,7 @@ function analyticsRangeModal() {
     <div class="legacy-range-head">
       <span class="legacy-range-icon">${icon("calendar")}</span>
       <div><strong>Свой период</strong><small>Выбери даты для отчёта</small></div>
-      <button type="button" data-close-modal aria-label="Закрыть">×</button>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="legacy-range-grid">
       <label><span>С</span><input class="field" type="date" name="start" value="${escapeHtml(analyticsCustomStart)}" required /></label>
@@ -1170,75 +1170,72 @@ function analyticsPage() {
   const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
 
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div></div>
+    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Деньги, работа и контроль в одном экране</p></div></div>
 
     <div class="analytics-period-grid">
-      <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">Сегодня</button>
+      <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">День</button>
       <button type="button" class="chip ${analyticsPeriod === "7" ? "active" : ""}" data-analytics-period="7" aria-pressed="${analyticsPeriod === "7"}">Неделя</button>
       <button type="button" class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30" aria-pressed="${analyticsPeriod === "30"}">Месяц</button>
       <button type="button" class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365" aria-pressed="${analyticsPeriod === "365"}">Год</button>
       <button type="button" class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all" aria-pressed="${analyticsPeriod === "all"}">Всё</button>
-      <button type="button" class="chip ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom" aria-pressed="${analyticsPeriod === "custom"}">Свой период</button>
+      <button type="button" class="chip calendar ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom" aria-pressed="${analyticsPeriod === "custom"}" aria-label="Свой период">${icon("calendar")}</button>
     </div>
 
     <div class="analytics-range-nav">
-      <button class="analytics-arrow" data-analytics-shift="-1" ${analyticsPeriod === "all" || analyticsPeriod === "custom" ? "disabled" : ""}>‹</button>
+      <button class="analytics-arrow" data-analytics-shift="-1" aria-label="Предыдущий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" ? "disabled" : ""}>${icon("back")}</button>
       <div><strong>${escapeHtml(analyticsPeriodTitle(range))}</strong><small>${range ? `${shortDate(new Date(range.start))} — ${shortDate(new Date(range.end - 1))}` : "Все данные CRM"}</small></div>
-      <button class="analytics-arrow" data-analytics-shift="1" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>›</button>
+      <button class="analytics-arrow" data-analytics-shift="1" aria-label="Следующий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>${icon("chevron")}</button>
     </div>
 
     <section class="panel analytics-kpi-panel">
-      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>результат выбранного периода</small></span></div>
+      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>${escapeHtml(analyticsPeriodTitle(range))}</small></span></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi primary revenue"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div>
-        <div class="analytics-kpi primary result"><span>ОСТАЛОСЬ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div>
-        <div class="analytics-kpi"><span>ЧИСТЫМИ С РЕМОНТА</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>без личных финансов</small></div>
-        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>всего за период</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>закрытые заявки</small></div>
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
+        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>ВЫРУЧКА</span><strong>${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div></div>
+        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("gem")}</span><div><span>ИТОГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div></div>
+        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные</small></div></div>
+        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div></div>
       </div>
+      <div class="analytics-summary-strip"><span><small>Чистыми с ремонта</small><b class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</b></span><span><small>Личные финансы</small><b class="${personalResult >= 0 ? "green" : "red"}">${money(personalResult)}</b></span></div>
     </section>
 
-    <div class="analytics-ops-grid">
     <section class="panel analytics-focus">
-      <div class="panel-title"><span class="badge-icon">${icon("warning")}</span> Фокус внимания</div>
-      <div class="focus-grid">
-        <div><strong class="yellow">${overdueVisits}</strong><span>просроченных визитов</span></div>
-        <div><strong class="yellow">${lowStock}</strong><span>позиций заканчивается</span></div>
-        <div><strong class="yellow">${oldestActiveDays}</strong><span>дней самой старой заявке</span></div>
+      <div class="panel-title"><span class="badge-icon">${icon("warning")}</span><span>Фокус внимания<small>что требует проверки сейчас</small></span></div>
+      <div class="analytics-focus-list">
+        <div class="analytics-focus-row"><span class="analytics-focus-icon red">${icon("calendar")}</span><span><b>Просроченные визиты</b><small>назначенная дата уже прошла</small></span><strong>${overdueVisits}</strong></div>
+        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("warehouse")}</span><span><b>Заканчивается на складе</b><small>остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
+        <div class="analytics-focus-row"><span class="analytics-focus-icon blue">${icon("history")}</span><span><b>Самая старая заявка</b><small>дней находится в работе</small></span><strong>${oldestActiveDays}</strong></div>
       </div>
     </section>
 
     <section class="panel analytics-work">
-      <div class="panel-title"><span class="badge-icon">${icon("tools")}</span> Работа сейчас</div>
+      <div class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Работа сейчас<small>активные заявки</small></span></div>
       <div class="analytics-work-grid">
-        <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
-        <div class="metric"><div class="metric-label">Сумма активных</div><div class="metric-value blue">${money(activeSum)}</div></div>
-        <div class="metric"><div class="metric-label">Просрочено визитов</div><div class="metric-value yellow">${overdueVisits}</div></div>
+        <div class="metric"><span class="metric-icon green">${icon("check")}</span><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
+        <div class="metric"><span class="metric-icon blue">${icon("finance")}</span><div class="metric-label">Сумма</div><div class="metric-value blue">${money(activeSum)}</div></div>
+        <div class="metric"><span class="metric-icon yellow">${icon("calendar")}</span><div class="metric-label">Просрочено</div><div class="metric-value yellow">${overdueVisits}</div></div>
       </div>
     </section>
-    </div>
 
     <section class="panel analytics-ranking">
       <div class="panel-title"><span class="badge-icon">${icon("price")}</span> Рейтинг услуг</div>
       ${serviceRanking.length ? `<div class="analytics-ranking-list">${serviceRanking.map((item, index) => `<div class="analytics-ranking-row"><span class="ranking-place">${index + 1}</span><span><strong>${escapeHtml(item.name)}</strong><small>${item.qty} шт. за период</small></span><b>${money(item.revenue)}</b></div>`).join("")}</div>` : `<div class="small">Нет услуг в закрытых заявках за выбранный период.</div>`}
     </section>
 
-    <section class="panel analytics-stock-summary">
-      <div class="panel-title"><span class="badge-icon">${icon("warehouse")}</span> Склад</div>
+    <details class="panel analytics-collapsible analytics-stock-summary">
+      <summary><span class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Склад<small>остатки и стоимость</small></span></span>${icon("chevron")}</summary>
       <div class="analytics-work-grid">
         <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value">${warehouseActive.length}</div></div>
         <div class="metric"><div class="metric-label">Заканчивается</div><div class="metric-value yellow">${lowStock}</div></div>
         <div class="metric"><div class="metric-label">Стоимость остатков</div><div class="metric-value purple">${money(warehouseValue)}</div></div>
       </div>
-    </section>
+    </details>
 
     <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Динамика выручки<small>закрытые заявки по календарю</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(5, value / max * 120)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
-    <section class="panel analytics-list-panel"><div class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Доходность по технике<small>выручка минус расходы ремонта</small></span></div>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
+    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Доходность по технике<small>выручка минус расходы ремонта</small></span></span>${icon("chevron")}</summary>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
       const result = item.revenue - item.costs;
       return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
-    }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</section>
-    <section class="panel analytics-list-panel"><div class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></div>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</section>
+    }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</details>
+    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("warehouse")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></span>${icon("chevron")}</summary>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</details>
   </main>`;
 }
 
