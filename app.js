@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.10";
-const APP_BUILD = "2026.09.26.90";
+const APP_VERSION = "0.99.11";
+const APP_BUILD = "2026.09.26.91";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финальный QA-polish: переключатель автобэкапа получил 44 px touch-target без растягивания на 320 px, расширенный Chromium-smoke контролирует 86+ состояний";
+const APP_RELEASE = "Убран реальный CSS-конфликт в просмотре заявки: action-кнопка закрытия больше не наследует псевдоэлемент системного toggle и не рисует белый круг";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3422,7 +3422,7 @@ function orderDetailModal(order) {
 
         <div class="legacy-expanded-actions">
           <button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button>
-          <button type="button" data-detail-action="toggle" class="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
+          <button type="button" data-detail-action="toggle" class="action-toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
           ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" class="phone" disabled>${icon("phone")}<span>Позвонить</span></button>`}
           <button type="button" data-detail-action="more" class="more">${icon("more")}<span>Ещё</span></button>
         </div>
