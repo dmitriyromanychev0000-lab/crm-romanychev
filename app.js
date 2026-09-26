@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.5";
-const APP_BUILD = "2026.09.26.85";
+const APP_VERSION = "0.99.6";
+const APP_BUILD = "2026.09.26.86";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Усилена установка PWA: добавлены PNG-иконки 192/512 и maskable fallback для Android, все варианты включены в offline-precache";
+const APP_RELEASE = "Усилена целостность бэкапов: неоднозначные дубли ID заявок, склада и товарников блокируются до импорта, диагностика показывает состояние идентификаторов";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -401,6 +401,22 @@ function ensureWarehouseIds() {
   return changed;
 }
 
+function duplicateIdCount(items = []) {
+  const ids = items.map((item) => item?.id).filter((id) => id !== undefined && id !== null && String(id).trim() !== "");
+  return ids.length - new Set(ids.map((id) => String(id).trim())).size;
+}
+
+function backupBlockingIssues(candidate) {
+  const issues = [];
+  const orderDuplicates = duplicateIdCount(candidate.orders || []);
+  const warehouseDuplicates = duplicateIdCount(candidate.warehouse || []);
+  const goodsDuplicates = duplicateIdCount(candidate.goods_sheets || []);
+  if (orderDuplicates > 0) issues.push(`дубли ID заявок: ${orderDuplicates}`);
+  if (warehouseDuplicates > 0) issues.push(`дубли ID склада: ${warehouseDuplicates}`);
+  if (goodsDuplicates > 0) issues.push(`дубли ID товарников: ${goodsDuplicates}`);
+  return issues;
+}
+
 function backupWarnings(candidate) {
   const warnings = [];
   const version = Number(candidate.version);
@@ -409,16 +425,12 @@ function backupWarnings(candidate) {
       ? `версия бэкапа ${version} новее поддерживаемой ${BACKUP_FORMAT_VERSION}`
       : `версия бэкапа ${version}, ожидается CRM BT v${BACKUP_FORMAT_VERSION}`);
   }
-  const duplicateCount = (items) => {
-    const ids = items.map((item) => item?.id).filter((id) => id !== undefined && id !== null && String(id) !== "");
-    return ids.length - new Set(ids.map(String)).size;
-  };
-  const orderDuplicates = duplicateCount(candidate.orders || []);
-  const warehouseDuplicates = duplicateCount(candidate.warehouse || []);
-  if (orderDuplicates > 0) warnings.push(`дубли ID заявок: ${orderDuplicates}`);
-  if (warehouseDuplicates > 0) warnings.push(`дубли ID склада: ${warehouseDuplicates}`);
-  const ordersWithoutId = (candidate.orders || []).filter((item) => !item?.id).length;
-  if (ordersWithoutId > 0) warnings.push(`заявок без ID: ${ordersWithoutId}`);
+  const ordersWithoutId = (candidate.orders || []).filter((item) => !String(item?.id ?? "").trim()).length;
+  const warehouseWithoutId = (candidate.warehouse || []).filter((item) => !String(item?.id ?? "").trim()).length;
+  const goodsWithoutId = (candidate.goods_sheets || []).filter((item) => !String(item?.id ?? "").trim()).length;
+  if (ordersWithoutId > 0) warnings.push(`заявок без ID: ${ordersWithoutId} · будут восстановлены автоматически`);
+  if (warehouseWithoutId > 0) warnings.push(`позиций склада без ID: ${warehouseWithoutId} · будут восстановлены автоматически`);
+  if (goodsWithoutId > 0) warnings.push(`товарников без ID: ${goodsWithoutId} · будут восстановлены автоматически`);
   return warnings;
 }
 
@@ -450,6 +462,7 @@ async function inspectBackupFile() {
       const candidate = JSON.parse(await file.text());
       const restored = validateBackup(structuredClone(candidate));
       const warnings = backupWarnings(restored);
+      const blockingIssues = backupBlockingIssues(restored);
       const photoCount = restored.orders.reduce((sum, order) => sum + (Array.isArray(order.photos) ? order.photos.length : 0), 0);
       const draftCount = Array.isArray(restored.draft)
         ? restored.draft.length
@@ -472,7 +485,7 @@ async function inspectBackupFile() {
       ];
       const modal = document.createElement("div");
       modal.className = "modal-backdrop";
-      modal.innerHTML = `<div class="modal compact-modal"><h2>Проверка бэкапа</h2><div class="goods-list">${rows.map(([name, value]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="green">✓</b><span></span></div>`).join("")}</div>${warnings.length ? `<div class="form-section-title">Предупреждения</div><div class="panel">${warnings.map((item) => `<div class="small">• ${escapeHtml(item)}</div>`).join("")}</div>` : `<div class="panel"><strong class="green">Файл совместим с текущей CRM</strong></div>`}<div class="modal-actions"><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
+      modal.innerHTML = `<div class="modal compact-modal"><h2>Проверка бэкапа</h2><div class="goods-list">${rows.map(([name, value]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="green">✓</b><span></span></div>`).join("")}</div>${blockingIssues.length ? `<div class="form-section-title">Импорт заблокирован</div><div class="panel">${blockingIssues.map((item) => `<div class="small red">• ${escapeHtml(item)}</div>`).join("")}</div>` : warnings.length ? `<div class="form-section-title">Предупреждения</div><div class="panel">${warnings.map((item) => `<div class="small">• ${escapeHtml(item)}</div>`).join("")}</div>` : `<div class="panel"><strong class="green">Файл совместим с текущей CRM</strong></div>`}<div class="modal-actions"><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
       document.body.appendChild(modal);
       modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
       modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
@@ -589,6 +602,8 @@ async function runAppDiagnostics() {
     rows.push(["Хранилище", `✕ ${error.message || "ошибка"}`, false]);
   }
 
+  const idIssues = backupBlockingIssues(data);
+  rows.push(["Целостность ID", idIssues.length ? `! ${idIssues.join("; ")}` : "✓ уникальные", idIssues.length === 0]);
   rows.push(["Интернет", navigator.onLine ? "✓ онлайн" : "△ офлайн", true]);
   rows.push(["Версия", `${APP_VERSION} · сборка ${APP_BUILD}`, true]);
   rows.push(["Адрес", location.href, location.href.startsWith(APP_URL)]);
@@ -4070,6 +4085,8 @@ fileInput.addEventListener("change", async () => {
   try {
     const candidate = JSON.parse(await file.text());
     const restored = validateBackup(candidate);
+    const blockingIssues = backupBlockingIssues(restored);
+    if (blockingIssues.length) throw new Error(`Импорт заблокирован: ${blockingIssues.join("; ")}`);
     const warnings = backupWarnings(restored);
     const warningText = warnings.length ? `\n\nПредупреждения:\n• ${warnings.join("\n• ")}` : "";
     const confirmed = await confirmDialog(`Восстановить ${restored.orders.length} заявок, ${restored.warehouse.length} складских позиций и ${restored.receipt_prices.length} цен?\n\nТекущие данные будут сохранены как точка отката перед заменой.${warningText}`, { title: "Восстановление бэкапа", confirmLabel: "Восстановить" });
