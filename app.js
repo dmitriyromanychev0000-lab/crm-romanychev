@@ -154,10 +154,10 @@ const escapeHtml = (value = "") => String(value)
 
 const ICONS = {
   logo: '<path d="m12 2 8.5 5v10L12 22 3.5 17V7Z"/><path d="M16 7.2a3.5 3.5 0 0 0-4.9 4.9L7 16.2 8.8 18l4.1-4.1a3.5 3.5 0 0 0 4.9-4.9l-2.2 2.2-2.4-2.4Z"/><circle cx="8.2" cy="16.8" r=".7" fill="currentColor" stroke="none"/>',
-  orders: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8 9h8M8 13h8M8 17h5"/>',
+  orders: '<rect x="4" y="4" width="16" height="17" rx="2.4"/><path d="M9 4.5V3h6v1.5M8 9h8M8 13h8M8 17h5"/>',
   warehouse: '<path d="m4 9 8-5 8 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M4 9h16M9 21v-7h6v7"/>',
   analytics: '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
-  more: '<circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none"/>',
+  more: '<circle cx="5" cy="12" r="1.65" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.65" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.65" fill="currentColor" stroke="none"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   minus: '<path d="M5 12h14"/>',
   back: '<path d="m15 18-6-6 6-6"/>',
@@ -186,7 +186,7 @@ const ICONS = {
   appliance: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M5 8h14M9 5h.01M13 5h.01"/><circle cx="12" cy="15" r="4"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
   warning: '<path d="M12 3 2.5 20h19Z"/><path d="M12 9v5M12 17h.01"/>',
-  chart: '<path d="M4 19V5M4 19h16"/><path d="M8 16v-4M12 16V8M16 16V5"/>',
+  chart: '<path d="M4.5 19V5M4.5 19h15.5"/><path d="M8.5 16v-4M13.5 16V9M18.5 16V6"/>',
   camera: '<path d="M4 7h4l2-3h4l2 3h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/>',
   location: '<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
   shield: '<path d="M12 3 20 6v6c0 5-3.4 8-8 10-4.6-2-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/>',
