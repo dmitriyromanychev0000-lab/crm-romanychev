@@ -4,23 +4,14 @@
 
 This folder is the handoff for the next deep Work pass.
 
-The **approved visual direction** is the set of 10 generated mobile reference sheets from the current ChatGPT conversation:
+The **approved visual direction** is stored directly in the repository under:
 
-- `crm-ui-concept-01.jpg`
-- `crm-ui-concept-02.jpg`
-- `crm-ui-concept-03.jpg`
-- `crm-ui-concept-04.jpg`
-- `crm-ui-concept-05.jpg`
-- `crm-ui-concept-06.jpg`
-- `crm-ui-concept-07.jpg`
-- `crm-ui-concept-08.jpg`
-- `crm-ui-concept-09.jpg`
-- `crm-ui-concept-10.jpg`
+**`Visual_koncept/`**
 
-A packed copy also exists in the conversation as `crm-mobile-ui-reference-800.zip`.
+That folder contains all 10 generated mobile concept sheets plus its own `README.md` that maps the actual PNG filenames to sheets 01–10.
 
-**Before implementation, inspect all 10 reference sheets in the conversation.**
-Do not redesign from memory and do not use the old 29 screenshots as the visual target. The old archive is useful for legacy behaviour/data compatibility only. These 10 new concept sheets are the visual target.
+**Before implementation, inspect `Visual_koncept/README.md` and all 10 PNG files.**
+Do not redesign from memory and do not use the old 29 screenshots as the new visual target. The old archive is useful for legacy behaviour/data compatibility only. The 10 PNG sheets in `Visual_koncept/` are the visual target.
 
 ---
 
