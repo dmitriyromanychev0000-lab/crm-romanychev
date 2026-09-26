@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-26T22:36:54.081Z",
-  "testedSha": "265769f5b3d9adb93e99fa4d89e8afdcb5b0c472",
+  "generatedAt": "2026-09-26T22:38:20.855Z",
+  "testedSha": "c4e27b094fe1b44618a50994e58afb46bfe9f78d",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -155,12 +155,796 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": []
+    },
+    {
+      "label": "service-catalog-selected",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "material-catalog",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "material-catalog-selected",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "order-detail",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "order-actions",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-detail",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "finance-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "price-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "client-profile",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "goods-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "tool-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "receipt-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stress-orders",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "stress-warehouse",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "stress-prices",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "stress-order-detail",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "empty-orders",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "empty-warehouse",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "empty-clients",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "empty-goods",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "archived-orders",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "archived-warehouse",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "orders",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "movements",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "shopping",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "analytics",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "more",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "finance",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "clients",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "prices",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "goods",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "tools",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "receipts",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "settings",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "backup",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "act",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "orders",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "movements",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "shopping",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "analytics",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "more",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "finance",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "clients",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "prices",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "goods",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "tools",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "receipts",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "settings",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "backup",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "act",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "order-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "service-catalog",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "service-catalog-selected",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "material-catalog",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "material-catalog-selected",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "order-detail",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "order-actions",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-detail",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "finance-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "price-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "client-profile",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "goods-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "tool-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "receipt-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "orders",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "movements",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "shopping",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "analytics",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "more",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "finance",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "clients",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "prices",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "goods",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "tools",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "receipts",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "settings",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "backup",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "act",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "keyboard-order-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 468,
+        "bottom": 512,
+        "width": 300,
+        "height": 44,
+        "viewportHeight": 520,
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "backup-roundtrip",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "backupRoundtripOk": true,
+      "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "type": "fatal",
-      "message": "locator.check: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('[data-service-index]').first()\n    - locator resolved to <input type=\"checkbox\" data-service-index=\"0\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <span class=\"catalog-service-copy\">…</span> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <span class=\"catalog-service-copy\">…</span> intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    15 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <span class=\"catalog-service-copy\">…</span> intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
-    }
-  ]
+  "failures": []
 }
