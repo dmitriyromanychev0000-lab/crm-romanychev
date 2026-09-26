@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.12
+# Design QA — Release candidate 0.99.13
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -69,3 +69,5 @@ final result: blocked
 - Version 0.99.11 fixes a rendered order-detail artifact caused by the generic `.toggle::after` switch rule colliding with the order status action class; the order action now uses `.action-toggle`.
 
 - Version 0.99.12 scopes switch CSS away from generic `.toggle`, prevents narrow action labels from breaking inside words, and adds 320 px long-data/empty-state stress fixtures plus an A4 PDF smoke artifact.
+
+- Version 0.99.13 keeps client-facing money values complete under long-data stress by replacing ellipsis truncation with responsive numeric sizing.
