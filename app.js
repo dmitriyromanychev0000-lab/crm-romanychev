@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.91.2";
-const APP_BUILD = "2026.09.26.68";
+const APP_VERSION = "0.92.0";
+const APP_BUILD = "2026.09.26.69";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлены материалы в заявке: полноэкранный каталог, компактные карточки и удобные контролы количества и себестоимости";
+const APP_RELEASE = "Обновлены меню, кнопки и иконки: быстрый вход в инструменты, цветовые акценты и единые мобильные состояния";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -158,6 +158,8 @@ const ICONS = {
   warehouse: '<path d="m4 9 8-5 8 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M4 9h16M9 21v-7h6v7"/>',
   analytics: '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/>',
   more: '<circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
   backup: '<path d="M12 3v12M8 11l4 4 4-4"/><path d="M5 21h14a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2"/>',
   price: '<path d="M20 13 13 20a2 2 0 0 1-3 0l-6-6a2 2 0 0 1 0-3l7-7h7a2 2 0 0 1 2 2Z"/><circle cx="15.5" cy="8.5" r="1.2"/>',
   clients: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
@@ -870,7 +872,7 @@ function ordersPage() {
   return `<main class="content orders-content legacy-orders-page">
     <div class="legacy-page-head">
       <div><h1>Заявки</h1><p>Все ремонты в одном месте</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-order" aria-label="Новая заявка">+</button>
+      <button type="button" class="legacy-page-add" data-action="new-order" aria-label="Новая заявка">${icon("plus")}</button>
     </div>
 
     ${nearestVisit ? `<button type="button" class="legacy-nearest-visit" data-order-action="view" data-id="${escapeHtml(nearestVisit.id)}">
@@ -928,7 +930,7 @@ function warehousePage() {
   return `<main class="content legacy-warehouse-page">
     <div class="legacy-warehouse-head">
       <div><h1>Склад</h1><p>Запчасти и расходные материалы</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-stock" aria-label="Новая позиция">+</button>
+      <button type="button" class="legacy-page-add" data-action="new-stock" aria-label="Новая позиция">${icon("plus")}</button>
     </div>
 
     <div class="legacy-warehouse-search search-row search-with-icon">
@@ -1284,9 +1286,9 @@ function priceList() {
 
   return `<main class="content legacy-price-page">
     <div class="legacy-subpage-head legacy-price-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>${escapeHtml(scopeTitle)}</h1><p>${prices.length + customServices.length} позиций · услуги и материалы</p></div>
-      <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">+</button>
+      <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">${icon("plus")}</button>
     </div>
 
     <div class="legacy-price-search search-row search-with-icon">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название товара или услуги" /></div>
@@ -1385,7 +1387,7 @@ function clientsPage() {
 
   return `<main class="content legacy-clients-page">
     <div class="legacy-subpage-head legacy-clients-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>Клиенты</h1><p>История обращений и ремонтов</p></div>
     </div>
 
@@ -1442,7 +1444,7 @@ function financePage() {
 
   return `<main class="content legacy-finance-page">
     <div class="legacy-subpage-head legacy-finance-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>Финансы</h1><p>Доходы, расходы и результат</p></div>
     </div>
 
@@ -1511,7 +1513,7 @@ function actPage() {
 
   return `<main class="content legacy-act-page">
     <div class="legacy-subpage-head legacy-act-head no-print">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>Акт</h1><p>Подготовка и печать документа</p></div>
     </div>
 
@@ -1570,7 +1572,7 @@ function goodsPage() {
 
   return `<main class="content goods-content legacy-goods-page">
     <div class="legacy-subpage-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
     </div>
 
@@ -1613,7 +1615,7 @@ function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
     <div class="legacy-subpage-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>Настройки</h1><p>Реквизиты и приложение</p></div>
     </div>
 
@@ -1695,7 +1697,7 @@ function draftsPage() {
   const drafts = draftRecords().sort((a, b) => new Date(draftSummary(b.value).date || 0) - new Date(draftSummary(a.value).date || 0));
   return `<main class="content legacy-service-page legacy-drafts-page">
     <div class="legacy-subpage-head">
-      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Черновики</h1><p>Незавершённые заявки</p></div>
     </div>
     <div class="legacy-service-note">Сохранённые незавершённые заявки. Продолжи работу или удали ненужное.</div>
@@ -1749,9 +1751,9 @@ function receiptsPage() {
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content legacy-service-page legacy-receipts-page">
     <div class="legacy-subpage-head legacy-service-head-with-add">
-      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Документы</h1><p>Квитанции, чеки и документы</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-receipt" aria-label="Новый документ">+</button>
+      <button type="button" class="legacy-page-add" data-action="new-receipt" aria-label="Новый документ">${icon("plus")}</button>
     </div>
     <section class="legacy-service-stats receipts-stats">
       <div class="service-stat-primary"><span>ДОКУМЕНТОВ</span><strong>${receipts.length}</strong><small>всего сохранено</small></div>
@@ -1778,9 +1780,9 @@ function toolsPage() {
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
   return `<main class="content legacy-service-page legacy-tools-page">
     <div class="legacy-subpage-head legacy-service-head-with-add">
-      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Инструменты</h1><p>Рабочий инструмент и оборудование</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-tool" aria-label="Добавить инструмент">+</button>
+      <button type="button" class="legacy-page-add" data-action="new-tool" aria-label="Добавить инструмент">${icon("plus")}</button>
     </div>
     <section class="legacy-service-stats two tools-stats">
       <div class="service-stat-primary"><span>ИНСТРУМЕНТОВ</span><strong>${tools.length}</strong><small>в учёте</small></div>
@@ -1805,7 +1807,7 @@ async function backupSettings() {
   const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content legacy-service-page legacy-backup-page">
     <div class="legacy-subpage-head">
-      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Бэкапы</h1><p>Резервные копии и восстановление</p></div>
     </div>
 
@@ -1895,7 +1897,7 @@ function warehouseMovementsPage() {
 
   return `<main class="content warehouse-support-content">
     <div class="support-page-head">
-      <button type="button" class="support-back" data-action="warehouse-list" aria-label="Назад">‹</button>
+      <button type="button" class="support-back" data-action="warehouse-list" aria-label="Назад">${icon("back")}</button>
       <div><h1>История движения</h1><p>Приходы, списания и движения по заявкам</p></div>
     </div>
 
@@ -1936,7 +1938,7 @@ async function shareShoppingList() {
 
 function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
-  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">‹</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
+  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">${icon("back")}</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
     <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${items.length} ${items.length === 1 ? "позицию" : items.length >= 2 && items.length <= 4 ? "позиции" : "позиций"}</strong></span></section>
     <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="shopping-list">${items.map((item) => {
@@ -1953,6 +1955,7 @@ function moreMenu() {
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
     ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
+    ["tools", "tools", "Инструменты", "Личный инструмент и оборудование"],
     ["settings", "settings", "Настройки", "Реквизиты, данные и приложение"]
   ];
   const extraItems = [];
@@ -2742,7 +2745,7 @@ function customServiceModal(existing = null, serviceIndex = -1) {
   modal.className = "modal-backdrop legacy-price-editor-backdrop";
   modal.innerHTML = `<form class="modal legacy-price-editor" id="custom-service-form">
     <div class="legacy-subpage-head legacy-editor-head">
-      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">${icon("back")}</button>
       <div><h1>${existing ? "Своя услуга" : "Новая услуга"}</h1><p>Пользовательская позиция прайса</p></div>
     </div>
 
@@ -2791,7 +2794,7 @@ function priceModal(existing = null, priceIndex = -1) {
   modal.className = "modal-backdrop legacy-price-editor-backdrop";
   modal.innerHTML = `<form class="modal legacy-price-editor" id="price-form">
     <div class="legacy-subpage-head legacy-editor-head">
-      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">${icon("back")}</button>
       <div><h1>${existing ? "Позиция прайса" : "Новая позиция"}</h1><p>Услуга или материал</p></div>
     </div>
 
@@ -2847,7 +2850,7 @@ function clientModal(clientKey) {
   modal.className = "modal-backdrop client-profile-backdrop legacy-client-profile-backdrop";
   modal.innerHTML = `<section class="modal client-profile-modal" aria-label="Профиль клиента">
     <header class="client-profile-head">
-      <button type="button" class="client-profile-back" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="client-profile-back" data-close-modal aria-label="Назад">${icon("back")}</button>
       <div><strong>Клиент</strong><small>История обращений и ремонтов</small></div>
       ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : `<span></span>`}
     </header>
@@ -2972,7 +2975,7 @@ function stockDetailModal(item) {
   modal.className = "modal-backdrop stock-detail-backdrop";
   modal.innerHTML = `<section class="modal stock-detail-modal" aria-label="Позиция склада">
     <header class="stock-detail-head">
-      <button type="button" class="stock-detail-back" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="stock-detail-back" data-close-modal aria-label="Назад">${icon("back")}</button>
       <div><strong>Позиция склада</strong><small>${escapeHtml(item.category || "Без категории")}</small></div>
       <button type="button" class="stock-detail-edit" data-stock-detail-action="edit" aria-label="Редактировать">${icon("edit")}</button>
     </header>
@@ -3139,7 +3142,7 @@ function goodsModal(existing = null, seed = null) {
   modal.className = "modal-backdrop goods-editor-backdrop legacy-goods-editor-backdrop";
   modal.innerHTML = `<form class="modal goods-editor-modal legacy-goods-editor" id="goods-form">
     <div class="legacy-subpage-head goods-modal-head">
-      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">${icon("back")}</button>
       <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
     </div>
 
@@ -3345,7 +3348,7 @@ function orderDetailModal(order) {
   modal.className = "modal-backdrop order-detail-backdrop legacy-order-detail-backdrop";
   modal.innerHTML = `<section class="modal order-detail-modal legacy-order-detail-modal" aria-label="Заявка №${escapeHtml(order.id)}">
     <header class="legacy-order-detail-brand">
-      <button type="button" class="legacy-detail-back" data-close-modal aria-label="Назад">‹</button>
+      <button type="button" class="legacy-detail-back" data-close-modal aria-label="Назад">${icon("back")}</button>
       <span class="legacy-detail-logo">${icon("logo")}</span>
       <span class="legacy-detail-brand-copy"><strong>CRM by <b>Romanychev</b> 😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></span>
       <button type="button" class="legacy-detail-more" data-detail-action="more" aria-label="Ещё">${icon("more")}</button>
