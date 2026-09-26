@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.84.2";
-const APP_BUILD = "2026.09.26.55";
+const APP_VERSION = "0.84.3";
+const APP_BUILD = "2026.09.26.56";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильные редакторы: постоянные кнопки действий, быстрый скролл и полностью заблокированный фон";
+const APP_RELEASE = "Унифицированы мобильные каталоги и нижние шторки: нормальный скролл, отмена и безопасные зоны";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2136,15 +2136,14 @@ function openServiceCatalog(orderModal, serviceCatalog) {
       <div><span>Разница:</span><strong id="catalog-diff-total">0 ₽</strong></div>
     </div>
     <div class="catalog-modal-actions">
-      <button class="primary-button" id="catalog-apply" type="button">Применить выбранные услуги</button>
+      <button class="secondary-button catalog-cancel" type="button">Отмена</button>
+      <button class="primary-button" id="catalog-apply" type="button">Применить</button>
     </div>
   </div>`;
-  const previousBodyOverflow = document.body.style.overflow;
-  document.body.style.overflow = "hidden";
   document.body.appendChild(modal);
   const closeCatalog = () => {
-    document.body.style.overflow = previousBodyOverflow;
     modal.remove();
+    syncModalScrollLock();
   };
 
   const list = modal.querySelector("#catalog-service-list");
@@ -2247,6 +2246,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     renderCatalog();
   });
   modal.querySelector(".catalog-close").addEventListener("click", closeCatalog);
+  modal.querySelector(".catalog-cancel").addEventListener("click", closeCatalog);
   modal.querySelector("#catalog-apply").addEventListener("click", () => {
     applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
   });
@@ -2288,6 +2288,7 @@ function openMaterialCatalog(orderModal) {
     <header class="material-catalog-head">
       <span class="material-catalog-icon">${icon("price")}</span>
       <div><strong>Каталог · ${escapeHtml(tech)}</strong></div>
+      <button type="button" class="material-catalog-head-close" aria-label="Закрыть">×</button>
     </header>
     <div class="material-catalog-search search-row search-with-icon">${icon("search")}<input class="search" id="material-catalog-search" placeholder="Название товара" /></div>
     <div class="material-catalog-list" id="material-catalog-list"></div>
@@ -2348,8 +2349,13 @@ function openMaterialCatalog(orderModal) {
     render();
   });
   search.addEventListener("input", render);
-  modal.querySelector(".material-catalog-close").addEventListener("click", () => modal.remove());
-  modal.addEventListener("click", (event) => { if(event.target === modal) modal.remove(); });
+  const closeMaterialCatalog = () => {
+    modal.remove();
+    syncModalScrollLock();
+  };
+  modal.querySelector(".material-catalog-close").addEventListener("click", closeMaterialCatalog);
+  modal.querySelector(".material-catalog-head-close").addEventListener("click", closeMaterialCatalog);
+  modal.addEventListener("click", (event) => { if(event.target === modal) closeMaterialCatalog(); });
   render();
 }
 
