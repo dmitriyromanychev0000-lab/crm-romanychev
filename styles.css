@@ -7293,3 +7293,213 @@ button.warehouse-shortcut {
   .shopping-need span { display: block; color: #87939c; font-size: 7px; }
   .shopping-need strong { display: block; margin-top: 3px; color: #ffc45c; font-size: 10px; white-space: nowrap; }
 }
+
+
+/* 0.61.0 · Лист 05: аналитический центр. */
+@media screen and (max-width: 520px) {
+  .analytics-content {
+    padding-top: 9px;
+  }
+  .analytics-content .page-head {
+    margin-bottom: 7px;
+  }
+  .analytics-content .page-head h1 {
+    font-size: 17px;
+    line-height: 1.08;
+  }
+  .analytics-content .lead {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .analytics-period-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+    margin-bottom: 7px;
+  }
+  .analytics-period-grid .chip {
+    min-height: 32px;
+    padding: 4px 3px;
+    border-radius: 9px;
+    font-size: 9px;
+  }
+  .analytics-range-nav {
+    min-height: 44px;
+    margin-bottom: 7px;
+    padding: 5px 7px;
+    border-radius: 11px;
+  }
+  .analytics-range-nav > div strong {
+    font-size: 10px;
+  }
+  .analytics-range-nav > div small {
+    margin-top: 2px;
+    font-size: 7px;
+  }
+  .analytics-arrow {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    font-size: 21px;
+  }
+
+  .analytics-content .panel {
+    padding: 9px !important;
+    margin-bottom: 6px !important;
+    border-radius: 12px;
+  }
+  .analytics-content .panel-title {
+    min-height: 25px;
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+  .analytics-content .panel-title small {
+    margin-left: 4px;
+    color: #7d8992;
+    font-size: 6px;
+  }
+  .analytics-content .badge-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+  }
+  .analytics-content .badge-icon .ui-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .analytics-kpis {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 5px !important;
+  }
+  .analytics-kpi {
+    min-height: 62px !important;
+    padding: 7px 8px !important;
+    border-radius: 10px;
+  }
+  .analytics-kpi > span {
+    font-size: 6.8px !important;
+    line-height: 1.15;
+  }
+  .analytics-kpi > strong {
+    margin-top: 4px !important;
+    font-size: 15px !important;
+    line-height: 1;
+  }
+  .analytics-kpi > small {
+    margin-top: 4px !important;
+    color: #7f8b94;
+    font-size: 6.5px !important;
+    line-height: 1.15;
+  }
+
+  .focus-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+  }
+  .focus-grid > div {
+    min-height: 48px !important;
+    padding: 6px 4px !important;
+    border-radius: 9px;
+  }
+  .focus-grid strong {
+    font-size: 15px !important;
+  }
+  .focus-grid span {
+    margin-top: 3px;
+    font-size: 6.5px !important;
+    line-height: 1.15;
+  }
+
+  .analytics-work-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+  }
+  .analytics-work-grid .metric {
+    min-height: 47px;
+    padding: 6px 5px !important;
+    border-radius: 9px;
+  }
+  .analytics-work-grid .metric-label {
+    font-size: 6.5px;
+    line-height: 1.15;
+  }
+  .analytics-work-grid .metric-value {
+    margin-top: 4px;
+    font-size: 13px !important;
+    line-height: 1;
+  }
+
+  .analytics-ranking-list {
+    display: grid;
+    gap: 0;
+  }
+  .analytics-ranking-row {
+    grid-template-columns: 24px minmax(0,1fr) auto;
+    gap: 7px;
+    min-height: 42px;
+    padding: 6px 0;
+  }
+  .ranking-place {
+    width: 23px;
+    height: 23px;
+    border-radius: 7px;
+    font-size: 8px;
+  }
+  .analytics-ranking-row strong {
+    font-size: 9px;
+  }
+  .analytics-ranking-row small {
+    margin-top: 2px;
+    font-size: 6.5px;
+  }
+  .analytics-ranking-row > b {
+    font-size: 9px;
+  }
+
+  .analytics-content .bars {
+    height: 116px;
+    gap: 4px;
+    padding: 6px 2px 0;
+  }
+  .analytics-content .bar-wrap {
+    min-width: 0;
+    gap: 3px;
+  }
+  .analytics-content .bar-wrap > span {
+    overflow: hidden;
+    max-width: 100%;
+    font-size: 6px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .analytics-content .bar {
+    max-height: 82px;
+    border-radius: 5px 5px 2px 2px;
+  }
+
+  .analytics-content .goods-list {
+    display: grid;
+    gap: 0;
+  }
+  .analytics-content .goods-sheet {
+    min-height: 42px;
+    padding: 6px 0;
+    border-radius: 0;
+    border-width: 1px 0 0;
+    background: transparent;
+  }
+  .analytics-content .goods-sheet:first-child {
+    border-top: 0;
+  }
+  .analytics-content .goods-sheet strong {
+    font-size: 9px;
+  }
+  .analytics-content .goods-sheet small {
+    margin-top: 2px;
+    font-size: 6.5px;
+  }
+  .analytics-content .goods-sheet > b {
+    font-size: 9px;
+  }
+}
