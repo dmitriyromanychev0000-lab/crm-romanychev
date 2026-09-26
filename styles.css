@@ -474,10 +474,14 @@ h2 { margin: 0; font-size: 24px; }
 
 .backup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .backup-grid button { min-height: 46px; }
-.toggle { width: 54px; height: 30px; padding: 3px; border: 0; border-radius: 999px; background: #303840; }
-.toggle::after { content: ""; display: block; width: 24px; height: 24px; border-radius: 50%; background: white; transition: transform .2s; }
-.toggle.on { background: var(--green); }
-.toggle.on::after { transform: translateX(24px); }
+.legacy-backup-page .toggle,
+.legacy-settings-row .toggle { width: 54px; height: 30px; padding: 3px; border: 0; border-radius: 999px; background: #303840; }
+.legacy-backup-page .toggle::after,
+.legacy-settings-row .toggle::after { content: ""; display: block; width: 24px; height: 24px; border-radius: 50%; background: white; transition: transform .2s; }
+.legacy-backup-page .toggle.on,
+.legacy-settings-row .toggle.on { background: var(--green); }
+.legacy-backup-page .toggle.on::after,
+.legacy-settings-row .toggle.on::after { transform: translateX(24px); }
 
 .empty { padding: 44px 18px; text-align: center; color: var(--muted); }
 .empty-icon { font-size: 52px; margin-bottom: 10px; }
