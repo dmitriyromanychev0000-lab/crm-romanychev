@@ -357,19 +357,6 @@ h2 { margin: 0; font-size: 24px; }
 .analytics-gem { color: var(--accent); }
 .analytics-gem .ui-icon { width: 25px; height: 25px; }
 .analytics-focus .panel-title { margin-bottom: 18px; }
-.focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.focus-grid > div {
-  display: grid;
-  align-content: center;
-  min-height: 112px;
-  padding: 14px 10px;
-  border: 1px solid rgba(229,170,61,.35);
-  border-radius: 18px;
-  background: rgba(229,170,61,.055);
-  text-align: center;
-}
-.focus-grid strong { font-size: 31px; font-weight: 500; }
-.focus-grid span { margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.25; }
 .analytics-work .metric { min-height: 96px; }
 .analytics-work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .analytics-ranking-list { display: grid; gap: 10px; }
@@ -1221,9 +1208,6 @@ h2 { margin: 0; font-size: 24px; }
   .analytics-arrow { width: 52px; height: 52px; }
   .analytics-kpi { padding: 15px; }
   .analytics-kpi > strong { font-size: 23px; }
-  .focus-grid { gap: 8px; }
-  .focus-grid > div { min-height: 102px; padding: 12px 7px; }
-  .focus-grid strong { font-size: 27px; }
   .backup-grid { grid-template-columns: 1fr; }
   .empty-actions { grid-template-columns: 1fr; }
   .finance-actions { grid-template-columns: 1fr; }
@@ -1258,8 +1242,6 @@ h2 { margin: 0; font-size: 24px; }
   .material-card-controls { grid-template-columns: 1fr; }
   .analytics-kpis { grid-template-columns: 1fr 1fr; }
   .analytics-kpi > strong { font-size: 20px; }
-  .focus-grid { grid-template-columns: repeat(3, 1fr); }
-  .focus-grid span { font-size: 10px; }
   .photo-grid { grid-template-columns: 1fr; }
 }
 
@@ -1662,8 +1644,6 @@ body {
 
   .warehouse-shortcuts { grid-template-columns: 1fr; }
   .analytics-period-grid { grid-template-columns: repeat(2, 1fr); }
-  .focus-grid { grid-template-columns: 1fr; }
-  .focus-grid > div { min-height: 82px; }
   .analytics-kpis { grid-template-columns: 1fr; }
 }
 
@@ -1765,8 +1745,6 @@ h2 { font-size: 21px; }
 .analytics-gem .ui-icon { width: 21px; height: 21px; }
 .metric { padding: 13px; border-radius: 15px; }
 .metric-value { font-size: clamp(20px, 5vw, 25px); }
-.focus-grid > div { min-height: 90px; border-radius: 15px; }
-.focus-grid strong { font-size: 26px; }
 .analytics-work .metric { min-height: 82px; }
 
 .menu-list { gap: 11px; }
@@ -1826,7 +1804,6 @@ h2 { font-size: 21px; }
   h1 { font-size: 27px; }
   .order-card { padding: 17px 14px 19px; }
 .action { min-height: 60px; }
-  .focus-grid > div { min-height: 76px; }
 }
 
 
@@ -2987,17 +2964,6 @@ body,
 }
 .analytics-kpi > small { display: block; margin-top: 5px; color: #43c77b; font-size: 8px; }
 
-.focus-grid {
-  grid-template-columns: repeat(3,minmax(0,1fr));
-  gap: 5px;
-}
-.focus-grid > div {
-  min-height: 64px;
-  padding: 8px 5px;
-  border-radius: 10px;
-}
-.focus-grid strong { font-size: 20px; }
-.focus-grid span { margin-top: 3px; font-size: 8px; line-height: 1.15; }
 
 .analytics-work-grid {
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -3785,16 +3751,6 @@ button.warehouse-shortcut {
 .analytics-kpi > small {
   margin-top: 3px !important;
   font-size: 6.8px !important;
-}
-.focus-grid > div {
-  min-height: 52px !important;
-  padding: 6px 4px !important;
-}
-.focus-grid strong {
-  font-size: 17px !important;
-}
-.focus-grid span {
-  font-size: 7px !important;
 }
 .analytics-work-grid .metric {
   padding: 6px 5px !important;
@@ -4921,23 +4877,6 @@ button.warehouse-shortcut {
     line-height: 1.15;
   }
 
-  .focus-grid {
-    grid-template-columns: repeat(3,minmax(0,1fr));
-    gap: 5px;
-  }
-  .focus-grid > div {
-    min-height: 48px !important;
-    padding: 6px 4px !important;
-    border-radius: 9px;
-  }
-  .focus-grid strong {
-    font-size: 15px !important;
-  }
-  .focus-grid span {
-    margin-top: 3px;
-    font-size: 6.5px !important;
-    line-height: 1.15;
-  }
 
   .analytics-work-grid {
     grid-template-columns: repeat(3,minmax(0,1fr));
@@ -6499,31 +6438,6 @@ button.warehouse-shortcut {
     font-size: 7px !important;
   }
 
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(3,minmax(0,1fr));
-    gap: 7px;
-  }
-  .focus-grid > div {
-    min-height: 76px !important;
-    padding: 10px 5px !important;
-    border: 1px solid #5b4a25;
-    border-radius: 11px;
-    background: rgba(104,78,23,.12);
-    text-align: center;
-  }
-  .focus-grid strong {
-    display: block;
-    font-size: 18px !important;
-    color: #e9b443;
-  }
-  .focus-grid span {
-    display: block;
-    margin-top: 8px;
-    color: #92989d;
-    font-size: 7px !important;
-    line-height: 1.25;
-  }
 
   .analytics-work-grid {
     display: grid;
