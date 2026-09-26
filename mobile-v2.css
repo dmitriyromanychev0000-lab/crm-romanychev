@@ -7671,3 +7671,17 @@
     font-size: 10px !important;
   }
 }
+
+
+/* 0.99.8 · QA-enforced touch target for custom price action. */
+@media screen and (max-width: 520px) {
+  .legacy-custom-price-head {
+    min-height: 54px !important;
+  }
+
+  .legacy-custom-price-head button {
+    min-height: 44px !important;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+}
