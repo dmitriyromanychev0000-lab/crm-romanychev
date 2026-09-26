@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.67.0";
-const APP_BUILD = "2026.09.26.36";
+const APP_VERSION = "0.68.0";
+const APP_BUILD = "2026.09.26.37";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Visual_koncept Sheets 01–10 завершены: финальная интеграция навигации и мобильных экранов";
+const APP_RELEASE = "Возврат к архивному интерфейсу CRM до Visual_koncept; дальнейшие изменения — только точечно";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -56,19 +56,16 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
-let warehouseSection = ["list", "movements", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "list";
-let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiState.warehouseMovementFilter)) ? String(initialUiState.warehouseMovementFilter) : "all";
+let warehouseCreateOpen = false;
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
 let priceTechFilter = typeof initialUiState.priceTechFilter === "string" ? initialUiState.priceTechFilter : "all";
-let priceKindFilter = ["all", "service", "material", "custom"].includes(String(initialUiState.priceKindFilter)) ? String(initialUiState.priceKindFilter) : "all";
 let analyticsPeriod = ["today", "7", "30", "365", "all", "custom"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "30";
 let analyticsOffset = Number.isInteger(Number(initialUiState.analyticsOffset)) ? Number(initialUiState.analyticsOffset) : 0;
 let analyticsCustomStart = typeof initialUiState.analyticsCustomStart === "string" ? initialUiState.analyticsCustomStart : "";
 let analyticsCustomEnd = typeof initialUiState.analyticsCustomEnd === "string" ? initialUiState.analyticsCustomEnd : "";
 let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.financePeriod)) ? String(initialUiState.financePeriod) : "all";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
-let moreReturnSection = typeof initialUiState.moreReturnSection === "string" ? initialUiState.moreReturnSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
 
@@ -81,19 +78,16 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
-      warehouseSection,
-      warehouseMovementFilter,
+      warehouseCreateOpen,
       clientSearch,
       priceSearch,
       priceTechFilter,
-      priceKindFilter,
       analyticsPeriod,
       analyticsOffset,
       analyticsCustomStart,
       analyticsCustomEnd,
       financePeriod,
       moreSection,
-      moreReturnSection,
       selectedActOrderId,
       scrollY: window.scrollY,
       ...extra
@@ -664,11 +658,7 @@ function header() {
     <div class="brand">
       <div class="brand-title">CRM by <span>Romanychev</span>😎</div>
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
-    </div>${activePage === "orders"
-      ? `<button class="header-add" data-action="new-order" aria-label="Новая заявка">+</button>`
-      : activePage === "warehouse" && warehouseSection === "list"
-        ? `<button class="header-add" data-action="new-stock" aria-label="Новая позиция склада">+</button>`
-        : ""}
+    </div>
   </header>`;
 }
 
@@ -699,15 +689,6 @@ function formatVisitDate(value) {
   return new Intl.DateTimeFormat("ru-RU", {
     day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
   }).format(date).replace(",", "");
-}
-
-function visitTimeParts(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return { time: "—", day: "" };
-  const time = new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(date);
-  const today = new Date();
-  const day = date.toDateString() === today.toDateString() ? "Сегодня" : new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "short" }).format(date);
-  return { time, day };
 }
 
 function telegramPhoneLink(phone) {
@@ -763,24 +744,42 @@ function orderCard(order) {
   const isClosed = statusType === "closed";
   const isDeclined = statusType === "declined";
   const isArchived = Boolean(order.archived);
+  const photos = Array.isArray(order.photos) ? order.photos.length : 0;
+  const net = orderNetAmount(order);
   const applianceIcon = applianceIconName(order.tech);
   const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "";
-  const statusText = isArchived ? "Архив" : escapeHtml(order.status || "В работе");
-  const issue = String(order.issue || order.diagnosis || "").trim();
 
-  return `<article class="panel order-card ${cardClass}" data-order-action="view" data-id="${escapeHtml(order.id)}" tabindex="0" role="button" aria-label="Открыть заявку №${escapeHtml(order.id)}">
+  return `<article class="panel order-card ${cardClass}">
     <div class="order-top">
-      <span class="order-number">№${escapeHtml(order.id || "—")}</span>
-      <span class="order-date">${shortDate(orderDateValue(order))}</span>
+      <div class="order-person"><span class="order-number">№${escapeHtml(order.id || "—")}</span><span class="order-name">${escapeHtml(order.name || "Без имени")}</span></div>
+      <div class="order-state"><div class="order-date">${shortDate(orderDateValue(order))}</div><span class="status ${isClosed ? "closed" : isDeclined ? "declined" : ""}">${isArchived ? "Архив" : escapeHtml(order.status || "В работе")}</span></div>
     </div>
-    <div class="order-card-main">
-      <div class="appliance-icon">${icon(applianceIcon)}</div>
-      <div class="order-card-copy">
-        <div class="order-name">${escapeHtml(order.name || "Без имени")}</div>
-        <div class="order-summary">${escapeHtml([order.tech, issue].filter(Boolean).join(" · ") || "Техника не указана")}</div>
-        ${order.address ? `<div class="order-address">${icon("location")}<span>${escapeHtml(order.address)}</span></div>` : ""}
+
+    <div class="appliance">
+      <div class="appliance-main">
+        <div class="appliance-icon">${icon(applianceIcon)}</div>
+        <div><div class="appliance-name">${escapeHtml(order.tech || "Техника")}</div><div class="appliance-model">${escapeHtml(order.brand || "Модель не указана")}</div></div>
       </div>
-      <div class="order-card-side"><span class="status ${isClosed ? "closed" : isDeclined ? "declined" : ""}">${statusText}</span><strong>${money(order.sum)}</strong></div>
+    </div>
+
+    <div class="order-money">
+      <div class="money-box"><div class="money-label">СУММА КЛИЕНТА</div><div class="money-value">${money(order.sum)}</div></div>
+      <div class="money-box money-box-net"><div class="money-label"><span class="money-gem">◇</span> НА РУКИ</div><div class="money-value ${isClosed ? "green" : ""}">${isClosed ? money(net) : "После закрытия"}</div></div>
+    </div>
+
+    <div class="meta">
+      ${order.phone ? `<span class="meta-item">${icon("phone")} ${escapeHtml(order.phone)}</span>` : ""}
+      ${order.address ? `<span class="meta-item address-meta">${icon("location")} ${escapeHtml(order.address)}</span>` : ""}
+      <span class="meta-item">${icon("shield")} ${escapeHtml(order.guarantee || 0)} мес.</span>
+      ${photos ? `<span class="meta-item">${icon("camera")} ${photos} фото</span>` : ""}
+    </div>
+
+    <div class="actions order-main-actions">
+      <button class="action action-edit" data-order-action="edit" data-id="${escapeHtml(order.id)}"><span>${icon("edit")}</span>Изменить</button>
+      <button class="action action-close" data-order-action="toggle" data-id="${escapeHtml(order.id)}"><span>${icon(isClosed ? "reopen" : "check")}</span>${isClosed ? "Открыть" : "Закрыть"}</button>
+      <button class="action action-copy" data-order-action="copy" data-id="${escapeHtml(order.id)}"><span>${icon("copy")}</span>Копия</button>
+      ${order.phone ? `<a class="action action-call" href="tel:${escapeHtml(order.phone)}"><span>${icon("phone")}</span>Позвонить</a>` : `<button class="action action-call" disabled><span>${icon("phone")}</span>Позвонить</button>`}
+      <button class="action action-more" data-order-action="more" data-id="${escapeHtml(order.id)}"><span>${icon("more")}</span>Ещё</button>
     </div>
   </article>`;
 }
@@ -806,26 +805,20 @@ function ordersPage() {
       || (orderVisitFilter === "today" && Number.isFinite(visitTime) && visitTime >= todayStart && visitTime < tomorrowStart)
       || (orderVisitFilter === "upcoming" && Number.isFinite(visitTime) && visitTime >= Date.now())
       || (orderVisitFilter === "overdue" && Number.isFinite(visitTime) && visitTime < Date.now() && status === "active");
-    return filterMatch && visitMatch && searchMatch;
+    return filterMatch && visitMatch && (!query || haystack.includes(query));
   });
 
   const now = Date.now();
-  const nearestVisits = data.orders
+  const nearestVisit = data.orders
     .filter((order) => !order.archived && normalizeStatus(order.status) === "active" && order.nextVisit && new Date(order.nextVisit).getTime() >= now)
-    .sort((a, b) => new Date(a.nextVisit) - new Date(b.nextVisit)).slice(0, 2);
+    .sort((a, b) => new Date(a.nextVisit) - new Date(b.nextVisit))[0];
 
   return `<main class="content orders-content">
-    ${nearestVisits.length ? `<section class="next-visit-card">
-      <div class="next-visit-title"><strong>Ближайшие выезды</strong><button type="button" data-visit-filter="upcoming">Все ${icon("chevron")}</button></div>
-      <div class="next-visit-list">${nearestVisits.map((order, index) => {
-        const visit = visitTimeParts(order.nextVisit);
-        return `<button class="next-visit-item visit-${index}" data-order-action="view" data-id="${escapeHtml(order.id)}">
-          <span class="next-visit-time"><strong>${escapeHtml(visit.time)}</strong><small>${escapeHtml(visit.day)}</small></span>
-          <span class="next-visit-icon">${icon(applianceIconName(order.tech))}</span>
-          <span class="next-visit-copy"><strong>${escapeHtml(order.name || "Клиент")}</strong><small>${escapeHtml(order.tech || "Техника")}</small>${order.address ? `<em>${escapeHtml(order.address)}</em>` : ""}</span>
-          <span class="next-visit-arrow">${icon("chevron")}</span>
-        </button>`;
-      }).join("")}</div>
+    <div class="page-head orders-head"><div><h1>Заявки</h1><p class="lead">Все ремонты в одном месте</p></div><button class="icon-button order-add-button" data-action="new-order" aria-label="Новая заявка">+</button></div>
+
+    ${nearestVisit ? `<section class="next-visit-card">
+      <div class="next-visit-title">${icon("calendar")}<strong>Ближайшие визиты</strong></div>
+      <div class="next-visit-line"><strong>${escapeHtml(formatVisitDate(nearestVisit.nextVisit))}</strong><span>·</span><span>${escapeHtml(nearestVisit.name || "Клиент")}</span>${nearestVisit.address ? `<span class="visit-address">· ${escapeHtml(nearestVisit.address)}</span>` : ""}<span class="visit-id">№${escapeHtml(nearestVisit.id || "—")}</span></div>
     </section>` : ""}
 
     <div class="search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" /></div>
@@ -852,9 +845,7 @@ function ordersPage() {
       <button type="button" class="${orderFilter === "archived" ? "active" : ""}" data-filter="archived" aria-pressed="${orderFilter === "archived"}">Архив</button>
     </div>
 
-    ${filtered.length ? filtered.map(orderCard).join("") : data.orders.length
-      ? `<div class="panel empty orders-filter-empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>По текущему поиску и фильтрам заявок нет.</p><div class="empty-actions"><button class="secondary-button" data-action="reset-order-filters">Сбросить фильтры</button><button class="primary-button" data-action="new-order">+ Новая заявка</button></div></div>`
-      : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
+    ${filtered.length ? filtered.map(orderCard).join("") : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Восстанови данные из резервной копии или создай первую заявку.</p><div class="empty-actions"><button class="primary-button" data-action="import">Импортировать бэкап</button><button class="secondary-button" data-action="new-order">Создать заявку</button></div></div>`}
   </main>`;
 }
 
@@ -877,47 +868,92 @@ function warehousePage() {
     .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
-
+  const movements = [...data.warehouse_movements]
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 30);
+  const movementLabels = {
+    initial: "Начальный остаток",
+    manual_in: "Приход",
+    manual_out: "Ручное списание",
+    order_out: "Списано в заявку",
+    order_return: "Возврат из заявки"
+  };
 
   return `<main class="content warehouse-content">
     <div class="page-head warehouse-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div></div>
 
     <div class="search-row search-with-icon warehouse-search">${icon("search")}<input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" /></div>
 
-    <div class="warehouse-filter-chips" role="group" aria-label="Фильтр склада">
-      <button type="button" class="${warehouseFilter === "active" ? "active" : ""}" data-warehouse-filter="active" aria-pressed="${warehouseFilter === "active"}">В наличии <span>${activeItems.length}</span></button>
-      <button type="button" class="${warehouseFilter === "low" ? "active" : ""}" data-warehouse-filter="low" aria-pressed="${warehouseFilter === "low"}">Мало <span>${lowItems.length}</span></button>
-      <button type="button" class="${warehouseFilter === "all" ? "active" : ""}" data-warehouse-filter="all" aria-pressed="${warehouseFilter === "all"}">Все <span>${data.warehouse.length}</span></button>
+    <div class="warehouse-filter order-date-filter">
+      <select class="field" id="warehouse-filter-select">
+        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
+        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось · ${lowItems.length}</option>
+        <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
+      </select>
+      <span class="select-chevron">${icon("chevron")}</span>
     </div>
 
     <div class="warehouse-shortcuts">
-      <button type="button" class="warehouse-shortcut" data-action="open-warehouse-movements">${icon("history")}<span>История движения</span></button>
+      <a class="warehouse-shortcut" href="#warehouse-movements">${icon("history")}<span>История движения</span></a>
       <button type="button" class="warehouse-shortcut" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
-    <button class="primary-button warehouse-new-button" data-action="new-stock" type="button">${icon("box")}<span>Новая позиция</span></button>
+    <button class="primary-button warehouse-toggle-create" data-action="toggle-stock-form" type="button">${warehouseCreateOpen ? "− Закрыть новую позицию" : "+ Новая позиция"}</button>
+    ${warehouseCreateOpen ? `<form class="panel warehouse-create-card" id="warehouse-inline-form">
+      <div class="warehouse-create-title"><span class="warehouse-new-icon">${icon("box")}</span><strong>Новая позиция</strong></div>
+      <div class="warehouse-create-grid">
+        <div class="form-group"><label>Название</label><input class="field" name="name" required placeholder="Двигатель стиральной машины" /></div>
+        <div class="form-group"><label>Категория склада</label><input class="field" name="category" value="Запчасти" placeholder="Запчасти" /></div>
+      </div>
+      <div class="warehouse-compat-title">Подходит для техники</div>
+      <div class="warehouse-compat-list">
+        ${["Холодильники","Коммерческое холод. оборудование","Стиральные машины","Посудомоечные машины","Сушильные машины","Плиты и духовки","Кондиционеры","Мелкая бытовая техника"].map((value) => `<label class="warehouse-compat-option"><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" /><span class="warehouse-check"></span><span>${escapeHtml(value)}</span></label>`).join("")}
+      </div>
+      <div class="warehouse-create-grid warehouse-create-numbers warehouse-create-triple">
+        <div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="1" /></div>
+        <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="3" /></div>
+        <div class="form-group"><label>Сумма покупки</label><input class="field" name="purchaseTotal" type="number" min="0" step="1" value="0" /><div class="small purchase-helper">По сумме рассчитаем себестоимость единицы.</div></div>
+      </div>
+      <div class="warehouse-create-grid warehouse-storage-grid">
+        <div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option>${value}</option>`).join("")}</select></div>
+        <div class="form-group"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact">Точный</option><option value="presence">По наличию</option></select></div>
+      </div>
+      <div class="warehouse-create-grid warehouse-pricing-grid">
+        <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="0" /></div>
+        <div class="form-group"><label>Себестоимость единицы</label><div class="field readonly-field" id="warehouse-unit-cost">0 ₽</div></div>
+      </div>
+      <button class="primary-button warehouse-create-submit" type="submit">+ &nbsp;Добавить на склад</button>
+    </form>` : ""}
 
     <section class="warehouse-items">
       ${groupedItems.length ? groupedItems.map(([category, group]) => {
         const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
         return `<section class="panel warehouse-group">
           <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div></div>
-          <div class="warehouse-group-list">${group.map((item) => {
-            const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
-            return `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""} ${isLow ? "low-stock" : ""}">
-              <button type="button" class="stock-card-main stock-card-open" data-stock-detail="${escapeHtml(item.id)}">
-                <span class="stock-box-icon">${icon("box")}</span>
-                <span class="stock-copy"><strong class="stock-name">${escapeHtml(item.name || "Без названия")}</strong><small class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")}</small><small class="stock-cost">себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</small></span>
-                <span class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small><i>${icon("chevron")}</i></span>
-              </button>
-              <div class="stock-actions legacy-stock-actions stock-quick-actions">
-                <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button>
-                <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button>
-              </div>
-            </article>`;
-          }).join("")}</div>
+          <div class="warehouse-group-list">${group.map((item) => `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""}">
+            <div class="stock-card-main">
+              <span class="stock-box-icon">${icon("box")}</span>
+              <div class="stock-copy"><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")} · себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</div><div class="stock-available">доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">последняя закупка ${money(item.lastPurchasePrice || 0)}/${escapeHtml(item.unit || "шт.")}</div></div>
+              <div class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><span>${item.archived ? "АРХИВ" : "В НАЛИЧИИ"}</span></div>
+            </div>
+            <div class="stock-actions legacy-stock-actions">
+              <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ &nbsp;Приход</button>
+              <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− &nbsp;Списать</button>
+              <button class="secondary-button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
+              <button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
+            </div>
+          </article>`).join("")}</div>
         </section>`;
       }).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
+    </section>
+
+    <section id="warehouse-movements" class="panel warehouse-movements"><div class="panel-title"><span class="badge-icon">${icon("history")}</span> История движения</div>
+      ${movements.length ? `<ul class="list">${movements.map((movement) => {
+        const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
+        const incoming = ["initial", "manual_in", "order_return"].includes(movement.type);
+        const source = movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : "";
+        return `<li class="price-row"><div><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><div class="small">${movementLabels[movement.type] || "Движение"}${source} · ${shortDate(movement.date)}</div></div><strong class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</strong></li>`;
+      }).join("")}</ul>` : `<div class="empty">Движений пока нет</div>`}
     </section>
   </main>`;
 }
@@ -1105,12 +1141,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА</span><strong class="blue">${money(revenue)}</strong><small>по закрытым заявкам</small></div>
-        <div class="analytics-kpi"><span>ЧИСТЫМИ С РЕМОНТОВ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>выручка минус расходы</small></div>
-        <div class="analytics-kpi"><span>РАСХОДЫ</span><strong class="red">${money(totalSpent)}</strong><small>ремонты + личные</small></div>
-        <div class="analytics-kpi"><span>ИТОГОВЫЙ РЕЗУЛЬТАТ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>с учётом личных финансов</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>на закрытую заявку</small></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="green">${money(repairResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="green">${money(totalResult)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
       </div>
     </section>
 
@@ -1172,10 +1208,8 @@ function priceList() {
   ].filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
   const prices = data.receipt_prices.filter((item) => {
     const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
-    const kind = item.kind === "material" ? "material" : "service";
-    const kindMatch = priceKindFilter === "all" || priceKindFilter === kind;
     const haystack = [item.name, item.category, item.tech, item.unit, item.kind].join(" ").toLowerCase();
-    return techMatch && kindMatch && (!query || haystack.includes(query));
+    return techMatch && (!query || haystack.includes(query));
   });
   const groups = [...prices.reduce((map, item) => {
     const group = String(item.category || (item.kind === "material" ? "Материалы" : "Услуги")).trim() || "Прочее";
@@ -1186,7 +1220,7 @@ function priceList() {
     .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
-  const customServices = (priceKindFilter === "all" || priceKindFilter === "custom" ? (Array.isArray(data.service_custom) ? data.service_custom : []) : [])
+  const customServices = (Array.isArray(data.service_custom) ? data.service_custom : [])
     .filter((item) => {
       const techMatch = priceTechFilter === "all" || String(item.tech || "").trim() === priceTechFilter;
       if (!techMatch) return false;
@@ -1199,12 +1233,6 @@ function priceList() {
     <div class="page-head price-head"><div><h1>Прайс-лист</h1><p class="lead">Услуги и материалы</p></div><div class="price-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
 
     <div class="search-row search-with-icon price-search-row">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название услуги или материала" /></div>
-    <div class="price-kind-chips" role="group" aria-label="Тип позиции">
-      <button type="button" class="${priceKindFilter === "all" ? "active" : ""}" data-price-kind="all">Все</button>
-      <button type="button" class="${priceKindFilter === "service" ? "active" : ""}" data-price-kind="service">Услуги</button>
-      <button type="button" class="${priceKindFilter === "material" ? "active" : ""}" data-price-kind="material">Материалы</button>
-      <button type="button" class="${priceKindFilter === "custom" ? "active" : ""}" data-price-kind="custom">Свои</button>
-    </div>
     <div class="price-tech-filter">
       <select class="field" id="price-tech-filter">
         <option value="all">Вся техника</option>
@@ -1219,15 +1247,13 @@ function priceList() {
         <div class="price-catalog-list">${items.map((item) => {
           const index = data.receipt_prices.indexOf(item);
           return `<button class="price-catalog-card" data-action="edit-price" data-index="${index}">
-            <span class="price-card-icon">${icon(item.kind === "material" ? "box" : "tools")}</span>
-            <span class="price-card-copy"><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml([item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span>
+            <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml([item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span>
             <b>${money(item.price || 0)}</b>
-            <i>${icon("chevron")}</i>
           </button>`;
         }).join("")}</div>
-      </section>`).join("")}</div>` : ""}
+      </section>`).join("")}</div>` : `<section class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр техники.</p></section>`}
 
-    ${priceKindFilter === "custom" || priceKindFilter === "all" ? `<section class="panel custom-price-panel">
+    <section class="panel custom-price-panel">
       <div class="panel-title"><span class="badge-icon">${icon("edit")}</span> Пользовательские услуги</div>
       <button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>
       ${customServices.length ? `<div class="goods-list">${customServices.map((item) => {
@@ -1237,8 +1263,7 @@ function priceList() {
         const category = item.category || item.tech || "Своя услуга";
         return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span class="chevron">${icon("chevron")}</span></button>`;
       }).join("")}</div>` : `<div class="small">Своих услуг пока нет</div>`}
-    </section>` : ""}
-    ${!groups.length && !customServices.length ? `<section class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтры прайса.</p></section>` : ""}
+    </section>
   </main>`;
 }
 
@@ -1404,7 +1429,7 @@ function actPage() {
     <section class="panel no-print act-control-panel">
       <div class="panel-title"><span class="badge-icon">${icon("printer")}</span> Акт выполненных работ (A4)</div>
       <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
-      <div class="act-control-actions"><button class="secondary-button" type="button" data-action="open-receipts">${icon("receipt")}<span>Документы и чеки</span></button><button class="primary-button act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button></div>
+      <button class="primary-button wide act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / сохранить PDF</span></button>
     </section>
 
     ${order ? `<article class="act-sheet">
@@ -1418,7 +1443,7 @@ function actPage() {
         <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
       </div>
 
-      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "—"}</td></tr>`).join("")}</tbody></table>
+      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${escapeHtml(order.guarantee || 0)} мес.</td></tr>`).join("")}</tbody></table>
 
       <div class="act-totals">
         <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
@@ -1556,10 +1581,10 @@ function settingsPage() {
     <section class="panel settings-sections-panel">
       <div class="panel-title"><span class="badge-icon">${icon("more")}</span> Данные и служебные разделы</div>
       <div class="legacy-settings-links">
-        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><b>${draftRecords().length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" class="secondary-button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><span class="chevron">${icon("chevron")}</span></button>
       </div>
     </section>
   </main>`;
@@ -1604,7 +1629,7 @@ function draftSummary(item = {}) {
 function draftsPage() {
   const drafts = draftRecords().sort((a, b) => new Date(draftSummary(b.value).date || 0) - new Date(draftSummary(a.value).date || 0));
   return `<main class="content drafts-content">
-    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
+    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
     ${drafts.length ? `<div class="client-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
@@ -1651,7 +1676,7 @@ function receiptsPage() {
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content receipts-content">
-    <div class="page-head receipts-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и документы CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
+    <div class="page-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и старые документы CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
 
     <section class="panel receipt-stats-panel">
       <div class="metrics">
@@ -1685,13 +1710,13 @@ function toolsPage() {
     .sort((a, b) => String(a.item.name || a.item.title || a.item.tool || "").localeCompare(String(b.item.name || b.item.title || b.item.tool || ""), "ru"));
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
   return `<main class="content tools-content">
-    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-back">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
+    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
     <section class="panel tools-stats-panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
     ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${toolEntries.map(({ item, index }) => {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span class="tool-row-icon">${icon("tools")}</span><span class="tool-row-copy"><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small>${item.serial || item.serialNumber ? `<em>№ ${escapeHtml(item.serial || item.serialNumber)}</em>` : ""}</span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
+      return `<button class="goods-sheet tool-row" data-action="edit-tool" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category, status].filter(Boolean).join(" · "))}</small></span><b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b><span class="chevron">${icon("chevron")}</span></button>`;
     }).join("")}</div></section>` : emptyState("🛠", "Инструментов пока нет", "Добавь первый инструмент или импортируй старый бэкап.")}
   </main>`;
 }
@@ -1700,19 +1725,17 @@ async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content backup-content">
-    <div class="page-head backup-head"><div><h1>Бэкапы</h1><p class="lead">Резервные копии и восстановление данных</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
+    <div class="page-head"><div><h1>Бэкапы</h1><p class="lead">Данные остаются на твоём устройстве</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
     <section class="panel backup-main-panel">
       <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
-      <div class="backup-primary-actions">
-        <button class="primary-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
-        <button class="secondary-button" data-action="import">${icon("document")}<span>Импортировать JSON</span></button>
-      </div>
       <div class="backup-grid">
+        <button class="primary-button" data-action="import">Импортировать JSON</button>
         <button class="secondary-button" data-action="inspect-backup-file">Проверить файл</button>
+        <button class="secondary-button" data-action="download-backup">Скачать бэкап</button>
         <button class="secondary-button" data-action="choose-folder">Выбрать папку</button>
         <button class="secondary-button" data-action="folder-backup">Сохранить в папку</button>
-        <button class="secondary-button" data-action="backup-self-test">Самопроверка</button>
-        <button class="secondary-button backup-restore-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить последний импорт</button>
+        <button class="secondary-button" data-action="backup-self-test">Проверить бэкап</button>
+        <button class="secondary-button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
       </div>
       <div class="backup-settings-list">
         <div class="setting-row"><div><strong>Папка</strong><div class="small">${directory ? escapeHtml(directory.name) : "Не выбрана"}</div></div></div>
@@ -1768,71 +1791,10 @@ async function copyTextToClipboard(text, successMessage = "Скопирован�
   toast(successMessage);
 }
 
-function warehouseMovementsPage() {
-  const movementLabels = {
-    initial: "Начальный остаток",
-    manual_in: "Приход",
-    manual_out: "Ручное списание",
-    order_out: "Списано в заявку",
-    order_return: "Возврат из заявки"
-  };
-  const incomingTypes = new Set(["initial", "manual_in", "order_return"]);
-  const source = [...data.warehouse_movements]
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-  const movements = source.filter((movement) => {
-    const incoming = incomingTypes.has(movement.type);
-    return warehouseMovementFilter === "all"
-      || (warehouseMovementFilter === "in" && incoming)
-      || (warehouseMovementFilter === "out" && !incoming);
-  });
-  const inCount = source.filter((movement) => incomingTypes.has(movement.type)).length;
-  const outCount = source.length - inCount;
-
-  return `<main class="content warehouse-support-content">
-    <div class="support-page-head">
-      <button type="button" class="support-back" data-action="warehouse-list" aria-label="Назад">‹</button>
-      <div><h1>История движения</h1><p>Приходы, списания и движения по заявкам</p></div>
-    </div>
-
-    <div class="movement-filter-chips">
-      <button type="button" class="${warehouseMovementFilter === "all" ? "active" : ""}" data-movement-filter="all">Все <span>${source.length}</span></button>
-      <button type="button" class="${warehouseMovementFilter === "in" ? "active" : ""}" data-movement-filter="in">Приход <span>${inCount}</span></button>
-      <button type="button" class="${warehouseMovementFilter === "out" ? "active" : ""}" data-movement-filter="out">Расход <span>${outCount}</span></button>
-    </div>
-
-    <section class="movement-list">
-      ${movements.length ? movements.map((movement) => {
-        const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
-        const incoming = incomingTypes.has(movement.type);
-        const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
-        return `<article class="movement-card">
-          <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${incoming ? "+" : "−"}</span>
-          <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
-          <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
-        </article>`;
-      }).join("") : `<div class="panel empty warehouse-support-empty"><div class="empty-icon">${icon("history")}</div><h2>Движений нет</h2><p>Для выбранного фильтра записей пока нет.</p></div>`}
-    </section>
-  </main>`;
-}
-
-async function shareShoppingList() {
-  const text = shoppingListText();
-  if (!shoppingItems().length) return toast("Список покупок пуст");
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: "Список покупок", text });
-      return;
-    } catch (error) {
-      if (error?.name === "AbortError") return;
-    }
-  }
-  return copyTextToClipboard(text, "Список скопирован — можно отправить");
-}
-
 function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
-  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">‹</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
-    <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать</span></button></div>
+  return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="${backAction}">Назад</button></div>
+    <div class="shopping-page-actions"><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="client-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
       return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
@@ -1847,13 +1809,11 @@ function moreMenu() {
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
     ["act", "printer", "Акт", "Подготовка и печать документа"],
     ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
-    ["tools", "tools", "Инструменты", "Рабочий инструмент и оборудование"],
     ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
   const cards = (items) => items.map(([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}"><span class="menu-icon menu-icon-${id}">${icon(iconName)}</span><span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span><span class="chevron">${icon("chevron")}</span></button>`).join("");
   return `<main class="content more-content">
-    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Рабочие разделы, документы и настройки</p></div></div>
-    <div class="more-section-caption"><span>Рабочие инструменты</span><b>${workItems.length}</b></div>
+    <div class="page-head"><div><h1>Ещё</h1><p class="lead">Финансы, документы, прайс и настройки</p></div></div>
     <div class="menu-list legacy-more-list">${cards(workItems)}</div>
   </main>`;
 }
@@ -1876,7 +1836,7 @@ async function morePage() {
 async function render() {
   let page;
   if (activePage === "orders") page = ordersPage();
-  if (activePage === "warehouse") page = warehouseSection === "movements" ? warehouseMovementsPage() : warehouseSection === "shopping" ? shoppingPage("warehouse-list") : warehousePage();
+  if (activePage === "warehouse") page = warehousePage();
   if (activePage === "analytics") page = analyticsPage();
   if (activePage === "more") page = await morePage();
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
@@ -2033,7 +1993,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop catalog-modal-backdrop";
   modal.innerHTML = `<div class="modal catalog-modal">
-    <div class="catalog-modal-head"><div><div class="small">Каталог услуг · <span id="catalog-selected-count">0 выбрано</span></div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
+    <div class="catalog-modal-head"><div><div class="small">Каталог услуг</div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
     <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
     <div class="catalog-service-list" id="catalog-service-list"></div>
     <div class="catalog-fit-summary">
@@ -2061,8 +2021,6 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const updateSummary = () => {
     const total = selectedTotal();
     modal.querySelector("#catalog-selected-total").textContent = money(total);
-    const countEl = modal.querySelector("#catalog-selected-count");
-    if (countEl) countEl.textContent = `${selected.size} выбрано`;
     modal.querySelector("#catalog-target-total").textContent = money(target);
     const diff = target - total;
     const diffEl = modal.querySelector("#catalog-diff-total");
@@ -2422,17 +2380,16 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const dateValue = /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.slice(0, 10) : new Date().toISOString().slice(0, 10);
   const orderOptions = ordersNewestFirst().map((order) => `<option value="${escapeHtml(order.id)}" ${String(view.orderId) === String(order.id) ? "selected" : ""}>№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Без имени")} · ${money(order.sum)}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop receipt-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
-    <div class="receipt-editor-head"><div><small>Документы и чеки</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="receipt-form">
+    <h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2>
     <div class="form-grid">
-      <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
-      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" placeholder="Необязательно" /></div>
+      <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Чек, квитанция, заказ-наряд…" /></div>
+      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" /></div>
       <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${escapeHtml(dateValue)}" /></div>
-      <div class="form-group"><label>Сумма</label><input class="field receipt-editor-amount" name="amount" type="number" min="0" step="1" value="${view.amount}" inputmode="decimal" /></div>
+      <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" value="${view.amount}" /></div>
       <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Комментарий к документу">${escapeHtml(view.note)}</textarea></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(view.note)}</textarea></div>
     </div>
     <div class="modal-actions">${isStored ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2451,15 +2408,14 @@ function receiptModal(existing = null, receiptIndex = -1) {
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
-      title: String(form.get("title") || "").trim(),
-      number: String(form.get("number") || "").trim(),
+      title: form.get("title"),
+      number: form.get("number"),
       date: date ? new Date(`${date}T12:00:00`).toISOString() : null,
       amount: Number(form.get("amount")) || 0,
       orderId: form.get("orderId") || null,
-      note: String(form.get("note") || "").trim(),
+      note: form.get("note"),
       updatedAt: new Date().toISOString()
     };
-    if (!next.title) return toast("Укажи название документа");
     if (!Array.isArray(data.receipts)) data.receipts = [];
     if (receiptIndex >= 0) data.receipts[receiptIndex] = next;
     else data.receipts.push({ ...next, createdAt: new Date().toISOString() });
@@ -2469,17 +2425,16 @@ function receiptModal(existing = null, receiptIndex = -1) {
 function toolModal(existing = null, toolIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop tool-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
-    <div class="tool-editor-head"><div><small>Рабочие инструменты</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="tool-form">
+    <h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2>
     <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Измерительный" /></div>
-      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" list="tool-status-options" /><datalist id="tool-status-options"><option value="В наличии"></option><option value="В ремонте"></option><option value="На выезде"></option><option value="Списан"></option></datalist></div>
-      <div class="form-group"><label>Стоимость</label><input class="field tool-editor-price" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" inputmode="decimal" /></div>
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Электроинструмент, измерительный…" /></div>
+      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" /></div>
+      <div class="form-group"><label>Стоимость</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" /></div>
       <div class="form-group"><label>Серийный номер</label><input class="field" name="serial" value="${escapeHtml(item.serial || item.serialNumber || "")}" /></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(item.note || item.comment || "")}</textarea></div>
     </div>
     <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-tool">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2497,15 +2452,14 @@ function toolModal(existing = null, toolIndex = -1) {
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
-      name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "").trim(),
-      status: String(form.get("status") || "В наличии").trim() || "В наличии",
+      name: form.get("name"),
+      category: form.get("category"),
+      status: form.get("status"),
       price: Number(form.get("price")) || 0,
-      serial: String(form.get("serial") || "").trim(),
-      note: String(form.get("note") || "").trim(),
+      serial: form.get("serial"),
+      note: form.get("note"),
       updatedAt: new Date().toISOString()
     };
-    if (!next.name) return toast("Укажи название инструмента");
     if (!Array.isArray(data.tools)) data.tools = [];
     if (toolIndex >= 0) data.tools[toolIndex] = next; else data.tools.push({ ...next, createdAt: new Date().toISOString() });
     await saveData(); modal.remove(); await render(); toast("Инструмент сохранён");
@@ -2515,15 +2469,14 @@ function toolModal(existing = null, toolIndex = -1) {
 function customServiceModal(existing = null, serviceIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop price-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal price-editor-modal" id="custom-service-form">
-    <div class="price-editor-head"><div><small>Прайс-лист · своя услуга</small><h2>${existing ? "Редактировать услугу" : "Новая услуга"}</h2></div><button type="button" class="price-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="price-editor-type">${icon("tools")}<span>Пользовательская услуга для каталога заявок</span></div>
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="custom-service-form">
+    <h2>${existing ? "Редактировать свою услугу" : "Новая своя услуга"}</h2>
     <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.service || "")}" required placeholder="Например, замена подшипников" /></div>
-      <div class="form-group"><label>Категория / техника</label><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" placeholder="Стиральные машины" /></div>
-      <div class="form-group"><label>Цена</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.cost || item.sum) || 0}" inputmode="decimal" /></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.service || "")}" required /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" /></div>
+      <div class="form-group"><label>Цена</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.cost || item.sum) || 0}" /></div>
+      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note">${escapeHtml(item.note || item.comment || "")}</textarea></div>
     </div>
     <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-custom-service">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2541,13 +2494,12 @@ function customServiceModal(existing = null, serviceIndex = -1) {
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
-      name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "").trim(),
+      name: form.get("name"),
+      category: form.get("category"),
       price: Number(form.get("price")) || 0,
-      note: String(form.get("note") || "").trim(),
+      note: form.get("note"),
       updatedAt: new Date().toISOString()
     };
-    if (!next.name) return toast("Укажи название услуги");
     if (!Array.isArray(data.service_custom)) data.service_custom = [];
     if (serviceIndex >= 0) data.service_custom[serviceIndex] = next;
     else data.service_custom.push({ ...next, createdAt: new Date().toISOString() });
@@ -2557,17 +2509,14 @@ function customServiceModal(existing = null, serviceIndex = -1) {
 function priceModal(existing = null, priceIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop price-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal price-editor-modal" id="price-form">
-    <div class="price-editor-head"><div><small>Прайс-лист</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div><button type="button" class="price-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="price-editor-type">${icon(item.kind === "material" ? "box" : "price")}<span>Позиция общего прайса услуг и материалов</span></div>
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="price-form">
+    <h2>${existing ? "Редактировать позицию" : "Новая позиция прайса"}</h2>
     <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Название позиции" /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "")}" placeholder="Диагностика" /></div>
-      <div class="form-group"><label>Техника</label><input class="field" name="tech" value="${escapeHtml(item.tech || "")}" placeholder="Необязательно" /></div>
-      <div class="form-group"><label>Тип</label><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал / товар</option></select></div>
-      <div class="form-group"><label>Единица</label><input class="field" name="unit" value="${escapeHtml(item.unit || (item.kind === "material" ? "шт." : ""))}" placeholder="шт." /></div>
-      <div class="form-group full"><label>Цена</label><input class="field price-editor-price" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required inputmode="decimal" /></div>
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" /></div>
+      <div class="form-group"><label>Тип</label><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал</option></select></div>
+      <div class="form-group full"><label>Цена</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required /></div>
     </div>
     <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-price">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -2582,17 +2531,7 @@ function priceModal(existing = null, priceIndex = -1) {
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const next = {
-      ...item,
-      id: item.id || crypto.randomUUID(),
-      name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "").trim(),
-      tech: String(form.get("tech") || "").trim(),
-      kind: String(form.get("kind") || "service"),
-      unit: String(form.get("unit") || "").trim(),
-      price: Number(form.get("price")) || 0
-    };
-    if (!next.name) return toast("Укажи название позиции");
+    const next = { ...item, id: item.id || crypto.randomUUID(), name: form.get("name"), category: form.get("category"), kind: form.get("kind"), price: Number(form.get("price")) || 0 };
     if (priceIndex >= 0) data.receipt_prices[priceIndex] = next; else data.receipt_prices.push(next);
     await saveData(); modal.remove(); await render(); toast("Прайс обновлён");
   });
@@ -2606,91 +2545,49 @@ function clientModal(clientKey) {
   const client = orders[0];
   const total = orders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
   const closed = orders.filter((order) => normalizeStatus(order.status) === "closed").length;
-  const active = orders.filter((order) => normalizeStatus(order.status) === "active").length;
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop client-profile-backdrop";
-  modal.innerHTML = `<section class="modal client-profile-modal" aria-label="Профиль клиента">
-    <header class="client-profile-head">
-      <button type="button" class="client-profile-back" data-close-modal aria-label="Назад">‹</button>
-      <div><strong>Клиент</strong><small>История обращений и ремонтов</small></div>
-      ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : `<span></span>`}
-    </header>
-    <main class="client-profile-content">
-      <section class="client-profile-hero">
-        <span class="client-profile-avatar">${icon("clients")}</span>
-        <div><h2>${escapeHtml(client.name || "Клиент")}</h2><p>${escapeHtml(client.phone || "Телефон не указан")}</p></div>
-      </section>
-
-      ${client.address ? `<div class="client-profile-address">${icon("location")}<span><small>Последний адрес</small><strong>${escapeHtml(client.address)}</strong></span></div>` : ""}
-
-      <section class="client-profile-kpis">
-        <div><span>Обращений</span><strong>${orders.length}</strong></div>
-        <div><span>Закрыто</span><strong class="green">${closed}</strong></div>
-        <div><span>В работе</span><strong class="blue">${active}</strong></div>
-        <div><span>Общая сумма</span><strong class="yellow">${money(total)}</strong></div>
-      </section>
-
-      <section class="client-profile-history">
-        <h3>История ремонтов</h3>
-        <div class="client-profile-orders">${orders.map((order) => {
-          const status = normalizeStatus(order.status);
-          return `<button type="button" data-client-order="${escapeHtml(order.id)}">
-            <span class="client-order-icon">${icon(applianceIconName(order.tech))}</span>
-            <span class="client-order-copy"><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(orderDateValue(order))} · ${escapeHtml(order.status || "В работе")}</small><em>${escapeHtml(order.brand || order.issue || "")}</em></span>
-            <span class="client-order-side"><b>${money(order.sum)}</b><i class="${status === "closed" ? "green" : status === "declined" ? "red" : "blue"}">${escapeHtml(order.status || "В работе")}</i></span>
-          </button>`;
-        }).join("")}</div>
-      </section>
-    </main>
-  </section>`;
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<div class="modal compact-modal">
+    <h2>${escapeHtml(client.name || "Клиент")}</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Телефон</label><div class="field readonly-field">${escapeHtml(client.phone || "—")}</div></div>
+      <div class="form-group"><label>Обращений</label><div class="field readonly-field">${orders.length}</div></div>
+      <div class="form-group"><label>Закрыто</label><div class="field readonly-field">${closed}</div></div>
+      <div class="form-group"><label>Общая сумма</label><div class="field readonly-field">${money(total)}</div></div>
+      ${client.address ? `<div class="form-group full"><label>Последний адрес</label><div class="field readonly-field">${escapeHtml(client.address)}</div></div>` : ""}
+    </div>
+    <div class="form-section-title">История заявок</div>
+    <div class="goods-list">${orders.map((order) => `<button class="goods-sheet" data-client-order="${escapeHtml(order.id)}"><span><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.tech || "Техника")}</strong><small>${shortDate(order.created)} · ${escapeHtml(order.status || "В работе")}</small></span><b>${money(order.sum)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>
+    <div class="modal-actions">
+      ${client.phone ? `<a class="secondary-button icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}
+      <button type="button" class="primary-button" data-close-modal>Закрыть</button>
+    </div>
+  </div>`;
   document.body.appendChild(modal);
-  const close = () => modal.remove();
-  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => {
-    if (event.target === modal) return close();
+    if (event.target === modal) return modal.remove();
     const orderButton = event.target.closest("[data-client-order]");
     if (!orderButton) return;
     const order = data.orders.find((item) => String(item.id) === String(orderButton.dataset.clientOrder));
     if (!order) return;
-    close();
-    orderDetailModal(order);
+    modal.remove();
+    newOrderModal(order);
   });
 }
 
 function financeModal(type) {
   const isIncome = type === "income";
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop finance-entry-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal finance-entry-modal" id="finance-form">
-    <div class="finance-entry-head">
-      <div><small>Финансы</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
-      <button type="button" class="finance-entry-close" data-close-modal aria-label="Закрыть">×</button>
-    </div>
-    <div class="finance-entry-type ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}<span>${isIncome ? "Пополнение личных финансов" : "Личный расход вне заявки"}</span></div>
-    <div class="form-grid">
-      <div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" step="1" inputmode="decimal" required placeholder="0" /></div>
-      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" required /></div>
-      <div class="form-group full"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div>
-      <div class="form-group full"><label>Описание</label><input class="field" name="description" required placeholder="${isIncome ? "Например, продажа запчасти" : "Например, топливо"}" /></div>
-    </div>
-    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
-  </form>`;
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="finance-form"><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2><div class="form-grid"><div class="form-group"><label>Сумма</label><input class="field" name="amount" type="number" min="0" required /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${isIncome ? "Дополнительный доход" : "Личные расходы"}" /></div><div class="form-group full"><label>Описание</label><input class="field" name="description" required /></div><div class="form-group full"><label>Дата</label><input class="field" name="date" type="date" value="${new Date().toISOString().slice(0, 10)}" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const amount = Number(form.get("amount")) || 0;
-    if (amount <= 0) return toast("Укажи сумму");
-    const item = {
-      id: crypto.randomUUID(),
-      amount,
-      category: String(form.get("category") || "").trim() || (isIncome ? "Дополнительный доход" : "Личные расходы"),
-      description: String(form.get("description") || "").trim(),
-      date: new Date(`${form.get("date")}T12:00:00`).toISOString(),
-      source: "manual"
-    };
+    const item = { id: crypto.randomUUID(), amount: Number(form.get("amount")) || 0, category: form.get("category"), description: form.get("description"), date: new Date(`${form.get("date")}T12:00:00`).toISOString(), source: "manual" };
     data[isIncome ? "incomes" : "expenses"].push(item);
     await saveData();
     modal.remove();
@@ -2699,166 +2596,30 @@ function financeModal(type) {
   });
 }
 
-function stockDetailModal(item) {
-  const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
-  const movements = [...data.warehouse_movements]
-    .filter((movement) => String(movement.warehouseId) === String(item.id))
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    .slice(0, 5);
-  const movementLabels = {
-    initial: "Начальный остаток",
-    manual_in: "Приход",
-    manual_out: "Списание",
-    order_out: "В заявку",
-    order_return: "Возврат"
-  };
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop stock-detail-backdrop";
-  modal.innerHTML = `<section class="modal stock-detail-modal" aria-label="Позиция склада">
-    <header class="stock-detail-head">
-      <button type="button" class="stock-detail-back" data-close-modal aria-label="Назад">‹</button>
-      <div><strong>Позиция склада</strong><small>${escapeHtml(item.category || "Без категории")}</small></div>
-      <button type="button" class="stock-detail-edit" data-stock-detail-action="edit" aria-label="Редактировать">${icon("edit")}</button>
-    </header>
-    <main class="stock-detail-content">
-      <section class="stock-detail-hero">
-        <span class="stock-detail-icon">${icon("box")}</span>
-        <div><h2>${escapeHtml(item.name || "Без названия")}</h2><p>${escapeHtml(Array.isArray(item.compatibility) && item.compatibility.length ? item.compatibility.join(" · ") : "Универсальная позиция")}</p></div>
-        <span class="stock-detail-status ${isLow ? "low" : ""}">${item.archived ? "Архив" : isLow ? "Мало" : "В наличии"}</span>
-      </section>
-      <section class="stock-detail-kpis">
-        <div><span>Остаток</span><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div><span>Продажа</span><strong>${money(item.price || 0)}</strong></div>
-        <div><span>Себестоимость</span><strong>${money(item.lastPurchasePrice || 0)}</strong></div>
-      </section>
-      <div class="stock-detail-actions">
-        <button type="button" data-stock-detail-action="in"><span>+</span><b>Приход</b></button>
-        <button type="button" data-stock-detail-action="out"><span>−</span><b>Списать</b></button>
-        <button type="button" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть" : "В архив"}</b></button>
-      </div>
-      <section class="stock-detail-history">
-        <h3>Последние движения</h3>
-        ${movements.length ? movements.map((movement) => {
-          const incoming = ["initial","manual_in","order_return"].includes(movement.type);
-          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item.unit || "шт.")}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
-        }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
-      </section>
-    </main>
-  </section>`;
-  document.body.appendChild(modal);
-  const close = () => modal.remove();
-  modal.querySelector("[data-close-modal]").addEventListener("click", close);
-  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
-  modal.querySelectorAll("[data-stock-detail-action]").forEach((button) => button.addEventListener("click", async () => {
-    const action = button.dataset.stockDetailAction;
-    close();
-    if (action === "edit") return stockModal(item);
-    if (action === "in" || action === "out") return adjustStock(item.id, action);
-    if (action === "archive") {
-      item.archived = !item.archived;
-      await saveData();
-      await render();
-      return toast(item.archived ? "Позиция перемещена в архив" : "Позиция возвращена на склад");
-    }
-  }));
-}
-
 function stockModal(existing = null) {
   const item = existing || {};
-  const commonCompatibility = [
-    "Холодильники",
-    "Коммерческое холод. оборудование",
-    "Стиральные машины",
-    "Посудомоечные машины",
-    "Сушильные машины",
-    "Плиты и духовки",
-    "Кондиционеры",
-    "Мелкая бытовая техника"
-  ];
-  const currentCompatibility = Array.isArray(item.compatibility) ? item.compatibility.map(String) : [];
-  const customCompatibility = currentCompatibility.filter((value) => !commonCompatibility.includes(value)).join(", ");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop stock-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
-    <div class="stock-editor-head">
-      <div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div>
-      <button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button>
-    </div>
-
-    <div class="stock-editor-section-title">Основное</div>
-    <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div>
-      <div class="form-group"><label>Единица</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
-      <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
-      <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div>
-    </div>
-
-    <div class="stock-editor-section-title">Цены и учёт</div>
-    <div class="form-grid">
-      <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
-      <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="${Number(item.lastPurchasePrice) || 0}" /></div>
-      <div class="form-group full"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
-    </div>
-
-    <div class="stock-editor-section-title">Подходит для техники</div>
-    <div class="stock-editor-compat">
-      ${commonCompatibility.map((value) => `<label><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" ${currentCompatibility.includes(value) ? "checked" : ""}/><span class="warehouse-check"></span><b>${escapeHtml(value)}</b></label>`).join("")}
-    </div>
-    <div class="form-group stock-editor-custom-compat"><label>Дополнительно</label><input class="field" name="compatibilityExtra" value="${escapeHtml(customCompatibility)}" placeholder="Через запятую" /></div>
-    <label class="stock-editor-toggle"><input type="checkbox" name="hiddenFromOrders" ${item.hiddenFromOrders ? "checked" : ""}/><span class="warehouse-check"></span><span><b>Скрыть в заявках</b><small>Не предлагать эту позицию при добавлении материалов</small></span></label>
-
-    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
-  </form>`;
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal" id="stock-form"><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div><div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div><div class="form-group"><label>${existing ? "Остаток (приход / списание)" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div><div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div><div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" value="${Number(item.price) || 0}" /></div><div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" value="${Number(item.lastPurchasePrice) || 0}" /></div><div class="form-group full"><label>Подходит для техники</label><input class="field" name="compatibility" value="${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : "")}" placeholder="Холодильники, стиральные машины…" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const extraCompatibility = String(form.get("compatibilityExtra") || "").split(",").map((value) => value.trim()).filter(Boolean);
-    const compatibility = [...new Set([...form.getAll("compatibility").map(String), ...extraCompatibility])];
-    const next = {
-      ...item,
-      id: item.id || crypto.randomUUID(),
-      name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
-      unit: String(form.get("unit") || "шт."),
-      quantity: Number(form.get("quantity")) || 0,
-      min: Number(form.get("min")) || 0,
-      price: Number(form.get("price")) || 0,
-      lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0,
-      compatibility,
-      archived: existing ? Boolean(item.archived) : false,
-      hiddenFromOrders: form.get("hiddenFromOrders") === "on",
-      tracking: String(form.get("tracking") || "exact"),
-      consumeUnit: item.consumeUnit || String(form.get("unit") || "шт.")
-    };
-    if (!next.name) return toast("Укажи название позиции");
+    const next = { ...item, id: item.id || crypto.randomUUID(), name: form.get("name"), category: form.get("category"), unit: form.get("unit"), quantity: Number(form.get("quantity")) || 0, min: Number(form.get("min")) || 0, price: Number(form.get("price")) || 0, lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0, compatibility: String(form.get("compatibility") || "").split(",").map((value) => value.trim()).filter(Boolean), archived: false, hiddenFromOrders: false, tracking: item.tracking || "exact", consumeUnit: item.consumeUnit || form.get("unit") };
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
     if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
-    if (!existing && next.quantity > 0) {
-      data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
-    }
-    await saveData();
-    modal.remove();
-    await render();
-    toast("Позиция склада сохранена");
+    if (!existing && next.quantity > 0) data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
+    await saveData(); modal.remove(); await render(); toast("Позиция склада сохранена");
   });
 }
 
-const goodsLine = (item = {}) => `<div class="goods-editor-row" data-goods-row>
-  <div class="goods-editor-row-main">
-    <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
-    <button type="button" class="remove-line" data-remove-line aria-label="Удалить">${icon("trash")}</button>
-  </div>
-  <div class="goods-editor-row-controls">
-    <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
-    <label><span>Единица</span><input class="field compact" data-line="unit" value="${escapeHtml(item.unit || "шт.")}" /></label>
-    <label><span>Цена</span><input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></label>
-    <div class="goods-row-total"><span>Сумма</span><strong data-line-total>0 ₽</strong></div>
-  </div>
+const goodsLine = (item = {}) => `<div class="line-item" data-goods-row>
+  <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
+  <input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+  <input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" />
+  <button type="button" class="remove-line" data-remove-line aria-label="Удалить">×</button>
 </div>`;
 
 function goodsModal(existing = null) {
@@ -2869,59 +2630,25 @@ function goodsModal(existing = null) {
     .sort((a, b) => String(a.item.name || "").localeCompare(String(b.item.name || ""), "ru"));
   const options = goodsPriceEntries.map(({ item, index }) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop goods-editor-backdrop";
-  modal.innerHTML = `<form class="modal goods-editor-modal" id="goods-form">
-    <div class="goods-editor-head"><div><small>Товарник</small><h2>${existing ? "Редактировать расчёт" : "Новый расчёт"}</h2></div><button type="button" class="goods-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="form-group"><label>Название расчёта</label><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></div>
-
-    <div class="goods-editor-section-head"><strong>Позиции</strong><span id="goods-editor-count">0 поз.</span></div>
-    <div class="goods-editor-add"><select class="field" id="goods-picker"><option value="">— Из прайс-листа —</option>${options}</select><button type="button" class="secondary-button" id="add-goods-line">+ Добавить</button></div>
-    <div class="goods-editor-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
-    <button type="button" class="goods-editor-manual" id="add-manual-goods">+ Добавить вручную</button>
-
-    <section class="goods-editor-summary">
-      <label><span>Целевая сумма</span><input class="field" id="goods-target" name="target" type="number" min="0" step="1" value="${Number(sheet.target) || 0}" /></label>
-      <div><span>Текущая сумма</span><strong id="goods-total">0 ₽</strong></div>
-      <button type="button" class="secondary-button" id="adjust-goods-prices">Подогнать цены под цель</button>
-    </section>
-
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-goods-sheet">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
-  </form>`;
+  modal.className = "modal-backdrop";
+  modal.innerHTML = `<form class="modal" id="goods-form"><h2>Товарник</h2><div class="form-grid"><div class="form-group full"><label>Название расчёта</label><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></div></div>
+    <div class="form-section-title">Позиции</div><div class="catalog-add"><select class="field" id="goods-picker"><option value="">— Выбрать из прайс-листа —</option>${options}</select><button type="button" class="secondary-button" id="add-goods-line">+ Добавить</button></div><div class="line-head"><span>Наименование</span><span>Кол-во</span><span>Цена</span><span></span></div><div class="line-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
+    <div class="form-section-title">Итог</div><div class="form-grid"><div class="form-group"><label>Целевая сумма</label><input class="field" id="goods-target" name="target" type="number" min="0" value="${Number(sheet.target) || 0}" /></div><div class="form-group"><label>Текущая сумма</label><div class="field readonly-field" id="goods-total">0 ₽</div></div></div><div class="goods-adjust"><button type="button" class="secondary-button" id="adjust-goods-prices">Подогнать цены под цель</button><button type="button" class="danger-button" id="delete-goods-sheet" ${existing ? "" : "disabled"}>Удалить товарник</button></div>
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
   document.body.appendChild(modal);
-
   const calculate = () => {
-    const rows = [...modal.querySelectorAll("[data-goods-row]")];
-    let total = 0;
-    rows.forEach((row) => {
-      const qty = Number(row.querySelector('[data-line="qty"]').value) || 0;
-      const price = Number(row.querySelector('[data-line="price"]').value) || 0;
-      const rowTotal = qty * price;
-      total += rowTotal;
-      const output = row.querySelector("[data-line-total]");
-      if (output) output.textContent = money(rowTotal);
-    });
+    const total = [...modal.querySelectorAll("[data-goods-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
     modal.querySelector("#goods-total").textContent = money(total);
-    modal.querySelector("#goods-editor-count").textContent = `${rows.length} поз.`;
     return total;
   };
-
-  const addRow = (item = {}) => {
-    modal.querySelector("#goods-lines").insertAdjacentHTML("beforeend", goodsLine(item));
-    calculate();
-  };
-
   modal.querySelector("#add-goods-line").addEventListener("click", () => {
     const picker = modal.querySelector("#goods-picker");
     const item = picker.value === "" ? null : data.receipt_prices[Number(picker.value)];
-    if (!item) return toast("Выбери позицию из прайса");
-    addRow({ name: item.name, qty: 1, price: item.price, unit: item.unit || "шт." });
+    modal.querySelector("#goods-lines").insertAdjacentHTML("beforeend", goodsLine(item ? { name: item.name, qty: 1, price: item.price } : {}));
+    calculate();
   });
-  modal.querySelector("#add-manual-goods").addEventListener("click", () => addRow({ unit: "шт." }));
   modal.addEventListener("click", (event) => {
-    if (event.target.closest("[data-remove-line]")) {
-      event.target.closest("[data-goods-row]")?.remove();
-      calculate();
-    }
+    if (event.target.closest("[data-remove-line]")) { event.target.closest(".line-item").remove(); calculate(); }
   });
   modal.addEventListener("input", (event) => { if (event.target.closest("[data-goods-row]")) calculate(); });
   modal.querySelector("#adjust-goods-prices").addEventListener("click", () => {
@@ -2936,7 +2663,7 @@ function goodsModal(existing = null) {
     });
     calculate();
   });
-  modal.querySelector("#delete-goods-sheet")?.addEventListener("click", async () => {
+  modal.querySelector("#delete-goods-sheet").addEventListener("click", async () => {
     if (!existing || !confirm("Удалить этот товарник?")) return;
     data.goods_sheets = (data.goods_sheets || []).filter((item) => String(item.id) !== String(sheet.id));
     await saveData(); modal.remove(); await render(); toast("Товарник удалён");
@@ -2946,104 +2673,13 @@ function goodsModal(existing = null) {
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const next = {
-      ...sheet,
-      title: String(form.get("title") || "").trim(),
-      target: Number(form.get("target")) || 0,
-      items: [...modal.querySelectorAll("[data-goods-row]")].map((row) => ({
-        name: row.querySelector('[data-line="name"]').value.trim(),
-        qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
-        unit: row.querySelector('[data-line="unit"]').value.trim() || "шт.",
-        price: Number(row.querySelector('[data-line="price"]').value) || 0
-      })).filter((item) => item.name),
-      total: calculate(),
-      updatedAt: new Date().toISOString()
-    };
-    if (!next.title) return toast("Укажи название расчёта");
+    const next = { ...sheet, title: form.get("title"), target: Number(form.get("target")) || 0, items: [...modal.querySelectorAll("[data-goods-row]")].map((row) => ({ name: row.querySelector('[data-line="name"]').value, qty: Number(row.querySelector('[data-line="qty"]').value) || 1, price: Number(row.querySelector('[data-line="price"]').value) || 0 })).filter((item) => item.name.trim()), total: calculate(), updatedAt: new Date().toISOString() };
     const index = (data.goods_sheets || []).findIndex((item) => String(item.id) === String(next.id));
     if (!Array.isArray(data.goods_sheets)) data.goods_sheets = [];
     if (index >= 0) data.goods_sheets[index] = next; else data.goods_sheets.push(next);
     await saveData(); modal.remove(); await render(); toast("Товарник сохранён");
   });
   calculate();
-}
-
-function orderActionsSheet(order) {
-  const tg = telegramPhoneLink(order.phone);
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop order-actions-backdrop";
-  modal.innerHTML = `<section class="order-actions-sheet" aria-label="Действия заявки №${escapeHtml(order.id)}">
-    <div class="order-actions-head">
-      <div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>Дополнительные действия</small></div>
-      <button type="button" class="order-actions-close" aria-label="Закрыть">×</button>
-    </div>
-    <div class="order-actions-grid">
-      <button type="button" data-order-sheet-action="receipt">${icon("document")}<b>Квитанция</b></button>
-      <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт / PDF</b></button>
-      ${tg ? `<a href="${escapeHtml(tg)}">${icon("telegram")}<b>Telegram</b></a>` : `<button type="button" disabled>${icon("telegram")}<b>Telegram</b></button>`}
-      <button type="button" data-order-sheet-action="archive">${icon(order.archived ? "reopen" : "archive")}<b>${order.archived ? "Вернуть" : "В архив"}</b></button>
-      <button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить заявку</b></button>
-    </div>
-  </section>`;
-  document.body.appendChild(modal);
-
-  const close = () => modal.remove();
-  modal.querySelector(".order-actions-close").addEventListener("click", close);
-  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
-  modal.querySelectorAll("[data-order-sheet-action]").forEach((button) => button.addEventListener("click", async () => {
-    const action = button.dataset.orderSheetAction;
-    close();
-    if (action === "act") {
-      selectedActOrderId = String(order.id);
-      activePage = "more";
-      moreSection = "act";
-      saveUiState({ scrollY: 0 });
-      await render();
-      window.scrollTo(0, 0);
-      return;
-    }
-    return handleOrderAction(action, order.id);
-  }));
-}
-
-function orderDetailModal(order) {
-  const statusType = normalizeStatus(order.status);
-  const isClosed = statusType === "closed";
-  const isDeclined = statusType === "declined";
-  const statusClass = isClosed ? "closed" : isDeclined ? "declined" : "";
-  const visit = visitTimeParts(order.nextVisit);
-  const services = Array.isArray(order.services) ? order.services : [];
-  const materials = Array.isArray(order.materials) ? order.materials : [];
-  const photos = Array.isArray(order.photos) ? order.photos : [];
-  const firstPhoto = photos.map(photoSource).find(Boolean);
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop order-detail-backdrop";
-  modal.innerHTML = `<section class="modal order-detail-modal" aria-label="Заявка №${escapeHtml(order.id)}">
-    <header class="order-detail-head"><button type="button" class="order-detail-back" data-close-modal aria-label="Назад">‹</button><div><strong>CRM <span>by</span> Romanychev😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></div><button type="button" class="order-detail-more" data-detail-action="more" aria-label="Действия">${icon("more")}</button></header>
-    <main class="order-detail-content">
-      <div class="order-detail-title"><div><h2>Заявка №${escapeHtml(order.id || "—")}</h2><small>Создана ${escapeHtml(shortDate(orderDateValue(order)) || "—")}</small></div><span class="status ${statusClass}">${escapeHtml(order.status || "В работе")}</span></div>
-      <button type="button" class="order-detail-appliance" data-detail-action="edit"><span class="detail-appliance-icon">${firstPhoto ? `<img src="${escapeHtml(firstPhoto)}" alt="Техника" />` : icon(applianceIconName(order.tech))}</span><span><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || "Модель не указана")}</small></span><i>${icon("chevron")}</i></button>
-      <section class="order-detail-info">
-        <div class="detail-row"><span>${icon("clients")}</span><div><strong>${escapeHtml(order.name || "Клиент")}</strong>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${escapeHtml(order.phone)}</a>` : ""}</div>${order.phone ? `<a class="detail-round-action" href="tel:${escapeHtml(order.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : ""}</div>
-        ${order.address ? `<div class="detail-row"><span>${icon("location")}</span><div><strong>${escapeHtml(order.address)}</strong><small>Адрес выезда</small></div></div>` : ""}
-        ${order.nextVisit ? `<div class="detail-row"><span>${icon("calendar")}</span><div><strong>${escapeHtml(visit.day)}</strong><small>${escapeHtml(visit.time)}</small></div></div>` : ""}
-        ${order.issue ? `<div class="detail-row"><span>${icon("document")}</span><div><strong>${escapeHtml(order.issue)}</strong><small>${escapeHtml(order.diagnosis || "Неисправность со слов клиента")}</small></div></div>` : ""}
-      </section>
-      <div class="detail-actions"><button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button><button type="button" data-detail-action="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button><button type="button" data-detail-action="copy">${icon("copy")}<span>Копия</span></button>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}</div>
-      <section class="detail-total"><div><span>Стоимость работ</span><strong>${money(services.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.price) || 0), 0))}</strong></div><div><span>Стоимость запчастей</span><strong>${money(materials.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.unitCost) || 0), 0))}</strong></div><div><span>Итого</span><strong>${money(order.sum)}</strong></div></section>
-      <section class="detail-lines"><h3>Работы и услуги</h3>${services.length ? services.map(item => `<div><span>${icon("tools")}</span><p><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт.</small></p><b>${money((Number(item.qty) || 1) * (Number(item.price) || 0))}</b></div>`).join("") : `<p class="detail-empty">Работы пока не добавлены</p>`}</section>
-    </main>
-  </section>`;
-  document.body.appendChild(modal);
-  const run = (action) => {
-    modal.remove();
-    if (action === "edit") return newOrderModal(order);
-    if (action === "more") return orderActionsSheet(order);
-    return handleOrderAction(action, order.id);
-  };
-  modal.querySelectorAll("[data-detail-action]").forEach((button) => button.addEventListener("click", () => run(button.dataset.detailAction)));
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
-  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
 }
 
 function printActOnePage() {
@@ -3062,7 +2698,6 @@ async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
   const order = data.orders[index];
-  if (action === "view") return orderDetailModal(order);
   if (action === "edit") return newOrderModal(order);
   if (action === "more") return orderActionsSheet(order);
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
@@ -3145,13 +2780,7 @@ app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
   if (navButton) {
     activePage = navButton.dataset.nav;
-    if (activePage === "warehouse") warehouseSection = "list";
-    if (activePage === "more") {
-      moreSection = "menu";
-      moreReturnSection = "menu";
-    } else {
-      moreSection = "menu";
-    }
+    if (activePage !== "more") moreSection = "menu";
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
@@ -3159,30 +2788,6 @@ app.addEventListener("click", async (event) => {
   }
   const filter = event.target.closest("[data-filter]");
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
-  const warehouseFilterButton = event.target.closest("[data-warehouse-filter]");
-  if (warehouseFilterButton) {
-    warehouseFilter = warehouseFilterButton.dataset.warehouseFilter;
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
-  const movementFilterButton = event.target.closest("[data-movement-filter]");
-  if (movementFilterButton) {
-    warehouseMovementFilter = movementFilterButton.dataset.movementFilter;
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
-  const visitFilter = event.target.closest("[data-visit-filter]");
-  if (visitFilter) {
-    orderVisitFilter = visitFilter.dataset.visitFilter || "all";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) {
     const period = analyticsFilter.dataset.analyticsPeriod;
@@ -3203,51 +2808,18 @@ app.addEventListener("click", async (event) => {
   }
   const financeFilter = event.target.closest("[data-finance-period]");
   if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
-  const priceKindButton = event.target.closest("[data-price-kind]");
-  if (priceKindButton) {
-    priceKindFilter = priceKindButton.dataset.priceKind || "all";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
   const action = event.target.closest("[data-action]")?.dataset.action;
-  if (action === "open-warehouse-movements") {
-    activePage = "warehouse";
-    warehouseSection = "movements";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
   if (action === "open-shopping") {
-    activePage = "warehouse";
-    warehouseSection = "shopping";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
-  if (action === "warehouse-list") {
-    activePage = "warehouse";
-    warehouseSection = "list";
+    activePage = "more";
+    moreSection = "shopping";
+    warehouseCreateOpen = false;
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
     return;
   }
   if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
-  if (action === "share-shopping-list") return shareShoppingList();
   if (action === "new-order") return newOrderModal();
-  if (action === "reset-order-filters") {
-    orderFilter = "all";
-    orderVisitFilter = "all";
-    searchQuery = "";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
   if (action === "import") return fileInput.click();
   if (action === "inspect-backup-file") return inspectBackupFile();
   if (action === "download-backup") return downloadBackup();
@@ -3270,47 +2842,13 @@ app.addEventListener("click", async (event) => {
     window.scrollTo(0, 0);
     return toast("Данные до импорта восстановлены");
   }
-  if (action === "more-menu") { moreSection = "menu"; moreReturnSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
-  if (action === "more-back") {
-    moreSection = moreReturnSection || "menu";
-    const target = moreSection;
-    moreReturnSection = target === "menu" ? "menu" : "menu";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
-  if (action === "settings-screen") {
-    activePage = "more";
-    moreReturnSection = "menu";
-    moreSection = "settings";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
+  if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "protect-storage") return requestPersistentStorage();
+  if (action === "toggle-stock-form") { warehouseCreateOpen = !warehouseCreateOpen; saveUiState({ scrollY: 0 }); await render(); window.scrollTo(0, 0); return; }
   if (action === "new-price") return priceModal();
-  if (action === "open-receipts") {
-    activePage = "more";
-    moreReturnSection = "act";
-    moreSection = "receipts";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
-  if (action === "act-screen") {
-    activePage = "more";
-    moreSection = "act";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    return;
-  }
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
     const key = event.target.closest("[data-action]").dataset.key;
@@ -3390,8 +2928,6 @@ app.addEventListener("click", async (event) => {
   if (more) {
     const supportedMoreSections = ["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
     if (!supportedMoreSections.includes(more)) return toast("Раздел недоступен");
-    if (more === "shopping") activePage = "more";
-    moreReturnSection = moreSection === "settings" ? "settings" : "menu";
     moreSection = more;
     saveUiState({ scrollY: 0 });
     await render();
@@ -3400,11 +2936,6 @@ app.addEventListener("click", async (event) => {
   }
   const orderAction = event.target.closest("[data-order-action]");
   if (orderAction) return handleOrderAction(orderAction.dataset.orderAction, orderAction.dataset.id);
-  const stockDetail = event.target.closest("[data-stock-detail]");
-  if (stockDetail) {
-    const item = data.warehouse.find((entry) => String(entry.id) === String(stockDetail.dataset.stockDetail));
-    if (item) return stockDetailModal(item);
-  }
   const stock = event.target.closest("[data-stock]");
   if (stock) return adjustStock(stock.dataset.id, stock.dataset.stock);
   const financeDelete = event.target.closest("[data-delete-finance]");
@@ -3422,6 +2953,14 @@ app.addEventListener("click", async (event) => {
 app.addEventListener("input", (event) => {
   if (event.target.closest("#settings-form") && event.target.name === "phone") {
     sanitizeRussianPhoneField(event.target);
+    return;
+  }
+  if (event.target.closest("#warehouse-inline-form") && ["quantity", "purchaseTotal"].includes(event.target.name)) {
+    const form = event.target.closest("#warehouse-inline-form");
+    const quantity = Number(form.elements.quantity.value) || 0;
+    const total = Number(form.elements.purchaseTotal.value) || 0;
+    const output = form.querySelector("#warehouse-unit-cost");
+    if (output) output.textContent = money(quantity > 0 ? total / quantity : 0);
     return;
   }
   const liveSearch = async (selector) => {
@@ -3454,6 +2993,45 @@ app.addEventListener("input", (event) => {
 });
 
 app.addEventListener("submit", async (event) => {
+  if (event.target.id === "warehouse-inline-form") {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const quantity = Number(form.get("quantity")) || 0;
+    const purchaseTotal = Number(form.get("purchaseTotal")) || 0;
+    const unitCost = quantity > 0 ? purchaseTotal / quantity : 0;
+    const item = {
+      id: crypto.randomUUID(),
+      name: String(form.get("name") || "").trim(),
+      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
+      unit: String(form.get("unit") || "шт."),
+      quantity,
+      min: Number(form.get("min")) || 0,
+      price: Number(form.get("price")) || 0,
+      lastPurchasePrice: unitCost,
+      lastPurchaseTotal: purchaseTotal,
+      compatibility: form.getAll("compatibility").map(String).filter(Boolean),
+      archived: false,
+      hiddenFromOrders: false,
+      tracking: String(form.get("tracking") || "exact"),
+      consumeUnit: String(form.get("unit") || "шт.")
+    };
+    if (!item.name) return toast("Укажи название позиции");
+    data.warehouse.push(item);
+    if (quantity > 0) data.warehouse_movements.push({
+      id: crypto.randomUUID(),
+      warehouseId: item.id,
+      name: item.name,
+      qty: quantity,
+      type: "initial",
+      date: new Date().toISOString()
+    });
+    await saveData();
+    warehouseCreateOpen = false;
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return toast("Позиция добавлена на склад");
+  }
   if (event.target.id !== "settings-form") return;
   event.preventDefault();
   const settingsPhoneInput = event.target.elements.phone;
