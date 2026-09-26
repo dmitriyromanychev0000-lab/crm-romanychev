@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.75.0";
-const APP_BUILD = "2026.09.26.44";
+const APP_VERSION = "0.76.0";
+const APP_BUILD = "2026.09.26.45";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: экран акта и A4-предпросмотр";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: клиенты и финансы";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1281,7 +1281,16 @@ function clientsPage() {
     if (!key) return;
     const orderDate = orderDateValue(order);
     const orderTime = orderCreatedTimestamp(order) || 0;
-    const current = clients.get(key) || { key, name: order.name || "Без имени", phone: normalizeRussianPhone(order.phone || "") || order.phone || "", address: order.address || "", orders: [], total: 0, last: orderDate, lastTime: orderTime };
+    const current = clients.get(key) || {
+      key,
+      name: order.name || "Без имени",
+      phone: normalizeRussianPhone(order.phone || "") || order.phone || "",
+      address: order.address || "",
+      orders: [],
+      total: 0,
+      last: orderDate,
+      lastTime: orderTime
+    };
     current.orders.push(order);
     current.total += Number(order.sum) || 0;
     if (orderTime > Number(current.lastTime || 0)) {
@@ -1293,6 +1302,7 @@ function clientsPage() {
     }
     clients.set(key, current);
   });
+
   const sorted = [...clients.values()].sort((a, b) => Number(b.lastTime || 0) - Number(a.lastTime || 0));
   const query = clientSearch.trim().toLowerCase();
   const queryDigits = clientSearch.replace(/\D/g, "");
@@ -1302,42 +1312,52 @@ function clientsPage() {
     const normalizedClientPhone = normalizeRussianPhone(client.phone || "");
     return !query || haystack.includes(query) || (phoneQuery && normalizedClientPhone.includes(phoneQuery));
   });
-  const closedOrders = data.orders.filter((item) => !item.archived && normalizeStatus(item.status) === "closed").length;
+  const activeOrders = data.orders.filter((item) => !item.archived);
+  const closedOrders = activeOrders.filter((item) => normalizeStatus(item.status) === "closed").length;
+  const activeNow = activeOrders.filter((item) => normalizeStatus(item.status) === "active").length;
 
-  return `<main class="content clients-content">
-    <div class="page-head"><div><h1>Клиенты</h1><p class="lead">История обращений и ремонтов</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+  return `<main class="content legacy-clients-page">
+    <div class="legacy-subpage-head legacy-clients-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>Клиенты</h1><p>История обращений и ремонтов</p></div>
+    </div>
 
-    <section class="panel client-stats-panel">
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Клиентов</div><div class="metric-value">${sorted.length}</div></div>
-        <div class="metric"><div class="metric-label">Заявок</div><div class="metric-value blue">${data.orders.filter((item) => !item.archived).length}</div></div>
-        <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value green">${closedOrders}</div></div>
-        <div class="metric"><div class="metric-label">Средне на клиента</div><div class="metric-value yellow">${sorted.length ? (data.orders.filter((item) => !item.archived).length / sorted.length).toFixed(1) : "0"}</div></div>
-      </div>
+    <div class="legacy-client-search search-row search-with-icon">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
+
+    <section class="legacy-clients-stats">
+      <div><span>КЛИЕНТОВ</span><strong>${sorted.length}</strong></div>
+      <div><span>В РАБОТЕ</span><strong class="blue">${activeNow}</strong></div>
+      <div><span>ЗАКРЫТО</span><strong class="green">${closedOrders}</strong></div>
     </section>
 
-    <div class="search-row search-with-icon clients-search-row">${icon("search")}<input class="search" id="client-search" value="${escapeHtml(clientSearch)}" placeholder="Имя, телефон или адрес" /></div>
-
-    ${filtered.length ? `<div class="client-list">${filtered.map((client) => `
-      <article class="panel client-card legacy-client-card">
-        <div class="client-card-main">
-          <span class="client-avatar">${icon("clients")}</span>
-          <div class="client-card-copy">
-            <div class="client-name">${escapeHtml(client.name)}</div>
-            <div class="small">${escapeHtml(client.phone || "Телефон не указан")}</div>
-          </div>
-          <strong class="client-total">${money(client.total)}</strong>
+    ${filtered.length ? `<div class="legacy-client-list">${filtered.map((client) => {
+      const closed = client.orders.filter((order) => normalizeStatus(order.status) === "closed").length;
+      const active = client.orders.filter((order) => normalizeStatus(order.status) === "active").length;
+      return `<article class="legacy-client-card">
+        <button type="button" class="legacy-client-main" data-action="open-client" data-key="${escapeHtml(client.key)}">
+          <span class="legacy-client-avatar">${icon("clients")}</span>
+          <span class="legacy-client-copy">
+            <strong>${escapeHtml(client.name || "Клиент")}</strong>
+            <small>${escapeHtml(client.phone || "Телефон не указан")}</small>
+            ${client.address ? `<em>${icon("location")}${escapeHtml(client.address)}</em>` : ""}
+          </span>
+          <span class="legacy-client-side"><b>${money(client.total)}</b><small>${client.orders.length} обращ.</small></span>
+        </button>
+        <div class="legacy-client-meta">
+          <span><b class="green">${closed}</b> закрыто</span>
+          <span><b class="blue">${active}</b> в работе</span>
+          <span>последнее: <b>${shortDate(client.last)}</b></span>
         </div>
-        <div class="client-meta"><span>${client.orders.length} обращ.</span><span>Последнее: ${shortDate(client.last)}</span></div>
-        ${client.address ? `<div class="small client-address meta-item">${icon("location")}<span>${escapeHtml(client.address)}</span></div>` : ""}
-        <div class="client-actions">
-          ${client.phone ? `<a class="secondary-button icon-text-button" href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button class="secondary-button" disabled>Телефон не указан</button>`}
-          <button class="primary-button" data-action="open-client" data-key="${escapeHtml(client.key)}">История</button>
+        <div class="legacy-client-actions">
+          ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled>${icon("phone")}<span>Нет телефона</span></button>`}
+          <button type="button" data-action="open-client" data-key="${escapeHtml(client.key)}">${icon("history")}<span>История</span></button>
         </div>
-      </article>`).join("")}</div>` : (query ? emptyState("search", "Клиент не найден", "Попробуй изменить запрос поиска.") : emptyState("clients", "Клиентов пока нет", "Клиенты появятся после создания или импорта заявок."))}
+      </article>`;
+    }).join("")}</div>` : (query
+      ? `<div class="legacy-client-empty">Клиент не найден. Попробуй изменить поиск.</div>`
+      : `<div class="legacy-client-empty">Клиенты появятся после создания или импорта заявок.</div>`)}
   </main>`;
 }
-
 function financePage() {
   const expenseRows = data.expenses
     .map((item, sourceIndex) => ({ ...item, sourceIndex }))
@@ -1353,43 +1373,42 @@ function financePage() {
     ...incomeRows.map((item) => ({ ...item, financeType: "income" }))
   ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-  return `<main class="content finance-content">
-    <div class="page-head"><div><h1>Финансы</h1><p class="lead">Доходы, расходы и результат</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-
-    <div class="finance-period-grid">
-      <button type="button" class="chip ${financePeriod === "all" ? "active" : ""}" data-finance-period="all" aria-pressed="${financePeriod === "all"}">Всё время</button>
-      <button type="button" class="chip ${financePeriod === "30" ? "active" : ""}" data-finance-period="30" aria-pressed="${financePeriod === "30"}">30 дней</button>
-      <button type="button" class="chip ${financePeriod === "90" ? "active" : ""}" data-finance-period="90" aria-pressed="${financePeriod === "90"}">90 дней</button>
-      <button type="button" class="chip ${financePeriod === "365" ? "active" : ""}" data-finance-period="365" aria-pressed="${financePeriod === "365"}">Год</button>
+  return `<main class="content legacy-finance-page">
+    <div class="legacy-subpage-head legacy-finance-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>Финансы</h1><p>Доходы, расходы и результат</p></div>
     </div>
 
-    <section class="panel finance-summary-panel">
-      <div class="metrics finance-metrics">
-        <div class="metric"><div class="metric-label">Доходы</div><div class="metric-value green">${money(incomes)}</div></div>
-        <div class="metric"><div class="metric-label">Расходы</div><div class="metric-value red">${money(expenses)}</div></div>
-        <div class="metric"><div class="metric-label">Результат</div><div class="metric-value ${result >= 0 ? "green" : "red"}">${money(result)}</div></div>
-        <div class="metric"><div class="metric-label">Операций</div><div class="metric-value">${rows.length}</div></div>
-      </div>
+    <div class="legacy-finance-periods">
+      <button type="button" class="${financePeriod === "all" ? "active" : ""}" data-finance-period="all">Всё время</button>
+      <button type="button" class="${financePeriod === "30" ? "active" : ""}" data-finance-period="30">30 дней</button>
+      <button type="button" class="${financePeriod === "90" ? "active" : ""}" data-finance-period="90">90 дней</button>
+      <button type="button" class="${financePeriod === "365" ? "active" : ""}" data-finance-period="365">Год</button>
+    </div>
+
+    <section class="legacy-finance-summary">
+      <div class="income"><span>ДОХОДЫ</span><strong>+${money(incomes)}</strong></div>
+      <div class="expense"><span>РАСХОДЫ</span><strong>−${money(expenses)}</strong></div>
+      <div class="result"><span>РЕЗУЛЬТАТ</span><strong class="${result >= 0 ? "green" : "red"}">${money(result)}</strong></div>
     </section>
 
-    <div class="finance-actions legacy-finance-actions">
-      <button class="primary-button" data-action="add-finance" data-type="expense">− Добавить расход</button>
-      <button class="secondary-button" data-action="add-finance" data-type="income">+ Добавить доход</button>
+    <div class="legacy-finance-actions">
+      <button type="button" class="legacy-orange-button" data-action="add-finance" data-type="income">＋<span>Добавить доход</span></button>
+      <button type="button" class="legacy-dark-button" data-action="add-finance" data-type="expense">−<span>Добавить расход</span></button>
     </div>
 
-    <section class="panel finance-history-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История операций</div>
-      ${rows.length ? `<div class="finance-history-list">${rows.map((item) => `
-        <div class="finance-row legacy-finance-row">
-          <span class="finance-kind-icon ${item.financeType === "income" ? "income" : "expense"}">${icon(item.financeType === "income" ? "finance" : "receipt")}</span>
-          <div><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><div class="small">${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</div></div>
-          <div class="finance-amount ${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</div>
-          <button class="remove-line" data-delete-finance="${item.financeType}" data-index="${item.sourceIndex}" aria-label="Удалить">${icon("trash")}</button>
-        </div>`).join("")}</div>` : `<div class="empty">Операций пока нет</div>`}
+    <section class="legacy-finance-history">
+      <div class="legacy-finance-history-head"><span class="legacy-section-icon small">${icon("history")}</span><h2>История операций</h2><b>${rows.length}</b></div>
+      ${rows.length ? `<div class="legacy-finance-list">${rows.map((item) => `
+        <article class="legacy-finance-row ${item.financeType}">
+          <span class="legacy-finance-kind">${icon(item.financeType === "income" ? "finance" : "receipt")}</span>
+          <span class="legacy-finance-copy"><strong>${escapeHtml(item.description || item.category || "Без описания")}</strong><small>${shortDate(item.date)} · ${escapeHtml(item.category || "Другое")}</small></span>
+          <b class="${item.financeType === "income" ? "green" : "red"}">${item.financeType === "income" ? "+" : "−"}${money(item.amount)}</b>
+          <button type="button" data-delete-finance="${item.financeType}" data-index="${item.sourceIndex}" aria-label="Удалить">${icon("trash")}</button>
+        </article>`).join("")}</div>` : `<div class="legacy-finance-empty">Операций пока нет.</div>`}
     </section>
   </main>`;
 }
-
 function rublesInWords(value) {
   const n = Math.max(0, Math.round(Number(value) || 0));
   const oneM = ["","один","два","три","четыре","пять","шесть","семь","восемь","девять"];
@@ -2645,7 +2664,7 @@ function clientModal(clientKey) {
   const closed = orders.filter((order) => normalizeStatus(order.status) === "closed").length;
   const active = orders.filter((order) => normalizeStatus(order.status) === "active").length;
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop client-profile-backdrop";
+  modal.className = "modal-backdrop client-profile-backdrop legacy-client-profile-backdrop";
   modal.innerHTML = `<section class="modal client-profile-modal" aria-label="Профиль клиента">
     <header class="client-profile-head">
       <button type="button" class="client-profile-back" data-close-modal aria-label="Назад">‹</button>
@@ -2697,7 +2716,7 @@ function clientModal(clientKey) {
 function financeModal(type) {
   const isIncome = type === "income";
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop finance-entry-backdrop";
+  modal.className = "modal-backdrop finance-entry-backdrop legacy-finance-entry-backdrop";
   modal.innerHTML = `<form class="modal compact-modal finance-entry-modal" id="finance-form">
     <div class="finance-entry-head">
       <div><small>Финансы</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
