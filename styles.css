@@ -13352,3 +13352,191 @@ button.warehouse-shortcut {
     font-size:10px;
   }
 }
+
+
+/* 0.83.0 · История движения и список покупок в стиле архивного склада. */
+@media screen and (max-width:520px) {
+  .warehouse-support-content,
+  .shopping-content {
+    padding:15px 9px 22px;
+  }
+  .warehouse-support-content .support-page-head,
+  .shopping-content .support-page-head {
+    display:grid;
+    grid-template-columns:46px minmax(0,1fr);
+    gap:11px;
+    align-items:center;
+    min-height:auto;
+    margin:0 1px 13px;
+    padding:0;
+    border:0;
+    background:transparent;
+  }
+  .warehouse-support-content .support-page-head h1,
+  .shopping-content .support-page-head h1 {
+    margin:0;
+    font-size:21px;
+    line-height:1.08;
+    font-weight:720;
+  }
+  .warehouse-support-content .support-page-head p,
+  .shopping-content .support-page-head p {
+    margin:4px 0 0;
+    color:#848c92;
+    font-size:9px;
+  }
+  .warehouse-support-content .support-back,
+  .shopping-content .support-back {
+    width:45px;
+    height:45px;
+    border:1px solid #303940;
+    border-radius:13px;
+    background:#181f26;
+    color:#eef0f2;
+    font-size:34px;
+    font-weight:200;
+  }
+
+  .movement-filter-chips {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .movement-filter-chips button {
+    min-height:40px;
+    padding:5px 4px;
+    border:1px solid #2e373f;
+    border-radius:11px;
+    background:#151c22;
+    color:#8f969c;
+    font-size:8px;
+    font-weight:700;
+  }
+  .movement-filter-chips button span {
+    min-width:19px;
+    height:19px;
+    margin-left:3px;
+    border-radius:6px;
+    background:#1d252c;
+    color:#c9ced2;
+    font-size:7px;
+  }
+  .movement-filter-chips button.active {
+    border-color:#ff7153;
+    background:rgba(255,113,83,.1);
+    color:#f0ecea;
+  }
+  .movement-filter-chips button.active span {
+    background:rgba(255,113,83,.15);
+    color:#ff8a70;
+  }
+
+  .movement-list {
+    display:grid;
+    gap:7px;
+  }
+  .movement-card {
+    grid-template-columns:40px minmax(0,1fr) auto;
+    gap:9px;
+    min-height:68px;
+    padding:9px 10px;
+    border:1px solid #2b343c;
+    border-radius:12px;
+    background:linear-gradient(180deg,#151c22,#12181e);
+  }
+  .movement-icon {
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    font-size:22px;
+    font-weight:300;
+  }
+  .movement-copy strong { font-size:10px; }
+  .movement-copy small {
+    margin-top:3px;
+    color:#949ba1;
+    font-size:7px;
+  }
+  .movement-copy time {
+    margin-top:3px;
+    color:#6f787f;
+    font-size:7px;
+  }
+  .movement-card > b {
+    font-size:10px;
+  }
+
+  .shopping-page-actions {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+    margin-bottom:10px;
+  }
+  .shopping-page-actions button {
+    min-height:45px;
+    border-radius:11px;
+    font-size:9px;
+  }
+  .shopping-page-actions .secondary-button {
+    border:1px solid #303940;
+    background:#181f26;
+    color:#e9ecee;
+  }
+  .shopping-page-actions .primary-button {
+    border-color:#ff7153;
+    background:#ff7153;
+    color:#17110f;
+  }
+
+  .shopping-content .client-list {
+    display:grid;
+    gap:7px;
+  }
+  .shopping-content .legacy-shopping-card {
+    position:relative;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+    align-items:center;
+    min-height:72px;
+    margin:0;
+    padding:11px 12px 11px 15px;
+    overflow:hidden;
+    border:1px solid #2b343c;
+    border-radius:13px;
+    background:linear-gradient(180deg,#151c22,#12181e);
+  }
+  .shopping-content .legacy-shopping-card::before {
+    content:"";
+    position:absolute;
+    inset:0 auto 0 0;
+    width:3px;
+    background:#e7b34b;
+  }
+  .shopping-content .stock-name {
+    font-size:11px;
+    font-weight:680;
+  }
+  .shopping-content .legacy-shopping-card .small {
+    margin-top:4px;
+    color:#858d94;
+    font-size:8px;
+  }
+  .shopping-need span {
+    color:#8d949a;
+    font-size:7px;
+  }
+  .shopping-need strong {
+    margin-top:5px;
+    color:#e8b64c;
+    font-size:12px;
+  }
+
+  .warehouse-support-empty,
+  .shopping-content .empty {
+    border:1px dashed #303840;
+    border-radius:12px;
+    background:#11171d;
+  }
+}
