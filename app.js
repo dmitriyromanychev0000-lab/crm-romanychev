@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.73.0";
-const APP_BUILD = "2026.09.26.42";
+const APP_VERSION = "0.74.0";
+const APP_BUILD = "2026.09.26.43";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: форма заявки, услуги и материалы";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: прайс-лист и редактор позиций";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1184,8 +1184,9 @@ function priceList() {
   const query = priceSearch.trim().toLowerCase();
   const techs = [...new Set([
     ...data.receipt_prices.map((item) => String(item.tech || "").trim()),
-    ...(Array.isArray(data.service_custom) ? data.service_custom.map((item) => String(item.tech || "").trim()) : [])
+    ...(Array.isArray(data.service_custom) ? data.service_custom.map((item) => String(item.tech || item.category || "").trim()) : [])
   ].filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+
   const prices = data.receipt_prices.filter((item) => {
     const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
     const kind = item.kind === "material" ? "material" : "service";
@@ -1193,6 +1194,7 @@ function priceList() {
     const haystack = [item.name, item.category, item.tech, item.unit, item.kind].join(" ").toLowerCase();
     return techMatch && kindMatch && (!query || haystack.includes(query));
   });
+
   const groups = [...prices.reduce((map, item) => {
     const group = String(item.category || (item.kind === "material" ? "Материалы" : "Услуги")).trim() || "Прочее";
     if (!map.has(group)) map.set(group, []);
@@ -1204,60 +1206,67 @@ function priceList() {
 
   const customServices = (priceKindFilter === "all" || priceKindFilter === "custom" ? (Array.isArray(data.service_custom) ? data.service_custom : []) : [])
     .filter((item) => {
-      const techMatch = priceTechFilter === "all" || String(item.tech || "").trim() === priceTechFilter;
-      if (!techMatch) return false;
-      if (!query) return true;
-      return [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase().includes(query);
+      const techValue = String(item.tech || item.category || "").trim();
+      const techMatch = priceTechFilter === "all" || techValue === priceTechFilter;
+      const haystack = [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase();
+      return techMatch && (!query || haystack.includes(query));
     })
     .sort((a, b) => String(a.name || a.title || a.service || "").localeCompare(String(b.name || b.title || b.service || ""), "ru"));
 
-  return `<main class="content price-content">
-    <div class="page-head price-head"><div><h1>Прайс-лист</h1><p class="lead">Услуги и материалы</p></div><div class="price-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-price">+ Позиция</button></div></div>
+  const scopeTitle = priceTechFilter === "all" ? "Прайс-лист" : `Каталог · ${priceTechFilter}`;
 
-    <div class="search-row search-with-icon price-search-row">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название услуги или материала" /></div>
-    <div class="price-kind-chips" role="group" aria-label="Тип позиции">
-      <button type="button" class="${priceKindFilter === "all" ? "active" : ""}" data-price-kind="all">Все</button>
-      <button type="button" class="${priceKindFilter === "service" ? "active" : ""}" data-price-kind="service">Услуги</button>
-      <button type="button" class="${priceKindFilter === "material" ? "active" : ""}" data-price-kind="material">Материалы</button>
-      <button type="button" class="${priceKindFilter === "custom" ? "active" : ""}" data-price-kind="custom">Свои</button>
+  return `<main class="content legacy-price-page">
+    <div class="legacy-subpage-head legacy-price-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>${escapeHtml(scopeTitle)}</h1><p>Каталог услуг и свои позиции</p></div>
+      <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">+</button>
     </div>
-    <div class="price-tech-filter">
-      <select class="field" id="price-tech-filter">
+
+    <div class="legacy-price-search search-row search-with-icon">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название товара или услуги" /></div>
+
+    <div class="legacy-price-filters">
+      <label><span>ТИП</span><select class="field" id="price-kind-filter">
+        <option value="all" ${priceKindFilter === "all" ? "selected" : ""}>Все позиции</option>
+        <option value="service" ${priceKindFilter === "service" ? "selected" : ""}>Услуги</option>
+        <option value="material" ${priceKindFilter === "material" ? "selected" : ""}>Материалы</option>
+        <option value="custom" ${priceKindFilter === "custom" ? "selected" : ""}>Свои услуги</option>
+      </select></label>
+      <label><span>ТЕХНИКА</span><select class="field" id="price-tech-filter">
         <option value="all">Вся техника</option>
         ${techs.map((tech) => `<option value="${escapeHtml(tech)}" ${priceTechFilter === tech ? "selected" : ""}>${escapeHtml(tech)}</option>`).join("")}
-      </select>
-      <span class="select-chevron">${icon("chevron")}</span>
+      </select></label>
     </div>
 
-    ${groups.length ? `<div class="price-groups">${groups.map(([category, items]) => `
-      <section class="price-category">
+    ${groups.length ? `<div class="legacy-price-groups">${groups.map(([category, items]) => `
+      <section class="legacy-price-group">
         <h3>${escapeHtml(category)}</h3>
-        <div class="price-catalog-list">${items.map((item) => {
+        <div class="legacy-price-list">${items.map((item) => {
           const index = data.receipt_prices.indexOf(item);
-          return `<button class="price-catalog-card" data-action="edit-price" data-index="${index}">
-            <span class="price-card-icon">${icon(item.kind === "material" ? "box" : "tools")}</span>
-            <span class="price-card-copy"><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml([item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга"))}</small></span>
+          const meta = [item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга");
+          return `<button type="button" class="legacy-price-row" data-action="edit-price" data-index="${index}">
+            <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(meta)}</small></span>
             <b>${money(item.price || 0)}</b>
-            <i>${icon("chevron")}</i>
           </button>`;
         }).join("")}</div>
       </section>`).join("")}</div>` : ""}
 
-    ${priceKindFilter === "custom" || priceKindFilter === "all" ? `<section class="panel custom-price-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("edit")}</span> Пользовательские услуги</div>
-      <button class="secondary-button wide" data-action="new-custom-service">+ Своя услуга</button>
-      ${customServices.length ? `<div class="goods-list">${customServices.map((item) => {
+    ${(priceKindFilter === "all" || priceKindFilter === "custom") ? `<section class="legacy-price-group legacy-custom-price">
+      <div class="legacy-custom-price-head"><h3>СВОИ УСЛУГИ</h3><button type="button" data-action="new-custom-service">+ Добавить</button></div>
+      ${customServices.length ? `<div class="legacy-price-list">${customServices.map((item) => {
         const index = data.service_custom.indexOf(item);
         const name = item.name || item.title || item.service || "Услуга";
+        const meta = item.category || item.tech || "Своя услуга";
         const price = Number(item.price || item.cost || item.sum) || 0;
-        const category = item.category || item.tech || "Своя услуга";
-        return `<button class="goods-sheet" data-action="edit-custom-service" data-index="${index}"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(category)}</small></span><b>${money(price)}</b><span class="chevron">${icon("chevron")}</span></button>`;
-      }).join("")}</div>` : `<div class="small">Своих услуг пока нет</div>`}
+        return `<button type="button" class="legacy-price-row custom" data-action="edit-custom-service" data-index="${index}">
+          <span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(meta)}</small></span>
+          <b>${money(price)}</b>
+        </button>`;
+      }).join("")}</div>` : `<div class="legacy-price-empty">Своих услуг пока нет.</div>`}
     </section>` : ""}
-    ${!groups.length && !customServices.length ? `<section class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтры прайса.</p></section>` : ""}
+
+    ${!groups.length && !customServices.length ? `<div class="legacy-price-empty standalone">Ничего не найдено. Измени поиск или фильтры.</div>` : ""}
   </main>`;
 }
-
 function clientKeyForOrder(order) {
   const phone = normalizeRussianPhone(order.phone || "");
   if (phone) return phone;
@@ -2523,21 +2532,27 @@ function toolModal(existing = null, toolIndex = -1) {
 function customServiceModal(existing = null, serviceIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop price-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal price-editor-modal" id="custom-service-form">
-    <div class="price-editor-head"><div><small>Прайс-лист · своя услуга</small><h2>${existing ? "Редактировать услугу" : "Новая услуга"}</h2></div><button type="button" class="price-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="price-editor-type">${icon("tools")}<span>Пользовательская услуга для каталога заявок</span></div>
-    <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.service || "")}" required placeholder="Например, замена подшипников" /></div>
-      <div class="form-group"><label>Категория / техника</label><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" placeholder="Стиральные машины" /></div>
-      <div class="form-group"><label>Цена</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price || item.cost || item.sum) || 0}" inputmode="decimal" /></div>
-      <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
+  modal.className = "modal-backdrop legacy-price-editor-backdrop";
+  modal.innerHTML = `<form class="modal legacy-price-editor" id="custom-service-form">
+    <div class="legacy-subpage-head legacy-editor-head">
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <div><h1>${existing ? "Своя услуга" : "Новая услуга"}</h1><p>Пользовательская позиция прайса</p></div>
     </div>
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-custom-service">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+
+    <section class="legacy-price-editor-card">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>${existing ? "Редактирование" : "Новая позиция"}</h2></div>
+      <div class="legacy-price-editor-grid">
+        <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.service || "")}" required placeholder="Название услуги" /></label>
+        <label><span>КАТЕГОРИЯ / ТЕХНИКА</span><input class="field" name="category" value="${escapeHtml(item.category || item.tech || "")}" placeholder="Холодильники" /></label>
+        <label><span>ЦЕНА</span><input class="field legacy-price-value" name="price" type="number" min="0" step="1" value="${Number(item.price || item.cost || item.sum) || 0}" inputmode="decimal" /></label>
+        <label class="full"><span>КОММЕНТАРИЙ</span><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></label>
+      </div>
+    </section>
+
+    <div class="legacy-price-editor-actions">${existing ? '<button type="button" class="legacy-editor-delete" id="delete-custom-service">Удалить</button>' : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
-  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.querySelector("#delete-custom-service")?.addEventListener("click", async () => {
     if (!confirm("Удалить пользовательскую услугу?")) return;
     if (serviceIndex >= 0) data.service_custom.splice(serviceIndex, 1);
@@ -2551,6 +2566,7 @@ function customServiceModal(existing = null, serviceIndex = -1) {
       id: item.id || crypto.randomUUID(),
       name: String(form.get("name") || "").trim(),
       category: String(form.get("category") || "").trim(),
+      tech: String(form.get("category") || "").trim(),
       price: Number(form.get("price")) || 0,
       note: String(form.get("note") || "").trim(),
       updatedAt: new Date().toISOString()
@@ -2565,23 +2581,29 @@ function customServiceModal(existing = null, serviceIndex = -1) {
 function priceModal(existing = null, priceIndex = -1) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop price-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal price-editor-modal" id="price-form">
-    <div class="price-editor-head"><div><small>Прайс-лист</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div><button type="button" class="price-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="price-editor-type">${icon(item.kind === "material" ? "box" : "price")}<span>Позиция общего прайса услуг и материалов</span></div>
-    <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Название позиции" /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "")}" placeholder="Диагностика" /></div>
-      <div class="form-group"><label>Техника</label><input class="field" name="tech" value="${escapeHtml(item.tech || "")}" placeholder="Необязательно" /></div>
-      <div class="form-group"><label>Тип</label><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал / товар</option></select></div>
-      <div class="form-group"><label>Единица</label><input class="field" name="unit" value="${escapeHtml(item.unit || (item.kind === "material" ? "шт." : ""))}" placeholder="шт." /></div>
-      <div class="form-group full"><label>Цена</label><input class="field price-editor-price" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required inputmode="decimal" /></div>
+  modal.className = "modal-backdrop legacy-price-editor-backdrop";
+  modal.innerHTML = `<form class="modal legacy-price-editor" id="price-form">
+    <div class="legacy-subpage-head legacy-editor-head">
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <div><h1>${existing ? "Позиция прайса" : "Новая позиция"}</h1><p>Услуга или материал</p></div>
     </div>
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-price">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+
+    <section class="legacy-price-editor-card">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon(item.kind === "material" ? "goods" : "price")}</span><h2>${existing ? "Редактирование" : "Новая позиция"}</h2></div>
+      <div class="legacy-price-editor-grid">
+        <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Название позиции" /></label>
+        <label><span>КАТЕГОРИЯ</span><input class="field" name="category" value="${escapeHtml(item.category || "")}" placeholder="Расходные материалы" /></label>
+        <label><span>ТЕХНИКА</span><input class="field" name="tech" value="${escapeHtml(item.tech || "")}" placeholder="Холодильники" /></label>
+        <label><span>ТИП</span><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал / товар</option></select></label>
+        <label><span>ЕДИНИЦА</span><input class="field" name="unit" value="${escapeHtml(item.unit || (item.kind === "material" ? "шт." : ""))}" placeholder="шт." /></label>
+        <label class="full"><span>ЦЕНА</span><input class="field legacy-price-value" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required inputmode="decimal" /></label>
+      </div>
+    </section>
+
+    <div class="legacy-price-editor-actions">${existing ? '<button type="button" class="legacy-editor-delete" id="delete-price">Удалить</button>' : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
-  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.querySelector("#delete-price")?.addEventListener("click", async () => {
     if (!confirm("Удалить позицию из прайса?")) return;
     if (priceIndex >= 0) data.receipt_prices.splice(priceIndex, 1);
@@ -2605,7 +2627,6 @@ function priceModal(existing = null, priceIndex = -1) {
     await saveData(); modal.remove(); await render(); toast("Прайс обновлён");
   });
 }
-
 function clientModal(clientKey) {
   const orders = data.orders
     .filter((order) => !order.archived && clientKeyForOrder(order) === clientKey)
@@ -3566,6 +3587,12 @@ app.addEventListener("submit", async (event) => {
 app.addEventListener("change", async (event) => {
   if (event.target.id === "price-tech-filter") {
     priceTechFilter = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
+  if (event.target.id === "price-kind-filter") {
+    priceKindFilter = event.target.value;
     saveUiState();
     await render();
     return;
