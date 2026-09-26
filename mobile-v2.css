@@ -4060,3 +4060,410 @@
     grid-column: 1 / -1;
   }
 }
+
+
+/* 0.91.0 · Мобильный масштаб 360–430 px: читаемость вместо микротекста. */
+@media screen and (max-width: 520px) {
+  body {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .legacy-mobile-header .brand-subtitle,
+  .legacy-page-head p,
+  .legacy-warehouse-head p,
+  .legacy-more-head p,
+  .analytics-content .lead,
+  .legacy-subpage-head p {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .legacy-nearest-title,
+  .legacy-nearest-line,
+  .legacy-nearest-line > strong,
+  .legacy-nearest-line > em {
+    font-size: 12px !important;
+  }
+
+  .legacy-order-search .search,
+  .legacy-warehouse-search .search,
+  .legacy-client-search .search,
+  .price-search-row .search {
+    font-size: 14px !important;
+  }
+
+  .legacy-order-filters button,
+  .legacy-visit-filter .field,
+  .legacy-warehouse-filter .field,
+  .legacy-warehouse-shortcuts button,
+  .analytics-period-grid .chip,
+  .legacy-finance-periods button,
+  .legacy-price-filters .field {
+    font-size: 12px !important;
+  }
+
+  .legacy-order-title > span {
+    font-size: 14px !important;
+  }
+
+  .legacy-order-title > strong,
+  .legacy-expanded-title > b,
+  .legacy-expanded-title > strong {
+    font-size: 16px !important;
+  }
+
+  .legacy-order-head-side time,
+  .legacy-expanded-head-side time,
+  .legacy-status,
+  .legacy-expanded-status {
+    font-size: 11px !important;
+  }
+
+  .legacy-order-device strong,
+  .legacy-expanded-device-copy strong {
+    font-size: 14px !important;
+  }
+
+  .legacy-order-device small,
+  .legacy-expanded-device-copy small {
+    font-size: 12px !important;
+  }
+
+  .legacy-order-money span,
+  .legacy-expanded-money span,
+  .order-calculation-summary > div span {
+    font-size: 11px !important;
+    letter-spacing: .025em !important;
+  }
+
+  .legacy-order-money strong,
+  .legacy-expanded-money strong {
+    font-size: 17px !important;
+  }
+
+  .legacy-order-meta,
+  .legacy-expanded-meta,
+  .legacy-next-visit {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a,
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    font-size: 10.5px !important;
+  }
+
+  .legacy-group-copy strong,
+  .legacy-stock-copy strong,
+  .stock-detail-head strong,
+  .stock-detail-hero h2 {
+    font-size: 14px !important;
+  }
+
+  .legacy-group-copy small,
+  .legacy-stock-copy small,
+  .stock-detail-head small,
+  .stock-detail-hero p,
+  .stock-detail-kpis span,
+  .stock-detail-movement small {
+    font-size: 11px !important;
+  }
+
+  .legacy-stock-actions-v2 button,
+  .stock-detail-actions button {
+    font-size: 11px !important;
+  }
+
+  .stock-detail-kpis strong {
+    font-size: 16px !important;
+  }
+
+  .stock-detail-movement > span,
+  .stock-detail-movement strong {
+    font-size: 12px !important;
+  }
+
+  .analytics-content .panel-title,
+  .legacy-section-title h2,
+  .legacy-finance-history-head h2,
+  .legacy-client-profile-backdrop .client-profile-history h3 {
+    font-size: 14px !important;
+  }
+
+  .analytics-content .panel-title > span:last-child > small,
+  .analytics-kpi > span,
+  .analytics-kpi > small,
+  .analytics-focus .focus-grid span,
+  .analytics-work .metric-label,
+  .analytics-ranking-row small,
+  .analytics-list-panel .goods-sheet small {
+    font-size: 11px !important;
+  }
+
+  .analytics-kpi > strong,
+  .analytics-focus .focus-grid strong,
+  .analytics-work .metric-value {
+    font-size: 17px !important;
+  }
+
+  .analytics-kpi.primary > strong {
+    font-size: 22px !important;
+  }
+
+  .analytics-ranking-row strong,
+  .analytics-ranking-row > b,
+  .analytics-list-panel .goods-sheet strong,
+  .analytics-list-panel .goods-sheet > b {
+    font-size: 12px !important;
+  }
+
+  .legacy-more-list .menu-name {
+    font-size: 14px !important;
+  }
+
+  .legacy-more-list .menu-description {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .nav-button {
+    font-size: 11px !important;
+  }
+
+  .order-editor-title-copy small,
+  .stock-editor-head small,
+  .legacy-finance-entry-backdrop .finance-entry-head small,
+  .legacy-service-editor-backdrop .receipt-editor-head small,
+  .legacy-service-editor-backdrop .tool-editor-head small {
+    font-size: 10px !important;
+  }
+
+  .order-editor-title-copy h2,
+  .order-editor-head h2,
+  .stock-editor-head h2,
+  .legacy-finance-entry-backdrop .finance-entry-head h2,
+  .legacy-service-editor-backdrop .receipt-editor-head h2,
+  .legacy-service-editor-backdrop .tool-editor-head h2 {
+    font-size: 17px !important;
+  }
+
+  .order-editor-modal .form-section-title,
+  .stock-editor-section-title {
+    font-size: 14px !important;
+  }
+
+  .order-editor-modal .form-group label,
+  .stock-editor-modal .form-group label,
+  .legacy-finance-entry-backdrop .form-group label,
+  .legacy-service-editor-backdrop .form-group label,
+  .legacy-price-editor-grid label > span,
+  .legacy-settings-grid label > span,
+  .legacy-goods-order-source > span,
+  .legacy-editor-title > span,
+  .legacy-goods-target label > span,
+  .legacy-act-control > label > span {
+    font-size: 11px !important;
+    letter-spacing: .025em !important;
+  }
+
+  .order-editor-modal .field,
+  .stock-editor-modal .field,
+  .legacy-finance-entry-backdrop .field,
+  .legacy-service-editor-backdrop .field,
+  .legacy-price-editor .field,
+  .legacy-settings-grid .field,
+  .legacy-goods-order-source .field,
+  .legacy-editor-title .field,
+  .legacy-goods-target .field,
+  .legacy-goods-add-line .field,
+  .legacy-goods-edit-row .field,
+  .legacy-act-control .field {
+    font-size: 14px !important;
+  }
+
+  .order-editor-modal .legacy-catalog-button,
+  .order-editor-modal .legacy-stock-button,
+  .order-editor-modal .modal-actions > *,
+  .stock-editor-modal .modal-actions > *,
+  .legacy-finance-entry-backdrop .modal-actions > *,
+  .legacy-service-editor-backdrop .modal-actions > *,
+  .legacy-price-editor-actions > *,
+  .legacy-goods-savebar > *,
+  .legacy-goods-create-grid button,
+  .legacy-open-editor,
+  .legacy-act-control-actions button {
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-material-help,
+  .legacy-goods-help,
+  .legacy-goods-intro,
+  .stock-editor-intro,
+  .stock-editor-toggle small,
+  .legacy-service-note,
+  .legacy-service-empty,
+  .legacy-client-empty,
+  .legacy-finance-empty {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .order-editor-modal .legacy-service-total {
+    font-size: 12px !important;
+  }
+
+  .order-calculation-summary > div strong {
+    font-size: 14px !important;
+  }
+
+  .manual-material-details > summary,
+  .order-extra-details > summary {
+    font-size: 12px !important;
+  }
+
+  .stock-editor-compat label,
+  .stock-editor-toggle b {
+    font-size: 12px !important;
+  }
+
+  .legacy-finance-summary span,
+  .legacy-clients-stats span,
+  .legacy-service-stats span {
+    font-size: 11px !important;
+    letter-spacing: .03em !important;
+  }
+
+  .legacy-finance-summary small,
+  .legacy-clients-stats small,
+  .legacy-service-stats small {
+    font-size: 11px !important;
+  }
+
+  .legacy-finance-copy strong,
+  .legacy-client-copy strong,
+  .legacy-document-row strong,
+  .legacy-settings-row strong,
+  .legacy-settings-links strong,
+  .legacy-draft-card strong,
+  .legacy-goods-position strong,
+  .legacy-product-price-list strong {
+    font-size: 13px !important;
+  }
+
+  .legacy-finance-copy small,
+  .legacy-client-copy small,
+  .legacy-document-row small,
+  .legacy-settings-row small,
+  .legacy-settings-links small,
+  .legacy-draft-card small,
+  .legacy-goods-position small,
+  .legacy-product-price-list small,
+  .legacy-client-copy em,
+  .legacy-client-meta {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+
+  .legacy-finance-row > b,
+  .legacy-client-side b,
+  .legacy-document-row > b {
+    font-size: 12px !important;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button,
+  .client-profile-actions a,
+  .client-profile-actions button,
+  .legacy-draft-actions button,
+  .legacy-settings-row > button:not(.toggle),
+  .legacy-backup-grid button,
+  .legacy-backup-main-actions button {
+    font-size: 11px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-head strong,
+  .legacy-client-profile-backdrop .client-profile-hero h2 {
+    font-size: 15px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-head small,
+  .legacy-client-profile-backdrop .client-profile-hero p,
+  .legacy-client-profile-backdrop .client-profile-address small,
+  .legacy-client-profile-backdrop .client-profile-kpis span,
+  .legacy-client-profile-backdrop .client-order-copy small,
+  .legacy-client-profile-backdrop .client-order-copy em,
+  .legacy-client-profile-backdrop .client-order-side i {
+    font-size: 11px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-address strong,
+  .legacy-client-profile-backdrop .client-order-copy strong,
+  .legacy-client-profile-backdrop .client-order-side b {
+    font-size: 12px !important;
+  }
+
+  .legacy-price-filters label > span,
+  .legacy-price-group > h3,
+  .legacy-custom-price-head,
+  .legacy-custom-price-head h3,
+  .legacy-price-row small,
+  .legacy-goods-row-label > span,
+  .legacy-goods-edit-row label > span,
+  .legacy-goods-row-sum > span,
+  .legacy-goods-target p,
+  .legacy-preview-table th,
+  .legacy-preview-table td {
+    font-size: 11px !important;
+  }
+
+  .legacy-price-row strong,
+  .legacy-price-row > b,
+  .legacy-goods-current-summary strong,
+  .legacy-goods-current-summary > b {
+    font-size: 13px !important;
+  }
+
+  .legacy-goods-current-summary small {
+    font-size: 11px !important;
+  }
+
+  .legacy-goods-editor-actions button {
+    font-size: 11px !important;
+  }
+
+  .receipt-editor-type span,
+  .tool-editor-hero strong,
+  .tool-editor-hero small,
+  .legacy-settings-toggle-row strong,
+  .legacy-settings-toggle-row small,
+  .legacy-act-control-title small {
+    font-size: 11px !important;
+  }
+
+  .legacy-act-control-title h2 {
+    font-size: 14px !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .legacy-order-actions > button,
+  .legacy-order-actions > a,
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    font-size: 9.5px !important;
+  }
+
+  .nav-button {
+    font-size: 10px !important;
+  }
+
+  .order-editor-modal .form-group label,
+  .stock-editor-modal .form-group label,
+  .legacy-finance-entry-backdrop .form-group label,
+  .legacy-service-editor-backdrop .form-group label {
+    font-size: 10px !important;
+  }
+}
