@@ -229,7 +229,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (nested.count !== 2 || !nested.firstInert || nested.firstHidden !== "true") report.failures.push({ width, type: "nested-modal", nested });
       report.results.push(await shot(page, width, "service-catalog", false));
 
-      await page.locator("[data-service-index]").first().check();
+      await page.locator(".catalog-service-option").first().click();
       await page.waitForTimeout(60);
       const serviceSelection = await page.evaluate(() => ({
         selectedRows: document.querySelectorAll(".catalog-service-option.selected").length,
