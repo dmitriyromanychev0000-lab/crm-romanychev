@@ -6642,3 +6642,126 @@
     line-height: 1.1;
   }
 }
+
+/* 0.94.0 · Общая система иконок и мобильной типографики. */
+@media screen and (max-width: 520px) {
+  .ui-icon {
+    flex: 0 0 auto;
+    vertical-align: middle;
+  }
+
+  .legacy-page-head h1,
+  .legacy-warehouse-head h1,
+  .legacy-more-head h1,
+  .analytics-content .page-head h1 {
+    margin: 0;
+    font-size: 25px !important;
+    font-weight: 760 !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.02em;
+  }
+
+  .legacy-page-head p,
+  .legacy-warehouse-head p,
+  .legacy-more-head p,
+  .legacy-subpage-head p {
+    margin-top: 5px !important;
+    color: var(--crm-muted) !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .legacy-section-title h2,
+  .analytics-content .panel-title,
+  .legacy-finance-history-head h2 {
+    font-weight: 740 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -.01em;
+  }
+
+  .catalog-close,
+  .material-catalog-head-close,
+  .order-editor-close,
+  .receipt-editor-close,
+  .tool-editor-close,
+  .finance-entry-close,
+  .order-actions-close,
+  .photo-remove,
+  .stock-adjust-head [data-close-modal] {
+    display: grid !important;
+    place-items: center !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .catalog-close .ui-icon,
+  .material-catalog-head-close .ui-icon,
+  .order-editor-close .ui-icon,
+  .receipt-editor-close .ui-icon,
+  .tool-editor-close .ui-icon,
+  .finance-entry-close .ui-icon,
+  .order-actions-close .ui-icon,
+  .photo-remove .ui-icon,
+  .stock-adjust-head [data-close-modal] .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 1.9;
+  }
+
+  .legacy-stock-actions-v2 .stock-action-mini-icon,
+  .movement-icon,
+  .stock-adjust-icon {
+    display: grid !important;
+    place-items: center !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .legacy-stock-actions-v2 .stock-action-mini-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .movement-icon .ui-icon,
+  .stock-adjust-icon .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+    stroke-width: 2;
+  }
+
+  .legacy-finance-actions > button,
+  .legacy-purple-button[data-action="new-goods-sheet"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .legacy-finance-actions > button > .ui-icon,
+  .legacy-purple-button[data-action="new-goods-sheet"] .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 2;
+  }
+
+  .legacy-price-chevron {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    font-size: 0 !important;
+    transition: transform .16s ease;
+  }
+
+  .legacy-price-chevron .ui-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  button,
+  .secondary-button,
+  .primary-button,
+  .danger-button {
+    text-rendering: optimizeLegibility;
+  }
+}

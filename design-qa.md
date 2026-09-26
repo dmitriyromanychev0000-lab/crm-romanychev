@@ -1,4 +1,4 @@
-# Design QA — Analytics 0.93.1
+# Design QA — Analytics and shared UI 0.94.0
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -45,11 +45,13 @@ The real-phone screenshot provided usable evidence for the header, period contro
 - Initial live pass confirmed the new hierarchy and interactions, but exposed a viewport mismatch.
 - User phone screenshot then identified three P1/P2 density issues: duplicate period labels, oversized KPI/focus sections and weak bottom-navigation clearance.
 - Version 0.93.1 removes the duplicates, reduces component heights and adds safe bottom padding.
+- Version 0.94.0 replaces visible text-symbol controls with the shared SVG icon system, aligns page titles and normalizes close, add, subtract and disclosure controls across the CRM.
 
 ## Implementation checklist
 
-- Capture Analytics 0.93.1 on the same phone.
+- Capture Analytics 0.94.0 on the same phone.
 - Check KPI wrapping, above-the-fold density and bottom navigation clearance.
+- Check close buttons, warehouse operations, finance add buttons and disclosure arrows on the phone.
 - Fix any P1/P2 differences and repeat the comparison.
 
 final result: blocked

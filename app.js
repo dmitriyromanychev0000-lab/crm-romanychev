@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.93.1";
-const APP_BUILD = "2026.09.26.73";
+const APP_VERSION = "0.94.0";
+const APP_BUILD = "2026.09.26.74";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Уплотнена мобильная аналитика по проверке на реальном телефоне: меньше повторов, ниже KPI и безопасный отступ над навигацией";
+const APP_RELEASE = "Унифицированы иконки и мобильная типографика: системные SVG вместо текстовых символов, ровные кнопки и заголовки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -979,8 +979,8 @@ function warehousePage() {
                   <span class="legacy-stock-qty"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small></span>
                 </button>
                 <div class="legacy-stock-actions-v2">
-                  <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span>＋</span>Приход</button>
-                  <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span>−</span>Списать</button>
+                  <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
+                  <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("minus")}</span>Списать</button>
                   <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon("archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
                   <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
                 </div>
@@ -1461,8 +1461,8 @@ function financePage() {
     </section>
 
     <div class="legacy-finance-actions">
-      <button type="button" class="legacy-orange-button" data-action="add-finance" data-type="income">＋<span>Добавить доход</span></button>
-      <button type="button" class="legacy-dark-button" data-action="add-finance" data-type="expense">−<span>Добавить расход</span></button>
+      <button type="button" class="legacy-orange-button" data-action="add-finance" data-type="income">${icon("plus")}<span>Добавить доход</span></button>
+      <button type="button" class="legacy-dark-button" data-action="add-finance" data-type="expense">${icon("minus")}<span>Добавить расход</span></button>
     </div>
 
     <section class="legacy-finance-history">
@@ -1578,7 +1578,7 @@ function goodsPage() {
     <section class="legacy-goods-panel legacy-goods-new">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Новый товарник</h2></div>
       <div class="legacy-goods-create-grid">
-        <button type="button" class="legacy-purple-button" data-action="new-goods-sheet"><span>＋</span>Создать вручную</button>
+        <button type="button" class="legacy-purple-button" data-action="new-goods-sheet"><span>${icon("plus")}</span>Создать вручную</button>
         <button type="button" class="legacy-dark-button" data-action="new-goods-from-order">${icon("document")}<span>Из закрытой<br>заявки</span></button>
       </div>
       <label class="legacy-goods-order-source">
@@ -1605,7 +1605,7 @@ function goodsPage() {
     </section>
 
     <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">
-      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">›</span></summary>
+      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">${icon("chevron")}</span></summary>
       ${productPrice.length ? `<div class="legacy-product-price-list">${productPrice.map((item) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
     </details>
   </main>`;
@@ -1912,7 +1912,7 @@ function warehouseMovementsPage() {
         const incoming = incomingTypes.has(movement.type);
         const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
         return `<article class="movement-card">
-          <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${incoming ? "+" : "−"}</span>
+          <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
           <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
           <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
         </article>`;
@@ -2149,7 +2149,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop catalog-modal-backdrop";
   modal.innerHTML = `<div class="modal catalog-modal">
-    <div class="catalog-modal-head"><div><div class="small">Каталог услуг · <span id="catalog-selected-count">0 выбрано</span></div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">×</button></div>
+    <div class="catalog-modal-head"><div><div class="small">Каталог услуг · <span id="catalog-selected-count">0 выбрано</span></div><h2>Выбрать услуги</h2></div><button class="catalog-close" type="button" aria-label="Закрыть каталог">${icon("close")}</button></div>
     <div class="search-row search-with-icon catalog-search-row">${icon("search")}<input class="search" id="catalog-service-search" placeholder="Поиск услуги..." /></div>
     <div class="catalog-service-list" id="catalog-service-list"></div>
     <div class="catalog-fit-summary">
@@ -2310,7 +2310,7 @@ function openMaterialCatalog(orderModal) {
     <header class="material-catalog-head">
       <span class="material-catalog-icon">${icon("price")}</span>
       <div><strong>Каталог · ${escapeHtml(tech)}</strong></div>
-      <button type="button" class="material-catalog-head-close" aria-label="Закрыть">×</button>
+      <button type="button" class="material-catalog-head-close" aria-label="Закрыть">${icon("close")}</button>
     </header>
     <div class="material-catalog-search search-row search-with-icon">${icon("search")}<input class="search" id="material-catalog-search" placeholder="Название товара" /></div>
     <div class="material-catalog-list" id="material-catalog-list"></div>
@@ -2402,7 +2402,7 @@ function newOrderModal(existing = null, options = {}) {
     <div class="order-editor-head">
       <span class="order-editor-title-icon">${icon("orders")}</span>
       <div class="order-editor-title-copy"><small>${existing && !forceNew ? `ЗАЯВКА №${escapeHtml(order.id || "—")}` : "НОВАЯ ЗАЯВКА"}</small><h2>${existing && !forceNew ? "Редактирование" : "Создание заявки"}</h2></div>
-      <button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">×</button>
+      <button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="order-editor-body">
     <section class="order-editor-section">
@@ -2488,7 +2488,7 @@ function newOrderModal(existing = null, options = {}) {
     photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
       const source = photoSource(photo);
       const label = photoLabel(photo, index);
-      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">${icon("camera")}<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">×</button></div>`;
+      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">${icon("camera")}<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">${icon("close")}</button></div>`;
     }).join("") : `<div class="small">Фотографий пока нет</div>`;
   };
   photoInput.addEventListener("change", async () => {
@@ -2650,7 +2650,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop receipt-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
-    <div class="receipt-editor-head"><span class="service-editor-head-icon receipt">${icon("receipt")}</span><div><small>ДОКУМЕНТЫ</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="receipt-editor-head"><span class="service-editor-head-icon receipt">${icon("receipt")}</span><div><small>ДОКУМЕНТЫ</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
@@ -2697,7 +2697,7 @@ function toolModal(existing = null, toolIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop tool-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
-    <div class="tool-editor-head"><span class="service-editor-head-icon tool">${icon("tools")}</span><div><small>ИНСТРУМЕНТЫ</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
+    <div class="tool-editor-head"><span class="service-editor-head-icon tool">${icon("tools")}</span><div><small>ИНСТРУМЕНТЫ</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
@@ -2922,7 +2922,7 @@ function financeModal(type) {
     <div class="finance-entry-head">
       <span class="finance-entry-head-icon ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}</span>
       <div><small>ФИНАНСЫ</small><h2>${isIncome ? "Новый доход" : "Новый расход"}</h2></div>
-      <button type="button" class="finance-entry-close" data-close-modal aria-label="Закрыть">×</button>
+      <button type="button" class="finance-entry-close" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="finance-entry-type ${isIncome ? "income" : "expense"}">${icon(isIncome ? "finance" : "receipt")}<span>${isIncome ? "Пополнение личных финансов" : "Личный расход вне заявки"}</span></div>
     <div class="form-grid">
@@ -3179,7 +3179,7 @@ function goodsModal(existing = null, seed = null) {
     </section>
 
     <details class="legacy-goods-panel legacy-product-price">
-      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">›</span></summary>
+      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">${icon("chevron")}</span></summary>
       ${goodsPriceEntries.length ? `<div class="legacy-product-price-list">${goodsPriceEntries.map(({item}) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
     </details>
 
@@ -3300,7 +3300,7 @@ function orderActionsSheet(order) {
   modal.innerHTML = `<section class="order-actions-sheet" aria-label="Действия заявки №${escapeHtml(order.id)}">
     <div class="order-actions-head">
       <div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>Дополнительные действия</small></div>
-      <button type="button" class="order-actions-close" aria-label="Закрыть">×</button>
+      <button type="button" class="order-actions-close" aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="order-actions-grid">
       <button type="button" data-order-sheet-action="receipt">${icon("document")}<b>Квитанция</b></button>
@@ -3500,9 +3500,9 @@ async function adjustStock(id, direction) {
   modal.className = "modal-backdrop stock-adjust-backdrop";
   modal.innerHTML = `<form class="modal stock-adjust-modal" id="stock-adjust-form">
     <div class="stock-adjust-head">
-      <span class="stock-adjust-icon ${incoming ? "incoming" : "outgoing"}">${incoming ? "+" : "−"}</span>
+      <span class="stock-adjust-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
       <div><strong>${incoming ? "Приход" : "Списание"}</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
-      <button type="button" data-close-modal aria-label="Закрыть">×</button>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="stock-adjust-balance">
       <span>СЕЙЧАС НА СКЛАДЕ</span>
