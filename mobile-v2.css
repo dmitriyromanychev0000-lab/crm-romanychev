@@ -4772,3 +4772,339 @@
     font-size: 11px;
   }
 }
+
+
+/* 0.91.1 · Fix по реальным Android-скринам: каталог на весь viewport, услуги снова компактные. */
+@media screen and (max-width: 520px) {
+  /* Каталог услуг: только список скроллится, summary/actions всегда у нижней границы viewport. */
+  .catalog-modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 520 !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal-backdrop > .catalog-modal {
+    position: absolute !important;
+    inset: 0 !important;
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal .catalog-modal-head {
+    position: relative !important;
+    top: auto !important;
+    z-index: 3 !important;
+    min-height: calc(62px + env(safe-area-inset-top)) !important;
+    margin: 0 -12px !important;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 9px !important;
+    border-bottom: 1px solid var(--crm-line-soft) !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal .catalog-modal-head .small {
+    color: var(--crm-muted) !important;
+    font-size: 11px !important;
+  }
+
+  .catalog-modal .catalog-modal-head h2 {
+    margin: 3px 0 0 !important;
+    color: var(--crm-text) !important;
+    font-size: 17px !important;
+  }
+
+  .catalog-modal .catalog-close {
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid var(--crm-line) !important;
+    border-radius: 11px !important;
+    background: var(--crm-surface-2) !important;
+    color: var(--crm-text) !important;
+  }
+
+  .catalog-modal .catalog-search-row {
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal .catalog-search-row .search {
+    min-height: 44px !important;
+    border: 1px solid var(--crm-line) !important;
+    border-radius: 12px !important;
+    background: var(--crm-surface-2) !important;
+    font-size: 13px !important;
+  }
+
+  .catalog-modal .catalog-service-list {
+    min-height: 0 !important;
+    margin: 0 -2px !important;
+    padding: 0 2px 8px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .catalog-modal .catalog-service-group {
+    margin: 0 0 8px !important;
+  }
+
+  .catalog-modal .catalog-service-group h3 {
+    margin: 0 0 5px !important;
+    padding: 5px 4px !important;
+    color: var(--crm-muted) !important;
+    font-size: 11px !important;
+  }
+
+  .catalog-modal .catalog-service-option {
+    grid-template-columns: 30px minmax(0,1fr) auto !important;
+    gap: 9px !important;
+    min-height: 52px !important;
+    margin-bottom: 6px !important;
+    padding: 7px 10px !important;
+    border: 1px solid var(--crm-line) !important;
+    border-radius: 12px !important;
+    background: #151d23 !important;
+  }
+
+  .catalog-modal .catalog-service-option.selected {
+    border-color: rgba(255,113,83,.5) !important;
+    background: rgba(255,113,83,.065) !important;
+  }
+
+  .catalog-modal .catalog-check {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+  }
+
+  .catalog-modal .catalog-service-copy strong {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+  }
+
+  .catalog-modal .catalog-service-copy small {
+    margin-top: 3px !important;
+    color: var(--crm-muted) !important;
+    font-size: 11px !important;
+  }
+
+  .catalog-modal .catalog-service-price {
+    padding-left: 8px !important;
+    color: var(--crm-accent) !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .catalog-modal .catalog-fit-summary {
+    position: static !important;
+    display: grid !important;
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 0 !important;
+    margin: 0 -2px 7px !important;
+    padding: 8px 0 !important;
+    border: 1px solid var(--crm-line) !important;
+    border-radius: 12px !important;
+    background: #11181e !important;
+  }
+
+  .catalog-modal .catalog-fit-summary > div {
+    min-width: 0 !important;
+    padding: 0 9px !important;
+    border-left: 1px solid var(--crm-line-soft) !important;
+  }
+
+  .catalog-modal .catalog-fit-summary > div:first-child {
+    border-left: 0 !important;
+  }
+
+  .catalog-modal .catalog-fit-summary span {
+    display: block !important;
+    overflow: hidden !important;
+    color: var(--crm-muted) !important;
+    font-size: 10px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .catalog-modal .catalog-fit-summary strong {
+    display: block !important;
+    overflow: hidden !important;
+    margin-top: 4px !important;
+    font-size: 13px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .catalog-modal .catalog-modal-actions {
+    position: static !important;
+    display: grid !important;
+    grid-template-columns: .8fr 1.2fr !important;
+    gap: 8px !important;
+    margin: 0 -12px !important;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid var(--crm-line) !important;
+    background: #080d11 !important;
+  }
+
+  .catalog-modal .catalog-modal-actions button {
+    min-height: 48px !important;
+    border-radius: 11px !important;
+    font-size: 13px !important;
+    font-weight: 720 !important;
+  }
+
+  /* Выбранные услуги в заявке: не превращаем каждую строку в большое поле. */
+  .order-editor-modal .legacy-service-list {
+    gap: 0 !important;
+  }
+
+  .order-editor-modal .legacy-service-row {
+    display: grid !important;
+    grid-template-columns: 26px minmax(0,1fr) 82px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    min-height: 46px !important;
+    padding: 2px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--crm-line-soft) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .order-editor-modal .legacy-service-row:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-check {
+    display: grid !important;
+    place-items: center !important;
+    width: 24px !important;
+    color: #dfe5e8 !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-check .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-name-field,
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-name-field {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 13px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    width: 62px !important;
+    color: #dce3e7 !important;
+    font-size: 13px !important;
+    text-align: right !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field > span {
+    margin-left: 3px !important;
+    color: var(--crm-muted) !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-qty-field,
+  .order-editor-modal .legacy-service-row .service-remove {
+    display: none !important;
+  }
+
+  .order-editor-modal .legacy-service-total {
+    margin-top: 5px !important;
+    padding-top: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-total strong {
+    font-size: 13px !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .catalog-modal-backdrop > .catalog-modal {
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .catalog-modal .catalog-modal-head,
+  .catalog-modal .catalog-modal-actions {
+    margin-right: -9px !important;
+    margin-left: -9px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .catalog-modal .catalog-service-option {
+    grid-template-columns: 28px minmax(0,1fr) auto !important;
+    gap: 7px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  .catalog-modal .catalog-fit-summary > div {
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+  }
+
+  .catalog-modal .catalog-fit-summary span {
+    font-size: 9px !important;
+  }
+
+  .catalog-modal .catalog-fit-summary strong {
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 24px minmax(0,1fr) 74px !important;
+    gap: 6px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-name-field,
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    width: 55px !important;
+  }
+}
