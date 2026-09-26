@@ -10612,3 +10612,63 @@ body.modal-open {
     padding-bottom: calc(28px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* 0.99.1 · A4 печать акта изолирована от мобильной геометрии. */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 7mm 10mm;
+  }
+
+  html,
+  body {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .legacy-act-preview {
+    overflow: visible !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-preview .act-sheet,
+  .act-sheet {
+    box-sizing: border-box !important;
+    width: 190mm !important;
+    min-width: 190mm !important;
+    max-width: 190mm !important;
+    height: 277mm !important;
+    min-height: 277mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    zoom: var(--act-print-zoom, 1) !important;
+  }
+
+  .act-work-table {
+    table-layout: fixed !important;
+  }
+
+  .act-work-table thead {
+    display: table-header-group;
+  }
+
+  .act-work-table tr,
+  .act-work-table th,
+  .act-work-table td,
+  .act-totals > div,
+  .act-signatures {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
