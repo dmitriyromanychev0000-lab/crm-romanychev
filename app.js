@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.7";
-const APP_BUILD = "2026.09.26.87";
+const APP_VERSION = "0.99.8";
+const APP_BUILD = "2026.09.26.88";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Дочищен 320 px интерфейс: активный денежный KPI больше не обрезается, отказ не показывает «после закрытия», каталог услуг получил короткие подписи и единые SVG-иконки";
+const APP_RELEASE = "Расширен релизный QA и добит touch-target прайса: автоматическая проверка охватывает основные страницы, детали, action sheet, вложенные каталоги и ключевые редакторы";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
