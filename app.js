@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.94.0";
-const APP_BUILD = "2026.09.26.74";
+const APP_VERSION = "0.95.0";
+const APP_BUILD = "2026.09.26.75";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Унифицированы иконки и мобильная типографика: системные SVG вместо текстовых символов, ровные кнопки и заголовки";
+const APP_RELEASE = "Заявки стали чище на телефоне: четыре удобных действия вместо пяти тесных, копирование перенесено в меню, добиты системные SVG и экран 320 px";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -836,7 +836,6 @@ function orderCard(order) {
     <div class="legacy-order-actions">
       <button type="button" data-order-action="edit" data-id="${escapeHtml(order.id)}">${icon("edit")}<span>Изменить</span></button>
       <button type="button" data-order-action="toggle" data-id="${escapeHtml(order.id)}" class="action-toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
-      <button type="button" data-order-action="copy" data-id="${escapeHtml(order.id)}" class="action-copy">${icon("copy")}<span>Копия</span></button>
       ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="action-phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled class="action-phone">${icon("phone")}<span>Позвонить</span></button>`}
       <button type="button" data-order-action="more" data-id="${escapeHtml(order.id)}" class="action-more">${icon("more")}<span>Ещё</span></button>
     </div>
@@ -900,12 +899,12 @@ function ordersPage() {
       <span>${icon("chevron")}</span>
     </div>
 
-    ${orderFilter === "declined" || orderFilter === "archived" ? `<div class="legacy-special-filter"><button type="button" data-filter="all">← Вернуться ко всем заявкам</button></div>` : ""}
+    ${orderFilter === "declined" || orderFilter === "archived" ? `<div class="legacy-special-filter"><button type="button" data-filter="all">${icon("back")}<span>Вернуться ко всем заявкам</span></button></div>` : ""}
 
     <section class="legacy-orders-list">
       ${filtered.length ? filtered.map(orderCard).join("") : data.orders.length
-        ? `<div class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button class="secondary-button" data-action="reset-order-filters">Сбросить</button><button class="primary-button" data-action="new-order">+ Новая заявка</button></div></div>`
-        : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button class="primary-button" data-action="new-order">+ Новая заявка</button><button class="secondary-button" data-action="import">Импортировать</button></div></div>`}
+        ? `<div class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button class="secondary-button" data-action="reset-order-filters">Сбросить</button><button class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button></div></div>`
+        : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button><button class="secondary-button" data-action="import">Импортировать</button></div></div>`}
     </section>
   </main>`;
 }
@@ -961,7 +960,7 @@ function warehousePage() {
           <summary>
             <span class="legacy-folder-icon">${icon("document")}</span>
             <span class="legacy-group-copy"><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></span>
-            <span class="legacy-group-chevron">⌄</span>
+            <span class="legacy-group-chevron">${icon("chevron")}</span>
           </summary>
           <div class="legacy-stock-list">
             ${group.map((item) => {
@@ -1319,7 +1318,7 @@ function priceList() {
       </section>`).join("")}</div>` : ""}
 
     ${(priceKindFilter === "all" || priceKindFilter === "custom") ? `<section class="legacy-price-group legacy-custom-price">
-      <div class="legacy-custom-price-head"><h3>СВОИ УСЛУГИ</h3><button type="button" data-action="new-custom-service">+ Добавить</button></div>
+      <div class="legacy-custom-price-head"><h3>СВОИ УСЛУГИ</h3><button type="button" data-action="new-custom-service">${icon("plus")}<span>Добавить</span></button></div>
       ${customServices.length ? `<div class="legacy-price-list">${customServices.map((item) => {
         const index = data.service_custom.indexOf(item);
         const name = item.name || item.title || item.service || "Услуга";
@@ -2433,7 +2432,7 @@ function newOrderModal(existing = null, options = {}) {
     <p class="legacy-material-help">Выбери позицию со склада или добавь ручную — количество и себестоимость можно изменить.</p>
     <button type="button" class="legacy-stock-button material-catalog-open" id="open-material-catalog">${icon("warehouse")}<span>Выбрать со склада</span></button>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
-    <details class="manual-material-details"><summary>Материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
+    <details class="manual-material-details"><summary>Материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">${icon("plus")}<span>Добавить ручную позицию</span></button></details>
     </section>
 
     <details class="order-extra-details" ${orderPhotos.length ? "open" : ""}>
@@ -3156,9 +3155,9 @@ function goodsModal(existing = null, seed = null) {
       <label class="legacy-editor-title"><span>НАЗВАНИЕ РАСЧЁТА</span><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></label>
 
       <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
-      <div class="legacy-goods-add-line"><select class="field" id="goods-picker"><option value="">— Выберите товар из прайса —</option>${options}</select><button type="button" id="add-goods-line">+ Добавить</button></div>
+      <div class="legacy-goods-add-line"><select class="field" id="goods-picker"><option value="">— Выберите товар из прайса —</option>${options}</select><button type="button" id="add-goods-line">${icon("plus")}<span>Добавить</span></button></div>
       <div class="legacy-goods-editor-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
-      <button type="button" class="legacy-manual-add" id="add-manual-goods">+ Добавить позицию вручную</button>
+      <button type="button" class="legacy-manual-add" id="add-manual-goods">${icon("plus")}<span>Добавить позицию вручную</span></button>
 
       <div class="legacy-goods-target">
         <label><span>ЦЕЛЕВАЯ СУММА</span><input class="field" id="goods-target" name="target" type="number" min="0" step="1" value="${Number(sheet.target) || 0}" placeholder="—" /></label>
@@ -3303,6 +3302,7 @@ function orderActionsSheet(order) {
       <button type="button" class="order-actions-close" aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="order-actions-grid">
+      <button type="button" data-order-sheet-action="copy">${icon("copy")}<b>Копия заявки</b></button>
       <button type="button" data-order-sheet-action="receipt">${icon("document")}<b>Квитанция</b></button>
       <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт / PDF</b></button>
       ${tg ? `<a href="${escapeHtml(tg)}">${icon("telegram")}<b>Telegram</b></a>` : `<button type="button" disabled>${icon("telegram")}<b>Telegram</b></button>`}
