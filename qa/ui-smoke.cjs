@@ -158,7 +158,7 @@ async function shot(page, width, label, fullPage = true) {
 }
 
 let activeBrowser = null;
-const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, results: [], failures: [] };
+const report = { generatedAt: new Date().toISOString(), testedSha: process.env.GITHUB_SHA || null, baseUrl: BASE_URL, results: [], failures: [] };
 
 (async () => {
   const browser = activeBrowser = await chromium.launch({ headless: true });
