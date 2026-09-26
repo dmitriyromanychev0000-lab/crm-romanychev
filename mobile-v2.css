@@ -7685,3 +7685,57 @@
     font-size: 11px !important;
   }
 }
+
+
+/* 0.99.10 · Accessible backup switch: compact visual track inside a 44px touch target. */
+@media screen and (max-width: 520px) {
+  .legacy-backup-page .toggle,
+  .legacy-settings-row .toggle {
+    position: relative !important;
+    width: 64px !important;
+    min-width: 64px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    justify-self: end !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .legacy-backup-page .toggle::before,
+  .legacy-settings-row .toggle::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 7px 5px !important;
+    border-radius: 999px !important;
+    background: #303840 !important;
+    transition: background .2s !important;
+  }
+
+  .legacy-backup-page .toggle::after,
+  .legacy-settings-row .toggle::after {
+    position: absolute !important;
+    top: 10px !important;
+    left: 8px !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: 0 !important;
+  }
+
+  .legacy-backup-page .toggle.on::before,
+  .legacy-settings-row .toggle.on::before {
+    background: var(--green) !important;
+  }
+
+  .legacy-backup-page .toggle.on::after,
+  .legacy-settings-row .toggle.on::after {
+    transform: translateX(24px) !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-backup-page .legacy-settings-row.plain > button.toggle {
+    width: 64px !important;
+    justify-self: start !important;
+  }
+}
