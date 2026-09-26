@@ -54,16 +54,22 @@ jobs:
         if: always()
         run: |
           if [ -f ui-qa-artifacts/report.json ]; then
-            cp ui-qa-artifacts/report.json qa/latest-ui-qa-report.json
+            cp ui-qa-artifacts/report.json /tmp/latest-ui-qa-report.json
           else
-            printf '%s\n' '{"generatedAt":null,"results":[],"failures":[{"type":"workflow-fatal","message":"UI smoke did not produce report.json"}]}' > qa/latest-ui-qa-report.json
+            printf '%s\n' '{"generatedAt":null,"results":[],"failures":[{"type":"workflow-fatal","message":"UI smoke did not produce report.json"}]}' > /tmp/latest-ui-qa-report.json
           fi
+          LOCAL_SHA="$(git rev-parse HEAD)"
+          REMOTE_SHA="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
+            echo "Main advanced during this QA run; skip publishing a stale report."
+            exit 0
+          fi
+          cp /tmp/latest-ui-qa-report.json qa/latest-ui-qa-report.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add qa/latest-ui-qa-report.json
           if ! git diff --cached --quiet; then
             git commit -m "Update mobile UI QA report"
-            git pull --rebase origin main
             git push
           fi
 
