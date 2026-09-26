@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.57.0";
-const APP_BUILD = "2026.09.26.26";
+const APP_VERSION = "0.58.0";
+const APP_BUILD = "2026.09.26.27";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 02: workflow заявок, ближайшие выезды, состояния списка и восстановленное меню действий";
+const APP_RELEASE = "Редизайн Sheet 03: компактный склад, карточка позиции и мобильный редактор";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -658,7 +658,11 @@ function header() {
     <div class="brand">
       <div class="brand-title">CRM by <span>Romanychev</span>😎</div>
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
-    </div>${activePage === "orders" ? `<button class="header-add" data-action="new-order" aria-label="Новая заявка">+</button>` : ""}
+    </div>${activePage === "orders"
+      ? `<button class="header-add" data-action="new-order" aria-label="Новая заявка">+</button>`
+      : activePage === "warehouse"
+        ? `<button class="header-add" data-action="new-stock" aria-label="Новая позиция склада">+</button>`
+        : ""}
   </header>`;
 }
 
@@ -897,51 +901,27 @@ function warehousePage() {
       <button type="button" class="warehouse-shortcut" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
-    <button class="primary-button warehouse-toggle-create" data-action="toggle-stock-form" type="button">${warehouseCreateOpen ? "− Закрыть новую позицию" : "+ Новая позиция"}</button>
-    ${warehouseCreateOpen ? `<form class="panel warehouse-create-card" id="warehouse-inline-form">
-      <div class="warehouse-create-title"><span class="warehouse-new-icon">${icon("box")}</span><strong>Новая позиция</strong></div>
-      <div class="warehouse-create-grid">
-        <div class="form-group"><label>Название</label><input class="field" name="name" required placeholder="Двигатель стиральной машины" /></div>
-        <div class="form-group"><label>Категория склада</label><input class="field" name="category" value="Запчасти" placeholder="Запчасти" /></div>
-      </div>
-      <div class="warehouse-compat-title">Подходит для техники</div>
-      <div class="warehouse-compat-list">
-        ${["Холодильники","Коммерческое холод. оборудование","Стиральные машины","Посудомоечные машины","Сушильные машины","Плиты и духовки","Кондиционеры","Мелкая бытовая техника"].map((value) => `<label class="warehouse-compat-option"><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" /><span class="warehouse-check"></span><span>${escapeHtml(value)}</span></label>`).join("")}
-      </div>
-      <div class="warehouse-create-grid warehouse-create-numbers warehouse-create-triple">
-        <div class="form-group"><label>Количество</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="1" /></div>
-        <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="3" /></div>
-        <div class="form-group"><label>Сумма покупки</label><input class="field" name="purchaseTotal" type="number" min="0" step="1" value="0" /><div class="small purchase-helper">По сумме рассчитаем себестоимость единицы.</div></div>
-      </div>
-      <div class="warehouse-create-grid warehouse-storage-grid">
-        <div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option>${value}</option>`).join("")}</select></div>
-        <div class="form-group"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact">Точный</option><option value="presence">По наличию</option></select></div>
-      </div>
-      <div class="warehouse-create-grid warehouse-pricing-grid">
-        <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="0" /></div>
-        <div class="form-group"><label>Себестоимость единицы</label><div class="field readonly-field" id="warehouse-unit-cost">0 ₽</div></div>
-      </div>
-      <button class="primary-button warehouse-create-submit" type="submit">+ &nbsp;Добавить на склад</button>
-    </form>` : ""}
+    <button class="primary-button warehouse-new-button" data-action="new-stock" type="button">${icon("box")}<span>Новая позиция</span></button>
 
     <section class="warehouse-items">
       ${groupedItems.length ? groupedItems.map(([category, group]) => {
         const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
         return `<section class="panel warehouse-group">
           <div class="warehouse-group-head"><span class="warehouse-folder">${icon("document")}</span><div><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></div></div>
-          <div class="warehouse-group-list">${group.map((item) => `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""}">
-            <div class="stock-card-main">
-              <span class="stock-box-icon">${icon("box")}</span>
-              <div class="stock-copy"><div class="stock-name">${escapeHtml(item.name || "Без названия")}</div><div class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")} · себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</div><div class="stock-available">доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div><div class="small">последняя закупка ${money(item.lastPurchasePrice || 0)}/${escapeHtml(item.unit || "шт.")}</div></div>
-              <div class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><span>${item.archived ? "АРХИВ" : "В НАЛИЧИИ"}</span></div>
-            </div>
-            <div class="stock-actions legacy-stock-actions">
-              <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ &nbsp;Приход</button>
-              <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− &nbsp;Списать</button>
-              <button class="secondary-button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
-              <button class="secondary-button icon-text-button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
-            </div>
-          </article>`).join("")}</div>
+          <div class="warehouse-group-list">${group.map((item) => {
+            const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
+            return `<article class="stock-card legacy-stock-card ${item.archived ? "archived-stock" : ""} ${isLow ? "low-stock" : ""}">
+              <button type="button" class="stock-card-main stock-card-open" data-stock-detail="${escapeHtml(item.id)}">
+                <span class="stock-box-icon">${icon("box")}</span>
+                <span class="stock-copy"><strong class="stock-name">${escapeHtml(item.name || "Без названия")}</strong><small class="stock-category">${escapeHtml((Array.isArray(item.compatibility) && item.compatibility[0]) || item.category || "Без категории")}</small><small class="stock-cost">себестоимость ${item.lastPurchasePrice ? money(item.lastPurchasePrice) : "не задана"}</small></span>
+                <span class="stock-quantity-block"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small><i>${icon("chevron")}</i></span>
+              </button>
+              <div class="stock-actions legacy-stock-actions stock-quick-actions">
+                <button class="secondary-button" data-stock="in" data-id="${escapeHtml(item.id)}">+ Приход</button>
+                <button class="secondary-button" data-stock="out" data-id="${escapeHtml(item.id)}">− Списать</button>
+              </div>
+            </article>`;
+          }).join("")}</div>
         </section>`;
       }).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
     </section>
@@ -2597,11 +2577,76 @@ function financeModal(type) {
   });
 }
 
+function stockDetailModal(item) {
+  const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
+  const movements = [...data.warehouse_movements]
+    .filter((movement) => String(movement.warehouseId) === String(item.id))
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .slice(0, 5);
+  const movementLabels = {
+    initial: "Начальный остаток",
+    manual_in: "Приход",
+    manual_out: "Списание",
+    order_out: "В заявку",
+    order_return: "Возврат"
+  };
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop stock-detail-backdrop";
+  modal.innerHTML = `<section class="modal stock-detail-modal" aria-label="Позиция склада">
+    <header class="stock-detail-head">
+      <button type="button" class="stock-detail-back" data-close-modal aria-label="Назад">‹</button>
+      <div><strong>Позиция склада</strong><small>${escapeHtml(item.category || "Без категории")}</small></div>
+      <button type="button" class="stock-detail-edit" data-stock-detail-action="edit" aria-label="Редактировать">${icon("edit")}</button>
+    </header>
+    <main class="stock-detail-content">
+      <section class="stock-detail-hero">
+        <span class="stock-detail-icon">${icon("box")}</span>
+        <div><h2>${escapeHtml(item.name || "Без названия")}</h2><p>${escapeHtml(Array.isArray(item.compatibility) && item.compatibility.length ? item.compatibility.join(" · ") : "Универсальная позиция")}</p></div>
+        <span class="stock-detail-status ${isLow ? "low" : ""}">${item.archived ? "Архив" : isLow ? "Мало" : "В наличии"}</span>
+      </section>
+      <section class="stock-detail-kpis">
+        <div><span>Остаток</span><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
+        <div><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
+        <div><span>Продажа</span><strong>${money(item.price || 0)}</strong></div>
+        <div><span>Себестоимость</span><strong>${money(item.lastPurchasePrice || 0)}</strong></div>
+      </section>
+      <div class="stock-detail-actions">
+        <button type="button" data-stock-detail-action="in"><span>+</span><b>Приход</b></button>
+        <button type="button" data-stock-detail-action="out"><span>−</span><b>Списать</b></button>
+        <button type="button" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть" : "В архив"}</b></button>
+      </div>
+      <section class="stock-detail-history">
+        <h3>Последние движения</h3>
+        ${movements.length ? movements.map((movement) => {
+          const incoming = ["initial","manual_in","order_return"].includes(movement.type);
+          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item.unit || "шт.")}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
+        }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
+      </section>
+    </main>
+  </section>`;
+  document.body.appendChild(modal);
+  const close = () => modal.remove();
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
+  modal.querySelectorAll("[data-stock-detail-action]").forEach((button) => button.addEventListener("click", async () => {
+    const action = button.dataset.stockDetailAction;
+    close();
+    if (action === "edit") return stockModal(item);
+    if (action === "in" || action === "out") return adjustStock(item.id, action);
+    if (action === "archive") {
+      item.archived = !item.archived;
+      await saveData();
+      await render();
+      return toast(item.archived ? "Позиция перемещена в архив" : "Позиция возвращена на склад");
+    }
+  }));
+}
+
 function stockModal(existing = null) {
   const item = existing || {};
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal" id="stock-form"><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div><div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div><div class="form-group"><label>${existing ? "Остаток (приход / списание)" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div><div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div><div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" value="${Number(item.price) || 0}" /></div><div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" value="${Number(item.lastPurchasePrice) || 0}" /></div><div class="form-group full"><label>Подходит для техники</label><input class="field" name="compatibility" value="${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : "")}" placeholder="Холодильники, стиральные машины…" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  modal.className = "modal-backdrop stock-editor-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form"><div class="stock-editor-head"><div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div><button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button></div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div><div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div><div class="form-group"><label>${existing ? "Остаток (приход / списание)" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div><div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div><div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" value="${Number(item.price) || 0}" /></div><div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" value="${Number(item.lastPurchasePrice) || 0}" /></div><div class="form-group full"><label>Подходит для техники</label><input class="field" name="compatibility" value="${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : "")}" placeholder="Холодильники, стиральные машины…" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
@@ -3033,6 +3078,11 @@ app.addEventListener("click", async (event) => {
   }
   const orderAction = event.target.closest("[data-order-action]");
   if (orderAction) return handleOrderAction(orderAction.dataset.orderAction, orderAction.dataset.id);
+  const stockDetail = event.target.closest("[data-stock-detail]");
+  if (stockDetail) {
+    const item = data.warehouse.find((entry) => String(entry.id) === String(stockDetail.dataset.stockDetail));
+    if (item) return stockDetailModal(item);
+  }
   const stock = event.target.closest("[data-stock]");
   if (stock) return adjustStock(stock.dataset.id, stock.dataset.stock);
   const financeDelete = event.target.closest("[data-delete-finance]");
