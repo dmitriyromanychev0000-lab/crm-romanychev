@@ -19,6 +19,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: mobile-ui-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   mobile-ui:
     runs-on: ubuntu-latest
