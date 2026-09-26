@@ -11065,3 +11065,252 @@ button.warehouse-shortcut {
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
+
+
+/* 0.74.0 · Прайс-лист по архивному мобильному каталогу. */
+@media screen and (max-width: 520px) {
+  .legacy-price-page {
+    padding: 12px 8px 24px;
+  }
+  .legacy-price-head {
+    grid-template-columns: 46px minmax(0,1fr) 42px;
+    gap: 11px;
+    margin-bottom: 15px;
+  }
+  .legacy-price-add {
+    display:grid;
+    place-items:center;
+    width:42px;
+    height:42px;
+    padding:0;
+    border:1px solid #ff7153;
+    border-radius:13px;
+    background:#ff7153;
+    color:#16110f;
+    font-size:29px;
+    font-weight:300;
+  }
+
+  .legacy-price-search {
+    margin: 0 0 10px;
+  }
+  .legacy-price-search .search {
+    min-height: 53px;
+    padding-left: 47px;
+    border: 1px solid #ff7153;
+    border-radius: 14px;
+    background: #181f26;
+    color: #eef0f2;
+    font-size: 12px;
+    box-shadow: 0 0 0 2px rgba(255,113,83,.08);
+  }
+  .legacy-price-search > .ui-icon {
+    left: 16px;
+    width: 22px;
+    height: 22px;
+    color: #9da5ac;
+  }
+  .legacy-price-search .search::placeholder { color:#656d74; }
+
+  .legacy-price-filters {
+    display:grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap:7px;
+    margin-bottom:14px;
+  }
+  .legacy-price-filters label > span {
+    display:block;
+    margin:0 0 5px 2px;
+    color:#8d949a;
+    font-size:7px;
+    font-weight:700;
+    letter-spacing:.08em;
+  }
+  .legacy-price-filters .field {
+    min-height:42px;
+    padding:0 9px;
+    border:1px solid #2e373f;
+    border-radius:10px;
+    background:#171e25;
+    color:#e8ebed;
+    font-size:9px;
+  }
+
+  .legacy-price-group {
+    margin:0 0 14px;
+  }
+  .legacy-price-group > h3,
+  .legacy-custom-price-head h3 {
+    margin:0 0 7px 7px;
+    color:#949ba1;
+    font-size:8px;
+    font-weight:760;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+  }
+  .legacy-price-list {
+    display:grid;
+    gap:6px;
+  }
+  .legacy-price-row {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+    align-items:center;
+    min-height:62px;
+    padding:10px 12px;
+    border:1px solid #2c353d;
+    border-radius:12px;
+    background:#171e25;
+    color:#edf0f2;
+    text-align:left;
+  }
+  .legacy-price-row strong,
+  .legacy-price-row small {
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .legacy-price-row strong {
+    font-size:12px;
+    font-weight:680;
+  }
+  .legacy-price-row small {
+    margin-top:4px;
+    color:#878f95;
+    font-size:8px;
+  }
+  .legacy-price-row b {
+    color:#ff7153;
+    font-size:12px;
+    font-weight:760;
+    white-space:nowrap;
+  }
+  .legacy-price-row.custom {
+    border-color:#373145;
+  }
+
+  .legacy-custom-price-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:7px;
+  }
+  .legacy-custom-price-head h3 { margin-bottom:0; }
+  .legacy-custom-price-head button {
+    min-height:30px;
+    padding:4px 9px;
+    border:1px solid rgba(255,113,83,.45);
+    border-radius:9px;
+    background:rgba(255,113,83,.07);
+    color:#ff8066;
+    font-size:8px;
+  }
+  .legacy-price-empty {
+    padding:13px 12px;
+    border:1px dashed #303840;
+    border-radius:11px;
+    color:#858c92;
+    font-size:9px;
+    text-align:center;
+  }
+  .legacy-price-empty.standalone { margin-top:14px; }
+
+  .legacy-price-editor-backdrop {
+    z-index:140;
+    top:0 !important;
+    bottom:0 !important;
+    padding:0;
+    overflow:auto;
+    background:#080d11;
+  }
+  .legacy-price-editor {
+    width:100%;
+    max-width:none;
+    min-height:100%;
+    margin:0;
+    padding:12px 8px calc(82px + env(safe-area-inset-bottom));
+    border:0;
+    border-radius:0;
+    background:#080d11;
+    box-shadow:none;
+  }
+  .legacy-editor-head {
+    margin-top:0;
+    margin-bottom:15px;
+  }
+  .legacy-price-editor-card {
+    padding:13px 12px;
+    border:1px solid #2a333b;
+    border-radius:15px;
+    background:linear-gradient(180deg,#11181e,#0f151a);
+  }
+  .legacy-price-editor-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin-top:13px;
+  }
+  .legacy-price-editor-grid label.full { grid-column:1 / -1; }
+  .legacy-price-editor-grid label > span {
+    display:block;
+    margin:0 0 5px;
+    color:#979da2;
+    font-size:7px;
+    font-weight:720;
+    letter-spacing:.07em;
+  }
+  .legacy-price-editor-grid .field {
+    width:100%;
+    min-height:47px;
+    padding:0 10px;
+    border:1px solid #303840;
+    border-radius:11px;
+    background:#181f26;
+    color:#eef0f2;
+    font-size:10px;
+  }
+  .legacy-price-editor-grid .textarea {
+    min-height:84px;
+    padding-top:10px;
+  }
+  .legacy-price-value {
+    color:#ff8066 !important;
+    font-size:15px !important;
+    font-weight:760 !important;
+  }
+  .legacy-price-editor-actions {
+    position:sticky;
+    bottom:0;
+    z-index:5;
+    display:grid;
+    grid-template-columns:auto auto minmax(0,1fr);
+    gap:7px;
+    margin:12px -8px calc(-82px - env(safe-area-inset-bottom));
+    padding:9px 8px calc(9px + env(safe-area-inset-bottom));
+    border-top:1px solid #222a31;
+    background:rgba(8,13,17,.97);
+  }
+  .legacy-price-editor-actions > button {
+    min-height:45px;
+    padding:6px 11px;
+    border-radius:11px;
+    font-size:9px;
+    font-weight:700;
+  }
+  .legacy-editor-save {
+    border:1px solid #ff7153;
+    background:#ff7153;
+    color:#17110f;
+  }
+  .legacy-editor-delete {
+    border:1px solid rgba(255,91,101,.32);
+    background:rgba(255,91,101,.08);
+    color:#ff6670;
+  }
+  .legacy-price-editor-actions:not(:has(.legacy-editor-delete)) {
+    grid-template-columns:auto minmax(0,1fr);
+  }
+}
