@@ -2,9 +2,10 @@
 
 Before changing the CRM UI, read these in order:
 
-1. **`Visual_koncept/README.md`**
-2. **all 10 PNG sheets in `Visual_koncept/`**
-3. **`design/mobile-crm-redesign/README.md`**
+1. **`AGENTS.md`** — mandatory engineering/work rules for every task
+2. **`Visual_koncept/README.md`**
+3. **all 10 PNG sheets in `Visual_koncept/`**
+4. **`design/mobile-crm-redesign/README.md`**
 
 The folder **`Visual_koncept/` is the approved visual source of truth** for the redesign.
 The current `main` branch is the functional/data-compatibility source of truth.
