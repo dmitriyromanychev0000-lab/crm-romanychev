@@ -2047,8 +2047,8 @@ const orderMaterialRow = (item = {}) => `<div class="line-item material-line leg
     <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
   </div>
   <div class="material-card-controls">
-    <label><span>Количество</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
-    <label><span>Единица</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
+    <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
+    <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
     <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
   </div>
 </div>`;
@@ -2343,12 +2343,12 @@ function openMaterialCatalog(orderModal) {
   modal.innerHTML = `<section class="material-catalog-modal" aria-label="Каталог материалов">
     <header class="material-catalog-head">
       <span class="material-catalog-icon">${icon("price")}</span>
-      <div><strong>Каталог · ${escapeHtml(tech)}</strong></div>
+      <div class="material-catalog-title-copy"><strong>Каталог · ${escapeHtml(tech)}</strong><small id="material-catalog-selected-count">Ничего не выбрано</small></div>
       <button type="button" class="material-catalog-head-close" aria-label="Закрыть">${icon("close")}</button>
     </header>
     <div class="material-catalog-search search-row search-with-icon">${icon("search")}<input class="search" id="material-catalog-search" placeholder="Название товара" /></div>
     <div class="material-catalog-list" id="material-catalog-list"></div>
-    <button type="button" class="material-catalog-close">Закрыть</button>
+    <button type="button" class="material-catalog-close">Готово</button>
   </section>`;
   document.body.appendChild(modal);
 
@@ -2357,6 +2357,12 @@ function openMaterialCatalog(orderModal) {
 
   const render = () => {
     const query = String(search.value || "").trim().toLowerCase();
+    const selectedCount = source.reduce((count, item) => {
+      const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
+      return count + (existing ? 1 : 0);
+    }, 0);
+    const selectedCountElement = modal.querySelector("#material-catalog-selected-count");
+    if (selectedCountElement) selectedCountElement.textContent = selectedCount ? `${selectedCount} выбрано` : "Ничего не выбрано";
     const filtered = source.filter((item) => [item.name,item.category,item.unit].join(" ").toLowerCase().includes(query));
     const groups = [...filtered.reduce((map,item) => {
       const key = String(item.category || "Прочее").trim() || "Прочее";
@@ -2371,7 +2377,7 @@ function openMaterialCatalog(orderModal) {
         const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
         return `<button type="button" class="material-catalog-row ${existing ? "selected" : ""}" data-material-id="${escapeHtml(item.id)}">
           <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.unit || "шт.")} · ${escapeHtml(tech)}</small></span>
-          <b>${money(item.price || item.lastPurchasePrice || 0)}</b>
+          <span class="material-catalog-side"><b>${money(item.price || item.lastPurchasePrice || 0)}</b>${existing ? `<span class="material-catalog-selected" aria-label="Уже в заявке">${icon("check")}</span>` : ""}</span>
         </button>`;
       }).join("")}</div>
     </section>`).join("") : `<div class="material-catalog-empty">Ничего не найдено.</div>`;
@@ -3597,7 +3603,7 @@ function closeTopModalFromKeyboard() {
   const backdrops = [...document.querySelectorAll(".modal-backdrop")];
   const top = backdrops.at(-1);
   if (!top) return false;
-  const closeButton = top.querySelector(".catalog-close, .order-actions-close, [data-close-modal], [data-confirm-cancel]");
+  const closeButton = top.querySelector(".catalog-close, .material-catalog-head-close, .material-catalog-close, .order-actions-close, [data-close-modal], [data-confirm-cancel]");
   if (closeButton) closeButton.click();
   else top.remove();
   return true;
@@ -3613,7 +3619,7 @@ const syncModalScrollLock = () => {
     backdrop.inert = underlay;
     if (underlay) backdrop.setAttribute("aria-hidden", "true");
     else backdrop.removeAttribute("aria-hidden");
-    const dialog = backdrop.querySelector('[role="dialog"], .modal, .order-actions-sheet, .catalog-modal, .crm-confirm-modal');
+    const dialog = backdrop.querySelector('[role="dialog"], .modal, .order-actions-sheet, .catalog-modal, .material-catalog-modal, .crm-confirm-modal');
     if (dialog) {
       if (!dialog.hasAttribute("role")) dialog.setAttribute("role", "dialog");
       dialog.setAttribute("aria-modal", underlay ? "false" : "true");
