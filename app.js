@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.95.1";
-const APP_BUILD = "2026.09.26.76";
+const APP_VERSION = "0.96.0";
+const APP_BUILD = "2026.09.26.77";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Завершён мобильный проход заявок: просмотр получил четыре основные кнопки, редактор удобнее на 320 px, шапка и нижние действия не ломают ширину";
+const APP_RELEASE = "Закрыт мобильный проход склада: компактнее карточки, корректные архивные действия, удобные KPI, движения, покупки и редактор на 320 px";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -949,7 +949,7 @@ function warehousePage() {
     </div>
 
     <div class="legacy-warehouse-shortcuts">
-      <button type="button" data-action="open-warehouse-movements">${icon("calendar")}<span>История движения</span></button>
+      <button type="button" data-action="open-warehouse-movements">${icon("history")}<span>История движения</span></button>
       <button type="button" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
@@ -973,14 +973,13 @@ function warehousePage() {
                     <strong>${escapeHtml(item.name || "Без названия")}</strong>
                     <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(item.unit || "шт.")}` : "себестоимость не задана"}</small>
                     <em>${item.archived ? "в архиве" : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}` : `доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}`}</em>
-                    <small>последняя закупка ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)}/${escapeHtml(item.unit || "шт.")}` : "—"}</small>
                   </span>
                   <span class="legacy-stock-qty"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small></span>
                 </button>
                 <div class="legacy-stock-actions-v2">
                   <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
                   <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("minus")}</span>Списать</button>
-                  <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon("archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
+                  <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
                   <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
                 </div>
               </article>`;
