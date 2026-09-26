@@ -366,6 +366,37 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           report.results.push(emptyResult);
           if (emptyResult.overflow > 2) report.failures.push({ width, type: "empty-horizontal-overflow", label: emptyLabel, overflow: emptyResult.overflow });
         }
+
+        const archiveSeed = structuredClone(seed);
+        archiveSeed.orders[0].archived = true;
+        archiveSeed.orders[0].archivedAt = "2026-09-26T15:00:00+03:00";
+        archiveSeed.warehouse[0].archived = true;
+        await writeSeed(page, archiveSeed);
+        await setState(page, uiState({ activePage: "orders", orderFilter: "archived" }));
+        const archivedOrders = await shot(page, width, "archived-orders", true);
+        report.results.push(archivedOrders);
+        if (archivedOrders.overflow > 2) report.failures.push({ width, type: "archive-horizontal-overflow", label: "archived-orders", overflow: archivedOrders.overflow });
+
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list", warehouseFilter: "all" }));
+        const archivedWarehouse = await shot(page, width, "archived-warehouse", true);
+        report.results.push(archivedWarehouse);
+        if (archivedWarehouse.overflow > 2) report.failures.push({ width, type: "archive-horizontal-overflow", label: "archived-warehouse", overflow: archivedWarehouse.overflow });
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "orders" }));
+        await page.locator('[data-nav="warehouse"]').click();
+        await page.waitForTimeout(60);
+        if (await page.locator(".legacy-warehouse-page").count() !== 1) report.failures.push({ width, type: "nav-click", target: "warehouse" });
+        await page.locator('[data-nav="orders"]').click();
+        await page.waitForTimeout(60);
+        await page.locator("#order-search").fill("Анна");
+        await page.waitForTimeout(80);
+        const visibleOrdersAfterSearch = await page.locator(".legacy-order-card").count();
+        if (visibleOrdersAfterSearch !== 1) report.failures.push({ width, type: "order-search", count: visibleOrdersAfterSearch });
+        await page.locator('[data-filter="closed"]').click();
+        await page.waitForTimeout(60);
+        const visibleClosedAfterSearch = await page.locator(".legacy-order-card").count();
+        if (visibleClosedAfterSearch !== 0) report.failures.push({ width, type: "order-filter-combination", count: visibleClosedAfterSearch });
       }
 
       if (width === 390) {
