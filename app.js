@@ -758,7 +758,7 @@ function orderCard(order) {
   const statusText = isArchived ? "Архив" : escapeHtml(order.status || "В работе");
   const issue = String(order.issue || order.diagnosis || "").trim();
 
-  return `<article class="panel order-card ${cardClass}" data-order-action="edit" data-id="${escapeHtml(order.id)}" tabindex="0" role="button" aria-label="Открыть заявку №${escapeHtml(order.id)}">
+  return `<article class="panel order-card ${cardClass}" data-order-action="view" data-id="${escapeHtml(order.id)}" tabindex="0" role="button" aria-label="Открыть заявку №${escapeHtml(order.id)}">
     <div class="order-top">
       <span class="order-number">№${escapeHtml(order.id || "—")}</span>
       <span class="order-date">${shortDate(orderDateValue(order))}</span>
@@ -809,7 +809,7 @@ function ordersPage() {
       <div class="next-visit-title"><strong>Ближайшие выезды</strong><span>Все ${icon("chevron")}</span></div>
       <div class="next-visit-list">${nearestVisits.map((order, index) => {
         const visit = visitTimeParts(order.nextVisit);
-        return `<button class="next-visit-item visit-${index}" data-order-action="edit" data-id="${escapeHtml(order.id)}">
+        return `<button class="next-visit-item visit-${index}" data-order-action="view" data-id="${escapeHtml(order.id)}">
           <span class="next-visit-time"><strong>${escapeHtml(visit.time)}</strong><small>${escapeHtml(visit.day)}</small></span>
           <span class="next-visit-icon">${icon(applianceIconName(order.tech))}</span>
           <span class="next-visit-copy"><strong>${escapeHtml(order.name || "Клиент")}</strong><small>${escapeHtml(order.tech || "Техника")}</small>${order.address ? `<em>${escapeHtml(order.address)}</em>` : ""}</span>
@@ -2679,6 +2679,46 @@ function goodsModal(existing = null) {
   calculate();
 }
 
+function orderDetailModal(order) {
+  const statusType = normalizeStatus(order.status);
+  const isClosed = statusType === "closed";
+  const isDeclined = statusType === "declined";
+  const statusClass = isClosed ? "closed" : isDeclined ? "declined" : "";
+  const visit = visitTimeParts(order.nextVisit);
+  const services = Array.isArray(order.services) ? order.services : [];
+  const materials = Array.isArray(order.materials) ? order.materials : [];
+  const photos = Array.isArray(order.photos) ? order.photos : [];
+  const firstPhoto = photos.map(photoSource).find(Boolean);
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop order-detail-backdrop";
+  modal.innerHTML = `<section class="modal order-detail-modal" aria-label="Заявка №${escapeHtml(order.id)}">
+    <header class="order-detail-head"><button type="button" class="order-detail-back" data-close-modal aria-label="Назад">‹</button><div><strong>CRM <span>by</span> Romanychev😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></div><button type="button" class="order-detail-more" data-detail-action="more" aria-label="Действия">${icon("more")}</button></header>
+    <main class="order-detail-content">
+      <div class="order-detail-title"><div><h2>Заявка №${escapeHtml(order.id || "—")}</h2><small>Создана ${escapeHtml(shortDate(orderDateValue(order)) || "—")}</small></div><span class="status ${statusClass}">${escapeHtml(order.status || "В работе")}</span></div>
+      <button type="button" class="order-detail-appliance" data-detail-action="edit"><span class="detail-appliance-icon">${firstPhoto ? `<img src="${escapeHtml(firstPhoto)}" alt="Техника" />` : icon(applianceIconName(order.tech))}</span><span><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || "Модель не указана")}</small></span><i>${icon("chevron")}</i></button>
+      <section class="order-detail-info">
+        <div class="detail-row"><span>${icon("clients")}</span><div><strong>${escapeHtml(order.name || "Клиент")}</strong>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${escapeHtml(order.phone)}</a>` : ""}</div>${order.phone ? `<a class="detail-round-action" href="tel:${escapeHtml(order.phone)}" aria-label="Позвонить">${icon("phone")}</a>` : ""}</div>
+        ${order.address ? `<div class="detail-row"><span>${icon("location")}</span><div><strong>${escapeHtml(order.address)}</strong><small>Адрес выезда</small></div></div>` : ""}
+        ${order.nextVisit ? `<div class="detail-row"><span>${icon("calendar")}</span><div><strong>${escapeHtml(visit.day)}</strong><small>${escapeHtml(visit.time)}</small></div></div>` : ""}
+        ${order.issue ? `<div class="detail-row"><span>${icon("document")}</span><div><strong>${escapeHtml(order.issue)}</strong><small>${escapeHtml(order.diagnosis || "Неисправность со слов клиента")}</small></div></div>` : ""}
+      </section>
+      <div class="detail-actions"><button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button><button type="button" data-detail-action="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button><button type="button" data-detail-action="copy">${icon("copy")}<span>Копия</span></button>${order.phone ? `<a href="tel:${escapeHtml(order.phone)}">${icon("phone")}<span>Позвонить</span></a>` : ""}</div>
+      <section class="detail-total"><div><span>Стоимость работ</span><strong>${money(services.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.price) || 0), 0))}</strong></div><div><span>Стоимость запчастей</span><strong>${money(materials.reduce((sum, item) => sum + (Number(item.qty) || 1) * (Number(item.unitCost) || 0), 0))}</strong></div><div><span>Итого</span><strong>${money(order.sum)}</strong></div></section>
+      <section class="detail-lines"><h3>Работы и услуги</h3>${services.length ? services.map(item => `<div><span>${icon("tools")}</span><p><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт.</small></p><b>${money((Number(item.qty) || 1) * (Number(item.price) || 0))}</b></div>`).join("") : `<p class="detail-empty">Работы пока не добавлены</p>`}</section>
+    </main>
+  </section>`;
+  document.body.appendChild(modal);
+  const run = (action) => {
+    modal.remove();
+    if (action === "edit") return newOrderModal(order);
+    if (action === "more") return toast("Дополнительные действия появятся здесь");
+    return handleOrderAction(action, order.id);
+  };
+  modal.querySelectorAll("[data-detail-action]").forEach((button) => button.addEventListener("click", () => run(button.dataset.detailAction)));
+  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+}
+
 function printActOnePage() {
   const sheet = document.querySelector(".act-sheet");
   if (!sheet) return;
@@ -2695,6 +2735,7 @@ async function handleOrderAction(action, id) {
   const index = data.orders.findIndex((item) => String(item.id) === String(id));
   if (index < 0) return;
   const order = data.orders[index];
+  if (action === "view") return orderDetailModal(order);
   if (action === "edit") return newOrderModal(order);
   if (action === "more") return orderActionsSheet(order);
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
