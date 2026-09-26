@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.71.0";
-const APP_BUILD = "2026.09.26.40";
+const APP_VERSION = "0.72.0";
+const APP_BUILD = "2026.09.26.41";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новая мобильная сборка по архивным скриншотам: четыре основные вкладки";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: восстановлен рабочий Товарник";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1460,67 +1460,61 @@ function goodsPage() {
     : [];
   const latest = sheets[0] || null;
   const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
+  const closedOrders = ordersNewestFirst().filter((order) => !order.archived && normalizeStatus(order.status) === "closed");
   const productPrice = data.receipt_prices
     .filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
-    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))
-    .slice(0, 30);
-  const totalItems = sheets.reduce((sum, sheet) => sum + (Array.isArray(sheet.items) ? sheet.items.length : 0), 0);
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
 
-  return `<main class="content goods-content">
-    <div class="page-head"><div><h1>Товарник</h1><p class="lead">Товары и материалы · отдельный расчёт</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
-
-    <section class="panel goods-stats-panel">
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Расчётов</div><div class="metric-value">${sheets.length}</div></div>
-        <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value blue">${totalItems}</div></div>
-        <div class="metric"><div class="metric-label">Последняя сумма</div><div class="metric-value green">${latest ? money(latest.total || 0) : money(0)}</div></div>
-        <div class="metric"><div class="metric-label">Цель</div><div class="metric-value yellow">${latest ? money(latest.target || 0) : money(0)}</div></div>
-      </div>
-    </section>
-
-    <div class="goods-create-actions legacy-goods-actions">
-      <button class="primary-button" data-action="new-goods-sheet">+ Создать товарник</button>
-      <button class="secondary-button" data-action="open-product-price">${icon("price")}<span>Из прайса товаров</span></button>
+  return `<main class="content goods-content legacy-goods-page">
+    <div class="legacy-subpage-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
     </div>
 
-    ${latest ? `<article class="panel legacy-goods-card">
-      <div class="goods-card-main">
-        <span class="goods-card-icon">${icon("goods")}</span>
-        <div class="goods-card-copy">
-          <div class="goods-card-title">${escapeHtml(latest.title || "Товарник")}</div>
-          <div class="small">${latestItems.length} позиций · ${shortDate(latest.updatedAt || latest.createdAt)}</div>
-        </div>
-        <strong class="goods-card-total">${money(latest.total || 0)}</strong>
+    <section class="legacy-goods-panel legacy-goods-new">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Новый товарник</h2></div>
+      <div class="legacy-goods-create-grid">
+        <button type="button" class="legacy-purple-button" data-action="new-goods-sheet"><span>＋</span>Создать вручную</button>
+        <button type="button" class="legacy-dark-button" data-action="new-goods-from-order">${icon("document")}<span>Из закрытой<br>заявки</span></button>
       </div>
-      <div class="goods-card-meta">
-        <span>Текущая сумма: <strong>${money(latest.total || 0)}</strong></span>
-        <span>Цель: <strong class="yellow">${money(latest.target || 0)}</strong></span>
-      </div>
-      <button class="primary-button wide" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть товарник</button>
-    </article>
+      <label class="legacy-goods-order-source">
+        <span>ЗАЯВКА ДЛЯ АВТОЗАПОЛНЕНИЯ</span>
+        <select class="field" id="goods-source-order">
+          <option value="">— Выберите заявку —</option>
+          ${closedOrders.map((order) => `<option value="${escapeHtml(order.id)}">№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</option>`).join("")}
+        </select>
+      </label>
+      <p class="legacy-goods-help">Из заявки переносятся только использованные товары и материалы. Услуги, сумма заявки, складская себестоимость, клиент и реквизиты сюда не попадают. Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
+    </section>
 
-    <section class="panel goods-preview-panel" id="goods-inline-preview">
-      <div class="panel-title"><span class="badge-icon">${icon("document")}</span> Предпросмотр</div>
-      <div class="goods-preview-table-wrap">
-        <table class="goods-preview-table">
-          <thead><tr><th>Товар</th><th>Количество</th><th>Цена</th></tr></thead>
-          <tbody>${latestItems.map((item) => `<tr><td>${escapeHtml(item.name || "")}</td><td>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(Number(item.qty) || 0)} ${escapeHtml(item.unit || "шт.")}</td><td>${money(item.price || 0)}</td></tr>`).join("")}</tbody>
+    <section class="legacy-goods-panel legacy-goods-current">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>Редактирование товарника</h2></div>
+      <p class="legacy-goods-intro">Это рабочий расчёт товаров: название, количество, цена за единицу и сумма строки. Он полностью отдельный от склада, расходов и заявок.</p>
+      ${latest ? `
+        <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
+        <div class="legacy-goods-position-list">
+          ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(item.unit || "шт.")} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
+          ${latestItems.length > 6 ? `<div class="legacy-goods-more">Ещё ${latestItems.length - 6} поз.</div>` : ""}
+        </div>
+        <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
+      ` : `<div class="legacy-goods-empty">Создай товарник вручную или выбери закрытую заявку для автозаполнения.</div>`}
+    </section>
+
+    ${latest ? `<section class="legacy-goods-panel legacy-inline-preview">
+      <div class="legacy-section-title"><span class="legacy-section-icon">◉</span><h2>Предпросмотр</h2></div>
+      <div class="legacy-preview-table-wrap">
+        <table class="legacy-preview-table">
+          <thead><tr><th>ТОВАР</th><th>КОЛИЧЕСТВО</th><th>ЦЕНА</th></tr></thead>
+          <tbody>${latestItems.map((item) => `<tr><td>${escapeHtml(item.name || "")}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(item.unit || "шт.")}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Number(item.price)||0)}</td></tr>`).join("")}</tbody>
         </table>
       </div>
-      <div class="goods-preview-total"><strong>Итого</strong><strong>${money(latest.total || 0)}</strong></div>
-    </section>` : emptyState("goods", "Товарников пока нет", "Создай первый расчёт товаров или материалов.")}
-
-    ${sheets.length > 1 ? `<section class="panel goods-history-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("history")}</span> История расчётов</div>
-      <div class="goods-list legacy-goods-list">${sheets.slice(1).map((sheet) => `<button class="goods-sheet legacy-goods-sheet" data-action="edit-goods-sheet" data-id="${escapeHtml(sheet.id)}"><span class="goods-sheet-icon">${icon("document")}</span><span><strong>${escapeHtml(sheet.title || "Товарник")}</strong><small>${Array.isArray(sheet.items) ? sheet.items.length : 0} позиций · ${shortDate(sheet.updatedAt || sheet.createdAt)}</small></span><b>${money(sheet.total)}</b><span class="chevron">${icon("chevron")}</span></button>`).join("")}</div>
+      <div class="legacy-preview-total"><strong>Итого</strong><strong>${money(latest.total || 0)}</strong></div>
     </section>` : ""}
 
-    <details class="panel goods-price-panel" id="product-price-panel">
-      <summary><span class="panel-title"><span class="badge-icon">${icon("price")}</span> Прайс товаров</span><span class="chevron">${icon("chevron")}</span></summary>
-      ${productPrice.length ? `<div class="goods-price-list">${productPrice.map((item) => `<div class="goods-price-row"><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<div class="small">В прайс-листе пока нет товарных позиций.</div>`}
+    <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">
+      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">›</span></summary>
+      ${productPrice.length ? `<div class="legacy-product-price-list">${productPrice.map((item) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
     </details>
-
-    <p class="small goods-note">Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
   </main>`;
 }
 function settingsPage() {
@@ -2862,46 +2856,83 @@ function stockModal(existing = null) {
   });
 }
 
-const goodsLine = (item = {}) => `<div class="goods-editor-row" data-goods-row>
-  <div class="goods-editor-row-main">
-    <input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Товар или материал" />
-    <button type="button" class="remove-line" data-remove-line aria-label="Удалить">${icon("trash")}</button>
+const goodsLine = (item = {}) => `<div class="legacy-goods-edit-row" data-goods-row data-original-price="${Number(item.originalPrice ?? item.price) || 0}">
+  <div class="legacy-goods-row-label"><span>ТОВАР</span><button type="button" data-remove-line aria-label="Удалить">${icon("trash")}</button></div>
+  <label><span>НАИМЕНОВАНИЕ</span><input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название товара" /></label>
+  <div class="legacy-goods-row-grid">
+    <label><span>КОЛ-ВО</span><input class="field" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
+    <label><span>ЕД.</span><input class="field" data-line="unit" value="${escapeHtml(item.unit || "шт.")}" /></label>
   </div>
-  <div class="goods-editor-row-controls">
-    <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
-    <label><span>Единица</span><input class="field compact" data-line="unit" value="${escapeHtml(item.unit || "шт.")}" /></label>
-    <label><span>Цена</span><input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></label>
-    <div class="goods-row-total"><span>Сумма</span><strong data-line-total>0 ₽</strong></div>
+  <div class="legacy-goods-row-grid">
+    <label><span>ЦЕНА ЗА ЕД.</span><input class="field" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></label>
+    <div class="legacy-goods-row-sum"><span>СУММА</span><strong data-line-total>0 ₽</strong></div>
   </div>
 </div>`;
 
-function goodsModal(existing = null) {
-  const sheet = existing || { id: crypto.randomUUID(), title: "Новый товарник", items: [], target: 0, createdAt: new Date().toISOString() };
+function goodsModal(existing = null, seed = null) {
+  const isStored = Boolean(existing && (data.goods_sheets || []).some((item) => String(item.id) === String(existing.id)));
+  const sheet = existing || seed || { id: crypto.randomUUID(), title: "Новый товарник", items: [], target: 0, createdAt: new Date().toISOString() };
   const goodsPriceEntries = data.receipt_prices
     .map((item, index) => ({ item, index }))
     .filter(({ item }) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
     .sort((a, b) => String(a.item.name || "").localeCompare(String(b.item.name || ""), "ru"));
   const options = goodsPriceEntries.map(({ item, index }) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop goods-editor-backdrop";
-  modal.innerHTML = `<form class="modal goods-editor-modal" id="goods-form">
-    <div class="goods-editor-head"><div><small>Товарник</small><h2>${existing ? "Редактировать расчёт" : "Новый расчёт"}</h2></div><button type="button" class="goods-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="form-group"><label>Название расчёта</label><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></div>
+  modal.className = "modal-backdrop goods-editor-backdrop legacy-goods-editor-backdrop";
+  modal.innerHTML = `<form class="modal goods-editor-modal legacy-goods-editor" id="goods-form">
+    <div class="legacy-subpage-head goods-modal-head">
+      <button type="button" class="legacy-back-button" data-close-modal aria-label="Назад">‹</button>
+      <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
+    </div>
 
-    <div class="goods-editor-section-head"><strong>Позиции</strong><span id="goods-editor-count">0 поз.</span></div>
-    <div class="goods-editor-add"><select class="field" id="goods-picker"><option value="">— Из прайс-листа —</option>${options}</select><button type="button" class="secondary-button" id="add-goods-line">+ Добавить</button></div>
-    <div class="goods-editor-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
-    <button type="button" class="goods-editor-manual" id="add-manual-goods">+ Добавить вручную</button>
+    <section class="legacy-goods-panel legacy-editor-panel">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>Редактирование товарника</h2></div>
+      <p class="legacy-goods-intro">Это рабочий расчёт товаров: название, количество, цена за единицу и сумма строки. Он полностью отдельный от склада, расходов и заявок.</p>
 
-    <section class="goods-editor-summary">
-      <label><span>Целевая сумма</span><input class="field" id="goods-target" name="target" type="number" min="0" step="1" value="${Number(sheet.target) || 0}" /></label>
-      <div><span>Текущая сумма</span><strong id="goods-total">0 ₽</strong></div>
-      <button type="button" class="secondary-button" id="adjust-goods-prices">Подогнать цены под цель</button>
+      <label class="legacy-editor-title"><span>НАЗВАНИЕ РАСЧЁТА</span><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></label>
+
+      <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
+      <div class="legacy-goods-add-line"><select class="field" id="goods-picker"><option value="">— Выберите товар из прайса —</option>${options}</select><button type="button" id="add-goods-line">+ Добавить</button></div>
+      <div class="legacy-goods-editor-list" id="goods-lines">${(sheet.items || []).map(goodsLine).join("")}</div>
+      <button type="button" class="legacy-manual-add" id="add-manual-goods">+ Добавить позицию вручную</button>
+
+      <div class="legacy-goods-target">
+        <label><span>ЦЕЛЕВАЯ СУММА</span><input class="field" id="goods-target" name="target" type="number" min="0" step="1" value="${Number(sheet.target) || 0}" placeholder="—" /></label>
+        <p>Укажи целевую сумму и нажми «Подогнать цены», если нужно.</p>
+      </div>
+
+      <div class="legacy-goods-editor-actions">
+        <button type="button" class="legacy-purple-button" id="adjust-goods-prices">${icon("price")}<span>Подогнать цены</span></button>
+        <button type="button" class="legacy-dark-button" id="restore-goods-prices">↻<span>Вернуть исходные<br>цены</span></button>
+        <button type="button" class="legacy-orange-button" id="preview-goods">◉<span>Предпросмотр</span></button>
+        <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
+      </div>
     </section>
 
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-goods-sheet">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <section class="legacy-goods-panel legacy-editor-preview" id="goods-editor-preview">
+      <div class="legacy-section-title"><span class="legacy-section-icon">◉</span><h2>Предпросмотр</h2></div>
+      <div class="legacy-preview-table-wrap"><table class="legacy-preview-table"><thead><tr><th>ТОВАР</th><th>КОЛИЧЕСТВО</th><th>ЦЕНА</th></tr></thead><tbody id="goods-preview-body"></tbody></table></div>
+      <div class="legacy-preview-total"><strong>Итого</strong><strong id="goods-preview-total">0 ₽</strong></div>
+    </section>
+
+    <details class="legacy-goods-panel legacy-product-price">
+      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">›</span></summary>
+      ${goodsPriceEntries.length ? `<div class="legacy-product-price-list">${goodsPriceEntries.map(({item}) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
+    </details>
+
+    <div class="legacy-goods-savebar">
+      ${isStored ? '<button type="button" class="legacy-delete-goods" id="delete-goods-sheet">Удалить</button>' : ""}
+      <button type="submit" class="legacy-save-goods">Сохранить товарник</button>
+    </div>
   </form>`;
   document.body.appendChild(modal);
+
+  const readRows = () => [...modal.querySelectorAll("[data-goods-row]")].map((row) => ({
+    name: row.querySelector('[data-line="name"]').value.trim(),
+    qty: Number(row.querySelector('[data-line="qty"]').value) || 0,
+    unit: row.querySelector('[data-line="unit"]').value.trim() || "шт.",
+    price: Number(row.querySelector('[data-line="price"]').value) || 0
+  }));
 
   const calculate = () => {
     const rows = [...modal.querySelectorAll("[data-goods-row]")];
@@ -2914,69 +2945,85 @@ function goodsModal(existing = null) {
       const output = row.querySelector("[data-line-total]");
       if (output) output.textContent = money(rowTotal);
     });
-    modal.querySelector("#goods-total").textContent = money(total);
-    modal.querySelector("#goods-editor-count").textContent = `${rows.length} поз.`;
+    const previewRows = readRows().filter((item) => item.name);
+    const previewBody = modal.querySelector("#goods-preview-body");
+    if (previewBody) previewBody.innerHTML = previewRows.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(item.qty)} ${escapeHtml(item.unit)}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(item.price)}</td></tr>`).join("");
+    modal.querySelector("#goods-preview-total").textContent = money(total);
     return total;
   };
 
   const addRow = (item = {}) => {
-    modal.querySelector("#goods-lines").insertAdjacentHTML("beforeend", goodsLine(item));
+    modal.querySelector("#goods-lines").insertAdjacentHTML("beforeend", goodsLine({ ...item, originalPrice: Number(item.originalPrice ?? item.price) || 0 }));
     calculate();
   };
 
   modal.querySelector("#add-goods-line").addEventListener("click", () => {
     const picker = modal.querySelector("#goods-picker");
     const item = picker.value === "" ? null : data.receipt_prices[Number(picker.value)];
-    if (!item) return toast("Выбери позицию из прайса");
-    addRow({ name: item.name, qty: 1, price: item.price, unit: item.unit || "шт." });
+    if (!item) return toast("Выбери товар из прайса");
+    addRow({ name: item.name, qty: 1, price: Number(item.price) || 0, originalPrice: Number(item.price) || 0, unit: item.unit || "шт." });
   });
-  modal.querySelector("#add-manual-goods").addEventListener("click", () => addRow({ unit: "шт." }));
+  modal.querySelector("#add-manual-goods").addEventListener("click", () => addRow({ unit: "шт.", price: 0, originalPrice: 0 }));
   modal.addEventListener("click", (event) => {
     if (event.target.closest("[data-remove-line]")) {
       event.target.closest("[data-goods-row]")?.remove();
       calculate();
     }
   });
-  modal.addEventListener("input", (event) => { if (event.target.closest("[data-goods-row]")) calculate(); });
+  modal.addEventListener("input", (event) => { if (event.target.closest("[data-goods-row]") || event.target.id === "goods-target") calculate(); });
+
   modal.querySelector("#adjust-goods-prices").addEventListener("click", () => {
     const rows = [...modal.querySelectorAll("[data-goods-row]")];
     const target = Number(modal.querySelector("#goods-target").value);
     const current = calculate();
-    if (!rows.length || !Number.isFinite(target) || target < 0) return toast("Добавь позиции и укажи целевую сумму");
+    if (!rows.length || !Number.isFinite(target) || target <= 0) return toast("Добавь позиции и укажи целевую сумму");
     rows.forEach((row) => {
       const qty = Number(row.querySelector('[data-line="qty"]').value) || 1;
       const price = Number(row.querySelector('[data-line="price"]').value) || 0;
-      row.querySelector('[data-line="price"]').value = Math.round(current ? price * target / current : target / rows.length / qty);
+      row.querySelector('[data-line="price"]').value = Math.max(0, Math.round(current ? price * target / current : target / rows.length / qty));
     });
     calculate();
+    toast("Цены подогнаны под целевую сумму");
   });
+
+  modal.querySelector("#restore-goods-prices").addEventListener("click", () => {
+    [...modal.querySelectorAll("[data-goods-row]")].forEach((row) => {
+      row.querySelector('[data-line="price"]').value = Number(row.dataset.originalPrice) || 0;
+    });
+    calculate();
+    toast("Исходные цены восстановлены");
+  });
+
+  modal.querySelector("#preview-goods").addEventListener("click", () => {
+    calculate();
+    modal.querySelector("#goods-editor-preview")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
   modal.querySelector("#delete-goods-sheet")?.addEventListener("click", async () => {
-    if (!existing || !confirm("Удалить этот товарник?")) return;
+    if (!isStored || !confirm("Удалить этот товарник?")) return;
     data.goods_sheets = (data.goods_sheets || []).filter((item) => String(item.id) !== String(sheet.id));
     await saveData(); modal.remove(); await render(); toast("Товарник удалён");
   });
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const next = {
       ...sheet,
+      id: sheet.id || crypto.randomUUID(),
       title: String(form.get("title") || "").trim(),
       target: Number(form.get("target")) || 0,
-      items: [...modal.querySelectorAll("[data-goods-row]")].map((row) => ({
-        name: row.querySelector('[data-line="name"]').value.trim(),
-        qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
-        unit: row.querySelector('[data-line="unit"]').value.trim() || "шт.",
-        price: Number(row.querySelector('[data-line="price"]').value) || 0
-      })).filter((item) => item.name),
+      items: readRows().filter((item) => item.name).map((item) => ({ ...item })),
       total: calculate(),
       updatedAt: new Date().toISOString()
     };
     if (!next.title) return toast("Укажи название расчёта");
-    const index = (data.goods_sheets || []).findIndex((item) => String(item.id) === String(next.id));
+    if (!next.items.length) return toast("Добавь хотя бы одну позицию");
     if (!Array.isArray(data.goods_sheets)) data.goods_sheets = [];
-    if (index >= 0) data.goods_sheets[index] = next; else data.goods_sheets.push(next);
+    const index = data.goods_sheets.findIndex((item) => String(item.id) === String(next.id));
+    if (index >= 0) data.goods_sheets[index] = next; else data.goods_sheets.push({ ...next, createdAt: next.createdAt || new Date().toISOString() });
     await saveData(); modal.remove(); await render(); toast("Товарник сохранён");
   });
   calculate();
@@ -3387,6 +3434,31 @@ app.addEventListener("click", async (event) => {
     return;
   }
   if (action === "new-goods-sheet") return goodsModal();
+  if (action === "new-goods-from-order") {
+    const select = document.querySelector("#goods-source-order");
+    const orderId = select?.value || "";
+    if (!orderId) return toast("Выбери закрытую заявку");
+    const order = data.orders.find((item) => String(item.id) === String(orderId));
+    if (!order) return toast("Заявка не найдена");
+    const items = (Array.isArray(order.materials) ? order.materials : []).map((item) => ({
+      name: item.name || "Материал",
+      qty: Number(item.qty) || 1,
+      unit: item.unit || "шт.",
+      price: Number(item.price) || 0,
+      originalPrice: Number(item.price) || 0
+    })).filter((item) => item.name);
+    if (!items.length) return toast("В заявке нет использованных товаров или материалов");
+    const total = items.reduce((sum,item) => sum + item.qty * item.price, 0);
+    return goodsModal(null, {
+      id: crypto.randomUUID(),
+      title: `Товарник по заявке №${order.id}`,
+      items,
+      target: total,
+      total,
+      createdAt: new Date().toISOString(),
+      sourceOrderId: order.id
+    });
+  }
   if (action === "edit-goods-sheet") {
     const id = event.target.closest("[data-action]").dataset.id;
     const sheet = (data.goods_sheets || []).find((item) => String(item.id) === String(id));
