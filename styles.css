@@ -11915,3 +11915,315 @@ button.warehouse-shortcut {
     font-size: 9px;
   }
 }
+
+
+/* 0.77.0 · Настройки и служебные разделы в едином старом мобильном стиле. */
+@media screen and (max-width:520px) {
+  .legacy-settings-page,
+  .legacy-service-page {
+    padding:12px 8px 24px;
+  }
+  .legacy-settings-card {
+    margin-bottom:10px;
+    padding:13px 12px;
+    border:1px solid #2b343c;
+    border-radius:14px;
+    background:linear-gradient(180deg,#141b21,#11171d);
+  }
+  .legacy-settings-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin-top:12px;
+  }
+  .legacy-settings-grid label.full { grid-column:1/-1; }
+  .legacy-settings-grid label > span {
+    display:block;
+    margin:0 0 5px;
+    color:#939a9f;
+    font-size:7px;
+    font-weight:720;
+    letter-spacing:.07em;
+  }
+  .legacy-settings-grid .field {
+    min-height:46px;
+    border:1px solid #303940;
+    border-radius:11px;
+    background:#181f26;
+    color:#eef0f2;
+    font-size:10px;
+  }
+  .legacy-settings-toggle-row {
+    display:grid;
+    grid-template-columns:25px minmax(0,1fr);
+    gap:9px;
+    align-items:start;
+    margin-top:11px;
+    padding:10px;
+    border:1px solid #2b343c;
+    border-radius:11px;
+    background:#11171d;
+  }
+  .legacy-settings-toggle-row input { display:none; }
+  .legacy-settings-toggle-row strong,
+  .legacy-settings-toggle-row small {
+    display:block;
+  }
+  .legacy-settings-toggle-row strong { font-size:9px; }
+  .legacy-settings-toggle-row small { margin-top:3px;color:#858c92;font-size:7px;line-height:1.35; }
+  .legacy-settings-save {
+    width:100%;
+    min-height:43px;
+    margin-top:10px;
+    border:1px solid #ff7153;
+    border-radius:11px;
+    background:#ff7153;
+    color:#17110f;
+    font-size:9px;
+    font-weight:720;
+  }
+  .legacy-settings-list {
+    display:grid;
+    gap:0;
+    margin-top:10px;
+  }
+  .legacy-settings-row {
+    display:grid;
+    grid-template-columns:34px minmax(0,1fr) auto;
+    gap:8px;
+    align-items:center;
+    min-height:58px;
+    padding:7px 0;
+    border-top:1px solid #283139;
+  }
+  .legacy-settings-row:first-child { border-top:0; }
+  .legacy-settings-row.plain { grid-template-columns:minmax(0,1fr) auto; }
+  .legacy-settings-row-icon {
+    display:grid;
+    place-items:center;
+    width:33px;
+    height:33px;
+    border-radius:9px;
+    background:#1a2229;
+    color:#ff7b61;
+  }
+  .legacy-settings-row-icon .ui-icon { width:17px;height:17px; }
+  .legacy-settings-row strong,
+  .legacy-settings-row small {
+    display:block;
+  }
+  .legacy-settings-row strong { font-size:9px; }
+  .legacy-settings-row small { margin-top:3px;color:#858c92;font-size:7px; }
+  .legacy-settings-row > button:not(.toggle) {
+    min-height:31px;
+    padding:4px 8px;
+    border:1px solid #303940;
+    border-radius:9px;
+    background:#181f26;
+    color:#cbd1d5;
+    font-size:7px;
+  }
+  .legacy-settings-row select {
+    min-height:34px;
+    border:1px solid #303940;
+    border-radius:9px;
+    background:#181f26;
+    color:#e9ecee;
+    font-size:8px;
+  }
+
+  .legacy-settings-links {
+    display:grid;
+    gap:6px;
+    margin-top:10px;
+  }
+  .legacy-settings-links > button {
+    display:grid;
+    grid-template-columns:34px minmax(0,1fr) auto 14px;
+    gap:8px;
+    align-items:center;
+    min-height:58px;
+    padding:8px 9px;
+    border:1px solid #2c353d;
+    border-radius:11px;
+    background:#171e25;
+    color:#edf0f2;
+    text-align:left;
+  }
+  .legacy-settings-links .settings-link-icon {
+    display:grid;
+    place-items:center;
+    width:33px;
+    height:33px;
+    border-radius:9px;
+    background:#1c252c;
+    color:#ff7b61;
+  }
+  .legacy-settings-links .settings-link-icon .ui-icon { width:17px;height:17px; }
+  .legacy-settings-links strong,
+  .legacy-settings-links small { display:block; }
+  .legacy-settings-links strong { font-size:9px; }
+  .legacy-settings-links small { margin-top:2px;color:#858c92;font-size:7px; }
+  .legacy-settings-links > button > b { color:#9aa2a8;font-size:8px; }
+
+  .legacy-service-head-with-add {
+    grid-template-columns:46px minmax(0,1fr) 42px;
+    gap:10px;
+  }
+  .legacy-service-note {
+    margin-bottom:10px;
+    padding:10px 11px;
+    border:1px solid #2b343c;
+    border-radius:11px;
+    background:#11171d;
+    color:#858c92;
+    font-size:8px;
+    line-height:1.4;
+  }
+  .legacy-service-stats {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:7px;
+    margin-bottom:10px;
+  }
+  .legacy-service-stats.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .legacy-service-stats.backup { margin-top:10px; }
+  .legacy-service-stats > div {
+    padding:9px 8px;
+    border:1px solid #2c353d;
+    border-radius:11px;
+    background:#161d23;
+  }
+  .legacy-service-stats span {
+    display:block;
+    color:#8c9399;
+    font-size:7px;
+    font-weight:720;
+    letter-spacing:.07em;
+  }
+  .legacy-service-stats strong {
+    display:block;
+    overflow:hidden;
+    margin-top:5px;
+    font-size:14px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .legacy-service-list {
+    display:grid;
+    gap:7px;
+  }
+  .legacy-document-row {
+    display:grid;
+    grid-template-columns:36px minmax(0,1fr) auto 14px;
+    gap:8px;
+    align-items:center;
+    min-height:61px;
+    padding:9px 10px;
+    border:1px solid #2c353d;
+    border-radius:12px;
+    background:#171e25;
+    color:#edf0f2;
+    text-align:left;
+  }
+  .legacy-document-icon {
+    display:grid;
+    place-items:center;
+    width:35px;
+    height:35px;
+    border-radius:10px;
+    background:#1d2933;
+    color:#ff7b61;
+  }
+  .legacy-document-row.tool .legacy-document-icon { color:#63adff; }
+  .legacy-document-icon .ui-icon { width:18px;height:18px; }
+  .legacy-document-row strong,
+  .legacy-document-row small { display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .legacy-document-row strong { font-size:9px; }
+  .legacy-document-row small { margin-top:3px;color:#858c92;font-size:7px; }
+  .legacy-document-row > b { color:#ff7b61;font-size:9px;white-space:nowrap; }
+
+  .legacy-draft-card {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+    padding:10px;
+    border:1px solid #2c353d;
+    border-radius:12px;
+    background:#171e25;
+  }
+  .legacy-draft-card strong,
+  .legacy-draft-card small { display:block; }
+  .legacy-draft-card strong { font-size:10px; }
+  .legacy-draft-card small { margin-top:3px;color:#858c92;font-size:7px; }
+  .legacy-draft-card > b { color:#ff7b61;font-size:10px; }
+  .legacy-draft-actions {
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px;
+  }
+  .legacy-draft-actions button {
+    min-height:37px;
+    border:1px solid #303940;
+    border-radius:9px;
+    background:#181f26;
+    color:#dbe0e3;
+    font-size:8px;
+  }
+  .legacy-draft-actions button.danger {
+    border-color:rgba(255,91,101,.3);
+    color:#ff6670;
+    background:rgba(255,91,101,.06);
+  }
+  .legacy-service-empty {
+    padding:16px 12px;
+    border:1px dashed #303840;
+    border-radius:11px;
+    color:#858c92;
+    font-size:9px;
+    text-align:center;
+  }
+
+  .legacy-backup-main-actions {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+    margin-top:12px;
+  }
+  .legacy-backup-main-actions button { min-height:46px;font-size:8px; }
+  .legacy-backup-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px;
+    margin-top:8px;
+  }
+  .legacy-backup-grid button {
+    min-height:38px;
+    border:1px solid #303940;
+    border-radius:9px;
+    background:#181f26;
+    color:#cbd1d5;
+    font-size:7px;
+  }
+  .legacy-backup-grid button:disabled { opacity:.35; }
+
+  .legacy-service-editor-backdrop {
+    z-index:140;
+    top:0 !important;
+    bottom:0 !important;
+    padding:0;
+    background:#080d11;
+  }
+  .legacy-service-editor-backdrop .receipt-editor-modal,
+  .legacy-service-editor-backdrop .tool-editor-modal {
+    width:100%;
+    max-width:none;
+    min-height:100%;
+    margin:0;
+    border:0;
+    border-radius:0;
+    background:#080d11;
+    box-shadow:none;
+  }
+}
