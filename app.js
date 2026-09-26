@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.3";
-const APP_BUILD = "2026.09.26.83";
+const APP_VERSION = "0.99.4";
+const APP_BUILD = "2026.09.26.84";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Усилена безопасность релиза: подтверждение удаления финансов, корректная семантика и inert для вложенных модалок, доступные настройки автобэкапа";
+const APP_RELEASE = "Исправлены часовые пояса визитов и усилен offline-кэш: старые ISO-визиты показываются в местном времени, сетевые ответы гарантированно попадают в PWA-кэш";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -220,6 +220,16 @@ function localDateInputValue(value = new Date()) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function localDateTimeInputValue(value) {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value).slice(0, 16);
+  const datePart = localDateInputValue(date);
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${datePart}T${hours}:${minutes}`;
 }
 
 const shortDate = (value) => {
@@ -2425,7 +2435,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
       <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
-      <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${order.nextVisit ? escapeHtml(String(order.nextVisit).slice(0, 16)) : ""}" /></div>
+      <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${escapeHtml(localDateTimeInputValue(order.nextVisit))}" /></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       </div>
     </section>
