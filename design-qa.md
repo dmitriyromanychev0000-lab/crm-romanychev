@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.11
+# Design QA — Release candidate 0.99.12
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -67,3 +67,5 @@ final result: blocked
 - Version 0.99.10 fixes the only rendered small-touch-target failure from the 86-state smoke run: automatic backup now has a 64×44 px hit area with a compact visual track. QA reports are only published when the tested commit is still the current main head.
 
 - Version 0.99.11 fixes a rendered order-detail artifact caused by the generic `.toggle::after` switch rule colliding with the order status action class; the order action now uses `.action-toggle`.
+
+- Version 0.99.12 scopes switch CSS away from generic `.toggle`, prevents narrow action labels from breaking inside words, and adds 320 px long-data/empty-state stress fixtures plus an A4 PDF smoke artifact.
