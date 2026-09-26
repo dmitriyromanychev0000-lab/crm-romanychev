@@ -263,7 +263,7 @@ const report = { generatedAt: new Date().toISOString(), baseUrl: BASE_URL, resul
       const detailActions = await page.locator(".legacy-expanded-actions > button, .legacy-expanded-actions > a").count();
       if (detailActions !== 4) report.failures.push({ width, type: "order-detail-actions", count: detailActions });
       report.results.push(await shot(page, width, "order-detail", false));
-      await page.locator('[data-detail-action="more"]').click();
+      await page.locator('.legacy-expanded-actions [data-detail-action="more"]').click();
       await page.waitForTimeout(80);
       const copyAction = await page.locator('[data-order-sheet-action="copy"]').count();
       if (copyAction !== 1) report.failures.push({ width, type: "order-actions-copy", count: copyAction });
