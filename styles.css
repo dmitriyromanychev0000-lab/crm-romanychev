@@ -14030,3 +14030,73 @@ body.modal-open {
     font-weight: 700 !important;
   }
 }
+
+
+/* 0.84.5 · Компактные системные окна не обрезаются на мобильном. */
+@media screen and (max-width: 520px) {
+  body.modal-open > .modal-backdrop > .compact-modal {
+    box-sizing: border-box !important;
+    width: calc(100% - 20px) !important;
+    max-width: 520px !important;
+    max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px) !important;
+    margin: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)) !important;
+    padding: 16px 14px 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 18px !important;
+    background: #11181d !important;
+  }
+
+  body.modal-open > .modal-backdrop:has(> .compact-modal) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: rgba(3,7,10,.92) !important;
+  }
+
+  .compact-modal .modal-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+    margin: 14px -14px 0 !important;
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #283139 !important;
+    background: rgba(17,24,29,.985) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.3) !important;
+  }
+
+  .compact-modal .modal-actions > * {
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 7px 8px !important;
+    overflow: hidden !important;
+    border-radius: 11px !important;
+    font-size: 10px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .compact-modal .modal-actions > :only-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  .compact-modal .modal-actions > :nth-child(3):last-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  .compact-modal .goods-sheet {
+    min-width: 0 !important;
+  }
+
+  .compact-modal .goods-sheet small {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+}
