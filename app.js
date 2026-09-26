@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.78.0";
-const APP_BUILD = "2026.09.26.47";
+const APP_VERSION = "0.79.0";
+const APP_BUILD = "2026.09.26.48";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: просмотр заявки как старая карточка";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: восстановлена верхняя часть склада и редактор позиции";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -892,12 +892,31 @@ function warehousePage() {
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
   return `<main class="content legacy-warehouse-page">
-    <button type="button" class="legacy-stock-new" data-action="new-stock"><span>＋</span>Новая позиция</button>
+    <div class="legacy-warehouse-head">
+      <h1>Склад</h1>
+      <p>Запчасти и расходные материалы</p>
+    </div>
+
+    <div class="legacy-warehouse-search search-row search-with-icon">
+      ${icon("search")}
+      <input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" />
+    </div>
+
+    <div class="legacy-warehouse-filter">
+      <select class="field" id="warehouse-filter-select">
+        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
+        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Заканчиваются</option>
+        <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
+      </select>
+      <span>${icon("chevron")}</span>
+    </div>
 
     <div class="legacy-warehouse-shortcuts">
       <button type="button" data-action="open-warehouse-movements">${icon("calendar")}<span>История движения</span></button>
       <button type="button" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
+
+    <button type="button" class="legacy-stock-new" data-action="new-stock"><span>＋</span>Новая позиция</button>
 
     <section class="legacy-warehouse-groups">
       ${groupedItems.length ? groupedItems.map(([category, group], groupIndex) => {
@@ -933,7 +952,7 @@ function warehousePage() {
             }).join("")}
           </div>
         </details>`;
-      }).join("") : `<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Склад пуст</h2><p>Добавь первую позицию.</p></div>`}
+      }).join("") : `<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Склад пуст</h2><p>${query ? "По этому запросу ничего не найдено." : "Добавь первую позицию."}</p></div>`}
     </section>
   </main>`;
 }
@@ -2841,10 +2860,12 @@ function stockModal(existing = null) {
   modal.className = "modal-backdrop stock-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
     <div class="stock-editor-head">
+      <span class="stock-editor-title-icon">${icon("box")}</span>
       <div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div>
       <button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button>
     </div>
 
+    <p class="stock-editor-intro">${existing ? "Измени параметры позиции, совместимость и цены." : "Добавь запчасть или расходный материал на склад."}</p>
     <div class="stock-editor-section-title">Основное</div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
