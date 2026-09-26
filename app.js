@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.85.0";
-const APP_BUILD = "2026.09.26.60";
+const APP_VERSION = "0.86.0";
+const APP_BUILD = "2026.09.26.61";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Первый крупный визуальный проход: заявки, склад, аналитика и меню «Ещё» приведены к единой мобильной системе";
+const APP_RELEASE = "Крупно переработаны форма и просмотр заявки: секции, иерархия, действия и мобильная читаемость";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2405,9 +2405,15 @@ function newOrderModal(existing = null, options = {}) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop order-editor-backdrop";
   modal.innerHTML = `<form class="modal order-editor-modal" id="order-form">
-    <div class="order-editor-head"><h2>${existing && !forceNew ? "Редактировать заявку" : "Новая заявка"}</h2><button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">×</button></div>
-    <div class="form-section-title">Клиент и техника</div>
-    <div class="form-grid">
+    <div class="order-editor-head">
+      <span class="order-editor-title-icon">${icon("orders")}</span>
+      <div class="order-editor-title-copy"><small>${existing && !forceNew ? `ЗАЯВКА №${escapeHtml(order.id || "—")}` : "НОВАЯ ЗАЯВКА"}</small><h2>${existing && !forceNew ? "Редактирование" : "Создание заявки"}</h2></div>
+      <button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">×</button>
+    </div>
+    <div class="order-editor-body">
+    <section class="order-editor-section">
+      <div class="form-section-title"><span class="order-editor-section-icon">${icon("clients")}</span><span>Клиент и техника</span></div>
+      <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
@@ -2418,18 +2424,23 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
       <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${order.nextVisit ? escapeHtml(String(order.nextVisit).slice(0, 16)) : ""}" /></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
-    </div>
+      </div>
+    </section>
 
-    <div class="form-section-title">Выбранные услуги</div>
+    <section class="order-editor-section">
+    <div class="form-section-title"><span class="order-editor-section-icon">${icon("tools")}</span><span>Работы и услуги</span></div>
     <button type="button" class="legacy-catalog-button legacy-service-catalog-open" id="open-service-catalog">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></button>
     <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
     <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
+    </section>
 
-    <div class="form-section-title">Запчасти и материалы</div>
-    <p class="legacy-material-help">Показываются позиции, подходящие для выбранной техники, и универсальные материалы. Количество и единицу выбираешь сам.</p>
+    <section class="order-editor-section">
+    <div class="form-section-title"><span class="order-editor-section-icon">${icon("warehouse")}</span><span>Запчасти и материалы</span></div>
+    <p class="legacy-material-help">Выбери позицию со склада или добавь ручную — количество и себестоимость можно изменить.</p>
     <button type="button" class="legacy-stock-button material-catalog-open" id="open-material-catalog">${icon("warehouse")}<span>Выбрать со склада</span></button>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
-    <details class="manual-material-details"><summary>Добавить материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
+    <details class="manual-material-details"><summary>Материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
+    </section>
 
     <details class="order-extra-details" ${orderPhotos.length ? "open" : ""}>
       <summary>Фотографии</summary>
@@ -2439,9 +2450,10 @@ function newOrderModal(existing = null, options = {}) {
       </div>
     </details>
 
-    <div class="calculated-total order-calculation-summary"><div><span>Итого услуг</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Общий расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">В итоговую сумму</button></div>
+    <section class="order-editor-section order-editor-payment-section">
+    <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт и гарантия</span></div>
+    <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
 
-    <div class="form-section-title">Расчёт и гарантия</div>
     <div class="form-grid legacy-payment-grid">
       <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
@@ -2452,6 +2464,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
       <div class="form-group"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
+    </section>
 
     <details class="order-extra-details" ${order.guaranteeNote || order.comment ? "open" : ""}>
       <summary>Гарантия и комментарий</summary>
@@ -2464,7 +2477,8 @@ function newOrderModal(existing = null, options = {}) {
         <div class="form-group order-comment"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
       </div>
     </details>
-    <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">В черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    </div>
+    <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">Черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
@@ -3304,7 +3318,6 @@ function orderDetailModal(order) {
   const photos = (Array.isArray(order.photos) ? order.photos : []).map(photoSource).filter(Boolean);
   const net = orderNetAmount(order);
   const phoneHref = String(order.phone || "").replace(/[^+\d]/g, "");
-  const telegram = telegramPhoneLink(order.phone);
   const guaranteeText = Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "без гарантии";
   const serviceTotal = services.reduce((sum,item) => sum + (Number(item.qty)||1) * (Number(item.price)||0), 0);
   const materialTotal = materials.reduce((sum,item) => sum + (Number(item.qty)||1) * (Number(item.unitCost)||0), 0);
@@ -3352,8 +3365,7 @@ function orderDetailModal(order) {
           <button type="button" data-detail-action="toggle" class="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
           <button type="button" data-detail-action="copy" class="copy">${icon("copy")}<span>Копия</span></button>
           ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" class="phone" disabled>${icon("phone")}<span>Позвонить</span></button>`}
-          ${telegram ? `<a href="${escapeHtml(telegram)}" class="telegram">${icon("telegram")}<span>Telegram</span></a>` : `<button type="button" class="telegram" disabled>${icon("telegram")}<span>Telegram</span></button>`}
-          <button type="button" data-detail-action="delete" class="delete">${icon("trash")}<span>Удалить</span></button>
+          <button type="button" data-detail-action="more" class="more">${icon("more")}<span>Ещё</span></button>
         </div>
       </article>
 
