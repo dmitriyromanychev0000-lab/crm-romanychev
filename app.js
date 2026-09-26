@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.81.0";
-const APP_BUILD = "2026.09.26.50";
+const APP_VERSION = "0.82.0";
+const APP_BUILD = "2026.09.26.51";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: восстановлена структура экрана Ещё";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: складские действия, меню заявки и период аналитики";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1030,10 +1030,24 @@ function analyticsPeriodTitle(range = analyticsRange()) {
 
 function analyticsRangeModal() {
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal" id="analytics-range-form"><h2>Свой период</h2><div class="form-grid"><div class="form-group"><label>С</label><input class="field" type="date" name="start" value="${escapeHtml(analyticsCustomStart)}" required /></div><div class="form-group"><label>По</label><input class="field" type="date" name="end" value="${escapeHtml(analyticsCustomEnd)}" required /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Применить</button></div></form>`;
+  modal.className = "modal-backdrop legacy-analytics-range-backdrop";
+  modal.innerHTML = `<form class="modal legacy-analytics-range-modal" id="analytics-range-form">
+    <div class="legacy-range-head">
+      <span class="legacy-range-icon">${icon("calendar")}</span>
+      <div><strong>Свой период</strong><small>Выбери даты для отчёта</small></div>
+      <button type="button" data-close-modal aria-label="Закрыть">×</button>
+    </div>
+    <div class="legacy-range-grid">
+      <label><span>С</span><input class="field" type="date" name="start" value="${escapeHtml(analyticsCustomStart)}" required /></label>
+      <label><span>ПО</span><input class="field" type="date" name="end" value="${escapeHtml(analyticsCustomEnd)}" required /></label>
+    </div>
+    <div class="legacy-range-actions">
+      <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
+      <button class="legacy-orange-button" type="submit">Применить</button>
+    </div>
+  </form>`;
   document.body.appendChild(modal);
-  modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -3208,7 +3222,7 @@ function goodsModal(existing = null, seed = null) {
 function orderActionsSheet(order) {
   const tg = telegramPhoneLink(order.phone);
   const modal = document.createElement("div");
-  modal.className = "modal-backdrop order-actions-backdrop";
+  modal.className = "modal-backdrop order-actions-backdrop legacy-order-actions-backdrop";
   modal.innerHTML = `<section class="order-actions-sheet" aria-label="Действия заявки №${escapeHtml(order.id)}">
     <div class="order-actions-head">
       <div><strong>Заявка №${escapeHtml(order.id || "—")}</strong><small>Дополнительные действия</small></div>
@@ -3406,15 +3420,68 @@ async function handleOrderAction(action, id) {
 async function adjustStock(id, direction) {
   const item = data.warehouse.find((entry) => String(entry.id) === String(id));
   if (!item) return;
-  const amount = Number(prompt(direction === "in" ? "Количество для прихода" : "Количество для списания", "1"));
-  if (!Number.isFinite(amount) || amount <= 0) return;
+
+  const incoming = direction === "in";
   const before = Number(item.quantity) || 0;
-  if (direction === "out" && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${item.unit || "шт."}`);
-  item.quantity = direction === "in" ? before + amount : before - amount;
-  data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: item.id, name: item.name, qty: amount, type: direction === "in" ? "manual_in" : "manual_out", date: new Date().toISOString() });
-  await saveData();
-  render();
-  toast("Остаток обновлён");
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop stock-adjust-backdrop";
+  modal.innerHTML = `<form class="modal stock-adjust-modal" id="stock-adjust-form">
+    <div class="stock-adjust-head">
+      <span class="stock-adjust-icon ${incoming ? "incoming" : "outgoing"}">${incoming ? "+" : "−"}</span>
+      <div><strong>${incoming ? "Приход" : "Списание"}</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
+      <button type="button" data-close-modal aria-label="Закрыть">×</button>
+    </div>
+    <div class="stock-adjust-balance">
+      <span>СЕЙЧАС НА СКЛАДЕ</span>
+      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(before)} ${escapeHtml(item.unit || "шт.")}</strong>
+    </div>
+    <label class="stock-adjust-field">
+      <span>КОЛИЧЕСТВО</span>
+      <input class="field" name="amount" type="number" min="0.01" step="0.01" value="1" inputmode="decimal" required autofocus />
+    </label>
+    <div class="stock-adjust-preview">
+      <span>ОСТАТОК ПОСЛЕ ОПЕРАЦИИ</span>
+      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(item.unit || "шт.")}</strong>
+    </div>
+    <div class="stock-adjust-actions">
+      <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
+      <button type="submit" class="${incoming ? "stock-adjust-confirm incoming" : "stock-adjust-confirm outgoing"}">${incoming ? "Добавить" : "Списать"}</button>
+    </div>
+  </form>`;
+  document.body.appendChild(modal);
+
+  const input = modal.querySelector('[name="amount"]');
+  const result = modal.querySelector("#stock-adjust-result");
+  const updatePreview = () => {
+    const amount = Number(input.value) || 0;
+    const next = incoming ? before + amount : Math.max(0, before - amount);
+    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(next)} ${item.unit || "шт."}`;
+    result.className = !incoming && amount > before ? "red" : "";
+  };
+  input.addEventListener("input", updatePreview);
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
+  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const amount = Number(input.value);
+    if (!Number.isFinite(amount) || amount <= 0) return toast("Укажи количество");
+    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${item.unit || "шт."}`);
+    item.quantity = incoming ? before + amount : before - amount;
+    data.warehouse_movements.push({
+      id: crypto.randomUUID(),
+      warehouseId: item.id,
+      name: item.name,
+      qty: amount,
+      type: incoming ? "manual_in" : "manual_out",
+      date: new Date().toISOString()
+    });
+    await saveData();
+    modal.remove();
+    await render();
+    toast(incoming ? "Приход сохранён" : "Списание сохранено");
+  });
+  updatePreview();
+  requestAnimationFrame(() => input.focus());
 }
 
 function closeTopModalFromKeyboard() {
