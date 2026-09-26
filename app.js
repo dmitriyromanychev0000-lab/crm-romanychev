@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.84.6";
-const APP_BUILD = "2026.09.26.59";
+const APP_VERSION = "0.85.0";
+const APP_BUILD = "2026.09.26.60";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Закреплены шапки полноэкранных карточек и добавлены безопасные отступы под вырез экрана";
+const APP_RELEASE = "Первый крупный визуальный проход: заявки, склад, аналитика и меню «Ещё» приведены к единой мобильной системе";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -764,7 +764,6 @@ function orderCard(order) {
   const statusText = isArchived ? "Архив" : (order.status || "В работе");
   const net = orderNetAmount(order);
   const photos = (Array.isArray(order.photos) ? order.photos : []).map(photoSource).filter(Boolean).slice(0, 4);
-  const telegram = telegramPhoneLink(order.phone);
   const phoneHref = String(order.phone || "").replace(/[^+\d]/g, "");
   const guaranteeText = Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "без гарантии";
   const nextVisit = order.nextVisit ? formatVisitDate(order.nextVisit) : "";
@@ -799,8 +798,7 @@ function orderCard(order) {
       <button type="button" data-order-action="toggle" data-id="${escapeHtml(order.id)}" class="action-toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
       <button type="button" data-order-action="copy" data-id="${escapeHtml(order.id)}" class="action-copy">${icon("copy")}<span>Копия</span></button>
       ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="action-phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled class="action-phone">${icon("phone")}<span>Позвонить</span></button>`}
-      ${telegram ? `<a href="${escapeHtml(telegram)}" class="action-telegram">${icon("telegram")}<span>Telegram</span></a>` : `<button type="button" disabled class="action-telegram">${icon("telegram")}<span>Telegram</span></button>`}
-      <button type="button" data-order-action="delete" data-id="${escapeHtml(order.id)}" class="action-delete">${icon("trash")}<span>Удалить</span></button>
+      <button type="button" data-order-action="more" data-id="${escapeHtml(order.id)}" class="action-more">${icon("more")}<span>Ещё</span></button>
     </div>
   </article>`;
 }
@@ -893,8 +891,8 @@ function warehousePage() {
 
   return `<main class="content legacy-warehouse-page">
     <div class="legacy-warehouse-head">
-      <h1>Склад</h1>
-      <p>Запчасти и расходные материалы</p>
+      <div><h1>Склад</h1><p>Запчасти и расходные материалы</p></div>
+      <button type="button" class="legacy-page-add" data-action="new-stock" aria-label="Новая позиция">+</button>
     </div>
 
     <div class="legacy-warehouse-search search-row search-with-icon">
@@ -915,8 +913,6 @@ function warehousePage() {
       <button type="button" data-action="open-warehouse-movements">${icon("calendar")}<span>История движения</span></button>
       <button type="button" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
-
-    <button type="button" class="legacy-stock-new" data-action="new-stock"><span>＋</span>Новая позиция</button>
 
     <section class="legacy-warehouse-groups">
       ${groupedItems.length ? groupedItems.map(([category, group], groupIndex) => {
@@ -1154,12 +1150,12 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span> Главные показатели <small>по платным закрытым заявкам</small></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО · НАЖМИ</span><strong class="red">${money(totalSpent)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>новое значение</small></div>
-        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>новое значение</small></div>
+        <div class="analytics-kpi"><span>ЗАКРЫТО</span><strong>${closed.length}</strong><small>заявок за период</small></div>
+        <div class="analytics-kpi"><span>ВЫРУЧКА КЛИЕНТОВ</span><strong class="blue">${money(revenue)}</strong><small>оборот за период</small></div>
+        <div class="analytics-kpi"><span>ПОЛУЧИЛ ЧИСТЫМИ</span><strong class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</strong><small>после расходов ремонта</small></div>
+        <div class="analytics-kpi"><span>ПОТРАТИЛ ВСЕГО</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные расходы</small></div>
+        <div class="analytics-kpi"><span>ОСТАЛОСЬ ДЕНЕГ</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>итог за период</small></div>
+        <div class="analytics-kpi"><span>СРЕДНИЙ ЧЕК</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div>
       </div>
     </section>
 
@@ -1923,17 +1919,15 @@ function shoppingPage(backAction = "more-menu") {
 }
 function moreMenu() {
   const primaryItems = [
-    ["finance", "finance", "Финансы", "Расходы и дополнительные приходы"],
-    ["report", "analytics", "Отчёт", "Выручка, прибыль и статистика"],
+    ["finance", "finance", "Финансы", "Доходы, расходы и результат"],
+    ["shopping", "shoppingList", "Список покупок", "Что нужно докупить на склад"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
-    ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["settings", "settings", "Настройки", "Каталог, бэкапы и оформление"]
-  ];
-  const extraItems = [
-    ["shopping", "shoppingList", "Список покупок", "Позиции ниже минимального остатка"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
-    ["goods", "tag", "Товарник", "Товары из заявки или вручную"]
+    ["act", "printer", "Акт", "Подготовка и печать документа"],
+    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
+    ["settings", "settings", "Настройки", "Реквизиты, данные и приложение"]
   ];
+  const extraItems = [];
 
   const card = ([id, iconName, name, description]) => {
     const attrs = id === "report" ? 'data-action="analytics-screen"' : `data-more="${id}"`;
@@ -1945,10 +1939,8 @@ function moreMenu() {
   };
 
   return `<main class="content more-content legacy-more-page">
-    <div class="legacy-more-head"><h1>Ещё</h1><p>Финансы, отчёты и настройки</p></div>
+    <div class="legacy-more-head"><h1>Ещё</h1><p>Рабочие разделы и настройки</p></div>
     <div class="menu-list legacy-more-list">${primaryItems.map(card).join("")}</div>
-    <div class="legacy-more-extra-title">Дополнительно</div>
-    <div class="menu-list legacy-more-list legacy-more-extra">${extraItems.map(card).join("")}</div>
   </main>`;
 }
 
