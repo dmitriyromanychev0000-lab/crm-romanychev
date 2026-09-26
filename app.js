@@ -258,6 +258,42 @@ function toast(message) {
   toastElement.timer = setTimeout(() => toastElement.classList.remove("show"), 2800);
 }
 
+function confirmDialog(message, options = {}) {
+  const destructive = options.danger ?? /удал/i.test(String(message || ""));
+  const title = options.title || (destructive ? "Подтвердить удаление" : "Подтверждение");
+  const confirmLabel = options.confirmLabel || (destructive ? "Удалить" : "Продолжить");
+
+  return new Promise((resolve) => {
+    const modal = document.createElement("div");
+    modal.className = "modal-backdrop crm-confirm-backdrop";
+    modal.innerHTML = `<section class="crm-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="crm-confirm-title">
+      <div class="crm-confirm-icon ${destructive ? "danger" : ""}">${icon(destructive ? "trash" : "warning")}</div>
+      <h2 id="crm-confirm-title">${escapeHtml(title)}</h2>
+      <p>${escapeHtml(String(message || ""))}</p>
+      <div class="crm-confirm-actions">
+        <button type="button" class="legacy-dark-button" data-confirm-cancel>Отмена</button>
+        <button type="button" class="${destructive ? "crm-confirm-danger" : "legacy-orange-button"}" data-confirm-primary>${escapeHtml(confirmLabel)}</button>
+      </div>
+    </section>`;
+
+    const finish = (value) => {
+      if (!modal.isConnected) return;
+      modal.remove();
+      syncModalScrollLock();
+      resolve(value);
+    };
+
+    modal.querySelector("[data-confirm-cancel]").addEventListener("click", () => finish(false));
+    modal.querySelector("[data-confirm-primary]").addEventListener("click", () => finish(true));
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) finish(false);
+    });
+
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.querySelector("[data-confirm-primary]")?.focus());
+  });
+}
+
 function validateBackup(candidate) {
   if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) throw new Error("Файл не содержит объект CRM");
   const required = ["orders", "warehouse", "warehouse_movements", "expenses", "receipt_prices"];
@@ -2622,7 +2658,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("#delete-receipt")?.addEventListener("click", async () => {
-    if (!confirm("Удалить документ?")) return;
+    if (!(await confirmDialog("Удалить документ?"))) return;
     if (receiptIndex >= 0) data.receipts.splice(receiptIndex, 1);
     await saveData(); modal.remove(); await render(); toast("Документ удалён");
   });
@@ -2669,7 +2705,7 @@ function toolModal(existing = null, toolIndex = -1) {
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("#delete-tool")?.addEventListener("click", async () => {
-    if (!confirm("Удалить инструмент?")) return;
+    if (!(await confirmDialog("Удалить инструмент?"))) return;
     if (toolIndex >= 0) data.tools.splice(toolIndex, 1);
     await saveData(); modal.remove(); await render(); toast("Инструмент удалён");
   });
@@ -2719,7 +2755,7 @@ function customServiceModal(existing = null, serviceIndex = -1) {
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.querySelector("#delete-custom-service")?.addEventListener("click", async () => {
-    if (!confirm("Удалить пользовательскую услугу?")) return;
+    if (!(await confirmDialog("Удалить пользовательскую услугу?"))) return;
     if (serviceIndex >= 0) data.service_custom.splice(serviceIndex, 1);
     await saveData(); modal.remove(); await render(); toast("Услуга удалена");
   });
@@ -2770,7 +2806,7 @@ function priceModal(existing = null, priceIndex = -1) {
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.querySelector("#delete-price")?.addEventListener("click", async () => {
-    if (!confirm("Удалить позицию из прайса?")) return;
+    if (!(await confirmDialog("Удалить позицию из прайса?"))) return;
     if (priceIndex >= 0) data.receipt_prices.splice(priceIndex, 1);
     await saveData(); modal.remove(); await render(); toast("Позиция удалена");
   });
@@ -3189,7 +3225,7 @@ function goodsModal(existing = null, seed = null) {
   });
 
   modal.querySelector("#delete-goods-sheet")?.addEventListener("click", async () => {
-    if (!isStored || !confirm("Удалить этот товарник?")) return;
+    if (!isStored || !(await confirmDialog("Удалить этот товарник?"))) return;
     data.goods_sheets = (data.goods_sheets || []).filter((item) => String(item.id) !== String(sheet.id));
     await saveData(); modal.remove(); await render(); toast("Товарник удалён");
   });
@@ -3404,7 +3440,7 @@ async function handleOrderAction(action, id) {
     order.archivedAt = order.archived ? new Date().toISOString() : null;
   }
   if (action === "delete") {
-    if (!confirm(`Удалить заявку №${order.id || "—"} навсегда? Это действие нельзя отменить.`)) return;
+    if (!(await confirmDialog(`Удалить заявку №${order.id || "—"} навсегда? Это действие нельзя отменить.`))) return;
     const stockSync = syncOrderStock(Array.isArray(order.materials) ? order.materials : [], [], order.id);
     if (!stockSync.ok) return toast(stockSync.message);
     data.orders.splice(index, 1);
@@ -3488,7 +3524,7 @@ function closeTopModalFromKeyboard() {
   const backdrops = [...document.querySelectorAll(".modal-backdrop")];
   const top = backdrops.at(-1);
   if (!top) return false;
-  const closeButton = top.querySelector(".catalog-close, .order-actions-close, [data-close-modal]");
+  const closeButton = top.querySelector(".catalog-close, .order-actions-close, [data-close-modal], [data-confirm-cancel]");
   if (closeButton) closeButton.click();
   else top.remove();
   return true;
@@ -3666,7 +3702,7 @@ app.addEventListener("click", async (event) => {
   if (action === "restore-pre-import") {
     const rollback = await dbGet(PRE_IMPORT_KEY);
     if (!rollback) return toast("Точки отката пока нет");
-    if (!confirm("Вернуть данные, которые были до последнего импорта?")) return;
+    if (!(await confirmDialog("Вернуть данные, которые были до последнего импорта?", { confirmLabel: "Вернуть данные" }))) return;
     const current = structuredClone(data);
     data = validateBackup(structuredClone(rollback));
     ensureDataIds();
@@ -3738,7 +3774,7 @@ app.addEventListener("click", async (event) => {
   }
   if (action === "delete-draft") {
     const key = event.target.closest("[data-action]").dataset.key;
-    if (!confirm("Удалить этот черновик?")) return;
+    if (!(await confirmDialog("Удалить этот черновик?"))) return;
     removeDraftRecord(key);
     await saveData();
     await render();
@@ -3966,7 +4002,7 @@ fileInput.addEventListener("change", async () => {
     const restored = validateBackup(candidate);
     const warnings = backupWarnings(restored);
     const warningText = warnings.length ? `\n\nПредупреждения:\n• ${warnings.join("\n• ")}` : "";
-    const confirmed = confirm(`Восстановить ${restored.orders.length} заявок, ${restored.warehouse.length} складских позиций и ${restored.receipt_prices.length} цен?\n\nТекущие данные будут сохранены как точка отката перед заменой.${warningText}`);
+    const confirmed = await confirmDialog(`Восстановить ${restored.orders.length} заявок, ${restored.warehouse.length} складских позиций и ${restored.receipt_prices.length} цен?\n\nТекущие данные будут сохранены как точка отката перед заменой.${warningText}`, { title: "Восстановление бэкапа", confirmLabel: "Восстановить" });
     if (!confirmed) return;
     await dbSet(PRE_IMPORT_KEY, structuredClone(data));
     data = restored;
