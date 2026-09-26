@@ -1,23 +1,23 @@
-# WORK START HERE — CRM redesign
+# WORK START HERE — CRM visual baseline
 
-Before changing the CRM UI, read these in order:
+## Current user decision — 2026-09-26
 
-1. **`Visual_koncept/README.md`**
-2. **all 10 PNG sheets in `Visual_koncept/`**
-3. **`design/mobile-crm-redesign/README.md`**
+The visual redesign based on `Visual_koncept/` has been superseded by the user's newer instruction.
 
-The folder **`Visual_koncept/` is the approved visual source of truth** for the redesign.
-The current `main` branch is the functional/data-compatibility source of truth.
+**Current visual source of truth: the user's archived/original CRM screenshots (29 JPGs, dated around 2026-09-10) and the restored pre-Visual_koncept implementation.**
 
-## Целевое устройство — только телефон
+The `main` branch has been returned to the last pre-concept visual implementation baseline (based on commit `10722737c3ff09b7d4b6f39ac6ff4e39bd558fdd`), while the concept-based v0.67 work is preserved on branch:
 
-Это **исключительно мобильная CRM**. Проектируется и проверяется только для
-ширины 320–430 CSS px; приоритет — реальный телефон пользователя. Десктопную
-версию, адаптацию под компьютер и компромиссы ради широкого экрана делать не
-нужно. Любое изменение сначала должно быть безопасным и читаемым на телефоне.
+`backup/visual-concepts-v0.67`
 
-Do not redesign from memory.
-Do not use the old 29 screenshots as the new visual target.
-Do not start a broad CSS rewrite until all 10 concept sheets and the implementation brief have been reviewed.
+### Rules from now on
 
-Implementation must preserve existing CRM functionality and data migrations while matching the concept sheets as closely as practical on a phone.
+- Do **not** broadly redesign the CRM from `Visual_koncept/`.
+- Preserve the restored legacy appearance unless the user asks for a specific change.
+- Make changes **point-by-point**, screen-by-screen.
+- Keep existing data compatibility and migrations safe.
+- Target phone widths 320–430 CSS px.
+- Use the old screenshots as the visual reference when available.
+- `Visual_koncept/` remains a reference archive only, not the active target.
+
+Before editing UI, inspect the current screen and change only what the user explicitly asks to change.
