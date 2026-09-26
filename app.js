@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.58.0";
-const APP_BUILD = "2026.09.26.27";
+const APP_VERSION = "0.59.0";
+const APP_BUILD = "2026.09.26.28";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 03: компактный склад, карточка позиции и мобильный редактор";
+const APP_RELEASE = "Редизайн Sheet 03 завершён: склад, фильтры, карточка позиции и компактный редактор";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -887,13 +887,10 @@ function warehousePage() {
 
     <div class="search-row search-with-icon warehouse-search">${icon("search")}<input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" /></div>
 
-    <div class="warehouse-filter order-date-filter">
-      <select class="field" id="warehouse-filter-select">
-        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
-        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось · ${lowItems.length}</option>
-        <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
-      </select>
-      <span class="select-chevron">${icon("chevron")}</span>
+    <div class="warehouse-filter-chips" role="group" aria-label="Фильтр склада">
+      <button type="button" class="${warehouseFilter === "active" ? "active" : ""}" data-warehouse-filter="active" aria-pressed="${warehouseFilter === "active"}">В наличии <span>${activeItems.length}</span></button>
+      <button type="button" class="${warehouseFilter === "low" ? "active" : ""}" data-warehouse-filter="low" aria-pressed="${warehouseFilter === "low"}">Мало <span>${lowItems.length}</span></button>
+      <button type="button" class="${warehouseFilter === "all" ? "active" : ""}" data-warehouse-filter="all" aria-pressed="${warehouseFilter === "all"}">Все <span>${data.warehouse.length}</span></button>
     </div>
 
     <div class="warehouse-shortcuts">
@@ -2644,20 +2641,85 @@ function stockDetailModal(item) {
 
 function stockModal(existing = null) {
   const item = existing || {};
+  const commonCompatibility = [
+    "Холодильники",
+    "Коммерческое холод. оборудование",
+    "Стиральные машины",
+    "Посудомоечные машины",
+    "Сушильные машины",
+    "Плиты и духовки",
+    "Кондиционеры",
+    "Мелкая бытовая техника"
+  ];
+  const currentCompatibility = Array.isArray(item.compatibility) ? item.compatibility.map(String) : [];
+  const customCompatibility = currentCompatibility.filter((value) => !commonCompatibility.includes(value)).join(", ");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-editor-backdrop";
-  modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form"><div class="stock-editor-head"><div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div><button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button></div><div class="form-grid"><div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div><div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div><div class="form-group"><label>Единица хранения</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div><div class="form-group"><label>${existing ? "Остаток (приход / списание)" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div><div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div><div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" value="${Number(item.price) || 0}" /></div><div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" value="${Number(item.lastPurchasePrice) || 0}" /></div><div class="form-group full"><label>Подходит для техники</label><input class="field" name="compatibility" value="${escapeHtml(Array.isArray(item.compatibility) ? item.compatibility.join(", ") : "")}" placeholder="Холодильники, стиральные машины…" /></div></div><div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div></form>`;
+  modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
+    <div class="stock-editor-head">
+      <div><small>Склад</small><h2>${existing ? "Редактировать позицию" : "Новая позиция"}</h2></div>
+      <button type="button" class="stock-editor-close" data-close-modal aria-label="Закрыть">×</button>
+    </div>
+
+    <div class="stock-editor-section-title">Основное</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div>
+      <div class="form-group"><label>Единица</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
+      <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div>
+    </div>
+
+    <div class="stock-editor-section-title">Цены и учёт</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
+      <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="${Number(item.lastPurchasePrice) || 0}" /></div>
+      <div class="form-group full"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
+    </div>
+
+    <div class="stock-editor-section-title">Подходит для техники</div>
+    <div class="stock-editor-compat">
+      ${commonCompatibility.map((value) => `<label><input type="checkbox" name="compatibility" value="${escapeHtml(value)}" ${currentCompatibility.includes(value) ? "checked" : ""}/><span class="warehouse-check"></span><b>${escapeHtml(value)}</b></label>`).join("")}
+    </div>
+    <div class="form-group stock-editor-custom-compat"><label>Дополнительно</label><input class="field" name="compatibilityExtra" value="${escapeHtml(customCompatibility)}" placeholder="Через запятую" /></div>
+    <label class="stock-editor-toggle"><input type="checkbox" name="hiddenFromOrders" ${item.hiddenFromOrders ? "checked" : ""}/><span class="warehouse-check"></span><span><b>Скрыть в заявках</b><small>Не предлагать эту позицию при добавлении материалов</small></span></label>
+
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+  </form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const next = { ...item, id: item.id || crypto.randomUUID(), name: form.get("name"), category: form.get("category"), unit: form.get("unit"), quantity: Number(form.get("quantity")) || 0, min: Number(form.get("min")) || 0, price: Number(form.get("price")) || 0, lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0, compatibility: String(form.get("compatibility") || "").split(",").map((value) => value.trim()).filter(Boolean), archived: false, hiddenFromOrders: false, tracking: item.tracking || "exact", consumeUnit: item.consumeUnit || form.get("unit") };
+    const extraCompatibility = String(form.get("compatibilityExtra") || "").split(",").map((value) => value.trim()).filter(Boolean);
+    const compatibility = [...new Set([...form.getAll("compatibility").map(String), ...extraCompatibility])];
+    const next = {
+      ...item,
+      id: item.id || crypto.randomUUID(),
+      name: String(form.get("name") || "").trim(),
+      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
+      unit: String(form.get("unit") || "шт."),
+      quantity: Number(form.get("quantity")) || 0,
+      min: Number(form.get("min")) || 0,
+      price: Number(form.get("price")) || 0,
+      lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0,
+      compatibility,
+      archived: existing ? Boolean(item.archived) : false,
+      hiddenFromOrders: form.get("hiddenFromOrders") === "on",
+      tracking: String(form.get("tracking") || "exact"),
+      consumeUnit: item.consumeUnit || String(form.get("unit") || "шт.")
+    };
+    if (!next.name) return toast("Укажи название позиции");
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
     if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
-    if (!existing && next.quantity > 0) data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
-    await saveData(); modal.remove(); await render(); toast("Позиция склада сохранена");
+    if (!existing && next.quantity > 0) {
+      data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
+    }
+    await saveData();
+    modal.remove();
+    await render();
+    toast("Позиция склада сохранена");
   });
 }
 
@@ -2913,6 +2975,14 @@ app.addEventListener("click", async (event) => {
   }
   const filter = event.target.closest("[data-filter]");
   if (filter) { orderFilter = filter.dataset.filter; saveUiState(); await render(); return; }
+  const warehouseFilterButton = event.target.closest("[data-warehouse-filter]");
+  if (warehouseFilterButton) {
+    warehouseFilter = warehouseFilterButton.dataset.warehouseFilter;
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   const visitFilter = event.target.closest("[data-visit-filter]");
   if (visitFilter) {
     orderVisitFilter = visitFilter.dataset.visitFilter || "all";
