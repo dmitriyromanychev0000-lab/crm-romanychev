@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.74.0";
-const APP_BUILD = "2026.09.26.43";
+const APP_VERSION = "0.75.0";
+const APP_BUILD = "2026.09.26.44";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: прайс-лист и редактор позиций";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: экран акта и A4-предпросмотр";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1423,44 +1423,52 @@ function actPage() {
   const actTotal = Number(order?.sum) || itemsTotal;
   const amountWords = rublesInWords(actTotal);
 
-  return `<main class="content act-content">
-    <div class="page-head no-print"><div><h1>Акт</h1><p class="lead">Подготовка и печать документа</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+  return `<main class="content legacy-act-page">
+    <div class="legacy-subpage-head legacy-act-head no-print">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
+      <div><h1>Акт</h1><p>Подготовка и печать документа</p></div>
+    </div>
 
-    <section class="panel no-print act-control-panel">
-      <div class="panel-title"><span class="badge-icon">${icon("printer")}</span> Акт выполненных работ (A4)</div>
-      <label class="form-group"><span class="act-picker-label">Выберите заявку</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
-      <div class="act-control-actions"><button class="secondary-button" type="button" data-action="open-receipts">${icon("receipt")}<span>Документы и чеки</span></button><button class="primary-button act-print-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button></div>
+    <section class="legacy-act-control no-print">
+      <div class="legacy-act-control-title"><span>${icon("printer")}</span><h2>Акт выполненных работ (A4)</h2></div>
+      <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
+      <div class="legacy-act-control-actions">
+        <button type="button" class="legacy-dark-button" data-action="open-receipts">${icon("receipt")}<span>Документы</span></button>
+        <button type="button" class="legacy-orange-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button>
+      </div>
     </section>
 
-    ${order ? `<article class="act-sheet">
-      <h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2>
-      <div class="act-contract-line">по договору № ___ от «${day}» ${month} ${year} г.</div>
+    ${order ? `<div class="legacy-act-preview">
+      <article class="act-sheet">
+        <h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2>
+        <div class="act-contract-line">по договору № ___ от «${day}» ${month} ${year} г.</div>
 
-      <div class="act-main-fields">
-        <div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div>
-        <div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div>
-        <div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div>
-        <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
-      </div>
-
-      <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "—"}</td></tr>`).join("")}</tbody></table>
-
-      <div class="act-totals">
-        <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
-        <div><b>Итого к оплате:</b><strong>${money(actTotal)}</strong></div>
-        <div class="act-total-words"><b>Сумма прописью:</b><span>${escapeHtml(amountWords)}</span></div>
-      </div>
-
-      <section class="act-acceptance">
-        <h3>АКТ СДАЧИ-ПРИЕМКИ ОКАЗАННЫХ УСЛУГ</h3>
-        <div class="act-acceptance-date">от «${day}» ${month} ${year} г.</div>
-        <p>Мы, нижеподписавшиеся, <b>Исполнитель ${escapeHtml(data.settings.name || data.settings.companyName || "________________")}</b> с одной стороны, и представитель Заказчика <b>${escapeHtml(order.name || "________________")}</b> с другой стороны, составили настоящий Акт о том, что в соответствии с настоящим договором Исполнителем выполнен в полном объёме перечень работ по обслуживанию оборудования, указанного в данном договоре. С условиями обслуживания и оплаты Заказчик ознакомлен. К качеству работ (услуг) и состоянию оборудования заказчик претензий не имеет.</p>
-        <div class="act-signatures">
-          <div><b>Исполнитель:</b><br>Ф.И.О.: ${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________<br><br>Адрес оказания услуг:<br>${escapeHtml(order.address || "________________")}</div>
-          <div><b>Заказчик:</b><br>Ф.И.О.: ${escapeHtml(order.name || "________________")}<br>Телефон: ${escapeHtml(order.phone || "________________")}<br>Подпись: ____________</div>
+        <div class="act-main-fields">
+          <div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div>
+          <div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div>
+          <div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div>
+          <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
         </div>
-      </section>
-    </article>` : emptyState("document", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
+
+        <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "—"}</td></tr>`).join("")}</tbody></table>
+
+        <div class="act-totals">
+          <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
+          <div><b>Итого к оплате:</b><strong>${money(actTotal)}</strong></div>
+          <div class="act-total-words"><b>Сумма прописью:</b><span>${escapeHtml(amountWords)}</span></div>
+        </div>
+
+        <section class="act-acceptance">
+          <h3>АКТ СДАЧИ-ПРИЕМКИ ОКАЗАННЫХ УСЛУГ</h3>
+          <div class="act-acceptance-date">от «${day}» ${month} ${year} г.</div>
+          <p>Мы, нижеподписавшиеся, <b>Исполнитель ${escapeHtml(data.settings.name || data.settings.companyName || "________________")}</b> с одной стороны, и представитель Заказчика <b>${escapeHtml(order.name || "________________")}</b> с другой стороны, составили настоящий Акт о том, что в соответствии с настоящим договором Исполнителем выполнен в полном объёме перечень работ по обслуживанию оборудования, указанного в данном договоре. С условиями обслуживания и оплаты Заказчик ознакомлен. К качеству работ (услуг) и состоянию оборудования заказчик претензий не имеет.</p>
+          <div class="act-signatures">
+            <div><b>Исполнитель:</b><br>Ф.И.О.: ${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________<br><br>Адрес оказания услуг:<br>${escapeHtml(order.address || "________________")}</div>
+            <div><b>Заказчик:</b><br>Ф.И.О.: ${escapeHtml(order.name || "________________")}<br>Телефон: ${escapeHtml(order.phone || "________________")}<br>Подпись: ____________</div>
+          </div>
+        </section>
+      </article>
+    </div>` : emptyState("document", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
   </main>`;
 }
 function goodsPage() {
