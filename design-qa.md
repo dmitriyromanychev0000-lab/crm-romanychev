@@ -1,4 +1,4 @@
-# Design QA — Release candidate 0.99.9
+# Design QA — Release candidate 0.99.10
 
 - Source visual truth: `Visual_koncept/file_00000000b1848246b2b9135b6ca828b3.png`
 - Source pixels: 1448 × 1086, density not normalized because the sheet contains three framed phone screens.
@@ -63,3 +63,5 @@ final result: blocked
 - Version 0.99.8 raises the rendered QA bar: sub-32 px interactive targets fail the smoke run, backup is included as a screen, and 320/390 px modal coverage now includes order detail/actions, both nested catalogs, stock detail, client profile and goods editor.
 
 - Version 0.99.9 removes the service-catalog local Escape handler so the global modal stack closes exactly one layer per Escape and preserves the underlying order editor lock.
+
+- Version 0.99.10 fixes the only rendered small-touch-target failure from the 86-state smoke run: automatic backup now has a 64×44 px hit area with a compact visual track. QA reports are only published when the tested commit is still the current main head.
