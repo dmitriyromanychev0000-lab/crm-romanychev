@@ -93,7 +93,7 @@ function uiState(extra) {
 }
 
 async function writeSeed(page) {
-  await page.goto(BASE_URL, { waitUntil: "networkidle" });
+  await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
   await page.evaluate(async (payload) => {
     await new Promise((resolve, reject) => {
       const request = indexedDB.open("crm-romanychev", 1);
@@ -114,8 +114,8 @@ async function writeSeed(page) {
 
 async function setState(page, state) {
   await page.evaluate((stateValue) => localStorage.setItem("crm-ui-state", JSON.stringify(stateValue)), state);
-  await page.reload({ waitUntil: "networkidle" });
-  await page.waitForTimeout(120);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(60);
 }
 
 async function inspect(page, label, width) {
@@ -176,13 +176,20 @@ async function shot(page, width, label, fullPage = true) {
   ];
 
   for (const width of widths) {
-    const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+      deviceScaleFactor: 1,
+      serviceWorkers: "block"
+    });
     const page = await context.newPage();
+    page.setDefaultTimeout(8000);
+    page.setDefaultNavigationTimeout(10000);
     page.on("pageerror", (error) => report.failures.push({ width, type: "pageerror", message: String(error) }));
     page.on("console", (msg) => { if (msg.type() === "error") report.failures.push({ width, type: "console", message: msg.text() }); });
     await writeSeed(page);
 
     for (const [label, state] of screens) {
+      console.log(`QA ${width}px · ${label}`);
       await setState(page, state);
       const result = await shot(page, width, label, true);
       report.results.push(result);
