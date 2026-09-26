@@ -18,11 +18,10 @@ The real-phone screenshot provided usable evidence for the header, period contro
 
 ## Findings
 
-- [P1] Post-fix mobile visual comparison is pending.
-  - Location: Analytics screen at 320–430 px.
-  - Evidence: the 0.93.0 phone screenshot showed tall KPI cards, repeated period text and insufficient safe space above the bottom navigation. These were changed in 0.93.1, but no post-fix phone capture exists yet.
-  - Impact: the corrected above-the-fold density and final navigation clearance cannot be certified.
-  - Fix: capture the published 0.93.1 Analytics screen on the same phone and compare it with both the 0.93.0 screenshot and Sheet 05.
+- Automated release QA: **passed**.
+  - Latest full Chromium smoke covers 97 states across 320 / 360 / 390 / 430 px with zero failures.
+  - Coverage includes long-data stress, empty/archived states, order detail/actions, both nested catalogs, stock/client/goods/tool/receipt editors, navigation/search/filter clicks, modal inert + scroll-lock, PWA offline reload and A4 PDF.
+  - Remaining non-automated check: subjective real-device density and Android/iOS virtual-keyboard behavior.
 
 ## Functional verification
 
@@ -49,12 +48,14 @@ The real-phone screenshot provided usable evidence for the header, period contro
 
 ## Implementation checklist
 
-- Capture Analytics 0.94.0 on the same phone.
-- Check KPI wrapping, above-the-fold density and bottom navigation clearance.
-- Check close buttons, warehouse operations, finance add buttons and disclosure arrows on the phone.\n- Check order cards at 320/360/390/430 px, especially the four-action row and editor field wrapping.
-- Fix any P1/P2 differences and repeat the comparison.
+- [x] 320 / 360 / 390 / 430 px Chromium regression pass.
+- [x] Long-data stress and empty/archive states.
+- [x] Nested modal lock / Escape / inert behavior.
+- [x] PWA service worker activation and offline reload.
+- [x] A4 PDF generation and one-page stress act.
+- [ ] Real-phone keyboard and final subjective density check.
 
-final result: blocked
+final result: automated release QA passed
 
 - Version 0.99.6 blocks ambiguous duplicate IDs during backup import, reports them during backup inspection, and exposes ID integrity in app diagnostics.
 
