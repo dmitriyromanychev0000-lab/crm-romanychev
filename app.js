@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.79.0";
-const APP_BUILD = "2026.09.26.48";
+const APP_VERSION = "0.80.0";
+const APP_BUILD = "2026.09.26.49";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Мобильная сборка по архивным скриншотам: восстановлена верхняя часть склада и редактор позиции";
+const APP_RELEASE = "Мобильная сборка по архивным скриншотам: каталог материалов по технике";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2227,6 +2227,104 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   renderCatalog();
 }
 
+function materialCatalogTechTokens(tech = "") {
+  const value = String(tech || "").toLowerCase();
+  if (value.includes("коммер")) return ["коммер", "холод"];
+  if (value.includes("холод") || value.includes("мороз")) return ["холод"];
+  if (value.includes("стира")) return ["стира"];
+  if (value.includes("посуд")) return ["посуд"];
+  if (value.includes("сушил")) return ["сушил"];
+  if (value.includes("плит") || value.includes("дух")) return ["плит", "дух"];
+  if (value.includes("кондиц")) return ["кондиц"];
+  if (value.includes("водонагр") || value.includes("бойлер")) return ["водонагр", "бойлер"];
+  if (value.includes("мелк")) return ["мелк", "бытов"];
+  return [];
+}
+
+function materialFitsTech(item, tech) {
+  const compatibility = Array.isArray(item.compatibility) ? item.compatibility.map(String) : String(item.compatibility || "").split(",");
+  const normalized = compatibility.map((value) => value.trim().toLowerCase()).filter(Boolean);
+  if (!normalized.length) return true;
+  if (normalized.some((value) => value.includes("универс") || value.includes("вся техник"))) return true;
+  const tokens = materialCatalogTechTokens(tech);
+  if (!tokens.length) return true;
+  return normalized.some((value) => tokens.some((token) => value.includes(token)));
+}
+
+function openMaterialCatalog(orderModal) {
+  const tech = String(orderModal.querySelector('[name="tech"]')?.value || "Техника");
+  const source = data.warehouse.filter((item) => !item.archived && !item.hiddenFromOrders && materialFitsTech(item, tech));
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop material-catalog-backdrop";
+  modal.innerHTML = `<section class="material-catalog-modal" aria-label="Каталог материалов">
+    <header class="material-catalog-head">
+      <span class="material-catalog-icon">${icon("price")}</span>
+      <div><strong>Каталог · ${escapeHtml(tech)}</strong></div>
+    </header>
+    <div class="material-catalog-search search-row search-with-icon">${icon("search")}<input class="search" id="material-catalog-search" placeholder="Название товара" /></div>
+    <div class="material-catalog-list" id="material-catalog-list"></div>
+    <button type="button" class="material-catalog-close">Закрыть</button>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const list = modal.querySelector("#material-catalog-list");
+  const search = modal.querySelector("#material-catalog-search");
+
+  const render = () => {
+    const query = String(search.value || "").trim().toLowerCase();
+    const filtered = source.filter((item) => [item.name,item.category,item.unit].join(" ").toLowerCase().includes(query));
+    const groups = [...filtered.reduce((map,item) => {
+      const key = String(item.category || "Прочее").trim() || "Прочее";
+      if(!map.has(key)) map.set(key,[]);
+      map.get(key).push(item);
+      return map;
+    }, new Map()).entries()].sort(([a],[b]) => a.localeCompare(b,"ru"));
+
+    list.innerHTML = groups.length ? groups.map(([category,items]) => `<section class="material-catalog-group">
+      <h3>${escapeHtml(category)}</h3>
+      <div>${items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"ru")).map((item) => {
+        const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
+        return `<button type="button" class="material-catalog-row ${existing ? "selected" : ""}" data-material-id="${escapeHtml(item.id)}">
+          <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.unit || "шт.")} · ${escapeHtml(tech)}</small></span>
+          <b>${money(item.price || item.lastPurchasePrice || 0)}</b>
+        </button>`;
+      }).join("")}</div>
+    </section>`).join("") : `<div class="material-catalog-empty">Ничего не найдено.</div>`;
+  };
+
+  list.addEventListener("click", (event) => {
+    const row = event.target.closest("[data-material-id]");
+    if (!row) return;
+    const item = data.warehouse.find((entry) => String(entry.id) === String(row.dataset.materialId));
+    if (!item) return;
+    const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
+    if (existing) {
+      const qty = existing.querySelector('[data-line="qty"]');
+      qty.value = (Number(qty.value) || 0) + 1;
+      qty.dispatchEvent(new Event("input", { bubbles:true }));
+      toast("Количество увеличено");
+    } else {
+      orderModal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({
+        warehouseId:item.id,
+        name:item.name,
+        qty:1,
+        unit:item.unit || "шт.",
+        unitCost:Number(item.price || item.lastPurchasePrice) || 0,
+        tracking:item.tracking,
+        writeOff:true
+      }));
+      const added = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
+      added?.querySelector('[data-line="qty"]')?.dispatchEvent(new Event("input", { bubbles:true }));
+      toast("Материал добавлен");
+    }
+    render();
+  });
+  search.addEventListener("input", render);
+  modal.querySelector(".material-catalog-close").addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (event) => { if(event.target === modal) modal.remove(); });
+  render();
+}
+
 function newOrderModal(existing = null, options = {}) {
   const forceNew = Boolean(options.forceNew);
   const sourceOrder = existing || {};
@@ -2267,10 +2365,7 @@ function newOrderModal(existing = null, options = {}) {
 
     <div class="form-section-title">Запчасти и материалы</div>
     <p class="legacy-material-help">Показываются позиции, подходящие для выбранной техники, и универсальные материалы. Количество и единицу выбираешь сам.</p>
-    <details class="legacy-catalog-picker material-picker-panel">
-      <summary class="legacy-stock-button">${icon("warehouse")}<span>Выбрать со склада</span></summary>
-      <div class="catalog-add legacy-catalog-content"><select class="field" id="material-picker"><option value="">— Выбрать со склада —</option>${stockOptions}</select><button type="button" class="secondary-button" id="add-material">+ Добавить</button></div>
-    </details>
+    <button type="button" class="legacy-stock-button material-catalog-open" id="open-material-catalog">${icon("warehouse")}<span>Выбрать со склада</span></button>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
     <details class="manual-material-details"><summary>Добавить материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">+ Добавить ручную позицию</button></details>
 
@@ -2371,12 +2466,7 @@ function newOrderModal(existing = null, options = {}) {
     return total;
   };
   modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
-  modal.querySelector("#add-material").addEventListener("click", () => {
-    const picker = modal.querySelector("#material-picker");
-    const item = picker.value === "" ? null : data.warehouse.filter((entry) => !entry.archived && !entry.hiddenFromOrders)[Number(picker.value)];
-    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow(item ? { warehouseId: item.id, name: item.name, qty: 1, unit: item.unit, unitCost: item.price || item.lastPurchasePrice || 0, tracking: item.tracking, writeOff: true } : {}));
-    calculateLines();
-  });
+  modal.querySelector("#open-material-catalog").addEventListener("click", () => openMaterialCatalog(modal));
   modal.querySelector("#add-manual-material").addEventListener("click", () => {
     modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({ qty: 1, unit: "шт.", unitCost: 0, writeOff: false }));
     calculateLines();
