@@ -4039,10 +4039,10 @@ body,
   }
 
   .order-editor-modal .material-card-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .order-editor-modal .material-card-controls label:last-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   #goods-form .line-item {
@@ -4073,6 +4073,15 @@ body,
   }
 }
 
+
+/* 0.50.0 · Единый непрозрачный слой для модалок
+   Не зависит от поддержки backdrop-filter и не даёт контенту нижнего
+   экрана накладываться на форму или принимать нажатия. */
+.modal-backdrop {
+  z-index: 95;
+  background: #050b0f;
+  isolation: isolate;
+}
 
 /* 0.42.2 · Финальная стабилизация модальных футеров */
 .modal-backdrop > .modal {
