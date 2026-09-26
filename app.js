@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.0";
-const APP_BUILD = "2026.09.26.80";
+const APP_VERSION = "0.99.1";
+const APP_BUILD = "2026.09.26.81";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Инструменты, настройки и бэкапы адаптированы для узких телефонов: карточки, формы, системные строки и нижние действия больше не конфликтуют по ширине";
+const APP_RELEASE = "Документы и акт доведены до мобильного и печатного режима: карточки и редактор не сжимаются на 320 px, A4 масштаб учитывает объём документа";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3435,10 +3435,12 @@ function printActOnePage() {
   const sheet = document.querySelector(".act-sheet");
   if (!sheet) return;
   const rows = sheet.querySelectorAll("tbody tr").length;
+  const textLength = String(sheet.innerText || "").length;
   let zoom = 1;
-  if (rows > 22) zoom = 0.94;
-  if (rows > 26) zoom = 0.88;
-  if (rows > 30) zoom = 0.82;
+  if (rows > 18 || textLength > 2200) zoom = 0.94;
+  if (rows > 24 || textLength > 3000) zoom = 0.88;
+  if (rows > 30 || textLength > 3800) zoom = 0.82;
+  if (rows > 36 || textLength > 4600) zoom = 0.76;
   document.documentElement.style.setProperty("--act-print-zoom", String(zoom));
   requestAnimationFrame(() => window.print());
 }
