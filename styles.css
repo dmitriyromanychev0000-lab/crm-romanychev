@@ -307,7 +307,6 @@ h2 { margin: 0; font-size: 24px; }
 .action-close span { color: var(--green); }
 .action-copy span { color: #e9b64f; }
 .action-call span { color: #5ba8ff; }
-.action-telegram span { color: #39b9ff; }
 .secondary-order-action { min-height: 72px; }
 .danger-action { grid-column: 2 / span 1; color: #a8afb4; }
 .danger-action span { color: var(--red); }
@@ -1408,13 +1407,6 @@ h2 { margin: 0; font-size: 24px; }
   border-color: var(--line);
   background: #171e25;
   color: #f1f3f4;
-}
-.legacy-catalog-content {
-  margin-top: 10px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 17px;
-  background: #12181d;
 }
 .legacy-service-list { gap: 0; }
 .legacy-service-total {
@@ -9509,11 +9501,6 @@ button.warehouse-shortcut {
   .legacy-order-actions .action-toggle .ui-icon { color: #4fd584; }
   .legacy-order-actions .action-copy .ui-icon { color: #e8b84f; }
   .legacy-order-actions .action-phone .ui-icon { color: #4aa2ff; }
-  .legacy-order-actions .action-telegram .ui-icon { color: #34baff; }
-  .legacy-order-actions .action-delete {
-    grid-column: 1;
-  }
-  .legacy-order-actions .action-delete .ui-icon { color: #ff5a64; }
   .legacy-order-actions > [disabled] { opacity: .42; }
 
   .legacy-special-filter {
@@ -9565,27 +9552,6 @@ button.warehouse-shortcut {
 @media screen and (max-width: 520px) {
   .legacy-warehouse-page {
     padding: 0 9px 18px;
-  }
-  .legacy-stock-new {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    min-height: 48px;
-    margin: 0 0 8px;
-    padding: 8px 12px;
-    border: 0;
-    border-radius: 0 0 13px 13px;
-    background: var(--legacy-orange);
-    color: #18100d;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .legacy-stock-new > span {
-    font-size: 23px;
-    line-height: 1;
-    font-weight: 300;
   }
 
   .legacy-warehouse-shortcuts {
@@ -10668,9 +10634,6 @@ button.warehouse-shortcut {
     font-size: 9px;
     line-height: 1.4;
   }
-  .material-picker-panel {
-    margin: 0 0 9px;
-  }
   .legacy-stock-button {
     display: flex;
     align-items: center;
@@ -10687,18 +10650,6 @@ button.warehouse-shortcut {
   }
   .legacy-stock-button::-webkit-details-marker { display:none; }
   .legacy-stock-button .ui-icon { width: 18px; height: 18px; }
-  .legacy-catalog-content {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) 88px;
-    gap: 7px;
-    padding: 8px 0 0;
-  }
-  .legacy-catalog-content .field,
-  .legacy-catalog-content button {
-    min-height: 43px;
-    border-radius: 10px;
-    font-size: 9px;
-  }
 
   #material-lines {
     display: grid;
@@ -12722,11 +12673,6 @@ button.warehouse-shortcut {
     min-height:46px;
     font-size:10px;
   }
-  .legacy-stock-new {
-    min-height:48px;
-    margin:0 0 10px;
-    border-radius:12px;
-  }
 
   .stock-editor-backdrop {
     z-index:95;
@@ -12995,52 +12941,6 @@ button.warehouse-shortcut {
     color:#eef0f2;
     font-size:11px;
     font-weight:680;
-  }
-}
-
-
-/* 0.81.0 · Структура "Ещё" по архивному экрану. */
-@media screen and (max-width:520px) {
-  .legacy-more-page {
-    padding-top:18px;
-  }
-  .legacy-more-list .menu-item {
-    min-height:70px;
-  }
-  .legacy-more-list .menu-icon-report {
-    background:rgba(255,113,83,.12);
-    color:#ff8066;
-  }
-  .legacy-more-extra-title {
-    margin:17px 4px 8px;
-    color:#767f86;
-    font-size:8px;
-    font-weight:740;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-  }
-  .legacy-more-extra {
-    gap:7px;
-  }
-  .legacy-more-extra .menu-item {
-    min-height:62px;
-    background:#0f151a;
-  }
-  .legacy-more-extra .menu-icon {
-    width:39px;
-    height:39px;
-    border-radius:11px;
-  }
-  .legacy-more-extra .menu-icon .ui-icon {
-    width:21px;
-    height:21px;
-  }
-  .legacy-more-extra .menu-name {
-    font-size:11px;
-  }
-  .legacy-more-extra .menu-description {
-    margin-top:3px;
-    font-size:8px;
   }
 }
 
