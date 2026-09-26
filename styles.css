@@ -11512,3 +11512,406 @@ button.warehouse-shortcut {
     line-height:1.4;
   }
 }
+
+
+/* 0.76.0 · Клиенты и финансы в старом мобильном визуальном языке. */
+@media screen and (max-width: 520px) {
+  .legacy-clients-page,
+  .legacy-finance-page {
+    padding: 12px 8px 24px;
+  }
+  .legacy-clients-head,
+  .legacy-finance-head {
+    margin-bottom: 14px;
+  }
+
+  .legacy-client-search {
+    margin: 0 0 10px;
+  }
+  .legacy-client-search .search {
+    min-height: 49px;
+    padding-left: 45px;
+    border: 1px solid #2f383f;
+    border-radius: 13px;
+    background: #181f26;
+    color: #edf0f2;
+    font-size: 11px;
+  }
+  .legacy-client-search > .ui-icon {
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    color: #9ba3aa;
+  }
+
+  .legacy-clients-stats {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .legacy-clients-stats > div {
+    min-width: 0;
+    padding: 9px 8px;
+    border: 1px solid #2c353d;
+    border-radius: 11px;
+    background: #161d23;
+  }
+  .legacy-clients-stats span,
+  .legacy-finance-summary span {
+    display: block;
+    color: #8c9399;
+    font-size: 7px;
+    font-weight: 720;
+    letter-spacing: .07em;
+  }
+  .legacy-clients-stats strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 16px;
+  }
+
+  .legacy-client-list {
+    display: grid;
+    gap: 8px;
+  }
+  .legacy-client-card {
+    overflow: hidden;
+    border: 1px solid #2b343c;
+    border-radius: 14px;
+    background: linear-gradient(180deg,#141b21,#11171d);
+  }
+  .legacy-client-main {
+    display: grid;
+    grid-template-columns: 42px minmax(0,1fr) auto;
+    gap: 9px;
+    align-items: center;
+    width: 100%;
+    min-height: 78px;
+    padding: 10px 11px 8px;
+    border: 0;
+    background: transparent;
+    color: #edf0f2;
+    text-align: left;
+  }
+  .legacy-client-avatar {
+    display: grid;
+    place-items: center;
+    width: 41px;
+    height: 41px;
+    border: 1px solid rgba(255,113,83,.3);
+    border-radius: 12px;
+    background: rgba(255,113,83,.08);
+    color: #ff7b61;
+  }
+  .legacy-client-avatar .ui-icon { width: 22px; height: 22px; }
+  .legacy-client-copy,
+  .legacy-client-side { min-width: 0; }
+  .legacy-client-copy strong,
+  .legacy-client-copy small,
+  .legacy-client-copy em,
+  .legacy-client-side b,
+  .legacy-client-side small {
+    display: block;
+  }
+  .legacy-client-copy strong {
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legacy-client-copy small {
+    margin-top: 3px;
+    color: #9aa1a7;
+    font-size: 8px;
+  }
+  .legacy-client-copy em {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: hidden;
+    margin-top: 3px;
+    color: #aa8be8;
+    font-size: 7px;
+    font-style: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legacy-client-copy em .ui-icon { width: 10px; height: 10px; }
+  .legacy-client-side {
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+  }
+  .legacy-client-side b {
+    color: #ff7b61;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .legacy-client-side small {
+    color: #7e868d;
+    font-size: 7px;
+  }
+  .legacy-client-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 11px;
+    padding: 8px 11px;
+    border-top: 1px solid #252e35;
+    color: #8f969c;
+    font-size: 7px;
+  }
+  .legacy-client-meta b { color: #dfe3e6; }
+  .legacy-client-actions {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 6px;
+    padding: 0 11px 10px;
+  }
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 39px;
+    border: 1px solid #303941;
+    border-radius: 10px;
+    background: #181f26;
+    color: #cbd1d5;
+    font-size: 8px;
+    text-decoration: none;
+  }
+  .legacy-client-actions .ui-icon { width: 15px; height: 15px; }
+  .legacy-client-actions a .ui-icon { color: #4fa7ff; }
+  .legacy-client-actions button .ui-icon { color: #ff7b61; }
+  .legacy-client-empty,
+  .legacy-finance-empty {
+    padding: 16px 12px;
+    border: 1px dashed #303840;
+    border-radius: 11px;
+    color: #858c92;
+    font-size: 9px;
+    text-align: center;
+  }
+
+  .legacy-finance-periods {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .legacy-finance-periods button {
+    min-height: 37px;
+    padding: 4px 3px;
+    border: 1px solid #303940;
+    border-radius: 11px;
+    background: #141b21;
+    color: #8f969c;
+    font-size: 8px;
+  }
+  .legacy-finance-periods button.active {
+    border-color: #ff7153;
+    background: rgba(255,113,83,.11);
+    color: #f0ecea;
+  }
+
+  .legacy-finance-summary {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .legacy-finance-summary > div {
+    min-height: 73px;
+    padding: 11px 10px;
+    border: 1px solid #2c353d;
+    border-radius: 12px;
+    background: #161d23;
+  }
+  .legacy-finance-summary .result {
+    grid-column: 1 / -1;
+    min-height: 66px;
+  }
+  .legacy-finance-summary strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 18px;
+  }
+  .legacy-finance-summary .income strong { color: #58d889; }
+  .legacy-finance-summary .expense strong { color: #ff636d; }
+
+  .legacy-finance-actions {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .legacy-finance-actions > button {
+    min-height: 46px;
+    border-radius: 11px;
+    font-size: 9px;
+  }
+
+  .legacy-finance-history {
+    padding: 11px 10px;
+    border: 1px solid #2b343c;
+    border-radius: 14px;
+    background: linear-gradient(180deg,#141b21,#11171d);
+  }
+  .legacy-finance-history-head {
+    display: grid;
+    grid-template-columns: 33px minmax(0,1fr) auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 7px;
+  }
+  .legacy-finance-history-head h2 {
+    margin: 0;
+    font-size: 13px;
+  }
+  .legacy-finance-history-head > b {
+    display: grid;
+    place-items: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 7px;
+    background: #1a2229;
+    color: #9fa6ac;
+    font-size: 8px;
+  }
+  .legacy-finance-list {
+    display: grid;
+  }
+  .legacy-finance-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1fr) auto 28px;
+    gap: 8px;
+    align-items: center;
+    min-height: 58px;
+    padding: 7px 0;
+    border-top: 1px solid #283139;
+  }
+  .legacy-finance-row:first-child { border-top: 0; }
+  .legacy-finance-kind {
+    display: grid;
+    place-items: center;
+    width: 33px;
+    height: 33px;
+    border-radius: 9px;
+    background: #1a2229;
+  }
+  .legacy-finance-row.income .legacy-finance-kind { color: #58d889; }
+  .legacy-finance-row.expense .legacy-finance-kind { color: #ff636d; }
+  .legacy-finance-kind .ui-icon { width: 17px; height: 17px; }
+  .legacy-finance-copy strong,
+  .legacy-finance-copy small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legacy-finance-copy strong { font-size: 9px; }
+  .legacy-finance-copy small {
+    margin-top: 3px;
+    color: #858c92;
+    font-size: 7px;
+  }
+  .legacy-finance-row > b {
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .legacy-finance-row > button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(255,91,101,.06);
+    color: #ff6670;
+  }
+  .legacy-finance-row > button .ui-icon { width: 14px; height: 14px; }
+
+  .legacy-client-profile-backdrop,
+  .legacy-finance-entry-backdrop {
+    z-index: 140;
+    top: 0 !important;
+    bottom: 0 !important;
+    padding: 0;
+    background: #080d11;
+  }
+  .legacy-client-profile-backdrop .client-profile-modal,
+  .legacy-finance-entry-backdrop .finance-entry-modal {
+    width: 100%;
+    max-width: none;
+    min-height: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: #080d11;
+    box-shadow: none;
+  }
+  .legacy-client-profile-backdrop .client-profile-head,
+  .legacy-finance-entry-backdrop .finance-entry-head {
+    min-height: 64px;
+    border-bottom: 1px solid #222a31;
+    background: #0c1115;
+  }
+  .legacy-client-profile-backdrop .client-profile-content {
+    padding: 12px 10px 24px;
+  }
+  .legacy-client-profile-backdrop .client-profile-hero,
+  .legacy-client-profile-backdrop .client-profile-address,
+  .legacy-client-profile-backdrop .client-profile-kpis,
+  .legacy-client-profile-backdrop .client-profile-history {
+    border-color: #2b343c;
+    background: #141b21;
+    box-shadow: none;
+  }
+  .legacy-client-profile-backdrop .client-profile-avatar {
+    border-color: rgba(255,113,83,.3);
+    background: rgba(255,113,83,.08);
+    color: #ff7b61;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-modal {
+    padding: 0 12px 22px;
+  }
+  .legacy-finance-entry-backdrop .finance-entry-head {
+    margin: 0 -12px 12px;
+    padding: 9px 12px;
+  }
+  .legacy-finance-entry-backdrop .finance-entry-type {
+    min-height: 48px;
+    border-radius: 11px;
+    background: #141b21;
+  }
+  .legacy-finance-entry-backdrop .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+  }
+  .legacy-finance-entry-backdrop .form-group.full { grid-column: 1 / -1; }
+  .legacy-finance-entry-backdrop .form-group label { font-size: 8px; }
+  .legacy-finance-entry-backdrop .field {
+    min-height: 47px;
+    border-radius: 11px;
+    background: #181f26;
+    font-size: 10px;
+  }
+  .legacy-finance-entry-backdrop .modal-actions {
+    position: sticky;
+    bottom: 0;
+    margin: 14px -12px -22px;
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+    border-top: 1px solid #222a31;
+    background: rgba(8,13,17,.97);
+  }
+  .legacy-finance-entry-backdrop .modal-actions button {
+    min-height: 43px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+}
