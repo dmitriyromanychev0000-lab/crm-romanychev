@@ -82,3 +82,7 @@ Also read:
 - `../design/mobile-crm-redesign/README.md`
 
 The small file `Q` in this folder is not a design reference and can be ignored.
+
+## Implementation status
+
+As of **v0.67.0 (2026-09-26)**, Sheets 01–10 have been implemented in the main mobile CRM flow. The next pass should focus on live-device visual comparison against the PNG references, regression testing, and micro-adjustments rather than large structural redesigns.
