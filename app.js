@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.59.0";
-const APP_BUILD = "2026.09.26.28";
+const APP_VERSION = "0.60.0";
+const APP_BUILD = "2026.09.26.29";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 03 завершён: склад, фильтры, карточка позиции и компактный редактор";
+const APP_RELEASE = "Редизайн Sheet 04: отдельная история движений и список покупок с копированием и отправкой";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -56,7 +56,8 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
-let warehouseCreateOpen = false;
+let warehouseSection = ["list", "movements", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "list";
+let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiState.warehouseMovementFilter)) ? String(initialUiState.warehouseMovementFilter) : "all";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
 let priceTechFilter = typeof initialUiState.priceTechFilter === "string" ? initialUiState.priceTechFilter : "all";
@@ -78,7 +79,8 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
-      warehouseCreateOpen,
+      warehouseSection,
+      warehouseMovementFilter,
       clientSearch,
       priceSearch,
       priceTechFilter,
@@ -660,7 +662,7 @@ function header() {
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
     </div>${activePage === "orders"
       ? `<button class="header-add" data-action="new-order" aria-label="Новая заявка">+</button>`
-      : activePage === "warehouse"
+      : activePage === "warehouse" && warehouseSection === "list"
         ? `<button class="header-add" data-action="new-stock" aria-label="Новая позиция склада">+</button>`
         : ""}
   </header>`;
@@ -871,16 +873,7 @@ function warehousePage() {
     .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
-  const movements = [...data.warehouse_movements]
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    .slice(0, 30);
-  const movementLabels = {
-    initial: "Начальный остаток",
-    manual_in: "Приход",
-    manual_out: "Ручное списание",
-    order_out: "Списано в заявку",
-    order_return: "Возврат из заявки"
-  };
+
 
   return `<main class="content warehouse-content">
     <div class="page-head warehouse-head"><div><h1>Склад</h1><p class="lead">Запчасти и расходные материалы</p></div></div>
@@ -894,7 +887,7 @@ function warehousePage() {
     </div>
 
     <div class="warehouse-shortcuts">
-      <a class="warehouse-shortcut" href="#warehouse-movements">${icon("history")}<span>История движения</span></a>
+      <button type="button" class="warehouse-shortcut" data-action="open-warehouse-movements">${icon("history")}<span>История движения</span></button>
       <button type="button" class="warehouse-shortcut" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
@@ -921,15 +914,6 @@ function warehousePage() {
           }).join("")}</div>
         </section>`;
       }).join("") : (query ? emptyState("search", "Ничего не найдено", "Попробуй изменить запрос поиска.") : emptyState("warehouse", "Склад пуст", "Добавь первую позицию или импортируй бэкап."))}
-    </section>
-
-    <section id="warehouse-movements" class="panel warehouse-movements"><div class="panel-title"><span class="badge-icon">${icon("history")}</span> История движения</div>
-      ${movements.length ? `<ul class="list">${movements.map((movement) => {
-        const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
-        const incoming = ["initial", "manual_in", "order_return"].includes(movement.type);
-        const source = movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : "";
-        return `<li class="price-row"><div><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><div class="small">${movementLabels[movement.type] || "Движение"}${source} · ${shortDate(movement.date)}</div></div><strong class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</strong></li>`;
-      }).join("")}</ul>` : `<div class="empty">Движений пока нет</div>`}
     </section>
   </main>`;
 }
@@ -1767,10 +1751,71 @@ async function copyTextToClipboard(text, successMessage = "Скопирован�
   toast(successMessage);
 }
 
+function warehouseMovementsPage() {
+  const movementLabels = {
+    initial: "Начальный остаток",
+    manual_in: "Приход",
+    manual_out: "Ручное списание",
+    order_out: "Списано в заявку",
+    order_return: "Возврат из заявки"
+  };
+  const incomingTypes = new Set(["initial", "manual_in", "order_return"]);
+  const source = [...data.warehouse_movements]
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  const movements = source.filter((movement) => {
+    const incoming = incomingTypes.has(movement.type);
+    return warehouseMovementFilter === "all"
+      || (warehouseMovementFilter === "in" && incoming)
+      || (warehouseMovementFilter === "out" && !incoming);
+  });
+  const inCount = source.filter((movement) => incomingTypes.has(movement.type)).length;
+  const outCount = source.length - inCount;
+
+  return `<main class="content warehouse-support-content">
+    <div class="support-page-head">
+      <button type="button" class="support-back" data-action="warehouse-list" aria-label="Назад">‹</button>
+      <div><h1>История движения</h1><p>Приходы, списания и движения по заявкам</p></div>
+    </div>
+
+    <div class="movement-filter-chips">
+      <button type="button" class="${warehouseMovementFilter === "all" ? "active" : ""}" data-movement-filter="all">Все <span>${source.length}</span></button>
+      <button type="button" class="${warehouseMovementFilter === "in" ? "active" : ""}" data-movement-filter="in">Приход <span>${inCount}</span></button>
+      <button type="button" class="${warehouseMovementFilter === "out" ? "active" : ""}" data-movement-filter="out">Расход <span>${outCount}</span></button>
+    </div>
+
+    <section class="movement-list">
+      ${movements.length ? movements.map((movement) => {
+        const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
+        const incoming = incomingTypes.has(movement.type);
+        const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
+        return `<article class="movement-card">
+          <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${incoming ? "+" : "−"}</span>
+          <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
+          <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
+        </article>`;
+      }).join("") : `<div class="panel empty warehouse-support-empty"><div class="empty-icon">${icon("history")}</div><h2>Движений нет</h2><p>Для выбранного фильтра записей пока нет.</p></div>`}
+    </section>
+  </main>`;
+}
+
+async function shareShoppingList() {
+  const text = shoppingListText();
+  if (!shoppingItems().length) return toast("Список покупок пуст");
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Список покупок", text });
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+    }
+  }
+  return copyTextToClipboard(text, "Список скопирован — можно отправить");
+}
+
 function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
-  return `<main class="content shopping-content"><div class="page-head"><div><h1>Список покупок</h1><p class="lead">Позиции ниже минимального остатка</p></div><button class="secondary-button" data-action="${backAction}">Назад</button></div>
-    <div class="shopping-page-actions"><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
+  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">‹</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
+    <div class="shopping-page-actions"><button class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать</span></button></div>
     ${items.length ? `<div class="client-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
       return `<article class="panel shopping-card legacy-shopping-card"><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · остаток ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>Докупить</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
@@ -1812,7 +1857,7 @@ async function morePage() {
 async function render() {
   let page;
   if (activePage === "orders") page = ordersPage();
-  if (activePage === "warehouse") page = warehousePage();
+  if (activePage === "warehouse") page = warehouseSection === "movements" ? warehouseMovementsPage() : warehouseSection === "shopping" ? shoppingPage("warehouse-list") : warehousePage();
   if (activePage === "analytics") page = analyticsPage();
   if (activePage === "more") page = await morePage();
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
@@ -2967,6 +3012,7 @@ app.addEventListener("click", async (event) => {
   const navButton = event.target.closest("[data-nav]");
   if (navButton) {
     activePage = navButton.dataset.nav;
+    if (activePage === "warehouse") warehouseSection = "list";
     if (activePage !== "more") moreSection = "menu";
     saveUiState({ scrollY: 0 });
     await render();
@@ -2978,6 +3024,14 @@ app.addEventListener("click", async (event) => {
   const warehouseFilterButton = event.target.closest("[data-warehouse-filter]");
   if (warehouseFilterButton) {
     warehouseFilter = warehouseFilterButton.dataset.warehouseFilter;
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  const movementFilterButton = event.target.closest("[data-movement-filter]");
+  if (movementFilterButton) {
+    warehouseMovementFilter = movementFilterButton.dataset.movementFilter;
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
@@ -3012,16 +3066,32 @@ app.addEventListener("click", async (event) => {
   const financeFilter = event.target.closest("[data-finance-period]");
   if (financeFilter) { financePeriod = financeFilter.dataset.financePeriod; saveUiState(); await render(); return; }
   const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "open-warehouse-movements") {
+    activePage = "warehouse";
+    warehouseSection = "movements";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "open-shopping") {
-    activePage = "more";
-    moreSection = "shopping";
-    warehouseCreateOpen = false;
+    activePage = "warehouse";
+    warehouseSection = "shopping";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (action === "warehouse-list") {
+    activePage = "warehouse";
+    warehouseSection = "list";
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
     return;
   }
   if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
+  if (action === "share-shopping-list") return shareShoppingList();
   if (action === "new-order") return newOrderModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
@@ -3059,7 +3129,6 @@ app.addEventListener("click", async (event) => {
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "protect-storage") return requestPersistentStorage();
-  if (action === "toggle-stock-form") { warehouseCreateOpen = !warehouseCreateOpen; saveUiState({ scrollY: 0 }); await render(); window.scrollTo(0, 0); return; }
   if (action === "new-price") return priceModal();
   if (action === "new-receipt") return receiptModal();
   if (action === "continue-draft") {
@@ -3140,6 +3209,7 @@ app.addEventListener("click", async (event) => {
   if (more) {
     const supportedMoreSections = ["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
     if (!supportedMoreSections.includes(more)) return toast("Раздел недоступен");
+    if (more === "shopping") activePage = "more";
     moreSection = more;
     saveUiState({ scrollY: 0 });
     await render();
@@ -3172,14 +3242,6 @@ app.addEventListener("input", (event) => {
     sanitizeRussianPhoneField(event.target);
     return;
   }
-  if (event.target.closest("#warehouse-inline-form") && ["quantity", "purchaseTotal"].includes(event.target.name)) {
-    const form = event.target.closest("#warehouse-inline-form");
-    const quantity = Number(form.elements.quantity.value) || 0;
-    const total = Number(form.elements.purchaseTotal.value) || 0;
-    const output = form.querySelector("#warehouse-unit-cost");
-    if (output) output.textContent = money(quantity > 0 ? total / quantity : 0);
-    return;
-  }
   const liveSearch = async (selector) => {
     const cursor = event.target.selectionStart;
     await render();
@@ -3210,45 +3272,6 @@ app.addEventListener("input", (event) => {
 });
 
 app.addEventListener("submit", async (event) => {
-  if (event.target.id === "warehouse-inline-form") {
-    event.preventDefault();
-    const form = new FormData(event.target);
-    const quantity = Number(form.get("quantity")) || 0;
-    const purchaseTotal = Number(form.get("purchaseTotal")) || 0;
-    const unitCost = quantity > 0 ? purchaseTotal / quantity : 0;
-    const item = {
-      id: crypto.randomUUID(),
-      name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
-      unit: String(form.get("unit") || "шт."),
-      quantity,
-      min: Number(form.get("min")) || 0,
-      price: Number(form.get("price")) || 0,
-      lastPurchasePrice: unitCost,
-      lastPurchaseTotal: purchaseTotal,
-      compatibility: form.getAll("compatibility").map(String).filter(Boolean),
-      archived: false,
-      hiddenFromOrders: false,
-      tracking: String(form.get("tracking") || "exact"),
-      consumeUnit: String(form.get("unit") || "шт.")
-    };
-    if (!item.name) return toast("Укажи название позиции");
-    data.warehouse.push(item);
-    if (quantity > 0) data.warehouse_movements.push({
-      id: crypto.randomUUID(),
-      warehouseId: item.id,
-      name: item.name,
-      qty: quantity,
-      type: "initial",
-      date: new Date().toISOString()
-    });
-    await saveData();
-    warehouseCreateOpen = false;
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return toast("Позиция добавлена на склад");
-  }
   if (event.target.id !== "settings-form") return;
   event.preventDefault();
   const settingsPhoneInput = event.target.elements.phone;
