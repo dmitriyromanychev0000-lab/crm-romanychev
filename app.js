@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.95.0";
-const APP_BUILD = "2026.09.26.75";
+const APP_VERSION = "0.95.1";
+const APP_BUILD = "2026.09.26.76";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Заявки стали чище на телефоне: четыре удобных действия вместо пяти тесных, копирование перенесено в меню, добиты системные SVG и экран 320 px";
+const APP_RELEASE = "Завершён мобильный проход заявок: просмотр получил четыре основные кнопки, редактор удобнее на 320 px, шапка и нижние действия не ломают ширину";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -3388,7 +3388,6 @@ function orderDetailModal(order) {
         <div class="legacy-expanded-actions">
           <button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button>
           <button type="button" data-detail-action="toggle" class="toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
-          <button type="button" data-detail-action="copy" class="copy">${icon("copy")}<span>Копия</span></button>
           ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" class="phone" disabled>${icon("phone")}<span>Позвонить</span></button>`}
           <button type="button" data-detail-action="more" class="more">${icon("more")}<span>Ещё</span></button>
         </div>
