@@ -6866,3 +6866,112 @@
     font-size: 10px !important;
   }
 }
+
+
+/* 0.95.1 · Финальный мобильный проход заявок: просмотр и редактор. */
+@media screen and (max-width: 520px) {
+  .legacy-expanded-actions {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    min-height: 52px !important;
+    padding: 6px 3px !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-expanded-actions .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+    stroke-width: 1.9;
+  }
+
+  .legacy-expanded-title,
+  .legacy-order-title {
+    min-width: 0;
+  }
+
+  .legacy-expanded-title > strong,
+  .legacy-order-title > strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-expanded-meta > span,
+  .legacy-order-meta > span {
+    min-width: 0;
+  }
+
+  .legacy-expanded-meta .address,
+  .legacy-order-meta .address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-detail-section-head h3 {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-detail-brand {
+    grid-template-columns: 36px 34px minmax(0,1fr) 36px !important;
+    gap: 6px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .legacy-detail-back,
+  .legacy-detail-more {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .legacy-detail-logo {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .legacy-detail-brand-copy strong {
+    font-size: 12px !important;
+  }
+
+  .legacy-detail-brand-copy small {
+    display: none !important;
+  }
+
+  .order-editor-modal {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important;
+    scroll-padding-bottom: 142px !important;
+  }
+
+  .order-editor-modal .modal-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .order-editor-modal .modal-actions > .primary-button {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .modal-actions > * {
+    min-height: 44px !important;
+    font-size: 11px !important;
+  }
+
+  .order-calculation-summary {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .order-calculation-summary .calculation-grand {
+    grid-column: 1 / -1 !important;
+  }
+}
