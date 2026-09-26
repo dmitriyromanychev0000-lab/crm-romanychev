@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.99.13";
-const APP_BUILD = "2026.09.26.93";
+const APP_VERSION = "0.99.14";
+const APP_BUILD = "2026.09.26.94";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Денежные KPI защищены от потери цифр: большие суммы больше не скрываются многоточием, а адаптивно уменьшают шрифт на узких экранах";
+const APP_RELEASE = "Самопроверка бэкапа теперь контролирует и настройки/реквизиты, а не только рабочие массивы данных; round-trip через IndexedDB покрывает весь пользовательский конфиг";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -506,7 +506,7 @@ async function runBackupSelfTest() {
     const payload = backupPayload();
     const parsed = JSON.parse(payload);
     const restored = validateBackup(structuredClone(parsed));
-    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft"];
+    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "settings"];
     const compare = (left, right) => sections.filter((key) => JSON.stringify(left[key] ?? defaultData()[key]) !== JSON.stringify(right[key] ?? defaultData()[key]));
 
     const memoryMismatches = compare(parsed, restored);
