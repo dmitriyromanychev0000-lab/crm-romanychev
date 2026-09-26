@@ -10486,3 +10486,582 @@ button.warehouse-shortcut {
     grid-template-columns:1fr;
   }
 }
+
+
+/* 0.73.0 · Форма заявки и каталог по архивным мобильным скриншотам. */
+@media screen and (max-width: 520px) {
+  .order-editor-backdrop {
+    z-index: 80;
+    top: 96px !important;
+    bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    padding: 0;
+    background: #080d11;
+    overflow: hidden;
+  }
+  .order-editor-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0 12px 26px;
+    overflow-y: auto;
+    border: 0;
+    border-radius: 0;
+    background: #0b1014;
+    box-shadow: none;
+  }
+  .order-editor-head {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+    margin: 0 -12px 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #20272d;
+    background: rgba(11,16,20,.98);
+  }
+  .order-editor-head h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 720;
+  }
+  .order-editor-close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #303840;
+    border-radius: 11px;
+    background: #171e25;
+    color: #e9ecee;
+    font-size: 22px;
+  }
+
+  .order-editor-modal .form-section-title {
+    margin: 16px 0 8px;
+    color: #9a9fa4;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .order-editor-modal .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+  }
+  .order-editor-modal .form-group.full { grid-column: 1 / -1; }
+  .order-editor-modal .form-group label {
+    margin-bottom: 5px;
+    color: #979da2;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .order-editor-modal .field {
+    min-height: 47px;
+    padding: 0 11px;
+    border: 1px solid #303840;
+    border-radius: 11px;
+    background: #181f26;
+    color: #eef0f2;
+    font-size: 11px;
+  }
+  .order-editor-modal .textarea {
+    min-height: 78px;
+    padding-top: 11px;
+    line-height: 1.35;
+  }
+  .order-editor-modal .compact-textarea { min-height: 58px; }
+
+  .legacy-service-catalog-open {
+    width: 100%;
+    min-height: 54px;
+    margin: 0 0 8px;
+    border: 1px solid rgba(255,113,83,.6);
+    border-radius: 12px;
+    background: rgba(255,113,83,.06);
+    color: #ff795d;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .legacy-service-catalog-open .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .legacy-service-list {
+    display: grid;
+    gap: 0;
+  }
+  .legacy-service-row {
+    display: grid !important;
+    grid-template-columns: 20px minmax(0,1fr) auto !important;
+    gap: 4px !important;
+    align-items: center;
+    min-height: 43px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid #293138 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  .legacy-service-row .service-check {
+    display: grid;
+    place-items: center;
+    color: #f0f1f2;
+  }
+  .legacy-service-row .service-check .ui-icon {
+    width: 15px;
+    height: 15px;
+  }
+  .legacy-service-row .service-name-field,
+  .legacy-service-row .service-price-field input {
+    min-height: 40px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .legacy-service-row .service-name-field {
+    font-size: 12px !important;
+  }
+  .legacy-service-row .service-price-field {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 72px;
+  }
+  .legacy-service-row .service-price-field input {
+    width: 64px;
+    text-align: right;
+    font-size: 11px !important;
+  }
+  .legacy-service-row .service-price-field > span {
+    margin-left: 2px;
+    color: #dfe2e4;
+    font-size: 11px;
+  }
+  .legacy-service-row .service-qty-field,
+  .legacy-service-row .service-remove {
+    display: none !important;
+  }
+  .legacy-service-total {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+    color: #eef0f1;
+    font-size: 11px;
+  }
+  .legacy-service-total strong { font-size: 11px; }
+  .legacy-service-total .green { color: #5fd789; }
+
+  .legacy-material-help {
+    margin: -1px 0 9px;
+    color: #858c92;
+    font-size: 9px;
+    line-height: 1.4;
+  }
+  .material-picker-panel {
+    margin: 0 0 9px;
+  }
+  .legacy-stock-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 53px;
+    border: 1px solid #343d45;
+    border-radius: 12px;
+    background: #181f26;
+    color: #edf0f2;
+    font-size: 13px;
+    font-weight: 650;
+    list-style: none;
+  }
+  .legacy-stock-button::-webkit-details-marker { display:none; }
+  .legacy-stock-button .ui-icon { width: 18px; height: 18px; }
+  .legacy-catalog-content {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 88px;
+    gap: 7px;
+    padding: 8px 0 0;
+  }
+  .legacy-catalog-content .field,
+  .legacy-catalog-content button {
+    min-height: 43px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+
+  #material-lines {
+    display: grid;
+    gap: 9px;
+  }
+  .legacy-material-card {
+    padding: 10px 9px !important;
+    border: 1px solid #2e373f !important;
+    border-radius: 12px !important;
+    background: #161d23 !important;
+  }
+  .material-card-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 40px;
+    gap: 8px;
+    align-items: start;
+  }
+  .material-card-head .material-name-field {
+    min-height: 32px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    font-size: 12px !important;
+    font-weight: 650;
+  }
+  .material-card-head small {
+    display: block;
+    margin-top: 1px;
+    color: #858c92;
+    font-size: 8px;
+  }
+  .material-remove {
+    width: 38px !important;
+    height: 38px !important;
+    border: 1px solid rgba(255,91,101,.28) !important;
+    border-radius: 11px !important;
+    background: rgba(255,91,101,.07) !important;
+    color: #ff5d67 !important;
+  }
+  .material-remove .ui-icon { width: 18px; height: 18px; }
+  .material-card-controls {
+    display: grid !important;
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 7px !important;
+    margin-top: 9px;
+  }
+  .material-card-controls label > span {
+    display: block;
+    margin-bottom: 5px;
+    color: #949a9f;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .material-card-controls .field {
+    min-height: 43px !important;
+    padding: 0 8px !important;
+    font-size: 10px !important;
+  }
+  .material-unit {
+    display: flex;
+    align-items: center;
+  }
+
+  .manual-material-details {
+    margin-top: 8px;
+    border: 1px dashed #303840;
+    border-radius: 11px;
+    background: #10161b;
+  }
+  .manual-material-details summary {
+    padding: 10px 11px;
+    color: #8f969c;
+    font-size: 9px;
+    list-style: none;
+  }
+  .manual-material-details summary::-webkit-details-marker { display:none; }
+  .manual-material-details summary::before { content:"▶ "; font-size:8px; }
+  .manual-material-details[open] summary::before { content:"▼ "; }
+  .manual-material-details button {
+    min-height: 40px;
+    margin: 0 8px 8px;
+    width: calc(100% - 16px);
+  }
+
+  .order-calculation-summary {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 6px;
+    margin-top: 12px;
+    padding: 8px;
+    border: 1px solid #2a333b;
+    border-radius: 12px;
+    background: #12191f;
+  }
+  .order-calculation-summary > div {
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid #29323a;
+    border-radius: 9px;
+    background: #181f26;
+  }
+  .order-calculation-summary span {
+    display: block;
+    color: #8e959a;
+    font-size: 6.5px;
+  }
+  .order-calculation-summary strong {
+    display: block;
+    overflow: hidden;
+    margin-top: 4px;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .order-calculation-summary .calculation-grand strong { color:#ff765a; }
+  .order-calculation-summary > button {
+    grid-column: 1 / -1;
+    min-height: 38px;
+    border-radius: 9px;
+    font-size: 8px;
+  }
+
+  .legacy-payment-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 8px !important;
+  }
+  .legacy-payment-grid .field {
+    min-height: 48px !important;
+    font-size: 12px !important;
+  }
+
+  .legacy-guarantee-card {
+    margin-top: 4px;
+    padding: 11px;
+    border: 1px solid rgba(255,113,83,.34);
+    border-radius: 12px;
+    background: rgba(255,113,83,.035);
+  }
+  .legacy-guarantee-head {
+    display: grid;
+    grid-template-columns: 28px minmax(0,1fr) auto;
+    gap: 7px;
+    align-items: center;
+    margin-bottom: 9px;
+  }
+  .legacy-guarantee-head .guarantee-icon {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    color: #f0f2f3;
+  }
+  .legacy-guarantee-head .ui-icon { width: 19px; height: 19px; }
+  .legacy-guarantee-head strong { font-size: 11px; }
+  .legacy-guarantee-head .guarantee-date {
+    padding: 4px 7px;
+    border: 1px solid #28558b;
+    border-radius: 10px;
+    color: #67a9ef;
+    font-size: 7px;
+    white-space: nowrap;
+  }
+  .legacy-guarantee-card > label {
+    display: block;
+    margin-bottom: 5px;
+    color: #999fa4;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .order-extra-details {
+    margin-top: 10px;
+    border: 1px solid #2a333a;
+    border-radius: 11px;
+    background: #11171d;
+  }
+  .order-extra-details > summary {
+    padding: 10px 11px;
+    color: #a1a7ac;
+    font-size: 9px;
+    list-style: none;
+  }
+  .order-extra-body { padding: 0 9px 9px; }
+
+  .order-editor-modal .modal-actions {
+    position: sticky;
+    bottom: -26px;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: .8fr .8fr 1.2fr;
+    gap: 6px;
+    margin: 14px -12px -26px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid #222a31;
+    background: rgba(11,16,20,.98);
+  }
+  .order-editor-modal .modal-actions button {
+    min-height: 43px;
+    padding: 6px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+  .order-editor-modal .modal-actions .primary-button {
+    background: #ff7153;
+    border-color: #ff7153;
+    color: #17110f;
+  }
+
+  /* Каталог услуг поверх формы, как старый мобильный лист. */
+  .catalog-modal-backdrop {
+    z-index: 130;
+    top: 0 !important;
+    bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    padding: 52px 0 0;
+    background: rgba(0,0,0,.78);
+    overflow: hidden;
+  }
+  .catalog-modal {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0 12px 10px;
+    border: 1px solid #232c33;
+    border-radius: 18px 18px 0 0;
+    background: #11181e;
+    box-shadow: 0 -12px 40px rgba(0,0,0,.35);
+  }
+  .catalog-modal-head {
+    min-height: 66px;
+    margin: 0 -12px;
+    padding: 12px 14px;
+    border-bottom: 0;
+    background: transparent;
+  }
+  .catalog-modal-head .small {
+    color: #ff7153;
+    font-size: 9px;
+  }
+  .catalog-modal-head h2 {
+    margin-top: 4px;
+    color: #ff7153;
+    font-size: 17px;
+  }
+  .catalog-close {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #303942;
+    border-radius: 11px;
+    background: #181f26;
+    color: #e9ecee;
+  }
+  .catalog-search-row {
+    margin: 0 0 10px;
+    padding: 0;
+  }
+  .catalog-search-row .search {
+    min-height: 48px;
+    padding-left: 43px;
+    border: 1px solid #ff7153;
+    border-radius: 13px;
+    background: #181f26;
+    font-size: 11px;
+    box-shadow: 0 0 0 2px rgba(255,113,83,.08);
+  }
+  .catalog-search-row > .ui-icon {
+    left: 14px;
+    width: 20px;
+    height: 20px;
+  }
+  .catalog-service-list {
+    display: block;
+    overflow-y: auto;
+    padding: 0 0 155px;
+  }
+  .catalog-service-group {
+    margin: 0 0 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .catalog-service-group h3 {
+    margin: 0 0 6px;
+    padding: 0 6px;
+    border: 0;
+    color: #939aa0;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .catalog-service-option {
+    display: grid;
+    grid-template-columns: 26px minmax(0,1fr) auto;
+    gap: 8px;
+    min-height: 54px;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 1px solid #2d363e;
+    border-radius: 11px;
+    background: #181f26;
+  }
+  .catalog-service-option.selected {
+    border-color: rgba(255,113,83,.48);
+    background: rgba(255,113,83,.055);
+  }
+  .catalog-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+  }
+  .catalog-service-copy strong { font-size: 10px; }
+  .catalog-service-copy small { margin-top: 3px; font-size: 7px; }
+  .catalog-service-price {
+    align-self: center;
+    color: #ff765a;
+    font-size: 11px;
+    font-weight: 750;
+  }
+  .catalog-fit-summary {
+    position: absolute;
+    right: 12px;
+    bottom: 58px;
+    left: 12px;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 5px;
+    padding: 7px;
+    border: 1px solid #2b343c;
+    border-radius: 11px;
+    background: rgba(17,24,30,.98);
+  }
+  .catalog-fit-summary > div { padding: 5px; }
+  .catalog-fit-summary span { font-size: 6px; }
+  .catalog-fit-summary strong { margin-top: 3px; font-size: 9px; }
+  .catalog-modal-actions {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    left: 12px;
+    margin: 0;
+    padding: 0;
+  }
+  .catalog-modal-actions .primary-button {
+    min-height: 43px;
+    border-radius: 11px;
+    background: #ff7153;
+    border-color: #ff7153;
+    color: #17110f;
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .material-card-controls {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  }
+  .order-editor-modal .form-grid,
+  .legacy-payment-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
