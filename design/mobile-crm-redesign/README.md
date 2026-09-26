@@ -171,7 +171,7 @@ Russian phone validation is mandatory:
 
 ## Functional source of truth
 
-Current `main` around **0.49.0** is the functional baseline.
+Current `main` at **1.0.0** is the functional source of truth. Version **0.49.0** was the original recovery baseline and is historical context only.
 
 **Do not remove working functionality just to match a mockup.**
 The concept images define layout/style; current code and backup compatibility define behaviour.
