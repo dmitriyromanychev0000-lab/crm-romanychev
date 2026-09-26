@@ -488,7 +488,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
   await writeSeed(utilityPage, seed);
   await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
-  await utilityPage.evaluate(async () => { await runBackupSelfTest(); });
+  await utilityPage.locator('[data-action="backup-self-test"]').click();
+  await utilityPage.locator("#toast.show").waitFor({ state: "visible", timeout: 8000 });
   const backupToast = (await utilityPage.locator("#toast").innerText()).trim();
   const backupRoundtripOk = /(?:полностью проверены|исправны)/i.test(backupToast) && !/не пройдена/i.test(backupToast);
   if (!backupRoundtripOk) report.failures.push({ type: "backup-roundtrip", toast: backupToast });
