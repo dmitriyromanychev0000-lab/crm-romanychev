@@ -7739,3 +7739,25 @@
     justify-self: start !important;
   }
 }
+
+
+/* 0.99.12 · Final narrow action-label protection. */
+@media screen and (max-width: 520px) {
+  .legacy-expanded-actions > button > span,
+  .legacy-expanded-actions > a > span,
+  .legacy-order-actions > button > span,
+  .legacy-order-actions > a > span {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-expanded-actions > button > span,
+  .legacy-expanded-actions > a > span {
+    font-size: 9.5px !important;
+  }
+}
