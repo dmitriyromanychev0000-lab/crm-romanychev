@@ -176,8 +176,7 @@
 
   .legacy-order-search .search,
   .legacy-warehouse-search .search,
-  .legacy-client-search .search,
-  .price-search-row .search {
+  .legacy-client-search .search {
     min-height: 46px;
     border: 1px solid var(--crm-line);
     border-radius: 13px;
@@ -567,11 +566,6 @@
     line-height: 1.2;
   }
 
-  .focus-grid {
-    gap: 6px;
-  }
-
-  .focus-grid > div,
   .analytics-work-grid .metric {
     min-height: 66px;
     padding: 8px;
@@ -2182,34 +2176,11 @@
     line-height: 1.25;
   }
 
-  .analytics-ops-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-    margin-bottom: 9px;
-  }
-
-  .analytics-ops-grid .panel {
-    height: 100%;
-    margin: 0 !important;
-  }
-
-  .analytics-ops-grid .panel-title {
-    margin-bottom: 8px;
-    font-size: 10.5px;
-  }
-
-  .analytics-ops-grid .badge-icon {
-    display: none;
-  }
-
-  .analytics-focus .focus-grid,
   .analytics-work .analytics-work-grid {
     grid-template-columns: 1fr !important;
     gap: 6px;
   }
 
-  .analytics-focus .focus-grid > div,
   .analytics-work .metric {
     min-height: 55px;
     padding: 8px 9px;
@@ -2218,12 +2189,10 @@
     background: #151d23;
   }
 
-  .analytics-focus .focus-grid strong,
   .analytics-work .metric-value {
     font-size: 15px;
   }
 
-  .analytics-focus .focus-grid span,
   .analytics-work .metric-label {
     margin-top: 2px;
     color: var(--crm-muted);
@@ -2365,10 +2334,6 @@
 @media screen and (max-width: 360px) {
   .analytics-kpi.primary > strong {
     font-size: 17px;
-  }
-
-  .analytics-ops-grid {
-    grid-template-columns: 1fr;
   }
 
   .analytics-stock-summary .analytics-work-grid {
@@ -4087,8 +4052,7 @@
 
   .legacy-order-search .search,
   .legacy-warehouse-search .search,
-  .legacy-client-search .search,
-  .price-search-row .search {
+  .legacy-client-search .search {
     font-size: 14px !important;
   }
 
@@ -4195,7 +4159,6 @@
   .analytics-content .panel-title > span:last-child > small,
   .analytics-kpi > span,
   .analytics-kpi > small,
-  .analytics-focus .focus-grid span,
   .analytics-work .metric-label,
   .analytics-ranking-row small,
   .analytics-list-panel .goods-sheet small {
@@ -4203,7 +4166,6 @@
   }
 
   .analytics-kpi > strong,
-  .analytics-focus .focus-grid strong,
   .analytics-work .metric-value {
     font-size: 17px !important;
   }
