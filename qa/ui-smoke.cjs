@@ -228,6 +228,42 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (nested.count !== 2 || !nested.firstInert || nested.firstHidden !== "true") report.failures.push({ width, type: "nested-modal", nested });
       report.results.push(await shot(page, width, "service-catalog", false));
+
+      await page.locator("[data-service-index]").first().check();
+      await page.waitForTimeout(60);
+      const serviceSelection = await page.evaluate(() => ({
+        selectedRows: document.querySelectorAll(".catalog-service-option.selected").length,
+        checkedIcons: document.querySelectorAll(".catalog-service-option.selected .catalog-check .ui-icon").length,
+        countText: document.querySelector("#catalog-selected-count")?.textContent || ""
+      }));
+      if (serviceSelection.selectedRows !== 1 || serviceSelection.checkedIcons !== 1 || !serviceSelection.countText.startsWith("1 ")) {
+        report.failures.push({ width, type: "service-selection-feedback", serviceSelection });
+      }
+      report.results.push(await shot(page, width, "service-catalog-selected", false));
+
+      await page.locator("#catalog-apply").click();
+      await page.waitForTimeout(80);
+      const serviceRowState = await page.evaluate(() => {
+        const row = document.querySelector("#service-lines [data-service-row]");
+        const remove = row?.querySelector("[data-remove-line]");
+        const rect = remove?.getBoundingClientRect();
+        return {
+          rows: document.querySelectorAll("#service-lines [data-service-row]").length,
+          removeVisible: Boolean(remove && getComputedStyle(remove).display !== "none"),
+          removeWidth: rect ? Math.round(rect.width) : 0,
+          removeHeight: rect ? Math.round(rect.height) : 0
+        };
+      });
+      if (serviceRowState.rows !== 1 || !serviceRowState.removeVisible || serviceRowState.removeWidth < 44 || serviceRowState.removeHeight < 44) {
+        report.failures.push({ width, type: "service-row-actions", serviceRowState });
+      }
+      await page.locator("#service-lines [data-remove-line]").first().click();
+      if (await page.locator("#service-lines [data-service-row]").count() !== 0) {
+        report.failures.push({ width, type: "service-row-remove" });
+      }
+
+      await page.locator("#open-service-catalog").click();
+      await page.waitForTimeout(60);
       await page.keyboard.press("Escape");
       let nestedClose = await page.evaluate(() => ({
         count: document.querySelectorAll(".modal-backdrop").length,
@@ -239,16 +275,56 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.waitForTimeout(100);
       const materialNested = await page.evaluate(() => {
         const layers = [...document.querySelectorAll(".modal-backdrop")];
-        return { count: layers.length, firstInert: Boolean(layers[0] && layers[0].inert), firstHidden: layers[0] && layers[0].getAttribute("aria-hidden") };
+        const dialog = document.querySelector(".material-catalog-modal");
+        return {
+          count: layers.length,
+          firstInert: Boolean(layers[0] && layers[0].inert),
+          firstHidden: layers[0] && layers[0].getAttribute("aria-hidden"),
+          role: dialog?.getAttribute("role"),
+          ariaModal: dialog?.getAttribute("aria-modal")
+        };
       });
-      if (materialNested.count !== 2 || !materialNested.firstInert || materialNested.firstHidden !== "true") report.failures.push({ width, type: "material-nested-modal", materialNested });
+      if (materialNested.count !== 2 || !materialNested.firstInert || materialNested.firstHidden !== "true" || materialNested.role !== "dialog" || materialNested.ariaModal !== "true") {
+        report.failures.push({ width, type: "material-nested-modal", materialNested });
+      }
       report.results.push(await shot(page, width, "material-catalog", false));
+
+      await page.locator("[data-material-id]").first().click();
+      await page.waitForTimeout(60);
+      const materialSelection = await page.evaluate(() => ({
+        selectedRows: document.querySelectorAll(".material-catalog-row.selected").length,
+        selectedIcons: document.querySelectorAll(".material-catalog-selected .ui-icon").length,
+        countText: document.querySelector("#material-catalog-selected-count")?.textContent || ""
+      }));
+      if (materialSelection.selectedRows !== 1 || materialSelection.selectedIcons !== 1 || !materialSelection.countText.startsWith("1 ")) {
+        report.failures.push({ width, type: "material-selection-feedback", materialSelection });
+      }
+      report.results.push(await shot(page, width, "material-catalog-selected", false));
+
       await page.keyboard.press("Escape");
       nestedClose = await page.evaluate(() => ({
         count: document.querySelectorAll(".modal-backdrop").length,
         locked: document.body.classList.contains("modal-open")
       }));
       if (nestedClose.count !== 1 || !nestedClose.locked) report.failures.push({ width, type: "material-catalog-close", nestedClose });
+
+      const materialRowState = await page.evaluate(() => {
+        const row = document.querySelector("#material-lines [data-material-row]");
+        const remove = row?.querySelector("[data-remove-line]");
+        const rect = remove?.getBoundingClientRect();
+        return {
+          rows: document.querySelectorAll("#material-lines [data-material-row]").length,
+          removeWidth: rect ? Math.round(rect.width) : 0,
+          removeHeight: rect ? Math.round(rect.height) : 0
+        };
+      });
+      if (materialRowState.rows !== 1 || materialRowState.removeWidth < 44 || materialRowState.removeHeight < 44) {
+        report.failures.push({ width, type: "material-row-actions", materialRowState });
+      }
+      await page.locator("#material-lines [data-remove-line]").first().click();
+      if (await page.locator("#material-lines [data-material-row]").count() !== 0) {
+        report.failures.push({ width, type: "material-row-remove" });
+      }
       await page.keyboard.press("Escape");
       const editorClosed = await page.evaluate(() => ({
         count: document.querySelectorAll(".modal-backdrop").length,
