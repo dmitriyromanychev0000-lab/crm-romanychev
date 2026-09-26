@@ -86,3 +86,7 @@ The small file `Q` in this folder is not a design reference and can be ignored.
 ## Implementation status
 
 As of **v0.67.0 (2026-09-26)**, Sheets 01–10 have been implemented in the main mobile CRM flow. The next pass should focus on live-device visual comparison against the PNG references, regression testing, and micro-adjustments rather than large structural redesigns.
+
+## Current status — superseded as active target
+
+On **2026-09-26**, the user explicitly asked to restore the original archived CRM appearance before making any further point changes. These 10 concept sheets are retained as reference material only. The active visual baseline is documented in `../WORK_START_HERE.md`.
