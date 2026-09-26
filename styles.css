@@ -14884,3 +14884,95 @@ body.modal-open {
     font-size: 15px;
   }
 }
+
+
+/* 0.85.0 · Фирменное подтверждение вместо системного confirm(). */
+.crm-confirm-backdrop {
+  z-index: 500 !important;
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 18px !important;
+  background: rgba(2,6,9,.78) !important;
+  backdrop-filter: blur(10px);
+}
+
+.crm-confirm-modal {
+  box-sizing: border-box;
+  width: min(100%, 390px);
+  padding: 20px 18px 16px;
+  border: 1px solid #303b44;
+  border-radius: 18px;
+  background: linear-gradient(160deg,#182128,#10171c);
+  color: #eef2f4;
+  box-shadow: 0 24px 70px rgba(0,0,0,.46);
+  text-align: center;
+}
+
+.crm-confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 13px;
+  border: 1px solid rgba(231,180,80,.34);
+  border-radius: 14px;
+  background: rgba(231,180,80,.09);
+  color: #e7b450;
+}
+
+.crm-confirm-icon.danger {
+  border-color: rgba(255,102,112,.34);
+  background: rgba(255,102,112,.09);
+  color: #ff6670;
+}
+
+.crm-confirm-icon .ui-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.crm-confirm-modal h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.crm-confirm-modal p {
+  margin: 10px 0 16px;
+  color: #9aa4ab;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.crm-confirm-actions {
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 8px;
+}
+
+.crm-confirm-actions button {
+  min-width: 0;
+  min-height: 46px;
+  border-radius: 11px;
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.crm-confirm-danger {
+  border: 1px solid #ff6670;
+  background: #ff6670;
+  color: #1d0b0e;
+}
+
+@media screen and (max-width: 360px) {
+  .crm-confirm-backdrop {
+    padding: 12px !important;
+  }
+  .crm-confirm-modal {
+    padding: 18px 14px 14px;
+  }
+}
