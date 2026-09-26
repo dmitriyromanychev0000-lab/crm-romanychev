@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.66.0";
-const APP_BUILD = "2026.09.26.35";
+const APP_VERSION = "0.67.0";
+const APP_BUILD = "2026.09.26.36";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редизайн Sheet 10: настройки, служебные разделы и компактный центр резервных копий";
+const APP_RELEASE = "Visual_koncept Sheets 01–10 завершены: финальная интеграция навигации и мобильных экранов";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -68,6 +68,7 @@ let analyticsCustomStart = typeof initialUiState.analyticsCustomStart === "strin
 let analyticsCustomEnd = typeof initialUiState.analyticsCustomEnd === "string" ? initialUiState.analyticsCustomEnd : "";
 let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.financePeriod)) ? String(initialUiState.financePeriod) : "all";
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
+let moreReturnSection = typeof initialUiState.moreReturnSection === "string" ? initialUiState.moreReturnSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
 
@@ -92,6 +93,7 @@ function saveUiState(extra = {}) {
       analyticsCustomEnd,
       financePeriod,
       moreSection,
+      moreReturnSection,
       selectedActOrderId,
       scrollY: window.scrollY,
       ...extra
@@ -1602,7 +1604,7 @@ function draftSummary(item = {}) {
 function draftsPage() {
   const drafts = draftRecords().sort((a, b) => new Date(draftSummary(b.value).date || 0) - new Date(draftSummary(a.value).date || 0));
   return `<main class="content drafts-content">
-    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-menu">Назад</button></div>
+    <div class="page-head"><div><h1>Черновики</h1><p class="lead">Незавершённые заявки из текущей и старой CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
     <section class="panel"><div class="panel-title">Безопасное восстановление</div><p class="small">Старые данные не преобразуются автоматически. При продолжении создаётся новая заявка, исходный черновик остаётся до ручного удаления.</p></section>
     ${drafts.length ? `<div class="client-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
@@ -1649,7 +1651,7 @@ function receiptsPage() {
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content receipts-content">
-    <div class="page-head receipts-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и документы CRM</p></div><button class="secondary-button" data-action="act-screen">Назад к акту</button></div>
+    <div class="page-head receipts-head"><div><h1>Документы и чеки</h1><p class="lead">Квитанции, чеки и документы CRM</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
 
     <section class="panel receipt-stats-panel">
       <div class="metrics">
@@ -1683,7 +1685,7 @@ function toolsPage() {
     .sort((a, b) => String(a.item.name || a.item.title || a.item.tool || "").localeCompare(String(b.item.name || b.item.title || b.item.tool || ""), "ru"));
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
   return `<main class="content tools-content">
-    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-menu">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
+    <div class="page-head tools-head"><div><h1>Инструменты</h1><p class="lead">Рабочий инструмент и оборудование</p></div><div class="tools-head-actions"><button class="secondary-button" data-action="more-back">Назад</button><button class="primary-button" data-action="new-tool">+ Инструмент</button></div></div>
     <section class="panel tools-stats-panel"><div class="metrics"><div class="metric"><div class="metric-label">Всего</div><div class="metric-value">${tools.length}</div></div><div class="metric"><div class="metric-label">Активных</div><div class="metric-value green">${active}</div></div></div></section>
     ${tools.length ? `<section class="panel tools-list-panel"><div class="goods-list">${toolEntries.map(({ item, index }) => {
       const name = item.name || item.title || item.tool || "Инструмент";
@@ -1698,7 +1700,7 @@ async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   const rollback = await dbGet(PRE_IMPORT_KEY);
   return `<main class="content backup-content">
-    <div class="page-head backup-head"><div><h1>Бэкапы</h1><p class="lead">Резервные копии и восстановление данных</p></div><button class="secondary-button" data-action="settings-screen">Назад</button></div>
+    <div class="page-head backup-head"><div><h1>Бэкапы</h1><p class="lead">Резервные копии и восстановление данных</p></div><button class="secondary-button" data-action="more-back">Назад</button></div>
     <section class="panel backup-main-panel">
       <div class="panel-title"><span class="badge-icon">${icon("backup")}</span> Резервное копирование</div>
       <div class="backup-primary-actions">
@@ -3144,7 +3146,12 @@ app.addEventListener("click", async (event) => {
   if (navButton) {
     activePage = navButton.dataset.nav;
     if (activePage === "warehouse") warehouseSection = "list";
-    if (activePage !== "more") moreSection = "menu";
+    if (activePage === "more") {
+      moreSection = "menu";
+      moreReturnSection = "menu";
+    } else {
+      moreSection = "menu";
+    }
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
@@ -3263,9 +3270,19 @@ app.addEventListener("click", async (event) => {
     window.scrollTo(0, 0);
     return toast("Данные до импорта восстановлены");
   }
-  if (action === "more-menu") { moreSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
+  if (action === "more-menu") { moreSection = "menu"; moreReturnSection = "menu"; saveUiState({ scrollY: 0 }); window.scrollTo(0, 0); return render(); }
+  if (action === "more-back") {
+    moreSection = moreReturnSection || "menu";
+    const target = moreSection;
+    moreReturnSection = target === "menu" ? "menu" : "menu";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (action === "settings-screen") {
     activePage = "more";
+    moreReturnSection = "menu";
     moreSection = "settings";
     saveUiState({ scrollY: 0 });
     await render();
@@ -3279,6 +3296,7 @@ app.addEventListener("click", async (event) => {
   if (action === "new-price") return priceModal();
   if (action === "open-receipts") {
     activePage = "more";
+    moreReturnSection = "act";
     moreSection = "receipts";
     saveUiState({ scrollY: 0 });
     await render();
@@ -3373,6 +3391,7 @@ app.addEventListener("click", async (event) => {
     const supportedMoreSections = ["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
     if (!supportedMoreSections.includes(more)) return toast("Раздел недоступен");
     if (more === "shopping") activePage = "more";
+    moreReturnSection = moreSection === "settings" ? "settings" : "menu";
     moreSection = more;
     saveUiState({ scrollY: 0 });
     await render();
