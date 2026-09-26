@@ -188,7 +188,6 @@ h2 { margin: 0; font-size: 24px; }
 }
 .action span { display: grid; place-items: center; margin: 0; color: var(--accent); }
 .action span .ui-icon { width: 25px; height: 25px; }
-.action-copy span { color: #e9b64f; }
 .warehouse-head { margin-bottom: 18px; }
 .warehouse-search .search { min-height: 46px; }
 .warehouse-filter { margin-bottom: 18px; }
@@ -1429,7 +1428,6 @@ a.secondary-button:focus-visible {
 
 /* 0.39.0 · Нормализация визуального фундамента */
 :root {
-  --surface-1: #10161b;
   --surface-2: #181f26;
   --surface-3: #11181d;
   --surface-4: #0e1418;
@@ -1441,7 +1439,6 @@ a.secondary-button:focus-visible {
   --card-shadow: 0 14px 34px rgba(0,0,0,.15);
   --card-gradient: linear-gradient(145deg, var(--surface-3), var(--surface-4));
   --text-secondary: #929aa1;
-  --text-tertiary: #7f888f;
 }
 
 body {
@@ -5633,9 +5630,6 @@ button.warehouse-shortcut {
 @media screen and (max-width: 520px) {
   :root {
     --legacy-bg: #080d11;
-    --legacy-card: #11171d;
-    --legacy-card-2: #171e25;
-    --legacy-line: #2a333b;
     --legacy-orange: #ff7255;
     --legacy-muted: #8c9298;
   }
@@ -6033,7 +6027,6 @@ button.warehouse-shortcut {
   }
   .legacy-order-actions .ui-icon { width: 17px; height: 17px; color: var(--legacy-orange); }
   .legacy-order-actions .action-toggle .ui-icon { color: #4fd584; }
-  .legacy-order-actions .action-copy .ui-icon { color: #e8b84f; }
   .legacy-order-actions .action-phone .ui-icon { color: #4aa2ff; }
   .legacy-order-actions > [disabled] { opacity: .42; }
 

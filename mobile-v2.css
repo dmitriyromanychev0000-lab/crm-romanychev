@@ -5,7 +5,6 @@
     --crm-bg: #080d11;
     --crm-surface: #10171d;
     --crm-surface-2: #171f26;
-    --crm-surface-3: #1b242c;
     --crm-line: #29343d;
     --crm-line-soft: #202a31;
     --crm-text: #eef2f4;
@@ -18,8 +17,6 @@
     --crm-yellow: #e7b450;
     --crm-red: #ff6670;
     --crm-purple: #a88af0;
-    --crm-radius: 16px;
-    --crm-control-radius: 12px;
   }
 
   html,
