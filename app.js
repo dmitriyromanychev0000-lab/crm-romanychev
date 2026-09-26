@@ -6,10 +6,10 @@ const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "0.87.0";
-const APP_BUILD = "2026.09.26.62";
+const APP_VERSION = "0.88.0";
+const APP_BUILD = "2026.09.26.63";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Переработаны финансы и клиенты: главный результат, компактная история и быстрый повторный заказ из профиля клиента";
+const APP_RELEASE = "Упрощены прайс и товарник: меньше дублей, чище редакторы и компактнее рабочий сценарий";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1285,7 +1285,7 @@ function priceList() {
   return `<main class="content legacy-price-page">
     <div class="legacy-subpage-head legacy-price-head">
       <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">‹</button>
-      <div><h1>${escapeHtml(scopeTitle)}</h1><p>Каталог услуг и свои позиции</p></div>
+      <div><h1>${escapeHtml(scopeTitle)}</h1><p>${prices.length + customServices.length} позиций · услуги и материалы</p></div>
       <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">+</button>
     </div>
 
@@ -1587,13 +1587,13 @@ function goodsPage() {
           ${closedOrders.map((order) => `<option value="${escapeHtml(order.id)}">№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</option>`).join("")}
         </select>
       </label>
-      <p class="legacy-goods-help">Из заявки переносятся только использованные товары и материалы. Услуги, сумма заявки, складская себестоимость, клиент и реквизиты сюда не попадают. Товарник не списывает склад, не создаёт расход и не влияет на статистику.</p>
+      <p class="legacy-goods-help">Отдельный расчёт товаров — склад и статистика не изменяются.</p>
     </section>
 
     <section class="legacy-goods-panel legacy-goods-current">
-      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>Редактирование товарника</h2></div>
-      <p class="legacy-goods-intro">Это рабочий расчёт товаров: название, количество, цена за единицу и сумма строки. Он полностью отдельный от склада, расходов и заявок.</p>
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>${latest ? "Последний товарник" : "Товарник"}</h2></div>
       ${latest ? `
+        <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>${latestItems.length} позиций</small></span><b>${money(latest.total || 0)}</b></div>
         <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
         <div class="legacy-goods-position-list">
           ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(item.unit || "шт.")} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
@@ -1602,17 +1602,6 @@ function goodsPage() {
         <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
       ` : `<div class="legacy-goods-empty">Создай товарник вручную или выбери закрытую заявку для автозаполнения.</div>`}
     </section>
-
-    ${latest ? `<section class="legacy-goods-panel legacy-inline-preview">
-      <div class="legacy-section-title"><span class="legacy-section-icon">◉</span><h2>Предпросмотр</h2></div>
-      <div class="legacy-preview-table-wrap">
-        <table class="legacy-preview-table">
-          <thead><tr><th>ТОВАР</th><th>КОЛИЧЕСТВО</th><th>ЦЕНА</th></tr></thead>
-          <tbody>${latestItems.map((item) => `<tr><td>${escapeHtml(item.name || "")}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(item.unit || "шт.")}</td><td>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Number(item.price)||0)}</td></tr>`).join("")}</tbody>
-        </table>
-      </div>
-      <div class="legacy-preview-total"><strong>Итого</strong><strong>${money(latest.total || 0)}</strong></div>
-    </section>` : ""}
 
     <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">
       <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">›</span></summary>
@@ -3155,7 +3144,7 @@ function goodsModal(existing = null, seed = null) {
 
     <section class="legacy-goods-panel legacy-editor-panel">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>Редактирование товарника</h2></div>
-      <p class="legacy-goods-intro">Это рабочий расчёт товаров: название, количество, цена за единицу и сумма строки. Он полностью отдельный от склада, расходов и заявок.</p>
+      <p class="legacy-goods-intro">Добавь товары, при необходимости подгони цены и сохрани расчёт.</p>
 
       <label class="legacy-editor-title"><span>НАЗВАНИЕ РАСЧЁТА</span><input class="field" name="title" value="${escapeHtml(sheet.title || "")}" required /></label>
 
@@ -3166,14 +3155,13 @@ function goodsModal(existing = null, seed = null) {
 
       <div class="legacy-goods-target">
         <label><span>ЦЕЛЕВАЯ СУММА</span><input class="field" id="goods-target" name="target" type="number" min="0" step="1" value="${Number(sheet.target) || 0}" placeholder="—" /></label>
-        <p>Укажи целевую сумму и нажми «Подогнать цены», если нужно.</p>
+        <p>Необязательно. Используй только если итог должен точно совпасть с нужной суммой.</p>
       </div>
 
       <div class="legacy-goods-editor-actions">
         <button type="button" class="legacy-purple-button" id="adjust-goods-prices">${icon("price")}<span>Подогнать цены</span></button>
         <button type="button" class="legacy-dark-button" id="restore-goods-prices">↻<span>Вернуть исходные<br>цены</span></button>
-        <button type="button" class="legacy-orange-button" id="preview-goods">◉<span>Предпросмотр</span></button>
-        <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
+        <button type="button" class="legacy-orange-button" id="preview-goods">◉<span>К итогу</span></button>
       </div>
     </section>
 
