@@ -8839,3 +8839,48 @@
     font-size: 11px !important;
   }
 }
+
+/* 1.0.8 · Карточки материалов: плотная двухрядная сетка без пустоты. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .legacy-material-card {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    grid-template-areas:
+      "copy remove"
+      "controls controls" !important;
+    align-content: start !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  .order-editor-modal .material-card-head {
+    display: contents !important;
+  }
+
+  .order-editor-modal .material-card-head > div {
+    grid-area: copy;
+    min-width: 0 !important;
+    align-self: start !important;
+  }
+
+  .order-editor-modal .material-card-head .material-name-field {
+    min-height: 34px !important;
+    height: 34px !important;
+  }
+
+  .order-editor-modal .material-card-head small {
+    margin-top: 0 !important;
+  }
+
+  .order-editor-modal .material-remove {
+    grid-area: remove;
+    align-self: start !important;
+    justify-self: end !important;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-area: controls;
+    margin-top: 0 !important;
+  }
+}
+
