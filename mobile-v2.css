@@ -8997,6 +8997,11 @@
     color: #eef2f4 !important;
   }
 
+  .legacy-finance-entry-backdrop > form.modal.compact-modal.finance-entry-modal {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
   .legacy-finance-entry-backdrop > .finance-entry-modal {
     display: grid !important;
     grid-template-rows: auto auto minmax(0,1fr) auto !important;
