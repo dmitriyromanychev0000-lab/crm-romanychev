@@ -209,6 +209,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     }
 
     if (width === 320 || width === 390) {
+      await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
+      const actPreviewState = await page.evaluate(() => {
+        const preview = document.querySelector(".legacy-act-preview");
+        const sheet = document.querySelector(".legacy-act-preview .act-sheet");
+        const table = document.querySelector(".legacy-act-preview .act-work-table");
+        const title = document.querySelector(".legacy-act-preview .act-sheet h2");
+        const pr = preview?.getBoundingClientRect();
+        const sr = sheet?.getBoundingClientRect();
+        const tr = table?.getBoundingClientRect();
+        return {
+          previewWidth: pr ? Math.round(pr.width) : 0,
+          sheetWidth: sr ? Math.round(sr.width) : 0,
+          sheetLeft: sr ? Math.round(sr.left) : 0,
+          sheetRight: sr ? Math.round(sr.right) : 0,
+          previewLeft: pr ? Math.round(pr.left) : 0,
+          previewRight: pr ? Math.round(pr.right) : 0,
+          tableRight: tr ? Math.round(tr.right) : 0,
+          titleOverflow: title ? title.scrollWidth - title.clientWidth : 999
+        };
+      });
+      if (actPreviewState.sheetWidth > actPreviewState.previewWidth + 1
+        || actPreviewState.sheetLeft < actPreviewState.previewLeft - 1
+        || actPreviewState.sheetRight > actPreviewState.previewRight + 1
+        || actPreviewState.tableRight > actPreviewState.previewRight + 1
+        || actPreviewState.titleOverflow > 1) {
+        report.failures.push({ width, type: "act-mobile-preview-fit", actPreviewState });
+      }
+
       await setState(page, uiState({ activePage: "orders" }));
       const orderPageSurfaces = await page.evaluate(() => ({
         card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
