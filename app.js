@@ -5,11 +5,12 @@ const DATA_KEY = "crm-data";
 const DIRECTORY_KEY = "backup-directory";
 const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
+const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.176";
+const APP_BUILD = "2026.09.27.177";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Места хранения стали реальными остатками: приход, списание, резерв и перенос синхронизированы по локациям";
+const APP_RELEASE = "Бэкапы проверяются после записи, а при недоступной папке создаётся локальная страховочная копия";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -49,6 +50,8 @@ const defaultData = () => ({
     autoBackup: false,
     autoBackupDays: 1,
     lastBackupAt: null,
+    lastBackupKind: "",
+    lastBackupDetail: "",
     catalogApplyWithoutFit: false,
     stockReservationModel: 1,
     stockBatchModel: 1,
@@ -1381,13 +1384,110 @@ async function saveData() {
   await dbSet(DATA_KEY, data);
 }
 
-function backupFilename() {
-  const stamp = localDateInputValue();
-  return `CRM_BT_backup_${stamp}.json`;
+const BACKUP_COMPARE_SECTIONS = [
+  "orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom",
+  "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "order_sources",
+  "client_profiles", "appliance_types", "price_categories", "stock_categories",
+  "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides",
+  "storage_locations", "settings"
+];
+
+function backupFilename(value = new Date(), prefix = "CRM_BT_backup") {
+  const time = [value.getHours(), value.getMinutes(), value.getSeconds()].map((part) => String(part).padStart(2, "0")).join("-");
+  return `${prefix}_${localDateInputValue(value)}_${time}.json`;
 }
 
 function backupPayload() {
   return JSON.stringify({ ...data, date: new Date().toISOString() }, null, 2);
+}
+
+function backupSectionMismatches(left, right) {
+  const defaults = defaultData();
+  return BACKUP_COMPARE_SECTIONS.filter((key) =>
+    JSON.stringify(left?.[key] ?? defaults[key]) !== JSON.stringify(right?.[key] ?? defaults[key]));
+}
+
+function verifyBackupPayload(payload, expected = null) {
+  if (typeof payload !== "string" || !payload.trim()) throw new Error("Пустая резервная копия");
+  const parsed = JSON.parse(payload);
+  const restored = validateBackup(structuredClone(parsed));
+  const blockingIssues = backupBlockingIssues(restored);
+  if (blockingIssues.length) throw new Error(`Повреждённая копия: ${blockingIssues.join("; ")}`);
+  if (expected) {
+    const mismatches = backupSectionMismatches(expected, restored);
+    if (mismatches.length) throw new Error(`Не совпали разделы: ${mismatches.join(", ")}`);
+  }
+  return restored;
+}
+
+async function writeLocalBackupFallback({ silent = false } = {}) {
+  try {
+    const createdAt = new Date().toISOString();
+    const payload = backupPayload();
+    const expected = JSON.parse(payload);
+    verifyBackupPayload(payload, expected);
+    await dbSet(AUTO_BACKUP_FALLBACK_KEY, { createdAt, payload });
+    const reread = await dbGet(AUTO_BACKUP_FALLBACK_KEY);
+    if (!reread?.payload) throw new Error("Локальная копия не прочиталась после записи");
+    verifyBackupPayload(reread.payload, expected);
+    await markBackupComplete("local", "Страховка в приложении");
+    if (!silent) toast("Локальная страховочная копия проверена и сохранена");
+    return true;
+  } catch (error) {
+    console.error("Не удалось создать локальную страховочную копию", error);
+    if (!silent) toast(`Не удалось сохранить страховочную копию: ${error.message}`);
+    return false;
+  }
+}
+
+async function downloadLocalBackupFallback() {
+  const snapshot = await dbGet(AUTO_BACKUP_FALLBACK_KEY);
+  if (!snapshot?.payload) return toast("Локальной страховочной копии пока нет");
+  try {
+    verifyBackupPayload(snapshot.payload);
+    const blob = new Blob([snapshot.payload], { type: "application/json;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = backupFilename(new Date(snapshot.createdAt || Date.now()), "CRM_BT_fallback");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
+    toast("Страховочная копия подготовлена к скачиванию");
+  } catch (error) {
+    console.error(error);
+    toast(`Страховочная копия повреждена: ${error.message}`);
+  }
+}
+
+async function restoreLocalBackupFallback() {
+  const snapshot = await dbGet(AUTO_BACKUP_FALLBACK_KEY);
+  if (!snapshot?.payload) return toast("Локальной страховочной копии пока нет");
+  try {
+    const restored = verifyBackupPayload(snapshot.payload);
+    const confirmed = await confirmDialog(
+      `Восстановить локальную страховочную копию от ${new Date(snapshot.createdAt).toLocaleString("ru-RU")}?
+
+Текущие данные сохранятся как точка отката.`,
+      { title: "Локальная страховка", confirmLabel: "Восстановить" }
+    );
+    if (!confirmed) return;
+    await dbSet(PRE_IMPORT_KEY, structuredClone(data));
+    data = restored;
+    ensureDataIds();
+    migrateStockReservationModel();
+    migrateStockBatchModel();
+    migrateStockLocationModel();
+    await saveData();
+    activePage = "orders";
+    moreSection = "menu";
+    saveUiState({ scrollY: 0 });
+    await render();
+    toast("Страховочная копия восстановлена");
+  } catch (error) {
+    console.error(error);
+    toast(`Не удалось восстановить страховку: ${error.message}`);
+  }
 }
 
 async function inspectBackupFile() {
@@ -1446,17 +1546,14 @@ async function runBackupSelfTest() {
   try {
     const payload = backupPayload();
     const parsed = JSON.parse(payload);
-    const restored = validateBackup(structuredClone(parsed));
-    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "appliance_types", "price_categories", "stock_categories", "settings"];
-    const compare = (left, right) => sections.filter((key) => JSON.stringify(left[key] ?? defaultData()[key]) !== JSON.stringify(right[key] ?? defaultData()[key]));
-
-    const memoryMismatches = compare(parsed, restored);
+    const restored = verifyBackupPayload(payload, parsed);
+    const memoryMismatches = backupSectionMismatches(parsed, restored);
     if (memoryMismatches.length) throw new Error(`Содержимое изменилось после восстановления: ${memoryMismatches.join(", ")}`);
 
     await dbSet(BACKUP_TEST_KEY, restored);
     const storedTest = await dbGet(BACKUP_TEST_KEY);
     const reread = validateBackup(structuredClone(storedTest));
-    const storageMismatches = compare(restored, reread);
+    const storageMismatches = backupSectionMismatches(restored, reread);
     await dbDelete(BACKUP_TEST_KEY);
     if (storageMismatches.length) throw new Error(`IndexedDB изменила разделы: ${storageMismatches.join(", ")}`);
 
@@ -1473,18 +1570,24 @@ async function runBackupSelfTest() {
 }
 
 async function downloadBackup() {
-  const blob = new Blob([backupPayload()], { type: "application/json;charset=utf-8" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = backupFilename();
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(link.href);
-  await markBackupComplete();
-  toast("Бэкап подготовлен и скачивание запущено");
+  try {
+    const payload = backupPayload();
+    verifyBackupPayload(payload, JSON.parse(payload));
+    const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = backupFilename();
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(link.href);
+    await markBackupComplete("download", "Скачивание");
+    toast("Бэкап проверен и скачивание запущено");
+  } catch (error) {
+    console.error(error);
+    toast(`Не удалось подготовить бэкап: ${error.message}`);
+  }
 }
-
 
 function formatBytes(value) {
   const bytes = Number(value) || 0;
@@ -1621,46 +1724,74 @@ async function writeBackupToDirectory({ silent = false } = {}) {
     if (!silent) toast("Сначала выбери папку для бэкапов");
     return false;
   }
+  let filename = "";
   try {
-    if (!(await ensureDirectoryPermission(handle))) {
+    const granted = silent
+      ? (await handle.queryPermission({ mode: "readwrite" })) === "granted"
+      : await ensureDirectoryPermission(handle);
+    if (!granted) {
       if (!silent) toast("Нет разрешения на запись в папку");
       return false;
     }
-    const fileHandle = await handle.getFileHandle(backupFilename(), { create: true });
+
+    const payload = backupPayload();
+    const expected = JSON.parse(payload);
+    verifyBackupPayload(payload, expected);
+    filename = backupFilename();
+    const fileHandle = await handle.getFileHandle(filename, { create: true });
     const writable = await fileHandle.createWritable();
-    await writable.write(backupPayload());
+    await writable.write(payload);
     await writable.close();
-    await markBackupComplete();
-    if (!silent) toast(`Бэкап сохранён в «${handle.name}»`);
+
+    const savedFile = await fileHandle.getFile();
+    verifyBackupPayload(await savedFile.text(), expected);
+
+    await markBackupComplete("folder", handle.name);
+    if (!silent) toast(`Бэкап проверен и сохранён в «${handle.name}»`);
     render();
     return true;
   } catch (error) {
     console.error(error);
-    if (!silent) toast("Не удалось записать бэкап в папку");
+    if (filename && typeof handle.removeEntry === "function") {
+      try { await handle.removeEntry(filename); } catch {}
+    }
+    if (!silent) toast(`Не удалось записать проверенный бэкап: ${error.message}`);
     return false;
   }
 }
 
-async function markBackupComplete() {
+async function markBackupComplete(kind = "", detail = "") {
   data.settings.lastBackupAt = new Date().toISOString();
+  data.settings.lastBackupKind = kind;
+  data.settings.lastBackupDetail = detail;
   await saveData();
 }
 
 async function maybeAutoBackup() {
   if (!data.settings.autoBackup) return;
-  const days = Number(data.settings.autoBackupDays) || 1;
+  const allowedDays = [1, 2, 3, 5, 7, 10];
+  const configuredDays = Number(data.settings.autoBackupDays) || 1;
+  const days = allowedDays.includes(configuredDays) ? configuredDays : 1;
   const last = data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).getTime() : 0;
   if (Date.now() - last < days * 86400000) return;
+
+  let savedToFolder = false;
   const handle = await dbGet(DIRECTORY_KEY);
-  if (!handle) return;
-  try {
-    if ((await handle.queryPermission({ mode: "readwrite" })) === "granted") {
-      const saved = await writeBackupToDirectory({ silent: true });
-      if (saved) toast("Автоматический бэкап сохранён");
+  if (handle) {
+    try {
+      if ((await handle.queryPermission({ mode: "readwrite" })) === "granted") {
+        savedToFolder = await writeBackupToDirectory({ silent: true });
+      }
+    } catch (error) {
+      console.warn("Папка автобэкапа недоступна", error);
     }
-  } catch (error) {
-    console.warn("Автобэкап ожидает разрешения пользователя", error);
   }
+  if (savedToFolder) {
+    toast("Автоматический бэкап проверен и сохранён в папку");
+    return;
+  }
+  const localSaved = await writeLocalBackupFallback({ silent: true });
+  if (localSaved) toast("Папка недоступна — сохранена локальная страховочная копия");
 }
 
 function nav() {
@@ -3620,6 +3751,15 @@ function toolsPage() {
 async function backupSettings() {
   const directory = await dbGet(DIRECTORY_KEY);
   const rollback = await dbGet(PRE_IMPORT_KEY);
+  const fallback = await dbGet(AUTO_BACKUP_FALLBACK_KEY);
+  const kindText = data.settings.lastBackupKind === "folder"
+    ? `Папка${data.settings.lastBackupDetail ? ` · ${data.settings.lastBackupDetail}` : ""}`
+    : data.settings.lastBackupKind === "local"
+      ? "Локальная страховка"
+      : data.settings.lastBackupKind === "download"
+        ? "Скачивание"
+        : "";
+
   return `<main class="content legacy-service-page legacy-backup-page">
     <div class="legacy-subpage-head">
       <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
@@ -3637,16 +3777,19 @@ async function backupSettings() {
         <button type="button" data-action="choose-folder">Выбрать папку</button>
         <button type="button" data-action="folder-backup">Сохранить в папку</button>
         <button type="button" data-action="backup-self-test">Самопроверка</button>
+        <button type="button" data-action="download-local-backup" ${fallback?.payload ? "" : "disabled"}>Скачать страховку</button>
+        <button type="button" data-action="restore-local-backup" ${fallback?.payload ? "" : "disabled"}>Восстановить страховку</button>
         <button type="button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
       </div>
     </section>
 
     <section class="legacy-settings-card backup-auto-card">
       <div class="legacy-settings-list">
-        <div class="legacy-settings-row plain"><span><strong>Папка</strong><small>${directory ? escapeHtml(directory.name) : "Не выбрана"}</small></span></div>
-        <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>Проверяется при открытии приложения</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" role="switch" aria-checked="${Boolean(data.settings.autoBackup)}" aria-label="Автоматический бэкап"></button></div>
-        <div class="legacy-settings-row plain"><span><strong>Периодичность</strong></span><select id="backup-days" aria-label="Периодичность автобэкапа">${[1,2,3,5,7,14].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
-        <div class="legacy-settings-row plain"><span><strong>Последний бэкап</strong><small>${data.settings.lastBackupAt ? new Date(data.settings.lastBackupAt).toLocaleString("ru-RU") : "Ещё не создавался"}</small></span></div>
+        <div class="legacy-settings-row plain"><span><strong>Папка</strong><small>${directory ? escapeHtml(directory.name) : "Не выбрана · автобэкап сохранит локальную страховку"}</small></span></div>
+        <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>При открытии приложения · с проверкой целостности</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" role="switch" aria-checked="${Boolean(data.settings.autoBackup)}" aria-label="Автоматический бэкап"></button></div>
+        <div class="legacy-settings-row plain"><span><strong>Периодичность</strong></span><select id="backup-days" aria-label="Периодичность автобэкапа">${[1,2,3,5,7,10].map((days) => `<option value="${days}" ${Number(data.settings.autoBackupDays) === days ? "selected" : ""}>${days === 1 ? "Каждый день" : `Раз в ${days} дней`}</option>`).join("")}</select></div>
+        <div class="legacy-settings-row plain"><span><strong>Последний бэкап</strong><small>${data.settings.lastBackupAt ? `${new Date(data.settings.lastBackupAt).toLocaleString("ru-RU")}${kindText ? ` · ${escapeHtml(kindText)}` : ""}` : "Ещё не создавался"}</small></span></div>
+        <div class="legacy-settings-row plain"><span><strong>Локальная страховка</strong><small>${fallback?.createdAt ? `${new Date(fallback.createdAt).toLocaleString("ru-RU")} · только на этом устройстве` : "Пока нет · не заменяет внешний файл"}</small></span></div>
       </div>
     </section>
 
@@ -6365,6 +6508,8 @@ app.addEventListener("click", async (event) => {
   if (action === "choose-folder") return chooseBackupFolder();
   if (action === "folder-backup") return writeBackupToDirectory();
   if (action === "backup-self-test") return runBackupSelfTest();
+  if (action === "download-local-backup") return downloadLocalBackupFallback();
+  if (action === "restore-local-backup") return restoreLocalBackupFallback();
   if (action === "restore-pre-import") {
     const rollback = await dbGet(PRE_IMPORT_KEY);
     if (!rollback) return toast("Точки отката пока нет");

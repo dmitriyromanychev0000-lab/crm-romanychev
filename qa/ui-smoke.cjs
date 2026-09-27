@@ -141,6 +141,22 @@ async function readStoredData(page) {
   });
 }
 
+async function readIdbKey(page, key) {
+  return page.evaluate(async (keyValue) => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("crm-romanychev", 1);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        const tx = db.transaction("keyval", "readonly");
+        const get = tx.objectStore("keyval").get(keyValue);
+        get.onsuccess = () => { const value = get.result; db.close(); resolve(value); };
+        get.onerror = () => { db.close(); reject(get.error); };
+      };
+    });
+  }, key);
+}
+
 async function setState(page, state) {
   await page.evaluate((stateValue) => sessionStorage.setItem("__crm_qa_next_state", JSON.stringify(stateValue)), state);
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -2792,6 +2808,49 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     tooSmall: [],
     backupRoundtripOk,
     toast: backupToast
+  });
+
+  const backupIntervals = await utilityPage.locator("#backup-days option").evaluateAll((nodes) => nodes.map((node) => Number(node.value)));
+  if (JSON.stringify(backupIntervals) !== JSON.stringify([1,2,3,5,7,10])) {
+    report.failures.push({ type: "backup-intervals", backupIntervals });
+  }
+
+  const fallbackSeed = structuredClone(seed);
+  fallbackSeed.settings = { ...fallbackSeed.settings, autoBackup: true, autoBackupDays: 1, lastBackupAt: "2020-01-01T00:00:00.000Z" };
+  await writeSeed(utilityPage, fallbackSeed);
+  await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
+  await utilityPage.waitForFunction(async () => {
+    return new Promise((resolve) => {
+      const request = indexedDB.open("crm-romanychev", 1);
+      request.onsuccess = () => {
+        const db = request.result;
+        const tx = db.transaction("keyval", "readonly");
+        const get = tx.objectStore("keyval").get("crm-auto-backup-fallback");
+        get.onsuccess = () => { resolve(Boolean(get.result?.payload)); db.close(); };
+        get.onerror = () => { resolve(false); db.close(); };
+      };
+      request.onerror = () => resolve(false);
+    });
+  }, null, { timeout: 5000 });
+  const fallbackSnapshot = await readIdbKey(utilityPage, "crm-auto-backup-fallback");
+  const fallbackStoredData = await readStoredData(utilityPage);
+  let fallbackPayload = null;
+  try { fallbackPayload = JSON.parse(fallbackSnapshot?.payload || "null"); } catch {}
+  if (!fallbackSnapshot?.createdAt
+    || !fallbackPayload
+    || fallbackPayload.orders?.length !== seed.orders.length
+    || fallbackStoredData.settings?.lastBackupKind !== "local") {
+    report.failures.push({ type: "backup-local-fallback", fallbackSnapshot, lastBackupKind: fallbackStoredData.settings?.lastBackupKind });
+  }
+  report.results.push({
+    label: "backup-local-fallback",
+    width: 320,
+    bodyScrollWidth: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)),
+    viewportWidth: 320,
+    overflow: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth),
+    modalOpen: false,
+    tooSmall: [],
+    fallbackCreatedAt: fallbackSnapshot?.createdAt || null
   });
   await utilityContext.close();
 
