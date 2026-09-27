@@ -416,6 +416,96 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "source-manager-close", sourceManagerClosed });
       }
 
+      const migratedDirectories = await readStoredData(page);
+      if (!Array.isArray(migratedDirectories.appliance_types)
+        || migratedDirectories.appliance_types.length < 10
+        || !Array.isArray(migratedDirectories.price_categories)
+        || migratedDirectories.price_categories.length < 3) {
+        report.failures.push({
+          width,
+          type: "price-directory-migration",
+          applianceTypes: migratedDirectories.appliance_types?.length,
+          priceCategories: migratedDirectories.price_categories?.length
+        });
+      }
+
+      await page.locator('[data-action="manage-appliance-types"]').click();
+      await page.waitForTimeout(30);
+      await page.locator("#new-appliance-type-name").fill("Кофемашина");
+      await page.locator("#add-appliance-type").click();
+      await page.waitForTimeout(30);
+      const addedTypeInput = page.locator("[data-appliance-type-name]").last();
+      await addedTypeInput.fill("Кофемашина автомат");
+      await addedTypeInput.press("Tab");
+      await page.waitForTimeout(40);
+      await page.locator("[data-appliance-type-id]").last().locator("[data-appliance-type-archive]").click();
+      await page.waitForTimeout(40);
+      const applianceDirectoryState = await readStoredData(page);
+      const coffeeType = applianceDirectoryState.appliance_types.find((item) => item.name === "Кофемашина автомат");
+      if (!coffeeType?.archived) report.failures.push({ width, type: "appliance-directory-edit-archive", coffeeType });
+      report.results.push(await shot(page, width, "appliance-type-manager", false));
+      await page.locator(".appliance-types-modal [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
+      await page.locator('[data-action="manage-price-categories"]').click();
+      await page.waitForTimeout(30);
+      await page.locator("#price-category-tech").selectOption({ label: "Холодильник" });
+      await page.waitForTimeout(20);
+      const diagnosticCategory = page.locator("[data-price-category-id]").filter({
+        has: page.locator('[data-price-category-name][value="Диагностика"]')
+      }).first();
+      if (await diagnosticCategory.count() !== 1) {
+        report.failures.push({ width, type: "price-category-migration-visible" });
+      } else {
+        await diagnosticCategory.locator("[data-price-category-archive]").click();
+        await page.waitForTimeout(40);
+        let categoryArchiveData = await readStoredData(page);
+        const diagnosisPrice = categoryArchiveData.receipt_prices.find((item) => item.id === "p1");
+        if (!diagnosisPrice?.archived || !diagnosisPrice?.archivedByCategory) {
+          report.failures.push({ width, type: "price-category-archive-cascade", diagnosisPrice });
+        }
+        await diagnosticCategory.locator("[data-price-category-archive]").click();
+        await page.waitForTimeout(40);
+        categoryArchiveData = await readStoredData(page);
+        const restoredDiagnosisPrice = categoryArchiveData.receipt_prices.find((item) => item.id === "p1");
+        if (restoredDiagnosisPrice?.archived || restoredDiagnosisPrice?.archivedByCategory) {
+          report.failures.push({ width, type: "price-category-restore-cascade", restoredDiagnosisPrice });
+        }
+      }
+      await page.locator("#new-price-category-name").fill("Электрика");
+      await page.locator("#add-price-category").click();
+      await page.waitForTimeout(30);
+      const categoryNames = await page.locator("[data-price-category-name]").evaluateAll((nodes) => nodes.map((node) => node.value));
+      if (!categoryNames.includes("Электрика")) report.failures.push({ width, type: "price-category-add", categoryNames });
+      report.results.push(await shot(page, width, "price-category-manager", false));
+      await page.locator(".price-categories-modal [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
+      const techCatalogSeed = structuredClone(seed);
+      techCatalogSeed.receipt_prices.push({ id: "p-tech-washer", name: "Тестовая услуга стиральной машины", category: "Ремонт", tech: "Стиральная машина", kind: "service", price: 2400 });
+      await writeSeed(page, techCatalogSeed);
+      await setState(page, uiState({ activePage: "orders" }));
+      await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
+      await page.locator("#open-service-catalog").click();
+      await page.waitForTimeout(30);
+      const fridgeCatalogText = await page.locator("#catalog-service-list").innerText();
+      if (fridgeCatalogText.includes("Тестовая услуга стиральной машины")) {
+        report.failures.push({ width, type: "service-catalog-tech-filter-fridge", fridgeCatalogText });
+      }
+      await page.locator(".catalog-close").click();
+      await page.locator('.order-editor-modal [name="tech"]').selectOption({ label: "Стиральная машина" });
+      await page.locator("#open-service-catalog").click();
+      await page.waitForTimeout(30);
+      const washerCatalogText = await page.locator("#catalog-service-list").innerText();
+      if (!washerCatalogText.includes("Тестовая услуга стиральной машины") || washerCatalogText.includes("Замена вентилятора")) {
+        report.failures.push({ width, type: "service-catalog-tech-filter-washer", washerCatalogText });
+      }
+      await page.locator(".catalog-close").click();
+      await page.locator(".order-editor-close").click();
+      await page.waitForTimeout(20);
+
+      await writeSeed(page);
+      await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       await page.locator('[data-action="manage-warranty-options"]').click();
       await page.waitForTimeout(30);
       await page.locator("#new-warranty-name").fill("Компрессор");

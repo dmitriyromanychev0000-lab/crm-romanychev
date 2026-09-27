@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.171";
+const APP_BUILD = "2026.09.27.172";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс сохраняет исторические позиции через архив, а калькулятор товаров использует ту же точную пропорциональную подгонку, что и услуги";
+const APP_RELEASE = "Типы техники и категории прайса стали настраиваемыми, а каталог услуг теперь зависит от выбранной техники";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -31,6 +31,8 @@ const defaultData = () => ({
     { id: "source-word-of-mouth", name: "Сарафанное радио", archived: false }
   ],
   client_profiles: [],
+  appliance_types: [],
+  price_categories: [],
   warranty_options: [],
   warranty_results: [
     { id: "warranty-confirmed", name: "Гарантия подтверждена", archived: false },
@@ -360,7 +362,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides", "storage_locations"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "appliance_types", "price_categories", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides", "storage_locations"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -452,13 +454,148 @@ const BASE_APPLIANCE_TYPES = [
   "Другое"
 ];
 
-function applianceTypes() {
-  return [...new Set([
+function ensureApplianceTypes() {
+  let changed = false;
+  if (!Array.isArray(data.appliance_types)) {
+    data.appliance_types = [];
+    changed = true;
+  }
+
+  const normalized = [];
+  const seen = new Set();
+  for (const entry of data.appliance_types) {
+    const source = typeof entry === "string" ? { name: entry } : (entry || {});
+    const name = String(source.name || "").trim();
+    if (!name) { changed = true; continue; }
+    const key = name.toLowerCase();
+    if (seen.has(key)) { changed = true; continue; }
+    seen.add(key);
+    const next = {
+      ...source,
+      id: String(source.id || "").trim() || crypto.randomUUID(),
+      name,
+      archived: Boolean(source.archived)
+    };
+    if (!source.id || source.name !== name || Boolean(source.archived) !== source.archived) changed = true;
+    normalized.push(next);
+  }
+  data.appliance_types = normalized;
+
+  const referenced = [
     ...BASE_APPLIANCE_TYPES,
-    ...(data.orders || []).map((order) => String(order.tech || "").trim()),
-    ...(data.receipt_prices || []).map((item) => String(item.tech || "").trim()),
-    ...(data.warranty_options || []).map((item) => String(item.tech || "").trim())
-  ].filter(Boolean))];
+    ...(data.orders || []).map((order) => order.tech),
+    ...(data.receipt_prices || []).map((item) => item.tech),
+    ...(data.service_custom || []).map((item) => item.tech),
+    ...(data.warranty_options || []).map((item) => item.tech),
+    ...(data.warehouse || []).map((item) => item.stockTech)
+  ].map((value) => String(value || "").trim()).filter((value) => value && value !== "Общее");
+
+  for (const name of referenced) {
+    const key = name.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    data.appliance_types.push({ id: crypto.randomUUID(), name, archived: false });
+    changed = true;
+  }
+  return changed;
+}
+
+function applianceTypeRecords({ includeArchived = false } = {}) {
+  return (Array.isArray(data.appliance_types) ? data.appliance_types : [])
+    .filter((item) => String(item.name || "").trim())
+    .filter((item) => includeArchived || !item.archived);
+}
+
+function applianceTypes(options = {}) {
+  const records = applianceTypeRecords(options);
+  if (records.length) return records.map((item) => item.name);
+  return [...BASE_APPLIANCE_TYPES];
+}
+
+function ensurePriceCategories() {
+  let changed = false;
+  if (!Array.isArray(data.price_categories)) {
+    data.price_categories = [];
+    changed = true;
+  }
+
+  const normalized = [];
+  const seen = new Set();
+  for (const entry of data.price_categories) {
+    if (!entry || typeof entry !== "object") { changed = true; continue; }
+    const name = String(entry.name || "").trim();
+    const tech = String(entry.tech || "Общее").trim() || "Общее";
+    if (!name) { changed = true; continue; }
+    const key = `${tech.toLowerCase()}::${name.toLowerCase()}`;
+    if (seen.has(key)) { changed = true; continue; }
+    seen.add(key);
+    const next = {
+      ...entry,
+      id: String(entry.id || "").trim() || crypto.randomUUID(),
+      tech,
+      name,
+      archived: Boolean(entry.archived)
+    };
+    if (!entry.id || entry.name !== name || entry.tech !== tech || Boolean(entry.archived) !== entry.archived) changed = true;
+    normalized.push(next);
+  }
+  data.price_categories = normalized;
+
+  for (const item of data.receipt_prices || []) {
+    const name = String(item.category || "").trim();
+    if (!name) continue;
+    const tech = String(item.tech || "Общее").trim() || "Общее";
+    const key = `${tech.toLowerCase()}::${name.toLowerCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    data.price_categories.push({ id: crypto.randomUUID(), tech, name, archived: false });
+    changed = true;
+  }
+  return changed;
+}
+
+function priceCategoriesForTech(tech, { includeArchived = false } = {}) {
+  const currentTech = String(tech || "Общее").trim() || "Общее";
+  return (Array.isArray(data.price_categories) ? data.price_categories : [])
+    .filter((item) => String(item.tech || "Общее").trim() === currentTech)
+    .filter((item) => includeArchived || !item.archived)
+    .sort((a, b) => Number(Boolean(a.archived)) - Number(Boolean(b.archived))
+      || String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
+function renameApplianceTypeReferences(oldName, newName) {
+  const oldValue = String(oldName || "").trim();
+  const newValue = String(newName || "").trim();
+  if (!oldValue || !newValue || oldValue === newValue) return;
+
+  (data.orders || []).forEach((order) => {
+    if (String(order.tech || "").trim() === oldValue) order.tech = newValue;
+    (Array.isArray(order.guaranteeTargets) ? order.guaranteeTargets : []).forEach((target) => {
+      if (target && typeof target === "object" && String(target.tech || "").trim() === oldValue) target.tech = newValue;
+    });
+  });
+  (data.receipt_prices || []).forEach((item) => { if (String(item.tech || "").trim() === oldValue) item.tech = newValue; });
+  (data.service_custom || []).forEach((item) => {
+    if (String(item.tech || "").trim() !== oldValue) return;
+    item.tech = newValue;
+    if (String(item.category || "").trim() === oldValue) item.category = newValue;
+  });
+  (data.warranty_options || []).forEach((item) => { if (String(item.tech || "").trim() === oldValue) item.tech = newValue; });
+  (data.price_categories || []).forEach((item) => { if (String(item.tech || "").trim() === oldValue) item.tech = newValue; });
+  (data.warehouse || []).forEach((item) => {
+    if (String(item.stockTech || "").trim() === oldValue) item.stockTech = newValue;
+    if (Array.isArray(item.compatibility)) item.compatibility = item.compatibility.map((value) => String(value || "").trim() === oldValue ? newValue : value);
+  });
+
+  const updateDraft = (draft) => {
+    if (draft && typeof draft === "object" && String(draft.tech || "").trim() === oldValue) draft.tech = newValue;
+  };
+  if (Array.isArray(data.draft)) data.draft.forEach(updateDraft);
+  else if (data.draft && typeof data.draft === "object") {
+    updateDraft(data.draft);
+    Object.values(data.draft).forEach(updateDraft);
+  }
+  if (priceTechFilter === oldValue) priceTechFilter = newValue;
 }
 
 const STOCK_TECH_ALIASES = new Map([
@@ -784,6 +921,8 @@ function ensureDataIds() {
   if (ensureGoodsSheetIds()) changed = true;
   if (ensureOrderSourceIds()) changed = true;
   if (ensureClientProfileIds()) changed = true;
+  if (ensureApplianceTypes()) changed = true;
+  if (ensurePriceCategories()) changed = true;
   if (ensureWarrantyOptionIds()) changed = true;
   if (ensureWarrantyResultIds()) changed = true;
   if (ensureShoppingManualIds()) changed = true;
@@ -1193,7 +1332,7 @@ async function runBackupSelfTest() {
     const payload = backupPayload();
     const parsed = JSON.parse(payload);
     const restored = validateBackup(structuredClone(parsed));
-    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "settings"];
+    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "appliance_types", "price_categories", "settings"];
     const compare = (left, right) => sections.filter((key) => JSON.stringify(left[key] ?? defaultData()[key]) !== JSON.stringify(right[key] ?? defaultData()[key]));
 
     const memoryMismatches = compare(parsed, restored);
@@ -2151,22 +2290,27 @@ function analyticsPage() {
   </main>`;
 }
 
-function availableServices() {
+function availableServices(tech = "") {
+  const currentTech = String(tech || "").trim();
   const regular = data.receipt_prices
     .filter((item) => !item.archived && item.kind !== "material")
+    .filter((item) => !currentTech || !String(item.tech || "").trim() || String(item.tech || "").trim() === currentTech)
     .map((item) => ({ ...item, name: item.name || item.title || "Услуга", price: Number(item.price) || 0, source: "price" }));
   const custom = (Array.isArray(data.service_custom) ? data.service_custom : [])
     .filter((item) => !item.archived)
+    .filter((item) => {
+      const itemTech = String(item.tech || item.category || "").trim();
+      return !currentTech || !itemTech || itemTech === currentTech;
+    })
     .map((item) => ({ ...item, name: item.name || item.title || item.service || "Услуга", price: Number(item.price || item.cost || item.sum) || 0, source: "custom" }));
   return [...regular, ...custom];
 }
 function priceList() {
   const query = priceSearch.trim().toLowerCase();
   const archivedMode = priceKindFilter === "archived";
-  const techs = [...new Set([
-    ...data.receipt_prices.map((item) => String(item.tech || "").trim()),
-    ...(Array.isArray(data.service_custom) ? data.service_custom.map((item) => String(item.tech || item.category || "").trim()) : [])
-  ].filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const techs = (archivedMode ? applianceTypes({ includeArchived: true }) : applianceTypes())
+    .slice()
+    .sort((a, b) => a.localeCompare(b, "ru"));
 
   const prices = data.receipt_prices.filter((item) => {
     const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
@@ -2234,7 +2378,7 @@ function priceList() {
         }).join("")}</div>
       </section>`).join("")}</div>` : ""}
 
-    ${(priceKindFilter === "all" || priceKindFilter === "custom") ? `<section class="legacy-price-group legacy-custom-price">
+    ${(priceKindFilter === "all" || priceKindFilter === "custom" || (archivedMode && customServices.length)) ? `<section class="legacy-price-group legacy-custom-price">
       <div class="legacy-custom-price-head"><h3>СВОИ УСЛУГИ</h3><button type="button" data-action="new-custom-service">${icon("plus")}<span>Добавить</span></button></div>
       ${customServices.length ? `<div class="legacy-price-list">${customServices.map((item) => {
         const index = data.service_custom.indexOf(item);
@@ -2558,6 +2702,200 @@ function goodsPage() {
     </details>
   </main>`;
 }
+function applianceTypesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop source-manager-backdrop appliance-types-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal source-manager-modal appliance-types-modal" role="dialog" aria-modal="true" aria-label="Типы техники">
+    <div class="source-manager-head">
+      <div><small>НАСТРОЙКИ</small><h2>Типы техники</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <p class="manager-help">Тип используется в заявках, прайсе, гарантиях и на складе. Переименование обновляет связанные записи.</p>
+    <div id="appliance-type-list" class="source-manager-list"></div>
+    <div class="source-manager-add">
+      <input class="field" id="new-appliance-type-name" placeholder="Новый тип техники" />
+      <button type="button" class="primary-button" id="add-appliance-type">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#appliance-type-list");
+    const types = applianceTypeRecords({ includeArchived: true });
+    list.innerHTML = types.map((item) => `<div class="source-manager-row ${item.archived ? "archived" : ""}" data-appliance-type-id="${escapeHtml(item.id)}">
+      <input class="field" data-appliance-type-name value="${escapeHtml(item.name)}" aria-label="Название типа техники" />
+      <button type="button" data-appliance-type-archive aria-label="${item.archived ? "Вернуть тип" : "Архивировать тип"}">${icon(item.archived ? "restore" : "archive")}</button>
+    </div>`).join("");
+  };
+
+  const close = () => { modal.remove(); syncModalScrollLock(); };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const button = event.target.closest("[data-appliance-type-archive]");
+    if (!button) return;
+    const row = button.closest("[data-appliance-type-id]");
+    const item = data.appliance_types.find((entry) => String(entry.id) === String(row?.dataset.applianceTypeId || ""));
+    if (!item) return;
+    const nextArchived = !item.archived;
+    item.archived = nextArchived;
+    (data.receipt_prices || []).forEach((price) => {
+      if (String(price.tech || "").trim() !== String(item.name || "").trim()) return;
+      if (nextArchived) {
+        if (!price.archived) {
+          price.archived = true;
+          price.archivedByApplianceType = item.id;
+        }
+      } else if (String(price.archivedByApplianceType || "") === String(item.id)) {
+        price.archived = false;
+        delete price.archivedByApplianceType;
+      }
+    });
+    (data.service_custom || []).forEach((service) => {
+      if (String(service.tech || service.category || "").trim() !== String(item.name || "").trim()) return;
+      if (nextArchived) {
+        if (!service.archived) {
+          service.archived = true;
+          service.archivedByApplianceType = item.id;
+        }
+      } else if (String(service.archivedByApplianceType || "") === String(item.id)) {
+        service.archived = false;
+        delete service.archivedByApplianceType;
+      }
+    });
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    const input = event.target.closest("[data-appliance-type-name]");
+    if (!input) return;
+    const row = input.closest("[data-appliance-type-id]");
+    const item = data.appliance_types.find((entry) => String(entry.id) === String(row?.dataset.applianceTypeId || ""));
+    if (!item) return;
+    const name = String(input.value || "").trim();
+    if (!name) { input.value = item.name || ""; return toast("Название типа не может быть пустым"); }
+    const duplicate = data.appliance_types.some((entry) => String(entry.id) !== String(item.id)
+      && String(entry.name || "").trim().toLowerCase() === name.toLowerCase());
+    if (duplicate) { input.value = item.name || ""; return toast("Такой тип техники уже есть"); }
+    const oldName = item.name;
+    item.name = name;
+    renameApplianceTypeReferences(oldName, name);
+    await saveData();
+    saveUiState();
+    renderList();
+  });
+  modal.querySelector("#add-appliance-type").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-appliance-type-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши тип техники");
+    if (data.appliance_types.some((entry) => String(entry.name || "").trim().toLowerCase() === name.toLowerCase())) return toast("Такой тип техники уже есть");
+    data.appliance_types.push({ id: crypto.randomUUID(), name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
+function priceCategoriesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop warranty-manager-backdrop price-categories-backdrop";
+  const types = ["Общее", ...applianceTypes({ includeArchived: true })].filter((value, index, array) => array.indexOf(value) === index);
+  let selectedTech = types[0] || "Общее";
+  modal.innerHTML = `<section class="modal compact-modal warranty-manager-modal price-categories-modal" role="dialog" aria-modal="true" aria-label="Категории прайса">
+    <div class="warranty-manager-head">
+      <div><small>ПРАЙС</small><h2>Категории прайса</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="warranty-manager-tech">
+      <label><span>Тип техники</span><select class="field" id="price-category-tech">${types.map((tech) => `<option>${escapeHtml(tech)}</option>`).join("")}</select></label>
+    </div>
+    <p class="manager-help">Архив категории скрывает её активные позиции из каталога, но сохраняет историю старых заявок.</p>
+    <div id="price-category-list" class="warranty-manager-list"></div>
+    <div class="warranty-manager-add">
+      <input class="field" id="new-price-category-name" placeholder="Новая категория" />
+      <button type="button" class="primary-button" id="add-price-category">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#price-category-list");
+    const categories = priceCategoriesForTech(selectedTech, { includeArchived: true });
+    list.innerHTML = categories.length ? categories.map((item) => `<div class="warranty-manager-row ${item.archived ? "archived" : ""}" data-price-category-id="${escapeHtml(item.id)}">
+      <input class="field" data-price-category-name value="${escapeHtml(item.name)}" aria-label="Название категории" />
+      <button type="button" data-price-category-archive aria-label="${item.archived ? "Вернуть категорию" : "Архивировать категорию"}">${icon(item.archived ? "restore" : "archive")}</button>
+    </div>`).join("") : `<div class="warranty-manager-empty">Для этого типа категорий пока нет.</div>`;
+  };
+
+  const close = () => { modal.remove(); syncModalScrollLock(); };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const button = event.target.closest("[data-price-category-archive]");
+    if (!button) return;
+    const row = button.closest("[data-price-category-id]");
+    const category = data.price_categories.find((entry) => String(entry.id) === String(row?.dataset.priceCategoryId || ""));
+    if (!category) return;
+    const nextArchived = !category.archived;
+    category.archived = nextArchived;
+    (data.receipt_prices || []).forEach((item) => {
+      if (String(item.tech || "Общее").trim() !== String(category.tech || "Общее").trim()) return;
+      if (String(item.category || "").trim() !== String(category.name || "").trim()) return;
+      if (nextArchived) {
+        if (!item.archived) {
+          item.archived = true;
+          item.archivedByCategory = category.id;
+        }
+      } else if (String(item.archivedByCategory || "") === String(category.id)) {
+        item.archived = false;
+        delete item.archivedByCategory;
+      }
+    });
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    if (event.target.id === "price-category-tech") {
+      selectedTech = event.target.value;
+      renderList();
+      return;
+    }
+    const input = event.target.closest("[data-price-category-name]");
+    if (!input) return;
+    const row = input.closest("[data-price-category-id]");
+    const category = data.price_categories.find((entry) => String(entry.id) === String(row?.dataset.priceCategoryId || ""));
+    if (!category) return;
+    const name = String(input.value || "").trim();
+    if (!name) { input.value = category.name || ""; return toast("Название категории не может быть пустым"); }
+    const duplicate = data.price_categories.some((entry) => String(entry.id) !== String(category.id)
+      && String(entry.tech || "Общее").trim() === String(category.tech || "Общее").trim()
+      && String(entry.name || "").trim().toLowerCase() === name.toLowerCase());
+    if (duplicate) { input.value = category.name || ""; return toast("Такая категория уже есть"); }
+    const oldName = category.name;
+    category.name = name;
+    (data.receipt_prices || []).forEach((item) => {
+      if (String(item.tech || "Общее").trim() === String(category.tech || "Общее").trim()
+        && String(item.category || "").trim() === String(oldName || "").trim()) item.category = name;
+    });
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-price-category").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-price-category-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши название категории");
+    if (priceCategoriesForTech(selectedTech, { includeArchived: true }).some((entry) => String(entry.name || "").trim().toLowerCase() === name.toLowerCase())) return toast("Такая категория уже есть");
+    data.price_categories.push({ id: crypto.randomUUID(), tech: selectedTech, name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function orderSourcesModal() {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop source-manager-backdrop";
@@ -2909,6 +3247,8 @@ function settingsPage() {
         <span><strong>Искать в комментарии мастера</strong><small>Включать внутренние заметки в глобальный поиск заявок</small></span>
       </label>
       <div class="legacy-settings-links">
+        <button type="button" data-action="manage-appliance-types"><span class="settings-link-icon">${icon("settings")}</span><span><strong>Типы техники</strong><small>Добавить, переименовать или архивировать</small></span><b>${applianceTypes().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-action="manage-price-categories"><span class="settings-link-icon">${icon("price")}</span><span><strong>Категории прайса</strong><small>Блоки услуг для каждого типа техники</small></span><b>${(data.price_categories || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-results"><span class="settings-link-icon">${icon("check")}</span><span><strong>Результаты гарантийных обращений</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeWarrantyResults().length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -3935,7 +4275,7 @@ function newOrderModal(existing = null, options = {}) {
     ? `<option value="${escapeHtml(order.warrantyResultId)}" selected>${escapeHtml(warrantyResultName(order) || "Архивный результат")}</option>`
     : "";
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
-  const serviceCatalog = availableServices();
+  const orderTechOptions = [...new Set([...applianceTypes(), String(order.tech || "").trim()].filter(Boolean))];
   const visitParts = visitDateParts(order);
   const sourceOptions = activeOrderSources().map((source) => `<option value="${escapeHtml(source.id)}" ${String(order.sourceId || "") === String(source.id) ? "selected" : ""}>${escapeHtml(source.name)}</option>`).join("");
   const archivedSourceOption = order.sourceId && !activeOrderSources().some((source) => String(source.id) === String(order.sourceId))
@@ -3962,7 +4302,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" placeholder="Необязательно" /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
-      <div class="form-group"><label>Техника</label><select class="field" name="tech">${applianceTypes().map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Техника</label><select class="field" name="tech">${orderTechOptions.map((value) => `<option value="${escapeHtml(value)}" ${order.tech === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
       <div class="client-match-slot full" id="client-match-slot"></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
@@ -4206,7 +4546,7 @@ function newOrderModal(existing = null, options = {}) {
     if (target > 0) fitServiceRowsToTarget(modal, target);
     return calculateLines();
   };
-  modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
+  modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, availableServices(formElement.elements.tech.value)));
   modal.querySelector("#open-material-catalog").addEventListener("click", () => openMaterialCatalog(modal));
   modal.querySelector("#add-manual-material").addEventListener("click", () => {
     modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({ qty: 1, amount: 0, directExpense: true, writeOff: false }));
@@ -4533,6 +4873,11 @@ function customServiceModal(existing = null, serviceIndex = -1) {
 }
 function priceModal(existing = null, priceIndex = -1) {
   const item = existing || {};
+  const techOptions = [...new Set([...applianceTypes(), String(item.tech || "").trim()].filter(Boolean))];
+  const categoryOptions = [...new Set([
+    ...(data.price_categories || []).filter((entry) => !entry.archived).map((entry) => String(entry.name || "").trim()),
+    String(item.category || "").trim()
+  ].filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
   const modal = document.createElement("div");
   modal.className = "modal-backdrop legacy-price-editor-backdrop";
   modal.innerHTML = `<form class="modal legacy-price-editor" id="price-form">
@@ -4545,8 +4890,8 @@ function priceModal(existing = null, priceIndex = -1) {
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon(item.kind === "material" ? "goods" : "price")}</span><h2>${existing ? "Редактирование" : "Новая позиция"}</h2></div>
       <div class="legacy-price-editor-grid">
         <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Название позиции" /></label>
-        <label><span>КАТЕГОРИЯ</span><input class="field" name="category" value="${escapeHtml(item.category || "")}" placeholder="Расходные материалы" /></label>
-        <label><span>ТЕХНИКА</span><input class="field" name="tech" value="${escapeHtml(item.tech || "")}" placeholder="Холодильники" /></label>
+        <label><span>КАТЕГОРИЯ</span><input class="field" name="category" list="price-category-options" value="${escapeHtml(item.category || "")}" placeholder="Выбери или введи категорию" /><datalist id="price-category-options">${categoryOptions.map((value) => `<option value="${escapeHtml(value)}"></option>`).join("")}</datalist></label>
+        <label><span>ТЕХНИКА</span><select class="field" name="tech"><option value="">Общее</option>${techOptions.map((value) => `<option value="${escapeHtml(value)}" ${String(item.tech || "") === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></label>
         <label><span>ТИП</span><select class="field" name="kind"><option value="service" ${item.kind !== "material" ? "selected" : ""}>Услуга</option><option value="material" ${item.kind === "material" ? "selected" : ""}>Материал / товар</option></select></label>
         <label><span>ЕДИНИЦА</span><input class="field" name="unit" value="${escapeHtml(item.unit || (item.kind === "material" ? "шт." : ""))}" placeholder="шт." /></label>
         <label class="full"><span>ЦЕНА</span><input class="field legacy-price-value" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" required inputmode="decimal" /></label>
@@ -4907,6 +5252,7 @@ function stockModal(existing = null) {
   ];
   const currentCompatibility = Array.isArray(item.compatibility) ? item.compatibility.map(String) : [];
   const customCompatibility = currentCompatibility.filter((value) => !commonCompatibility.includes(value)).join(", ");
+  const stockTechOptions = ["Общее", ...applianceTypes(), stockTechForItem(item)].filter((value, index, array) => value && array.indexOf(value) === index);
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
@@ -4922,7 +5268,7 @@ function stockModal(existing = null) {
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("box")}</span><span>Основное</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
-      <div class="form-group"><label>Тип техники</label><select class="field" name="stockTech">${["Общее",...applianceTypes()].filter((value,index,array)=>array.indexOf(value)===index).map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Тип техники</label><select class="field" name="stockTech">${stockTechOptions.map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" required placeholder="Например, датчики" /></div>
       <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
@@ -5911,6 +6257,8 @@ app.addEventListener("click", async (event) => {
     return toast("Позиция удалена из покупок");
   }
   if (action === "new-order") return newOrderModal();
+  if (action === "manage-appliance-types") return applianceTypesModal();
+  if (action === "manage-price-categories") return priceCategoriesModal();
   if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "manage-warranty-options") return warrantyOptionsModal();
   if (action === "manage-warranty-results") return warrantyResultsModal();
@@ -6334,14 +6682,12 @@ fileInput.addEventListener("change", async () => {
 async function start() {
   try {
     const stored = await dbGet(DATA_KEY);
-    if (stored) {
-      data = validateBackup(stored);
-      let migrated = ensureDataIds();
-      if (migrateStockReservationModel()) migrated = true;
-      if (migrateStockBatchModel()) migrated = true;
-      if (migrateStockLocationModel()) migrated = true;
-      if (migrated) await saveData();
-    }
+    if (stored) data = validateBackup(stored);
+    let migrated = ensureDataIds();
+    if (migrateStockReservationModel()) migrated = true;
+    if (migrateStockBatchModel()) migrated = true;
+    if (migrateStockLocationModel()) migrated = true;
+    if (migrated) await saveData();
   } catch (error) {
     console.error("Не удалось прочитать локальную базу", error);
     toast("Не удалось открыть локальную базу");
