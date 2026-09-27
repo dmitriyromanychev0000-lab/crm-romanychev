@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T06:42:25.047Z",
-  "testedSha": "8aca3bcfbff8b9c37aa6c25403ed5078277cdd61",
+  "generatedAt": "2026-09-27T06:45:20.378Z",
+  "testedSha": "107dadee4c8b7b1feabc0f02503ddbe721de92df",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -671,6 +671,15 @@
     },
     {
       "label": "material-catalog-selected",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "order-editor-material-row",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
