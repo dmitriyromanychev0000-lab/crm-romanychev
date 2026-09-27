@@ -58,7 +58,10 @@ const seed = {
     { id: "i2", amount: 3500, category: "Продажа", description: "Продажа запчасти", date: "2026-09-25T12:00:00.000Z" }
   ],
   service_custom: [{ id: "cs1", name: "Срочный выезд", category: "Дополнительно", tech: "Холодильник", price: 1800 }],
-  receipts: [{ id: "r1", title: "Квитанция", number: "0059", date: "2026-09-24T12:00:00.000Z", amount: 8900, orderId: "0059", note: "Оплачено" }],
+  receipts: [
+    { id: "r1", title: "Квитанция", number: "0059", date: "2026-09-24T12:00:00.000Z", amount: 8900, orderId: "0059", note: "Оплачено" },
+    { id: "r2", title: "Чек расходных материалов", number: "A-17", date: "2026-09-23T15:00:00.000Z", amount: 1200, orderId: "", note: "Без привязки к заявке" }
+  ],
   receipt_prices: [
     { id: "p1", name: "Диагностика", category: "Диагностика", tech: "Холодильник", kind: "service", price: 1500 },
     { id: "p2", name: "Замена вентилятора", category: "Ремонт", tech: "Холодильник", kind: "service", price: 6900 },
@@ -307,16 +310,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const actScreenSurface = await page.evaluate(() => ({
         control: getComputedStyle(document.querySelector(".legacy-act-control")).backgroundColor,
         field: getComputedStyle(document.querySelector(".legacy-act-control .field")).backgroundColor,
+        selected: getComputedStyle(document.querySelector(".legacy-act-selected")).backgroundColor,
         secondary: getComputedStyle(document.querySelector(".legacy-act-control-actions .legacy-dark-button")).backgroundColor,
+        primary: getComputedStyle(document.querySelector(".legacy-act-control-actions .legacy-orange-button")).backgroundColor,
         preview: getComputedStyle(document.querySelector(".legacy-act-preview")).backgroundColor,
         sheet: getComputedStyle(document.querySelector(".legacy-act-preview .act-sheet")).backgroundColor
       }));
-      if (actScreenSurface.control !== "rgb(6, 11, 15)"
+      if (actScreenSurface.control !== "rgb(16, 11, 8)"
         || actScreenSurface.field !== "rgb(9, 15, 20)"
-        || actScreenSurface.secondary !== "rgb(10, 17, 22)"
-        || actScreenSurface.preview !== "rgb(6, 11, 15)"
+        || actScreenSurface.selected !== "rgb(8, 16, 25)"
+        || actScreenSurface.secondary !== "rgb(8, 16, 25)"
+        || actScreenSurface.primary !== "rgb(38, 18, 13)"
+        || actScreenSurface.preview !== "rgb(5, 9, 12)"
         || actScreenSurface.sheet !== "rgb(255, 255, 255)") {
-        report.failures.push({ width, type: "act-screen-surfaces", actScreenSurface });
+        report.failures.push({ width, type: "act-semantic-hierarchy", actScreenSurface });
       }
       const actPreviewState = await page.evaluate(() => {
         const preview = document.querySelector(".legacy-act-preview");
@@ -1135,11 +1142,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "receipts" }));
       const receiptsPageSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".receipts-stats > div")).backgroundColor,
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row:not(.tool) strong")).fontSize
+        total: getComputedStyle(document.querySelector(".receipts-stats > .service-stat-primary")).backgroundColor,
+        amount: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(2)")).backgroundColor,
+        linkedStat: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(3)")).backgroundColor,
+        linkedRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.linked")).backgroundColor,
+        standaloneRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.standalone")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize
       }));
-      if (receiptsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5) {
-        report.failures.push({ width, type: "receipts-deep-dark-page", receiptsPageSurface });
+      if (receiptsPageSurface.total !== "rgb(16, 11, 8)"
+        || receiptsPageSurface.amount !== "rgb(19, 16, 6)"
+        || receiptsPageSurface.linkedStat !== "rgb(7, 17, 12)"
+        || receiptsPageSurface.linkedRow !== "rgb(7, 16, 11)"
+        || receiptsPageSurface.standaloneRow !== "rgb(16, 11, 23)"
+        || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "receipts-semantic-hierarchy", receiptsPageSurface });
       }
       await page.locator('[data-action="new-receipt"]').click();
       const receiptEditorState = await page.evaluate(() => {

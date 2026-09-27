@@ -11868,3 +11868,176 @@
     background-color: #100b17 !important;
   }
 }
+
+
+/* 1.0.43 · Документы и акт: привязка к заявке, выбранная заявка и ясные действия. */
+@media screen and (max-width: 520px) {
+  .receipts-stats > .service-stat-primary {
+    border-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.075), transparent 105px) !important;
+  }
+
+  .receipts-stats > div:nth-child(2) {
+    border-color: #4a3b1c !important;
+    background-color: #131006 !important;
+    background-image: none !important;
+  }
+
+  .receipts-stats > div:nth-child(2) strong {
+    color: #e7b450 !important;
+  }
+
+  .receipts-stats > div:nth-child(3) {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+    background-image: none !important;
+  }
+
+  .legacy-document-row.receipt {
+    background-image: none !important;
+  }
+
+  .legacy-document-row.receipt.linked {
+    border-color: #1d3b2b !important;
+    background-color: #07100b !important;
+  }
+
+  .legacy-document-row.receipt.standalone {
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+  }
+
+  .legacy-document-row.receipt.linked .legacy-document-icon {
+    border: 1px solid rgba(89,216,137,.22);
+    background: rgba(89,216,137,.09) !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-document-row.receipt.standalone .legacy-document-icon {
+    border: 1px solid rgba(168,138,240,.22);
+    background: rgba(168,138,240,.09) !important;
+    color: #b8a0ef !important;
+  }
+
+  .legacy-document-row.receipt > b {
+    color: #e7b450 !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-type {
+    border-color: #4a3b1c !important;
+    background-color: #131006 !important;
+    color: #f1dfb7 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-type .ui-icon {
+    color: #e7b450 !important;
+  }
+
+  .legacy-service-editor-backdrop .service-editor-head-icon.receipt {
+    border-color: rgba(231,180,80,.26) !important;
+    background: rgba(231,180,80,.10) !important;
+    color: #e7b450 !important;
+  }
+
+  .legacy-act-control {
+    border-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.07), transparent 120px) !important;
+  }
+
+  .legacy-act-control-title > span {
+    border: 1px solid rgba(255,113,83,.24);
+    background: rgba(255,113,83,.10) !important;
+    color: var(--crm-accent) !important;
+  }
+
+  .legacy-act-selected {
+    display: grid;
+    grid-template-columns: 38px minmax(0,1fr);
+    gap: 9px;
+    align-items: center;
+    min-height: 58px;
+    padding: 8px 9px;
+    border: 1px solid #223b52;
+    border-radius: 11px;
+    background: #081019;
+  }
+
+  .legacy-act-selected-icon {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 1px solid rgba(92,169,255,.22);
+    border-radius: 10px;
+    background: rgba(92,169,255,.09);
+    color: var(--crm-blue);
+  }
+
+  .legacy-act-selected-icon .ui-icon {
+    width: 19px;
+    height: 19px;
+  }
+
+  .legacy-act-selected > span:last-child {
+    min-width: 0;
+  }
+
+  .legacy-act-selected small,
+  .legacy-act-selected strong,
+  .legacy-act-selected em {
+    display: block;
+  }
+
+  .legacy-act-selected small {
+    color: #6f8796;
+    font-size: 8.5px;
+    font-weight: 760;
+    letter-spacing: .07em;
+  }
+
+  .legacy-act-selected strong {
+    overflow: hidden;
+    margin-top: 2px;
+    color: #edf5fa;
+    font-size: 11.5px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-act-selected em {
+    overflow: hidden;
+    margin-top: 3px;
+    color: #8fa3af;
+    font-size: 9.5px;
+    font-style: normal;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-act-control-actions .legacy-dark-button {
+    border-color: #223b52 !important;
+    background: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .legacy-act-control-actions .legacy-dark-button .ui-icon {
+    color: var(--crm-blue) !important;
+  }
+
+  .legacy-act-control-actions .legacy-orange-button {
+    border: 1px solid #5a2e22 !important;
+    background: #26120d !important;
+    color: #ffd8cf !important;
+    box-shadow: 0 7px 18px rgba(255,113,83,.11) !important;
+  }
+
+  .legacy-act-preview {
+    border-color: #2a343a !important;
+    background-color: #05090c !important;
+  }
+}

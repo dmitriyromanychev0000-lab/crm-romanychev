@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.167";
+const APP_BUILD = "2026.09.27.168";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Настройки и бэкапы разделены по назначению: реквизиты, приложение, рабочие данные, сохранение и автоматический бэкап теперь визуально различаются и быстрее считываются";
+const APP_RELEASE = "Документы различают привязанные к заявкам и отдельные записи, а экран акта показывает выбранную заявку отдельным компактным блоком и яснее разделяет действия";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1554,6 +1554,10 @@ function actPage() {
     <section class="legacy-act-control no-print">
       <div class="legacy-act-control-title"><span>${icon("printer")}</span><div><h2>Акт выполненных работ</h2><small>Формат A4 · печать или PDF</small></div></div>
       <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
+      ${order ? `<div class="legacy-act-selected">
+        <span class="legacy-act-selected-icon">${icon(applianceIconName(order.tech))}</span>
+        <span><small>В АКТЕ</small><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.name || "Клиент")}</strong><em>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" · ") || "Техника")} · ${money(actTotal)}</em></span>
+      </div>` : ""}
       <div class="legacy-act-control-actions">
         <button type="button" class="legacy-dark-button" data-action="open-receipts">${icon("receipt")}<span>Документы</span></button>
         <button type="button" class="legacy-orange-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button>
@@ -1796,7 +1800,7 @@ function receiptsPage() {
     </section>
     ${receipts.length ? `<div class="legacy-service-list">${receiptEntries.map(({ index, view }) => {
       const meta = [view.number ? `№${view.number}` : "", view.date ? shortDate(view.date) : "", view.orderId ? `заявка №${view.orderId}` : ""].filter(Boolean).join(" · ");
-      return `<button type="button" class="legacy-document-row" data-action="edit-receipt" data-index="${index}">
+      return `<button type="button" class="legacy-document-row receipt ${view.orderId ? "linked" : "standalone"}" data-action="edit-receipt" data-index="${index}">
         <span class="legacy-document-icon">${icon("receipt")}</span>
         <span><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || view.note || "Без дополнительных данных")}</small></span>
         <b>${view.amount ? money(view.amount) : "—"}</b>
