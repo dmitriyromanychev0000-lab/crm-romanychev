@@ -5348,11 +5348,6 @@
     font-size: 12px !important;
   }
 
-  .order-editor-modal .material-unit {
-    display: flex !important;
-    align-items: center !important;
-    color: #cfd7dc !important;
-  }
 }
 
 @media screen and (max-width: 360px) {
@@ -9528,11 +9523,6 @@
   .order-editor-modal .material-card-controls input[data-line="qty"] {
     text-align: center !important;
     font-variant-numeric: tabular-nums;
-  }
-
-  .order-editor-modal .material-card-controls .material-unit {
-    justify-content: center !important;
-    font-weight: 700 !important;
   }
 
   .order-editor-modal .material-card-controls input[data-line="unit-cost"] {
@@ -13962,8 +13952,6 @@
 }
 
 @media (max-width:760px){
-  .material-location-control{display:grid;gap:4px;margin-top:7px}
-  .material-location-control>span{font-size:10px;font-weight:800;letter-spacing:.04em;color:#7f8c96}
   .stock-detail-actions .stock-detail-transfer{grid-column:1/-1!important;min-height:52px!important;border-color:rgba(78,161,255,.24)!important;background:#07111a!important;color:#d8eaff!important}
   .stock-detail-actions .stock-detail-transfer .ui-icon{color:#4ea1ff!important}
   .stock-location-summary{margin-top:10px!important}
