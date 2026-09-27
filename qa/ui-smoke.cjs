@@ -1181,29 +1181,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
         report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
       }
-      const analyticsSingleBar = await page.evaluate(() => {
-        const wrap = document.querySelector(".analytics-chart-panel .bar-wrap:only-child");
-        const bar = wrap?.querySelector(".bar");
-        const rect = wrap?.getBoundingClientRect();
-        const barRect = bar?.getBoundingClientRect();
+      const analyticsModelState = await page.evaluate(() => {
+        const numberFrom = (value) => Number(String(value || "").replace(/[^0-9-]/g, "")) || 0;
+        const cards = [...document.querySelectorAll(".analytics-kpi")];
+        const values = Object.fromEntries(cards.map((card) => [
+          card.querySelector("span:not(.analytics-kpi-icon)")?.textContent?.trim() || "",
+          numberFrom(card.querySelector("strong")?.textContent)
+        ]));
+        const metrics = [...document.querySelectorAll(".analytics-work .metric")];
+        const conversionMetric = metrics.find((metric) => metric.querySelector(".metric-label")?.textContent?.trim() === "Конверсия");
+        const expenseButton = document.querySelector(".analytics-add-expense");
+        const expenseRect = expenseButton?.getBoundingClientRect();
         return {
-          exists: Boolean(wrap),
-          width: rect ? Math.round(rect.width) : 0,
-          height: rect ? Math.round(rect.height) : 0,
-          background: wrap ? getComputedStyle(wrap).backgroundColor : "missing",
-          radius: wrap ? getComputedStyle(wrap).borderRadius : "missing",
-          barWidth: barRect ? Math.round(barRect.width) : 0,
-          barHeight: barRect ? Math.round(barRect.height) : 0
+          values,
+          conversion: numberFrom(conversionMetric?.querySelector(".metric-value")?.textContent),
+          weekdays: document.querySelectorAll(".analytics-weekdays > span").length,
+          bars: document.querySelectorAll(".analytics-chart-panel .bar-wrap").length,
+          barWidths: [...document.querySelectorAll(".analytics-chart-panel .bar")].map((bar) => Math.round(bar.getBoundingClientRect().width)),
+          hasSources: Boolean([...document.querySelectorAll(".analytics-list-panel .panel-title")].find((node) => node.textContent.includes("Источники заявок"))),
+          expenseButtonHeight: expenseRect ? Math.round(expenseRect.height) : 0
         };
       });
-      if (!analyticsSingleBar.exists
-        || analyticsSingleBar.height < 74
-        || analyticsSingleBar.height > 100
-        || analyticsSingleBar.background !== "rgb(9, 15, 20)"
-        || analyticsSingleBar.radius !== "12px"
-        || analyticsSingleBar.barWidth !== 10
-        || analyticsSingleBar.barHeight !== 44) {
-        report.failures.push({ width, type: "analytics-single-bar-layout", analyticsSingleBar });
+      if (analyticsModelState.values["Получено от клиентов"] !== 10400
+        || analyticsModelState.values["Потрачено"] !== 4100
+        || analyticsModelState.values["Заработал"] !== 5050
+        || analyticsModelState.values["Средний чек"] !== 8900
+        || analyticsModelState.conversion !== 33
+        || analyticsModelState.weekdays !== 7
+        || analyticsModelState.bars !== 2
+        || analyticsModelState.barWidths.some((widthValue) => widthValue !== 10)
+        || !analyticsModelState.hasSources
+        || analyticsModelState.expenseButtonHeight < 44) {
+        report.failures.push({ width, type: "analytics-product-model", analyticsModelState });
       }
 
       await page.locator('[data-analytics-period="custom"]').click();
@@ -1545,17 +1554,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
-      const moreMenuSurface = await page.evaluate(() => ({
-        finance: getComputedStyle(document.querySelector(".legacy-more-list .menu-finance")).backgroundColor,
-        shopping: getComputedStyle(document.querySelector(".legacy-more-list .menu-shopping")).backgroundColor,
-        goods: getComputedStyle(document.querySelector(".legacy-more-list .menu-goods")).backgroundColor,
-        settings: getComputedStyle(document.querySelector(".legacy-more-list .menu-settings")).backgroundColor,
-        titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
-      }));
-      if (moreMenuSurface.finance !== "rgb(7, 16, 11)"
-        || moreMenuSurface.shopping !== "rgb(16, 13, 6)"
-        || moreMenuSurface.goods !== "rgb(16, 11, 23)"
-        || moreMenuSurface.settings !== "rgb(9, 15, 20)"
+      const moreMenuSurface = await page.evaluate(() => {
+        const items = [...document.querySelectorAll(".legacy-more-list .menu-item")];
+        return {
+          names: items.map((item) => item.querySelector(".menu-name")?.textContent?.trim() || ""),
+          backgrounds: items.map((item) => getComputedStyle(item).backgroundColor),
+          iconBackgrounds: items.map((item) => getComputedStyle(item.querySelector(".menu-icon")).backgroundColor),
+          finance: document.querySelectorAll(".legacy-more-list .menu-finance").length,
+          shopping: document.querySelectorAll(".legacy-more-list .menu-shopping").length,
+          tools: document.querySelectorAll(".legacy-more-list .menu-tools").length,
+          titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
+        };
+      });
+      const expectedMoreNames = ["Календарь","Клиенты","Прайс-лист","Калькулятор","Акт","Настройки"];
+      if (JSON.stringify(moreMenuSurface.names) !== JSON.stringify(expectedMoreNames)
+        || moreMenuSurface.finance !== 0
+        || moreMenuSurface.shopping !== 0
+        || moreMenuSurface.tools !== 0
+        || moreMenuSurface.backgrounds.some((value) => value !== "rgb(7, 12, 16)")
+        || moreMenuSurface.iconBackgrounds.some((value) => value !== "rgb(10, 17, 22)")
         || parseFloat(moreMenuSurface.titleFont) < 11.5) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
