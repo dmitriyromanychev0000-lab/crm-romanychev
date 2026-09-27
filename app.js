@@ -38,6 +38,7 @@ const defaultData = () => ({
     lastBackupAt: null,
     catalogApplyWithoutFit: false,
     stockReservationModel: 1,
+    searchMasterComment: false,
     companyName: "CRM by Romanychev",
     name: "",
     phone: ""
@@ -1253,7 +1254,18 @@ function ordersPage() {
     const filterMatch = orderFilter === "archived"
       ? isArchived
       : !isArchived && (orderFilter === "all" || orderFilter === status);
-    const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id, orderSourceName(order), order.issue, order.diagnosis].join(" ").toLowerCase();
+    const haystack = [
+      order.name,
+      order.phone,
+      order.tech,
+      order.brand,
+      order.address,
+      order.id,
+      orderSourceName(order),
+      order.issue,
+      order.diagnosis,
+      data.settings?.searchMasterComment ? order.comment : ""
+    ].join(" ").toLowerCase();
     const normalizedOrderPhone = normalizeRussianPhone(order.phone || "");
     const searchMatch = !query || haystack.includes(query) || (phoneQuery && normalizedOrderPhone.includes(phoneQuery));
     const visitParts = visitDateParts(order);
@@ -2249,6 +2261,11 @@ function settingsPage() {
 
     <section class="legacy-settings-card settings-data-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Рабочие данные</h2></div>
+      <label class="legacy-settings-toggle-row settings-search-toggle">
+        <input type="checkbox" id="search-master-comment-toggle" ${settings.searchMasterComment ? "checked" : ""} />
+        <span class="settings-checkbox"></span>
+        <span><strong>Искать в комментарии мастера</strong><small>Включать внутренние заметки в глобальный поиск заявок</small></span>
+      </label>
       <div class="legacy-settings-links">
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -5161,6 +5178,12 @@ app.addEventListener("submit", async (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  if (event.target.id === "search-master-comment-toggle") {
+    data.settings.searchMasterComment = Boolean(event.target.checked);
+    await saveData();
+    toast(event.target.checked ? "Поиск по комментариям включён" : "Поиск по комментариям выключен");
+    return;
+  }
   if (event.target.id === "price-tech-filter") {
     priceTechFilter = event.target.value;
     saveUiState();
