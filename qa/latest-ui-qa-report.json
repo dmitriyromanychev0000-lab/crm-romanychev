@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T10:27:09.109Z",
-  "testedSha": "359610be81e0c42f71f0e985af42b5d1aa4e37b4",
+  "generatedAt": "2026-09-27T10:33:48.860Z",
+  "testedSha": "6484eda077b563813649aded16da45d43cf7c01e",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1186,5 +1186,22 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stock-detail-hierarchy",
+      "stockDetailSurface": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(6, 11, 15)",
+        "primaryKpi": "rgb(7, 17, 12)",
+        "minimumKpi": "rgb(19, 16, 6)",
+        "costKpi": "rgb(8, 16, 25)",
+        "incoming": "rgb(7, 19, 13)",
+        "outgoing": "rgb(22, 9, 12)",
+        "archive": "rgb(8, 16, 25)",
+        "incomingWidth": 147,
+        "archiveWidth": 147
+      }
+    }
+  ]
 }
