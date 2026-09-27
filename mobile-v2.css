@@ -10957,3 +10957,34 @@
   }
 }
 
+/* 1.0.32 · Каталог материалов: явное завершение сценария через акцентную CTA. */
+@media screen and (max-width: 520px) {
+  .material-catalog-close {
+    display: flex !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 8px 0 calc(8px + env(safe-area-inset-bottom)) !important;
+    padding: 0 14px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border: 1px solid #ff684a !important;
+    border-radius: 12px !important;
+    background: #ff684a !important;
+    color: #1c100c !important;
+    font-size: 13px !important;
+    font-weight: 760 !important;
+    line-height: 1 !important;
+    box-shadow: 0 7px 20px rgba(255,104,74,.16) !important;
+  }
+
+  .material-catalog-close .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    flex: 0 0 18px !important;
+    margin: 0 !important;
+    stroke-width: 2.15 !important;
+  }
+}
+

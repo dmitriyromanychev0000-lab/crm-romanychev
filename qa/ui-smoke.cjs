@@ -436,6 +436,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "material-catalog-deep-dark", materialCatalogSurface });
       }
       report.results.push(await shot(page, width, "material-catalog", false));
+      const materialCatalogDone = await page.evaluate(() => {
+        const button = document.querySelector(".material-catalog-close");
+        const rect = button?.getBoundingClientRect();
+        const style = button ? getComputedStyle(button) : null;
+        return {
+          background: style?.backgroundColor || "missing",
+          color: style?.color || "missing",
+          radius: style?.borderRadius || "missing",
+          height: rect ? Math.round(rect.height) : 0,
+          icon: Boolean(button?.querySelector(".ui-icon"))
+        };
+      });
+      if (materialCatalogDone.background !== "rgb(255, 104, 74)"
+        || materialCatalogDone.color !== "rgb(28, 16, 12)"
+        || materialCatalogDone.radius !== "12px"
+        || materialCatalogDone.height < 48
+        || !materialCatalogDone.icon) {
+        report.failures.push({ width, type: "material-catalog-done-cta", materialCatalogDone });
+      }
 
       await page.locator("[data-material-id]").first().click();
       await page.waitForTimeout(60);

@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.159";
+const APP_BUILD = "2026.09.27.160";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс: фокус поиска стабильно сохраняет коралловый акцент даже после live-render";
+const APP_RELEASE = "Каталог материалов: явная кнопка «Готово» с акцентом и иконкой завершает выбор без визуальной недосказанности";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2348,7 +2348,7 @@ function openMaterialCatalog(orderModal) {
     </header>
     <div class="material-catalog-search search-row search-with-icon">${icon("search")}<input class="search" id="material-catalog-search" placeholder="Название товара" /></div>
     <div class="material-catalog-list" id="material-catalog-list"></div>
-    <button type="button" class="material-catalog-close">Готово</button>
+    <button type="button" class="material-catalog-close">${icon("check")}<span>Готово</span></button>
   </section>`;
   document.body.appendChild(modal);
 
