@@ -10654,3 +10654,86 @@
   }
 }
 
+/* 1.0.28 · Системные окна: диагностика, проверка бэкапа и подтверждения в общей тёмной системе. */
+@media screen and (max-width: 520px) {
+  body.modal-open > .modal-backdrop > div.modal.compact-modal {
+    border-color: #202d35 !important;
+    background-color: #03070a !important;
+    background-image: none !important;
+    box-shadow: 0 24px 60px rgba(0,0,0,.42) !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal > h2 {
+    margin-bottom: 14px !important;
+    color: #f2f5f6 !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .goods-list {
+    display: grid !important;
+    gap: 6px !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .goods-sheet {
+    min-height: 52px !important;
+    padding: 8px 10px !important;
+    border: 1px solid #182229 !important;
+    border-radius: 11px !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .goods-sheet strong {
+    color: #eef2f4 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .goods-sheet small {
+    color: #7f8a92 !important;
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .panel {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .modal-actions {
+    border-top-color: #202d35 !important;
+    background: rgba(3,7,10,.99) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.22) !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal .modal-actions .secondary-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+  }
+
+  .crm-confirm-backdrop {
+    background: rgba(0,0,0,.82) !important;
+  }
+
+  .crm-confirm-modal {
+    border-color: #202d35 !important;
+    background-color: #060b0f !important;
+    background-image: none !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,.48) !important;
+  }
+
+  .crm-confirm-actions .legacy-dark-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+  }
+
+  .crm-confirm-actions button {
+    min-height: 48px !important;
+  }
+}
+

@@ -894,6 +894,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "settings-deep-dark", settingsSurface });
       }
 
+      await page.locator('[data-action="run-diagnostics"]').click();
+      await page.waitForTimeout(120);
+      const diagnosticsSurface = await page.evaluate(() => {
+        const modal = document.querySelector('body > .modal-backdrop > div.modal.compact-modal');
+        const row = modal?.querySelector('.goods-sheet');
+        const footer = modal?.querySelector('.modal-actions');
+        return {
+          modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          row: row ? getComputedStyle(row).backgroundColor : "missing",
+          footer: footer ? getComputedStyle(footer).backgroundColor : "missing"
+        };
+      });
+      if (diagnosticsSurface.modal !== "rgb(3, 7, 10)"
+        || diagnosticsSurface.row !== "rgb(9, 15, 20)"
+        || diagnosticsSurface.footer !== "rgba(3, 7, 10, 0.99)") {
+        report.failures.push({ width, type: "diagnostics-deep-dark", diagnosticsSurface });
+      }
+      report.results.push(await shot(page, width, "diagnostics-modal", false));
+      await page.locator('body > .modal-backdrop [data-close-modal]').click();
+
+      await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
+      await page.locator(".legacy-finance-row > button").first().click();
+      await page.waitForTimeout(60);
+      const confirmSurface = await page.evaluate(() => {
+        const modal = document.querySelector(".crm-confirm-modal");
+        const cancel = document.querySelector(".crm-confirm-actions .legacy-dark-button");
+        const cancelRect = cancel?.getBoundingClientRect();
+        return {
+          modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
+          cancelHeight: cancelRect ? Math.round(cancelRect.height) : 0
+        };
+      });
+      if (confirmSurface.modal !== "rgb(6, 11, 15)"
+        || confirmSurface.cancel !== "rgb(10, 17, 22)"
+        || confirmSurface.cancelHeight < 48) {
+        report.failures.push({ width, type: "confirm-dialog-deep-dark", confirmSurface });
+      }
+      report.results.push(await shot(page, width, "confirm-dialog", false));
+      await page.locator("[data-confirm-cancel]").click();
+
       if (width === 320) {
         const stressSeed = structuredClone(seed);
         Object.assign(stressSeed.orders[0], {
