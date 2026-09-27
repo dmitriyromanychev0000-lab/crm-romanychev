@@ -562,6 +562,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       await page.locator("[data-stock-detail]").first().click();
+      const stockDetailSurface = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".stock-detail-modal")).backgroundColor,
+        hero: getComputedStyle(document.querySelector(".stock-detail-hero")).backgroundColor,
+        kpi: getComputedStyle(document.querySelector(".stock-detail-kpis > div")).backgroundColor,
+        action: getComputedStyle(document.querySelector(".stock-detail-actions button")).backgroundColor,
+        history: getComputedStyle(document.querySelector(".stock-detail-history")).backgroundColor
+      }));
+      if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
+        || stockDetailSurface.hero !== "rgb(6, 11, 15)"
+        || stockDetailSurface.kpi !== "rgb(9, 15, 20)"
+        || stockDetailSurface.action !== "rgb(9, 15, 20)"
+        || stockDetailSurface.history !== "rgb(6, 11, 15)") {
+        report.failures.push({ width, type: "stock-detail-deep-dark", stockDetailSurface });
+      }
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
@@ -579,6 +593,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       report.results.push(await shot(page, width, "stock-editor", false));
       await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "movements" }));
+      const movementSurface = await page.evaluate(() => ({
+        filter: getComputedStyle(document.querySelector(".movement-filter-chips")).backgroundColor,
+        card: getComputedStyle(document.querySelector(".movement-card")).backgroundColor
+      }));
+      if (movementSurface.filter !== "rgb(6, 11, 15)" || movementSurface.card !== "rgb(7, 12, 16)") {
+        report.failures.push({ width, type: "warehouse-movements-deep-dark", movementSurface });
+      }
+
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
+      const shoppingSurface = await page.evaluate(() => ({
+        summary: getComputedStyle(document.querySelector(".shopping-summary")).backgroundColor,
+        card: getComputedStyle(document.querySelector(".shopping-card")).backgroundColor
+      }));
+      if (shoppingSurface.summary !== "rgb(7, 12, 16)" || shoppingSurface.card !== "rgb(7, 12, 16)") {
+        report.failures.push({ width, type: "warehouse-shopping-deep-dark", shoppingSurface });
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
       const financePageSurface = await page.evaluate(() => ({

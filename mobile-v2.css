@@ -10381,3 +10381,87 @@
   }
 }
 
+/* 1.0.24 · Склад: деталка, движения и покупки без старых серо-синих поверхностей. */
+@media screen and (max-width: 520px) {
+  .stock-detail-modal {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .stock-detail-head {
+    border-bottom-color: #151f25 !important;
+    background: rgba(3,7,10,.99) !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-back,
+  .stock-detail-edit {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+  }
+
+  .stock-detail-hero {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-kpis > div {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-actions button {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-actions button:active {
+    background: #0b1217 !important;
+  }
+
+  .stock-detail-history {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-movement {
+    border-top-color: #151f25 !important;
+  }
+
+  .movement-filter-chips {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .movement-card {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-summary {
+    border-color: rgba(231,180,80,.24) !important;
+    background:
+      radial-gradient(circle at 100% 0, rgba(231,180,80,.07), transparent 96px),
+      #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-card {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-page-actions .secondary-button {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    color: #eef2f4 !important;
+  }
+}
+
