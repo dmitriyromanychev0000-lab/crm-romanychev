@@ -386,7 +386,77 @@ function ensureDataIds() {
   let changed = false;
   if (ensureOrderIds()) changed = true;
   if (ensureWarehouseIds()) changed = true;
+  if (normalizeWarehouseUnitSettings()) changed = true;
   if (ensureGoodsSheetIds()) changed = true;
+  return changed;
+}
+
+const STOCK_UNITS = ["шт", "кг", "г", "л", "мл"];
+
+function normalizeStockUnit(value = "") {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return "шт";
+  if (raw === "шт." || raw === "штука" || raw === "штук") return "шт";
+  if (raw === "килограмм" || raw === "килограммы") return "кг";
+  if (raw === "грамм" || raw === "граммы") return "г";
+  if (raw === "литр" || raw === "литры") return "л";
+  if (raw === "миллилитр" || raw === "миллилитры") return "мл";
+  return raw;
+}
+
+function allowedConsumeUnits(storageUnit) {
+  const storage = normalizeStockUnit(storageUnit);
+  if (storage === "кг") return ["кг", "г"];
+  if (storage === "л") return ["л", "мл"];
+  if (["шт", "г", "мл"].includes(storage)) return [storage];
+  return [storage];
+}
+
+function stockQtyToStorage(qty, consumeUnit, storageUnit) {
+  const value = Number(qty) || 0;
+  const consume = normalizeStockUnit(consumeUnit);
+  const storage = normalizeStockUnit(storageUnit);
+  if (consume === storage) return value;
+  if (storage === "кг" && consume === "г") return value / 1000;
+  if (storage === "л" && consume === "мл") return value / 1000;
+  return value;
+}
+
+function stockQtyFromStorage(qty, storageUnit, consumeUnit) {
+  const value = Number(qty) || 0;
+  const storage = normalizeStockUnit(storageUnit);
+  const consume = normalizeStockUnit(consumeUnit);
+  if (consume === storage) return value;
+  if (storage === "кг" && consume === "г") return value * 1000;
+  if (storage === "л" && consume === "мл") return value * 1000;
+  return value;
+}
+
+function materialStorageQuantity(material = {}) {
+  const warehouseItem = data.warehouse.find((item) => String(item.id) === String(material.warehouseId));
+  const storageUnit = normalizeStockUnit(material.storageUnit || warehouseItem?.unit || material.unit || "шт");
+  const consumeUnit = normalizeStockUnit(material.unit || warehouseItem?.consumeUnit || storageUnit);
+  return stockQtyToStorage(Number(material.qty) || 0, consumeUnit, storageUnit);
+}
+
+function normalizeWarehouseUnitSettings() {
+  let changed = false;
+  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+    const rawUnit = String(item.unit || "шт");
+    const normalizedUnit = normalizeStockUnit(rawUnit);
+    if (STOCK_UNITS.includes(normalizedUnit) && rawUnit !== normalizedUnit) {
+      item.unit = normalizedUnit;
+      changed = true;
+    }
+    const storageUnit = normalizeStockUnit(item.unit || normalizedUnit);
+    const currentConsume = normalizeStockUnit(item.consumeUnit || storageUnit);
+    const allowed = allowedConsumeUnits(storageUnit);
+    const nextConsume = allowed.includes(currentConsume) ? currentConsume : storageUnit;
+    if (item.consumeUnit !== nextConsume) {
+      item.consumeUnit = nextConsume;
+      changed = true;
+    }
+  });
   return changed;
 }
 
@@ -394,7 +464,7 @@ function stockMaterialTotals(materials = []) {
   const result = new Map();
   (Array.isArray(materials) ? materials : []).forEach((material) => {
     if (!material?.warehouseId || !material.writeOff) return;
-    const qty = Number(material.qty) || 0;
+    const qty = materialStorageQuantity(material);
     if (qty <= 0) return;
     const id = String(material.warehouseId);
     result.set(id, (result.get(id) || 0) + qty);
@@ -677,6 +747,16 @@ async function runAppDiagnostics() {
   modal.className = "modal-backdrop";
   modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="secondary-button" id="copy-diagnostics">Скопировать отчёт</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
   document.body.appendChild(modal);
+  const storageUnitSelect = modal.querySelector("#stock-storage-unit");
+  const consumeUnitSelect = modal.querySelector("#stock-consume-unit");
+  const syncConsumeUnits = () => {
+    if (!storageUnitSelect || !consumeUnitSelect) return;
+    const allowed = allowedConsumeUnits(storageUnitSelect.value);
+    const previous = normalizeStockUnit(consumeUnitSelect.value);
+    consumeUnitSelect.innerHTML = allowed.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    consumeUnitSelect.value = allowed.includes(previous) ? previous : allowed[0];
+  };
+  storageUnitSelect?.addEventListener("change", syncConsumeUnits);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("#diagnostic-backup-test").addEventListener("click", () => runBackupSelfTest());
@@ -1106,10 +1186,10 @@ function warehousePage() {
                   <span class="legacy-stock-icon">${icon("box")}</span>
                   <span class="legacy-stock-copy">
                     <strong>${escapeHtml(item.name || "Без названия")}</strong>
-                    <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(item.unit || "шт.")}` : "себестоимость не задана"}</small>
-                    <em>${item.archived ? "в архиве" : reserved > 0 ? `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(item.unit || "шт.")}` : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}` : `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}`}</em>
+                    <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : "себестоимость не задана"}</small>
+                    <em>${item.archived ? "в архиве" : reserved > 0 ? `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}`}</em>
                   </span>
-                  <span class="legacy-stock-qty"><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : reserved > 0 ? "ЕСТЬ РЕЗЕРВ" : isLow ? "МАЛО" : "ДОСТУПНО"}</small></span>
+                  <span class="legacy-stock-qty"><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong><small>${item.archived ? "АРХИВ" : reserved > 0 ? "ЕСТЬ РЕЗЕРВ" : isLow ? "МАЛО" : "ДОСТУПНО"}</small></span>
                 </button>
                 <div class="legacy-stock-actions-v2">
                   <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
@@ -1734,7 +1814,7 @@ function goodsPage() {
         <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>${latestItems.length} позиций</small></span><b>${money(latest.total || 0)}</b></div>
         <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
         <div class="legacy-goods-position-list">
-          ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(item.unit || "шт.")} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
+          ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
           ${latestItems.length > 6 ? `<div class="legacy-goods-more">Ещё ${latestItems.length - 6} поз.</div>` : ""}
         </div>
         <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
@@ -1991,7 +2071,7 @@ function shoppingListText() {
   const lines = items.map((item) => {
     const need = Math.max(0, Number(item.min || 0));
     const amount = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need);
-    return `• ${item.name || "Позиция"} — ${amount} ${item.unit || "шт."}`;
+    return `• ${item.name || "Позиция"} — ${amount} ${normalizeStockUnit(item.unit || "шт")}`;
   });
   return ["Список покупок", ...lines].join("\n");
 }
@@ -2083,7 +2163,7 @@ function shoppingPage(backAction = "more-menu") {
     ${items.length ? `<div class="shopping-list">${items.map((item) => {
       const available = stockAvailableQuantity(item);
       const need = Math.max(0, Number(item.min || 0));
-      return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}</strong></div></article>`;
+      return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div></article>`;
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
@@ -2204,14 +2284,18 @@ const orderMaterialRow = (item = {}) => {
       </div>
     </div>`;
   }
-  return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
+  const warehouseItem = data.warehouse.find((entry) => String(entry.id) === String(item.warehouseId));
+  const storageUnit = normalizeStockUnit(item.storageUnit || warehouseItem?.unit || item.unit || "шт");
+  const consumeUnit = normalizeStockUnit(item.unit || warehouseItem?.consumeUnit || storageUnit);
+  const storageNote = storageUnit !== consumeUnit ? ` · хранение: ${storageUnit}` : "";
+  return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(consumeUnit)}" data-storage-unit="${escapeHtml(storageUnit)}" data-write-off="${item.writeOff ? "true" : "false"}">
     <div class="material-card-head">
-      <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада</small></div>
+      <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада${escapeHtml(storageNote)}</small></div>
       <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
     </div>
     <div class="material-card-controls">
       <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
-      <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
+      <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(consumeUnit)}</div></label>
       <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
     </div>
   </div>`;
@@ -2245,7 +2329,7 @@ function syncOrderStock(previousOrder = null, nextOrder = null) {
     if (consumptionDelta > availableBefore + 1e-9) {
       return {
         ok: false,
-        message: `Недостаточно доступного остатка: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableBefore)} ${item.unit || "шт."}`
+        message: `Недостаточно доступного остатка: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableBefore)} ${normalizeStockUnit(item.unit || "шт")}`
       };
     }
 
@@ -2256,7 +2340,7 @@ function syncOrderStock(previousOrder = null, nextOrder = null) {
       if (wantedReserve > availableForOrder + 1e-9) {
         return {
           ok: false,
-          message: `Недостаточно для резерва: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableForOrder)} ${item.unit || "шт."}`
+          message: `Недостаточно для резерва: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableForOrder)} ${normalizeStockUnit(item.unit || "шт")}`
         };
       }
     }
@@ -2498,6 +2582,9 @@ function openMaterialCatalog(orderModal) {
   const tech = String(orderModal.querySelector('[name="tech"]')?.value || "Техника");
   const orderId = String(orderModal.dataset.orderId || "") || null;
   const availableForOrder = (item) => stockAvailableQuantity(item, { excludeOrderId: orderId });
+  const consumeUnitForItem = (item) => normalizeStockUnit(item.consumeUnit || item.unit || "шт");
+  const availableForOrderInConsumeUnit = (item) => stockQtyFromStorage(availableForOrder(item), item.unit, consumeUnitForItem(item));
+  const reservedInConsumeUnit = (item) => stockQtyFromStorage(stockReservedQuantity(item.id, { excludeOrderId: orderId }), item.unit, consumeUnitForItem(item));
   const source = data.warehouse.filter((item) => !item.archived && !item.hiddenFromOrders && materialFitsTech(item, tech));
   const modal = document.createElement("div");
   modal.className = "modal-backdrop material-catalog-backdrop";
@@ -2536,10 +2623,11 @@ function openMaterialCatalog(orderModal) {
       <h3>${escapeHtml(category)}</h3>
       <div>${items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"ru")).map((item) => {
         const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
-        const available = availableForOrder(item);
-        const reserved = stockReservedQuantity(item.id, { excludeOrderId: orderId });
+        const available = availableForOrderInConsumeUnit(item);
+        const reserved = reservedInConsumeUnit(item);
+        const consumeUnit = consumeUnitForItem(item);
         return `<button type="button" class="material-catalog-row ${existing ? "selected" : ""} ${available <= 0 && !existing ? "unavailable" : ""}" data-material-id="${escapeHtml(item.id)}" ${available <= 0 && !existing ? "disabled" : ""}>
-          <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}${reserved > 0 ? ` · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)}` : ""}</small></span>
+          <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(consumeUnit)}${reserved > 0 ? ` · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(consumeUnit)}` : ""}</small></span>
           <span class="material-catalog-side"><b>${money(item.price || item.lastPurchasePrice || 0)}</b>${existing ? `<span class="material-catalog-selected" aria-label="Уже в заявке">${icon("check")}</span>` : ""}</span>
         </button>`;
       }).join("")}</div>
@@ -2552,11 +2640,12 @@ function openMaterialCatalog(orderModal) {
     const item = data.warehouse.find((entry) => String(entry.id) === String(row.dataset.materialId));
     if (!item) return;
     const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
-    const available = availableForOrder(item);
+    const consumeUnit = consumeUnitForItem(item);
+    const available = availableForOrderInConsumeUnit(item);
     if (existing) {
       const qty = existing.querySelector('[data-line="qty"]');
       const nextQty = (Number(qty.value) || 0) + 1;
-      if (nextQty > available + 1e-9) return toast(`Доступно для резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${item.unit || "шт."}`);
+      if (nextQty > available + 1e-9) return toast(`Доступно для резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${consumeUnit}`);
       qty.value = nextQty;
       qty.dispatchEvent(new Event("input", { bubbles:true }));
       toast("Количество увеличено");
@@ -2566,8 +2655,9 @@ function openMaterialCatalog(orderModal) {
         warehouseId:item.id,
         name:item.name,
         qty:Math.min(1, available),
-        unit:item.unit || "шт.",
-        unitCost:Number(item.price || item.lastPurchasePrice) || 0,
+        unit:consumeUnit,
+        storageUnit:normalizeStockUnit(item.unit || consumeUnit),
+        unitCost:(Number(item.lastPurchasePrice || item.price) || 0) * stockQtyToStorage(1, consumeUnit, item.unit || consumeUnit),
         tracking:item.tracking,
         writeOff:true
       }));
@@ -2601,7 +2691,7 @@ function newOrderModal(existing = null, options = {}) {
   const serviceCatalog = availableServices();
   const stockOptions = data.warehouse
     .filter((item) => !item.archived && !item.hiddenFromOrders)
-    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
+    .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop order-editor-backdrop";
   modal.innerHTML = `<form class="modal order-editor-modal" id="order-form" data-order-id="${escapeHtml(order.id || "")}">
@@ -2868,7 +2958,8 @@ function newOrderModal(existing = null, options = {}) {
           name: row.querySelector('[data-line="name"]').value,
           qty,
           unitCost: directExpense ? (qty > 0 ? amount / qty : 0) : (Number(row.querySelector('[data-line="unit-cost"]')?.value) || 0),
-          unit: directExpense ? "" : (row.dataset.unit || "шт."),
+          unit: directExpense ? "" : normalizeStockUnit(row.dataset.unit || "шт"),
+          storageUnit: directExpense ? undefined : normalizeStockUnit(row.dataset.storageUnit || row.dataset.unit || "шт"),
           writeOff: directExpense ? false : row.dataset.writeOff === "true",
           directExpense,
           amount: directExpense ? amount : undefined,
@@ -3279,9 +3370,9 @@ function stockDetailModal(item) {
         <span class="stock-detail-status ${isLow ? "low" : ""}">${item.archived ? "Архив" : isLow ? "Мало" : "В наличии"}</span>
       </section>
       <section class="stock-detail-kpis">
-        <div class="primary"><span>Доступно</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</strong><small>всего: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.quantity) || 0)}</small></div>
-        <div class="reserved"><span>В резерве</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div class="minimum"><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
+        <div class="primary"><span>Доступно</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong><small>всего: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.quantity) || 0)}</small></div>
+        <div class="reserved"><span>В резерве</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div>
+        <div class="minimum"><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div>
       </section>
       <div class="stock-detail-actions">
         <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
@@ -3292,7 +3383,7 @@ function stockDetailModal(item) {
         <h3>Последние движения</h3>
         ${movements.length ? movements.map((movement) => {
           const incoming = ["initial","in","manual_in","order_return"].includes(movement.type);
-          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item.unit || "шт.")}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
+          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
         }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
       </section>
     </main>
@@ -3317,6 +3408,11 @@ function stockDetailModal(item) {
 
 function stockModal(existing = null) {
   const item = existing || {};
+  const currentStorageUnit = normalizeStockUnit(item.unit || "шт");
+  const storageUnits = STOCK_UNITS.includes(currentStorageUnit) ? STOCK_UNITS : [currentStorageUnit, ...STOCK_UNITS];
+  const allowedCurrentConsumeUnits = allowedConsumeUnits(currentStorageUnit);
+  const currentConsumeUnitRaw = normalizeStockUnit(item.consumeUnit || currentStorageUnit);
+  const currentConsumeUnit = allowedCurrentConsumeUnits.includes(currentConsumeUnitRaw) ? currentConsumeUnitRaw : currentStorageUnit;
   const commonCompatibility = [
     "Холодильники",
     "Коммерческое холод. оборудование",
@@ -3345,9 +3441,10 @@ function stockModal(existing = null) {
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
       <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div>
-      <div class="form-group"><label>Единица</label><select class="field" name="unit">${["шт.", "м", "г", "условно"].map((value) => `<option ${item.unit === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
-      <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.01" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
-      <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.01" value="${Number(item.min) || 0}" /></div>
+      <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
+      <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
     </div>
     </section>
 
@@ -3390,7 +3487,8 @@ function stockModal(existing = null) {
       id: item.id || crypto.randomUUID(),
       name: String(form.get("name") || "").trim(),
       category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
-      unit: String(form.get("unit") || "шт."),
+      unit: normalizeStockUnit(form.get("unit") || "шт"),
+      consumeUnit: normalizeStockUnit(form.get("consumeUnit") || form.get("unit") || "шт"),
       quantity: Number(form.get("quantity")) || 0,
       min: Number(form.get("min")) || 0,
       price: Number(form.get("price")) || 0,
@@ -3398,8 +3496,7 @@ function stockModal(existing = null) {
       compatibility,
       archived: existing ? Boolean(item.archived) : false,
       hiddenFromOrders: form.get("hiddenFromOrders") === "on",
-      tracking: String(form.get("tracking") || "exact"),
-      consumeUnit: item.consumeUnit || String(form.get("unit") || "шт.")
+      tracking: String(form.get("tracking") || "exact")
     };
     if (!next.name) return toast("Укажи название позиции");
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
@@ -3419,7 +3516,7 @@ const goodsLine = (item = {}) => `<div class="legacy-goods-edit-row" data-goods-
   <label><span>НАИМЕНОВАНИЕ</span><input class="field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название товара" /></label>
   <div class="legacy-goods-row-grid">
     <label><span>КОЛ-ВО</span><input class="field" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
-    <label><span>ЕД.</span><input class="field" data-line="unit" value="${escapeHtml(item.unit || "шт.")}" /></label>
+    <label><span>ЕД.</span><input class="field" data-line="unit" value="${escapeHtml(normalizeStockUnit(item.unit || "шт"))}" /></label>
   </div>
   <div class="legacy-goods-row-grid">
     <label><span>ЦЕНА ЗА ЕД.</span><input class="field" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></label>
@@ -3519,7 +3616,7 @@ function goodsModal(existing = null, seed = null) {
     const picker = modal.querySelector("#goods-picker");
     const item = picker.value === "" ? null : data.receipt_prices[Number(picker.value)];
     if (!item) return toast("Выбери товар из прайса");
-    addRow({ name: item.name, qty: 1, price: Number(item.price) || 0, originalPrice: Number(item.price) || 0, unit: item.unit || "шт." });
+    addRow({ name: item.name, qty: 1, price: Number(item.price) || 0, originalPrice: Number(item.price) || 0, unit: normalizeStockUnit(item.unit || "шт") });
   });
   modal.querySelector("#add-manual-goods").addEventListener("click", () => addRow({ unit: "шт.", price: 0, originalPrice: 0 }));
   modal.addEventListener("click", (event) => {
@@ -3695,7 +3792,7 @@ function orderDetailModal(order) {
 
       <section class="legacy-detail-section legacy-detail-materials">
         <div class="legacy-detail-section-head"><span>${icon("warehouse")}</span><h3>Запчасти и материалы</h3><b>${money(materialTotal)}</b></div>
-        ${materials.length ? `<div class="legacy-detail-lines">${materials.map(item=>`<div class="legacy-detail-line"><span><strong>${escapeHtml(item.name || "Материал")}</strong><small>${escapeHtml(item.qty || 1)} ${escapeHtml(item.unit || "шт.")} · себестоимость ${money(item.unitCost || 0)}</small></span><b>${money((Number(item.qty)||1)*(Number(item.unitCost)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Материалы пока не добавлены.</p>`}
+        ${materials.length ? `<div class="legacy-detail-lines">${materials.map(item=>`<div class="legacy-detail-line"><span><strong>${escapeHtml(item.name || "Материал")}</strong><small>${escapeHtml(item.qty || 1)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))} · себестоимость ${money(item.unitCost || 0)}</small></span><b>${money((Number(item.qty)||1)*(Number(item.unitCost)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Материалы пока не добавлены.</p>`}
       </section>
 
       ${order.issue || order.diagnosis || order.defects || order.comment ? `<section class="legacy-detail-section legacy-detail-notes">
@@ -3816,7 +3913,7 @@ async function adjustStock(id, direction) {
     </div>
     <div class="stock-adjust-balance">
       <span>СЕЙЧАС НА СКЛАДЕ</span>
-      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(before)} ${escapeHtml(item.unit || "шт.")}</strong>
+      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(before)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong>
     </div>
     <label class="stock-adjust-field">
       <span>КОЛИЧЕСТВО</span>
@@ -3824,7 +3921,7 @@ async function adjustStock(id, direction) {
     </label>
     <div class="stock-adjust-preview">
       <span>ОСТАТОК ПОСЛЕ ОПЕРАЦИИ</span>
-      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(item.unit || "шт.")}</strong>
+      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong>
     </div>
     <div class="stock-adjust-actions">
       <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
@@ -3838,7 +3935,7 @@ async function adjustStock(id, direction) {
   const updatePreview = () => {
     const amount = Number(input.value) || 0;
     const next = incoming ? before + amount : Math.max(0, before - amount);
-    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(next)} ${item.unit || "шт."}`;
+    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(next)} ${normalizeStockUnit(item.unit || "шт")}`;
     result.className = !incoming && amount > before ? "red" : "";
   };
   input.addEventListener("input", updatePreview);
@@ -3848,7 +3945,7 @@ async function adjustStock(id, direction) {
     event.preventDefault();
     const amount = Number(input.value);
     if (!Number.isFinite(amount) || amount <= 0) return toast("Укажи количество");
-    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${item.unit || "шт."}`);
+    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${normalizeStockUnit(item.unit || "шт")}`);
     item.quantity = incoming ? physicalBefore + amount : physicalBefore - amount;
     data.warehouse_movements.push({
       id: crypto.randomUUID(),
@@ -4193,7 +4290,7 @@ app.addEventListener("click", async (event) => {
     const items = (Array.isArray(order.materials) ? order.materials : []).map((item) => ({
       name: item.name || "Материал",
       qty: Number(item.qty) || 1,
-      unit: item.unit || "шт.",
+      unit: normalizeStockUnit(item.unit || "шт"),
       price: Number(item.price) || 0,
       originalPrice: Number(item.price) || 0
     })).filter((item) => item.name);
