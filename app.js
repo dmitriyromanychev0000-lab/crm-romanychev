@@ -4582,7 +4582,7 @@ function openWarrantyAppeal(order) {
     sum: 0,
     prepay: 0,
     discount: 0,
-    percent: order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent),
+    percent: 100,
     expense_gray: 0,
     expense_white: 0,
     guarantee: 0,
