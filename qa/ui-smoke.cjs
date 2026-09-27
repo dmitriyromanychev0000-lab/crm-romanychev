@@ -498,6 +498,39 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (servicePriceLayout.suffixPosition !== "static" || servicePriceLayout.suffixLeft < servicePriceLayout.inputRight) {
         report.failures.push({ width, type: "service-price-overlap", servicePriceLayout });
       }
+
+      const servicePriceBeforeFit = await page.evaluate(() => {
+        const row = document.querySelector("#service-lines [data-service-row]");
+        const price = row?.querySelector('[data-line="price"]');
+        return {
+          readonly: Boolean(price?.readOnly),
+          basePrice: Number(row?.dataset.basePrice) || 0,
+          currentPrice: Number(price?.value) || 0
+        };
+      });
+      await page.locator('.order-editor-modal [name="sum"]').fill("12340");
+      await page.waitForTimeout(40);
+      const servicePriceAfterFit = await page.evaluate(() => {
+        const rows = [...document.querySelectorAll("#service-lines [data-service-row]")];
+        const total = rows.reduce((sum, row) => {
+          const qty = Number(row.querySelector('[data-line="qty"]')?.value) || 0;
+          const price = Number(row.querySelector('[data-line="price"]')?.value) || 0;
+          return sum + qty * price;
+        }, 0);
+        return {
+          total,
+          readonly: rows.every((row) => Boolean(row.querySelector('[data-line="price"]')?.readOnly)),
+          basePrice: Number(rows[0]?.dataset.basePrice) || 0
+        };
+      });
+      if (!servicePriceBeforeFit.readonly
+        || servicePriceBeforeFit.basePrice <= 0
+        || !servicePriceAfterFit.readonly
+        || servicePriceAfterFit.basePrice !== servicePriceBeforeFit.basePrice
+        || Math.abs(servicePriceAfterFit.total - 12340) > 0.01) {
+        report.failures.push({ width, type: "service-price-auto-fit", servicePriceBeforeFit, servicePriceAfterFit });
+      }
+
       await page.locator("#service-lines [data-remove-line]").first().click();
       if (await page.locator("#service-lines [data-service-row]").count() !== 0) {
         report.failures.push({ width, type: "service-row-remove" });
