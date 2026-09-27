@@ -1918,9 +1918,7 @@ function actDateText(value) {
 function actWarrantyHtml(order = {}) {
   const months = Number(order.guarantee) || 0;
   if (months <= 0) return "";
-  const targets = Array.isArray(order.guaranteeTargets)
-    ? order.guaranteeTargets.map((item) => String(item || "").trim()).filter(Boolean)
-    : [];
+  const targets = normalizeWarrantyTargets(order).map((target) => target.name).filter(Boolean);
   const extra = String(order.guaranteeNote || "").trim();
   const parts = [];
   if (targets.length) parts.push(`Гарантия распространяется на: ${targets.map(escapeHtml).join(", ")}.`);
