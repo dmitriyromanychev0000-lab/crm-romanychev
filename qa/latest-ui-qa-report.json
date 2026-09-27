@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:23:27.224Z",
-  "testedSha": "c132de37ae244e0610407d394195a9d7a5fb4514",
+  "generatedAt": "2026-09-27T09:26:03.584Z",
+  "testedSha": "aa0854a22193e7a454aea6a15bf13eec52c65d3f",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1027,6 +1027,138 @@
         "width": 304,
         "height": 48,
         "viewportHeight": 520,
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-stock-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 454,
+        "bottom": 500,
+        "width": 131,
+        "height": 46,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-finance-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 132,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-price-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 464,
+        "bottom": 512,
+        "width": 300,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-goods-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 464,
+        "bottom": 512,
+        "width": 300,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-tool-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 463,
+        "bottom": 511,
+        "width": 134,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-receipt-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 463,
+        "bottom": 511,
+        "width": 134,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
         "locked": true,
         "bodyFixed": true
       }
