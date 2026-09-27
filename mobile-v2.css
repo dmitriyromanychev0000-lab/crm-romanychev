@@ -12427,3 +12427,18 @@
     line-height: 1.25 !important;
   }
 }
+
+
+/* 1.0.39 · Склад: доступно / резерв / минимум после перехода на резервирование. */
+@media screen and (max-width: 520px) {
+  .stock-detail-kpis > .reserved {
+    border-color: rgba(92,169,255,.24) !important;
+    background-color: #081019 !important;
+  }
+
+  .stock-detail-kpis > .minimum {
+    grid-column: 1 / -1 !important;
+    border-color: rgba(231,180,80,.28) !important;
+    background-color: #131006 !important;
+  }
+}
