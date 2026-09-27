@@ -31,6 +31,7 @@ const defaultData = () => ({
     autoBackupDays: 1,
     lastBackupAt: null,
     catalogApplyWithoutFit: false,
+    stockReservationModel: 1,
     companyName: "CRM by Romanychev",
     name: "",
     phone: ""
@@ -334,6 +335,9 @@ function validateBackup(candidate) {
   }
   if (!candidate.settings || typeof candidate.settings !== "object" || Array.isArray(candidate.settings)) candidate.settings = {};
   const migratedSettings = { ...defaultData().settings, ...candidate.settings };
+  if (!Object.prototype.hasOwnProperty.call(candidate.settings, "stockReservationModel")) {
+    migratedSettings.stockReservationModel = 0;
+  }
   if (!Object.prototype.hasOwnProperty.call(candidate.settings, "catalogApplyWithoutFit")
       && Object.prototype.hasOwnProperty.call(candidate.settings, "autoPriceAdjust")) {
     migratedSettings.catalogApplyWithoutFit = !Boolean(candidate.settings.autoPriceAdjust);
@@ -384,6 +388,61 @@ function ensureDataIds() {
   if (ensureWarehouseIds()) changed = true;
   if (ensureGoodsSheetIds()) changed = true;
   return changed;
+}
+
+function stockMaterialTotals(materials = []) {
+  const result = new Map();
+  (Array.isArray(materials) ? materials : []).forEach((material) => {
+    if (!material?.warehouseId || !material.writeOff) return;
+    const qty = Number(material.qty) || 0;
+    if (qty <= 0) return;
+    const id = String(material.warehouseId);
+    result.set(id, (result.get(id) || 0) + qty);
+  });
+  return result;
+}
+
+function orderReservesStock(order) {
+  return Boolean(order) && !order.archived && normalizeStatus(order.status) === "active";
+}
+
+function orderConsumesStock(order) {
+  if (!order) return false;
+  const status = normalizeStatus(order.status);
+  return status === "closed" || status === "declined";
+}
+
+function stockReservedQuantity(warehouseId, { excludeOrderId = null } = {}) {
+  const id = String(warehouseId || "");
+  if (!id) return 0;
+  return (Array.isArray(data.orders) ? data.orders : []).reduce((sum, order) => {
+    if (!orderReservesStock(order)) return sum;
+    if (excludeOrderId !== null && String(order.id) === String(excludeOrderId)) return sum;
+    return sum + (stockMaterialTotals(order.materials).get(id) || 0);
+  }, 0);
+}
+
+function stockAvailableQuantity(item, { excludeOrderId = null } = {}) {
+  if (!item) return 0;
+  const physical = Number(item.quantity) || 0;
+  return Math.max(0, physical - stockReservedQuantity(item.id, { excludeOrderId }));
+}
+
+function migrateStockReservationModel() {
+  if (Number(data.settings?.stockReservationModel) >= 1) return false;
+  const restored = new Map();
+  (Array.isArray(data.orders) ? data.orders : []).forEach((order) => {
+    if (normalizeStatus(order.status) !== "active") return;
+    stockMaterialTotals(order.materials).forEach((qty, warehouseId) => {
+      restored.set(warehouseId, (restored.get(warehouseId) || 0) + qty);
+    });
+  });
+  restored.forEach((qty, warehouseId) => {
+    const item = data.warehouse.find((entry) => String(entry.id) === String(warehouseId));
+    if (item) item.quantity = (Number(item.quantity) || 0) + qty;
+  });
+  data.settings = { ...data.settings, stockReservationModel: 1 };
+  return true;
 }
 
 function ensureWarehouseIds() {
@@ -977,8 +1036,16 @@ function ordersPage() {
 function warehousePage() {
   const query = warehouseSearch.trim().toLowerCase();
   const activeItems = [...data.warehouse].filter((item) => !item.archived);
-  const lowItems = activeItems.filter((item) => Number(item.quantity) <= Number(item.min || 0));
-  const sourceItems = warehouseFilter === "low" ? lowItems : warehouseFilter === "all" ? [...data.warehouse] : activeItems;
+  const inStockItems = activeItems.filter((item) => stockAvailableQuantity(item) > 0);
+  const reservedItems = activeItems.filter((item) => stockReservedQuantity(item.id) > 0);
+  const lowItems = activeItems.filter((item) => Number(item.min || 0) > 0 && stockAvailableQuantity(item) <= Number(item.min || 0));
+  const sourceItems = warehouseFilter === "low"
+    ? lowItems
+    : warehouseFilter === "reserved"
+      ? reservedItems
+      : warehouseFilter === "all"
+        ? [...data.warehouse]
+        : inStockItems;
   const items = sourceItems.filter((item) => {
     const compatibility = Array.isArray(item.compatibility) ? item.compatibility.join(" ") : item.compatibility || "";
     const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
@@ -1006,8 +1073,9 @@ function warehousePage() {
 
     <div class="legacy-warehouse-filter">
       <select class="field" id="warehouse-filter-select" aria-label="Фильтр склада">
-        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>Активные позиции</option>
-        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Заканчиваются</option>
+        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>В наличии</option>
+        <option value="reserved" ${warehouseFilter === "reserved" ? "selected" : ""}>В резерве</option>
+        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось</option>
         <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
       </select>
       <span>${icon("chevron")}</span>
@@ -1020,7 +1088,7 @@ function warehousePage() {
 
     <section class="legacy-warehouse-groups">
       ${groupedItems.length ? groupedItems.map(([category, group], groupIndex) => {
-        const lowInGroup = group.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
+        const lowInGroup = group.filter((item) => !item.archived && Number(item.min || 0) > 0 && stockAvailableQuantity(item) <= Number(item.min || 0)).length;
         return `<details class="legacy-warehouse-group" ${groupIndex === 0 ? "open" : ""}>
           <summary>
             <span class="legacy-folder-icon">${icon("document")}</span>
@@ -1029,7 +1097,9 @@ function warehousePage() {
           </summary>
           <div class="legacy-stock-list">
             ${group.map((item) => {
-              const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
+              const reserved = stockReservedQuantity(item.id);
+              const available = stockAvailableQuantity(item);
+              const isLow = !item.archived && Number(item.min || 0) > 0 && available <= Number(item.min || 0);
               const compatibility = Array.isArray(item.compatibility) ? item.compatibility[0] : "";
               return `<article class="legacy-stock-card-v2 ${item.archived ? "archived" : ""} ${isLow ? "low" : ""}">
                 <button type="button" class="legacy-stock-main" data-stock-detail="${escapeHtml(item.id)}">
@@ -1037,9 +1107,9 @@ function warehousePage() {
                   <span class="legacy-stock-copy">
                     <strong>${escapeHtml(item.name || "Без названия")}</strong>
                     <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(item.unit || "шт.")}` : "себестоимость не задана"}</small>
-                    <em>${item.archived ? "в архиве" : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}` : `доступно ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}`}</em>
+                    <em>${item.archived ? "в архиве" : reserved > 0 ? `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(item.unit || "шт.")}` : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}` : `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}`}</em>
                   </span>
-                  <span class="legacy-stock-qty"><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : isLow ? "МАЛО" : "В НАЛИЧИИ"}</small></span>
+                  <span class="legacy-stock-qty"><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</strong><small>${item.archived ? "АРХИВ" : reserved > 0 ? "ЕСТЬ РЕЗЕРВ" : isLow ? "МАЛО" : "ДОСТУПНО"}</small></span>
                 </button>
                 <div class="legacy-stock-actions-v2">
                   <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
@@ -1912,16 +1982,16 @@ async function backupSettings() {
 
 function shoppingItems() {
   return data.warehouse
-    .filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0))
-    .sort((a, b) => (Number(a.quantity) - Number(a.min || 0)) - (Number(b.quantity) - Number(b.min || 0)));
+    .filter((item) => !item.archived && Number(item.min || 0) > 0 && stockAvailableQuantity(item) <= Number(item.min || 0))
+    .sort((a, b) => (stockAvailableQuantity(a) - Number(a.min || 0)) - (stockAvailableQuantity(b) - Number(b.min || 0)));
 }
 
 function shoppingListText() {
   const items = shoppingItems();
   const lines = items.map((item) => {
-    const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
-    const amount = need > 0 ? new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need) : "проверить";
-    return `• ${item.name || "Позиция"} — ${amount}${need > 0 ? ` ${item.unit || "шт."}` : ""}`;
+    const need = Math.max(0, Number(item.min || 0));
+    const amount = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need);
+    return `• ${item.name || "Позиция"} — ${amount} ${item.unit || "шт."}`;
   });
   return ["Список покупок", ...lines].join("\n");
 }
@@ -2011,8 +2081,9 @@ function shoppingPage(backAction = "more-menu") {
     <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${items.length} ${items.length === 1 ? "позицию" : items.length >= 2 && items.length <= 4 ? "позиции" : "позиций"}</strong></span></section>
     <div class="shopping-page-actions"><button type="button" class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button type="button" class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="shopping-list">${items.map((item) => {
-      const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
-      return `<article class="shopping-card legacy-shopping-card ${Number(item.quantity || 0) <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · осталось ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
+      const available = stockAvailableQuantity(item);
+      const need = Math.max(0, Number(item.min || 0));
+      return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}</strong></div></article>`;
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
@@ -2146,55 +2217,71 @@ const orderMaterialRow = (item = {}) => {
   </div>`;
 };
 
-function syncOrderStock(previousMaterials = [], nextMaterials = [], orderId) {
-  const totals = (materials) => {
-    const result = new Map();
-    materials.forEach((material) => {
-      if (!material?.warehouseId || !material.writeOff) return;
-      const id = String(material.warehouseId);
-      result.set(id, (result.get(id) || 0) + (Number(material.qty) || 0));
-    });
-    return result;
-  };
+function syncOrderStock(previousOrder = null, nextOrder = null) {
+  const previousTotals = stockMaterialTotals(previousOrder?.materials);
+  const nextTotals = stockMaterialTotals(nextOrder?.materials);
+  const previousConsumed = orderConsumesStock(previousOrder) ? previousTotals : new Map();
+  const nextConsumed = orderConsumesStock(nextOrder) ? nextTotals : new Map();
+  const orderId = nextOrder?.id ?? previousOrder?.id ?? null;
+  const ids = [...new Set([
+    ...previousTotals.keys(),
+    ...nextTotals.keys(),
+    ...previousConsumed.keys(),
+    ...nextConsumed.keys()
+  ])];
+  const changes = [];
 
-  const previous = totals(Array.isArray(previousMaterials) ? previousMaterials : []);
-  const next = totals(Array.isArray(nextMaterials) ? nextMaterials : []);
-  const ids = [...new Set([...previous.keys(), ...next.keys()])];
-  const changes = ids
-    .map((warehouseId) => ({
-      warehouseId,
-      delta: (next.get(warehouseId) || 0) - (previous.get(warehouseId) || 0)
-    }))
-    .filter((change) => Math.abs(change.delta) > 1e-9);
-
-  for (const change of changes) {
-    if (change.delta <= 0) continue;
-    const item = data.warehouse.find((entry) => String(entry.id) === change.warehouseId);
+  for (const warehouseId of ids) {
+    const item = data.warehouse.find((entry) => String(entry.id) === String(warehouseId));
     if (!item) return { ok: false, message: "Позиция склада больше не найдена" };
-    if ((Number(item.quantity) || 0) < change.delta) {
-      return { ok: false, message: `Недостаточно на складе: ${item.name || "позиция"}` };
+
+    const previousConsumedQty = previousConsumed.get(warehouseId) || 0;
+    const nextConsumedQty = nextConsumed.get(warehouseId) || 0;
+    const consumptionDelta = nextConsumedQty - previousConsumedQty;
+    const physical = Number(item.quantity) || 0;
+    const otherReserved = stockReservedQuantity(warehouseId, { excludeOrderId: orderId });
+    const availableBefore = Math.max(0, physical - otherReserved);
+
+    if (consumptionDelta > availableBefore + 1e-9) {
+      return {
+        ok: false,
+        message: `Недостаточно доступного остатка: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableBefore)} ${item.unit || "шт."}`
+      };
+    }
+
+    const projectedPhysical = physical - consumptionDelta;
+    if (orderReservesStock(nextOrder)) {
+      const wantedReserve = nextTotals.get(warehouseId) || 0;
+      const availableForOrder = Math.max(0, projectedPhysical - otherReserved);
+      if (wantedReserve > availableForOrder + 1e-9) {
+        return {
+          ok: false,
+          message: `Недостаточно для резерва: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableForOrder)} ${item.unit || "шт."}`
+        };
+      }
+    }
+
+    if (Math.abs(consumptionDelta) > 1e-9) {
+      changes.push({ item, consumptionDelta });
     }
   }
 
   const date = new Date().toISOString();
-  changes.forEach((change) => {
-    const item = data.warehouse.find((entry) => String(entry.id) === change.warehouseId);
-    if (!item) return;
-    item.quantity = Math.max(0, (Number(item.quantity) || 0) - change.delta);
+  changes.forEach(({ item, consumptionDelta }) => {
+    item.quantity = Math.max(0, (Number(item.quantity) || 0) - consumptionDelta);
     data.warehouse_movements.push({
       id: crypto.randomUUID(),
       warehouseId: item.id,
       orderId,
       name: item.name,
-      qty: Math.abs(change.delta),
-      type: change.delta > 0 ? "order_out" : "order_return",
+      qty: Math.abs(consumptionDelta),
+      type: consumptionDelta > 0 ? "order_out" : "order_return",
       date
     });
   });
 
   return { ok: true };
 }
-
 
 function photoSource(photo) {
   let value = "";
@@ -2409,6 +2496,8 @@ function materialFitsTech(item, tech) {
 
 function openMaterialCatalog(orderModal) {
   const tech = String(orderModal.querySelector('[name="tech"]')?.value || "Техника");
+  const orderId = String(orderModal.dataset.orderId || "") || null;
+  const availableForOrder = (item) => stockAvailableQuantity(item, { excludeOrderId: orderId });
   const source = data.warehouse.filter((item) => !item.archived && !item.hiddenFromOrders && materialFitsTech(item, tech));
   const modal = document.createElement("div");
   modal.className = "modal-backdrop material-catalog-backdrop";
@@ -2447,8 +2536,10 @@ function openMaterialCatalog(orderModal) {
       <h3>${escapeHtml(category)}</h3>
       <div>${items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"ru")).map((item) => {
         const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
-        return `<button type="button" class="material-catalog-row ${existing ? "selected" : ""}" data-material-id="${escapeHtml(item.id)}">
-          <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.unit || "шт.")} · ${escapeHtml(tech)}</small></span>
+        const available = availableForOrder(item);
+        const reserved = stockReservedQuantity(item.id, { excludeOrderId: orderId });
+        return `<button type="button" class="material-catalog-row ${existing ? "selected" : ""} ${available <= 0 && !existing ? "unavailable" : ""}" data-material-id="${escapeHtml(item.id)}" ${available <= 0 && !existing ? "disabled" : ""}>
+          <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}${reserved > 0 ? ` · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)}` : ""}</small></span>
           <span class="material-catalog-side"><b>${money(item.price || item.lastPurchasePrice || 0)}</b>${existing ? `<span class="material-catalog-selected" aria-label="Уже в заявке">${icon("check")}</span>` : ""}</span>
         </button>`;
       }).join("")}</div>
@@ -2461,16 +2552,20 @@ function openMaterialCatalog(orderModal) {
     const item = data.warehouse.find((entry) => String(entry.id) === String(row.dataset.materialId));
     if (!item) return;
     const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
+    const available = availableForOrder(item);
     if (existing) {
       const qty = existing.querySelector('[data-line="qty"]');
-      qty.value = (Number(qty.value) || 0) + 1;
+      const nextQty = (Number(qty.value) || 0) + 1;
+      if (nextQty > available + 1e-9) return toast(`Доступно для резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${item.unit || "шт."}`);
+      qty.value = nextQty;
       qty.dispatchEvent(new Event("input", { bubbles:true }));
       toast("Количество увеличено");
     } else {
+      if (available <= 0) return toast("Свободного остатка нет");
       orderModal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({
         warehouseId:item.id,
         name:item.name,
-        qty:1,
+        qty:Math.min(1, available),
         unit:item.unit || "шт.",
         unitCost:Number(item.price || item.lastPurchasePrice) || 0,
         tracking:item.tracking,
@@ -2497,7 +2592,6 @@ function newOrderModal(existing = null, options = {}) {
   const forceNew = Boolean(options.forceNew);
   const sourceOrder = existing || {};
   const order = forceNew ? { ...structuredClone(sourceOrder), id: null, created: null } : sourceOrder;
-  const previousMaterials = forceNew ? [] : (Array.isArray(order.materials) ? order.materials : []);
   const services = Array.isArray(order.services) ? order.services : [];
   const materials = Array.isArray(order.materials) ? order.materials : [];
   const guaranteeMonths = order.guarantee === undefined || order.guarantee === null || order.guarantee === ""
@@ -2510,7 +2604,7 @@ function newOrderModal(existing = null, options = {}) {
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</option>`).join("");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop order-editor-backdrop";
-  modal.innerHTML = `<form class="modal order-editor-modal" id="order-form">
+  modal.innerHTML = `<form class="modal order-editor-modal" id="order-form" data-order-id="${escapeHtml(order.id || "")}">
     <div class="order-editor-head">
       <span class="order-editor-title-icon">${icon("orders")}</span>
       <div class="order-editor-title-copy"><small>${existing && !forceNew ? `ЗАЯВКА №${escapeHtml(order.id || "—")}` : "НОВАЯ ЗАЯВКА"}</small><h2>${existing && !forceNew ? "Редактирование" : "Создание заявки"}</h2></div>
@@ -2823,7 +2917,7 @@ function newOrderModal(existing = null, options = {}) {
     } else if (nextStatus === "declined" && (Number(next.prepay) || 0) > (Number(next.sum) || 0)) {
       if (!(await confirmDialog("Предоплата больше итоговой суммы. Сохранить отказ с такими данными?", { title: "Проверь сумму", confirmLabel: "Сохранить" }))) return;
     }
-    const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
+    const stockSync = syncOrderStock(previous, next);
     if (!stockSync.ok) return toast(stockSync.message);
     syncOrderCompletion(next, previous);
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
@@ -3154,7 +3248,9 @@ function financeModal(type) {
 }
 
 function stockDetailModal(item) {
-  const isLow = !item.archived && Number(item.quantity) <= Number(item.min || 0);
+  const reserved = stockReservedQuantity(item.id);
+  const available = stockAvailableQuantity(item);
+  const isLow = !item.archived && Number(item.min || 0) > 0 && available <= Number(item.min || 0);
   const movements = [...data.warehouse_movements]
     .filter((movement) => String(movement.warehouseId) === String(item.id))
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
@@ -3183,9 +3279,9 @@ function stockDetailModal(item) {
         <span class="stock-detail-status ${isLow ? "low" : ""}">${item.archived ? "Архив" : isLow ? "Мало" : "В наличии"}</span>
       </section>
       <section class="stock-detail-kpis">
-        <div class="primary"><span>Текущий остаток</span><strong>${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
+        <div class="primary"><span>Доступно</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(item.unit || "шт.")}</strong><small>всего: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.quantity) || 0)}</small></div>
+        <div class="reserved"><span>В резерве</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(item.unit || "шт.")}</strong></div>
         <div class="minimum"><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(item.unit || "шт.")}</strong></div>
-        <div><span>Себестоимость</span><strong>${money(item.lastPurchasePrice || 0)}</strong></div>
       </section>
       <div class="stock-detail-actions">
         <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
@@ -3657,8 +3753,11 @@ async function handleOrderAction(action, id) {
       if ((Number(order.sum) || 0) <= 0) return toast("Для закрытия заявки укажи итоговую сумму больше 0");
       if (!(await confirmOrderClose(order))) return;
     }
-    const previous = { ...order };
-    order.status = wasClosed ? "В работе" : "Закрыта";
+    const previous = structuredClone(order);
+    const next = { ...structuredClone(order), status: wasClosed ? "В работе" : "Закрыта" };
+    const stockSync = syncOrderStock(previous, next);
+    if (!stockSync.ok) return toast(stockSync.message);
+    Object.assign(order, next);
     syncOrderCompletion(order, previous);
   }
   if (action === "copy") {
@@ -3673,18 +3772,21 @@ async function handleOrderAction(action, id) {
       archivedAt: null,
       photos: []
     };
-    const stockSync = syncOrderStock([], copy.materials, copy.id);
+    const stockSync = syncOrderStock(null, copy);
     if (!stockSync.ok) return toast(`Копия не создана: ${stockSync.message}`);
     data.orders.push(copy);
   }
   if (action === "archive") {
-    order.archived = !order.archived;
-    order.archivedAt = order.archived ? new Date().toISOString() : null;
+    const previous = structuredClone(order);
+    const next = { ...structuredClone(order), archived: !order.archived, archivedAt: !order.archived ? new Date().toISOString() : null };
+    const stockSync = syncOrderStock(previous, next);
+    if (!stockSync.ok) return toast(stockSync.message);
+    Object.assign(order, next);
   }
   if (action === "delete") {
     if (!order.archived) return toast("Сначала перемести заявку в архив");
     if (!(await confirmDialog(`Удалить заявку №${order.id || "—"} навсегда? История будет полностью стёрта.`))) return;
-    const stockSync = syncOrderStock(Array.isArray(order.materials) ? order.materials : [], [], order.id);
+    const stockSync = syncOrderStock(order, null);
     if (!stockSync.ok) return toast(stockSync.message);
     data.orders.splice(index, 1);
     await saveData();
@@ -3701,7 +3803,9 @@ async function adjustStock(id, direction) {
   if (!item) return;
 
   const incoming = direction === "in";
-  const before = Number(item.quantity) || 0;
+  const physicalBefore = Number(item.quantity) || 0;
+  const reservedBefore = stockReservedQuantity(item.id);
+  const before = stockAvailableQuantity(item);
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-adjust-backdrop";
   modal.innerHTML = `<form class="modal stock-adjust-modal" id="stock-adjust-form">
@@ -3745,7 +3849,7 @@ async function adjustStock(id, direction) {
     const amount = Number(input.value);
     if (!Number.isFinite(amount) || amount <= 0) return toast("Укажи количество");
     if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${item.unit || "шт."}`);
-    item.quantity = incoming ? before + amount : before - amount;
+    item.quantity = incoming ? physicalBefore + amount : physicalBefore - amount;
     data.warehouse_movements.push({
       id: crypto.randomUUID(),
       warehouseId: item.id,
@@ -3958,6 +4062,7 @@ app.addEventListener("click", async (event) => {
     const current = structuredClone(data);
     data = validateBackup(structuredClone(rollback));
     ensureDataIds();
+    migrateStockReservationModel();
     await saveData();
     await dbSet(PRE_IMPORT_KEY, current);
     activePage = "orders";
@@ -4277,6 +4382,7 @@ fileInput.addEventListener("change", async () => {
     await dbSet(PRE_IMPORT_KEY, structuredClone(data));
     data = restored;
     ensureDataIds();
+    migrateStockReservationModel();
     await saveData();
     activePage = "orders";
     moreSection = "menu";
@@ -4296,7 +4402,9 @@ async function start() {
     const stored = await dbGet(DATA_KEY);
     if (stored) {
       data = validateBackup(stored);
-      if (ensureDataIds()) await saveData();
+      let migrated = ensureDataIds();
+      if (migrateStockReservationModel()) migrated = true;
+      if (migrated) await saveData();
     }
   } catch (error) {
     console.error("Не удалось прочитать локальную базу", error);
