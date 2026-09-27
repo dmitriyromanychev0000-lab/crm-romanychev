@@ -11141,4 +11141,18 @@
     min-width: 62px !important;
   }
 }
-
+/* Order material card · reset nested grid placement */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .material-card-head {
+    align-items: start !important;
+  }
+  .order-editor-modal .material-card-head .material-remove {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    justify-self: end !important;
+  }
+  .order-editor-modal .material-card-controls {
+    margin-top: 0 !important;
+  }
+}

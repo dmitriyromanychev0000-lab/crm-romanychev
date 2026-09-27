@@ -509,15 +509,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       const materialRowState = await page.evaluate(() => {
         const row = document.querySelector("#material-lines [data-material-row]");
+        const head = row?.querySelector(".material-card-head");
+        const controls = row?.querySelector(".material-card-controls");
         const remove = row?.querySelector("[data-remove-line]");
-        const rect = remove?.getBoundingClientRect();
+        const rowRect = row?.getBoundingClientRect();
+        const headRect = head?.getBoundingClientRect();
+        const controlsRect = controls?.getBoundingClientRect();
+        const removeRect = remove?.getBoundingClientRect();
         return {
           rows: document.querySelectorAll("#material-lines [data-material-row]").length,
-          removeWidth: rect ? Math.round(rect.width) : 0,
-          removeHeight: rect ? Math.round(rect.height) : 0
+          removeWidth: removeRect ? Math.round(removeRect.width) : 0,
+          removeHeight: removeRect ? Math.round(removeRect.height) : 0,
+          rowHeight: rowRect ? Math.round(rowRect.height) : 0,
+          headToControlsGap: headRect && controlsRect ? Math.round(controlsRect.top - headRect.bottom) : 999,
+          removeOffsetTop: headRect && removeRect ? Math.round(removeRect.top - headRect.top) : 999
         };
       });
-      if (materialRowState.rows !== 1 || materialRowState.removeWidth < 44 || materialRowState.removeHeight < 44) {
+      if (materialRowState.rows !== 1
+        || materialRowState.removeWidth < 44
+        || materialRowState.removeHeight < 44
+        || materialRowState.rowHeight > 176
+        || materialRowState.headToControlsGap > 14
+        || materialRowState.removeOffsetTop > 8) {
         report.failures.push({ width, type: "material-row-actions", materialRowState });
       }
       const editorSurfaceState = await page.evaluate(() => {
