@@ -13112,3 +13112,275 @@
     padding: 10px 12px 12px !important;
   }
 }
+
+
+/* 1.0.45 · Настраиваемая гарантия: компактная сетка 2 колонки и редактор справочника. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-warranty-section {
+    border-color: #294037 !important;
+    background-color: #07100c !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(89,216,137,.045), transparent 140px) !important;
+  }
+
+  .order-editor-modal .order-warranty-section .form-section-title .order-editor-section-icon {
+    background: rgba(89,216,137,.10) !important;
+    color: var(--crm-green) !important;
+  }
+
+  .order-editor-modal .warranty-term-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .warranty-term-row label,
+  .order-editor-modal .warranty-extra {
+    display: grid !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .warranty-term-row label > span,
+  .order-editor-modal .warranty-extra > span {
+    color: #91a09a !important;
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+  }
+
+  .order-editor-modal .warranty-target-wrap {
+    display: grid !important;
+    gap: 8px !important;
+    margin-top: 9px !important;
+  }
+
+  .order-editor-modal .warranty-target-wrap.is-disabled {
+    display: none !important;
+  }
+
+  .order-editor-modal .warranty-target-copy {
+    display: flex !important;
+    gap: 6px !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+  }
+
+  .order-editor-modal .warranty-target-copy strong {
+    color: #dce6df !important;
+    font-size: 10.5px !important;
+  }
+
+  .order-editor-modal .warranty-target-copy small {
+    color: #75847c !important;
+    font-size: 8.5px !important;
+    text-align: right !important;
+  }
+
+  .order-editor-modal .warranty-target-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .warranty-target-option {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 24px minmax(0,1fr) !important;
+    gap: 7px !important;
+    min-height: 48px !important;
+    padding: 7px 8px !important;
+    align-items: center !important;
+    border: 1px solid #284238 !important;
+    border-radius: 11px !important;
+    background: #09130e !important;
+    cursor: pointer !important;
+  }
+
+  .order-editor-modal .warranty-target-option.archived {
+    opacity: .64 !important;
+  }
+
+  .order-editor-modal .warranty-target-option > input {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .order-editor-modal .warranty-check {
+    display: grid !important;
+    width: 24px !important;
+    height: 24px !important;
+    place-items: center !important;
+    border: 1px solid #365148 !important;
+    border-radius: 7px !important;
+    background: #07100c !important;
+    color: transparent !important;
+  }
+
+  .order-editor-modal .warranty-check .ui-icon {
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  .order-editor-modal .warranty-target-option > input:checked + .warranty-check {
+    border-color: #2f7650 !important;
+    background: #0c2819 !important;
+    color: #a8efbe !important;
+  }
+
+  .order-editor-modal .warranty-target-option strong {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    color: #d7e1db !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .order-editor-modal .warranty-target-empty {
+    grid-column: 1 / -1 !important;
+    padding: 10px !important;
+    border: 1px dashed #2a3a33 !important;
+    border-radius: 10px !important;
+    color: #7d8c84 !important;
+    font-size: 9.5px !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+  }
+
+  .order-editor-modal .warranty-extra .textarea {
+    min-height: 64px !important;
+    background: #09120e !important;
+  }
+
+  .order-editor-modal .order-master-comment-section {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+  }
+
+  .order-editor-modal .order-master-comment-section .order-comment {
+    display: grid !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .order-master-comment-section .order-comment > small {
+    color: #71808a !important;
+    font-size: 9px !important;
+  }
+
+  .warranty-manager-modal {
+    width: min(100%, 420px) !important;
+    max-height: min(88dvh, 740px) !important;
+    overflow: hidden !important;
+    border-color: #202d35 !important;
+    background: #03070a !important;
+  }
+
+  .warranty-manager-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    align-items: center !important;
+    border-bottom: 1px solid #151f25 !important;
+  }
+
+  .warranty-manager-head small {
+    color: #71808a !important;
+    font-size: 9px !important;
+  }
+
+  .warranty-manager-head h2 {
+    margin: 2px 0 0 !important;
+    font-size: 18px !important;
+  }
+
+  .warranty-manager-head > button {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid #202d35 !important;
+    border-radius: 11px !important;
+    background: #0a1116 !important;
+    color: #dce3e6 !important;
+  }
+
+  .warranty-manager-tech {
+    padding: 11px 14px !important;
+    border-bottom: 1px solid #151f25 !important;
+  }
+
+  .warranty-manager-tech label {
+    display: grid !important;
+    gap: 5px !important;
+  }
+
+  .warranty-manager-tech label > span {
+    color: #829088 !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+  }
+
+  .warranty-manager-tech .field {
+    min-height: 46px !important;
+    background: #09110d !important;
+  }
+
+  .warranty-manager-list {
+    display: grid !important;
+    gap: 7px !important;
+    max-height: 45dvh !important;
+    padding: 12px 14px !important;
+    overflow: auto !important;
+  }
+
+  .warranty-manager-row {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 7px !important;
+    align-items: center !important;
+  }
+
+  .warranty-manager-row.archived {
+    opacity: .56 !important;
+  }
+
+  .warranty-manager-row .field {
+    min-height: 44px !important;
+    background: #090f14 !important;
+  }
+
+  .warranty-manager-row > button {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid #2a3740 !important;
+    border-radius: 11px !important;
+    background: #0a1116 !important;
+    color: #aebbc2 !important;
+  }
+
+  .warranty-manager-empty {
+    padding: 12px !important;
+    border: 1px dashed #253139 !important;
+    border-radius: 10px !important;
+    color: #78868e !important;
+    font-size: 10px !important;
+    text-align: center !important;
+  }
+
+  .warranty-manager-add {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 7px !important;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #151f25 !important;
+  }
+
+  .warranty-manager-add .field,
+  .warranty-manager-add .primary-button {
+    min-height: 48px !important;
+  }
+
+  .warranty-manager-add .primary-button {
+    padding: 0 13px !important;
+  }
+}
