@@ -481,20 +481,79 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "client-profile", false));
       await page.keyboard.press("Escape");
 
+      await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
+      const moreMenuSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-more-list .menu-item")).backgroundColor);
+      if (moreMenuSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "more-menu-deep-dark", moreMenuSurface });
+
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
+      const goodsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-goods-panel")).backgroundColor);
+      if (goodsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "goods-deep-dark-page", goodsPageSurface });
       await page.locator('[data-action="new-goods-sheet"]').click();
+      const goodsEditorState = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".legacy-goods-editor")).backgroundColor,
+        panel: getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).backgroundColor,
+        field: getComputedStyle(document.querySelector(".legacy-goods-editor .field")).backgroundColor
+      }));
+      if (goodsEditorState.modal !== "rgb(3, 7, 10)"
+        || goodsEditorState.panel !== "rgb(6, 11, 15)"
+        || goodsEditorState.field !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "goods-editor-deep-dark", goodsEditorState });
+      }
       report.results.push(await shot(page, width, "goods-editor", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
+      const toolsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".tools-stats > div")).backgroundColor);
+      if (toolsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "tools-deep-dark-page", toolsPageSurface });
       await page.locator('[data-action="new-tool"]').click();
+      const toolEditorState = await page.evaluate(() => {
+        const footer = document.querySelector(".tool-editor-modal .modal-actions");
+        const rect = footer?.getBoundingClientRect();
+        return {
+          modal: getComputedStyle(document.querySelector(".tool-editor-modal")).backgroundColor,
+          field: getComputedStyle(document.querySelector(".tool-editor-modal .field")).backgroundColor,
+          footerBottom: rect ? Math.round(rect.bottom) : 0,
+          viewportHeight: window.innerHeight
+        };
+      });
+      if (toolEditorState.modal !== "rgb(3, 7, 10)"
+        || toolEditorState.field !== "rgb(9, 15, 20)"
+        || toolEditorState.footerBottom < toolEditorState.viewportHeight - 2) {
+        report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
+      }
       report.results.push(await shot(page, width, "tool-editor", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "receipts" }));
+      const receiptsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".receipts-stats > div")).backgroundColor);
+      if (receiptsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "receipts-deep-dark-page", receiptsPageSurface });
       await page.locator('[data-action="new-receipt"]').click();
+      const receiptEditorState = await page.evaluate(() => {
+        const footer = document.querySelector(".receipt-editor-modal .modal-actions");
+        const rect = footer?.getBoundingClientRect();
+        return {
+          modal: getComputedStyle(document.querySelector(".receipt-editor-modal")).backgroundColor,
+          field: getComputedStyle(document.querySelector(".receipt-editor-modal .field")).backgroundColor,
+          footerBottom: rect ? Math.round(rect.bottom) : 0,
+          viewportHeight: window.innerHeight
+        };
+      });
+      if (receiptEditorState.modal !== "rgb(3, 7, 10)"
+        || receiptEditorState.field !== "rgb(9, 15, 20)"
+        || receiptEditorState.footerBottom < receiptEditorState.viewportHeight - 2) {
+        report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
+      }
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
+      const settingsSurface = await page.evaluate(() => ({
+        card: getComputedStyle(document.querySelector(".legacy-settings-card")).backgroundColor,
+        field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor
+      }));
+      if (settingsSurface.card !== "rgb(7, 12, 16)" || settingsSurface.field !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "settings-deep-dark", settingsSurface });
+      }
 
       if (width === 320) {
         const stressSeed = structuredClone(seed);

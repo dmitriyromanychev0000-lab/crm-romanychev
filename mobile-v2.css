@@ -9075,3 +9075,193 @@
   }
 }
 
+/* 1.0.9 · Оставшиеся рабочие разделы: глубокая тёмная система без серо-синих карточек. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-item,
+  .legacy-goods-panel,
+  .legacy-service-stats > div,
+  .legacy-document-row,
+  .legacy-settings-card {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-more-list .menu-item:active {
+    border-color: #2b3942 !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-service-stats .service-stat-primary {
+    border-color: rgba(255,104,74,.28) !important;
+    background:
+      radial-gradient(circle at 100% 0, rgba(255,104,74,.07), transparent 100px),
+      #070c10 !important;
+  }
+
+  .legacy-goods-order-source .field,
+  .legacy-editor-title .field,
+  .legacy-goods-target .field,
+  .legacy-goods-add-line .field,
+  .legacy-goods-edit-row .field,
+  .legacy-settings-grid .field,
+  .legacy-backup-page .legacy-settings-row select {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-goods-current-summary {
+    border-color: rgba(168,138,240,.22) !important;
+    background: rgba(168,138,240,.04) !important;
+  }
+
+  .legacy-goods-editor-backdrop > form.modal.goods-editor-modal.legacy-goods-editor {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .legacy-goods-editor .goods-modal-head {
+    border-bottom-color: #151f25 !important;
+    background: rgba(3,7,10,.99) !important;
+  }
+
+  .legacy-goods-editor .legacy-editor-panel,
+  .legacy-goods-editor .legacy-editor-preview,
+  .legacy-goods-editor .legacy-product-price {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+  }
+
+  .legacy-goods-add-line button,
+  .legacy-manual-add,
+  .legacy-goods-editor-actions .legacy-dark-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #e8edef !important;
+  }
+
+  .legacy-goods-edit-row {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+  }
+
+  .legacy-goods-target {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+  }
+
+  .legacy-preview-table-wrap {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+  }
+
+  .legacy-goods-savebar {
+    border-top-color: #202d35 !important;
+    background: rgba(3,7,10,.99) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.2) !important;
+  }
+
+  .legacy-goods-savebar .legacy-dark-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+  }
+
+  .legacy-service-editor-backdrop > form.modal.compact-modal.receipt-editor-modal,
+  .legacy-service-editor-backdrop > form.modal.compact-modal.tool-editor-modal {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0,1fr) auto !important;
+    box-sizing: border-box !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    padding: 0 12px !important;
+    overflow: hidden !important;
+    border-color: #202d35 !important;
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-head,
+  .legacy-service-editor-backdrop .tool-editor-head {
+    position: relative !important;
+    top: auto !important;
+    margin: 0 -12px !important;
+    border-bottom-color: #151f25 !important;
+    background: rgba(3,7,10,.99) !important;
+  }
+
+  .receipt-editor-close,
+  .tool-editor-close {
+    width: 44px !important;
+    height: 44px !important;
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+  }
+
+  .receipt-editor-type,
+  .tool-editor-hero {
+    margin: 10px 0 !important;
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+  }
+
+  .legacy-service-editor-backdrop .form-grid {
+    min-height: 0 !important;
+    padding: 0 0 14px !important;
+    align-content: start !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .legacy-service-editor-backdrop .field {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-service-editor-backdrop .modal-actions {
+    position: static !important;
+    z-index: 3 !important;
+    margin: 0 -12px !important;
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
+    border-top-color: #202d35 !important;
+    background: rgba(3,7,10,.99) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.2) !important;
+  }
+
+  .legacy-service-editor-backdrop .modal-actions .secondary-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+  }
+
+  .legacy-settings-toggle-row,
+  .legacy-service-note {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+  }
+
+  .legacy-settings-row-icon,
+  .settings-link-icon {
+    background: #0a1116 !important;
+  }
+
+  .legacy-settings-row > button:not(.toggle),
+  .legacy-settings-links > button,
+  .legacy-backup-grid button {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-row,
+  .legacy-product-price-list > div {
+    border-color: #151f25 !important;
+  }
+
+  .legacy-draft-card {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+  }
+}
+
