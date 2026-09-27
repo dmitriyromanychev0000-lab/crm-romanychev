@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T18:05:17.618Z",
-  "testedSha": "971d2d41994fc8cb71ce54ce6c1cadee3f03817b",
+  "generatedAt": "2026-09-27T18:12:10.062Z",
+  "testedSha": "10c6f9fb41baac86784fd3992a9a25df3e028243",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1267,5 +1267,38 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stock-detail-hierarchy",
+      "stockDetailSurface": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(6, 11, 15)",
+        "primaryKpi": "rgb(7, 17, 12)",
+        "minimumKpi": "rgb(8, 16, 25)",
+        "costKpi": "rgb(8, 16, 25)",
+        "incoming": "rgb(7, 19, 13)",
+        "outgoing": "rgb(22, 9, 12)",
+        "archive": "rgb(8, 16, 25)",
+        "incomingWidth": 147,
+        "archiveWidth": 300
+      }
+    },
+    {
+      "width": 390,
+      "type": "stock-detail-hierarchy",
+      "stockDetailSurface": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(6, 11, 15)",
+        "primaryKpi": "rgb(7, 17, 12)",
+        "minimumKpi": "rgb(8, 16, 25)",
+        "costKpi": "rgb(8, 16, 25)",
+        "incoming": "rgb(7, 19, 13)",
+        "outgoing": "rgb(22, 9, 12)",
+        "archive": "rgb(8, 16, 25)",
+        "incomingWidth": 179,
+        "archiveWidth": 364
+      }
+    }
+  ]
 }
