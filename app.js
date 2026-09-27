@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.160";
+const APP_BUILD = "2026.09.27.161";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Каталог материалов: явная кнопка «Готово» с акцентом и иконкой завершает выбор без визуальной недосказанности";
+const APP_RELEASE = "Шапка CRM очищена от декоративного эмодзи — бренд выглядит строже и единообразно на основных и детальных экранах";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -739,7 +739,7 @@ function header() {
   return `<header class="topbar legacy-mobile-header">
     <div class="logo">${icon("logo")}</div>
     <div class="brand">
-      <div class="brand-title">CRM by <span>Romanychev</span> 😎</div>
+      <div class="brand-title">CRM by <span>Romanychev</span></div>
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
     </div>
   </header>`;
@@ -3415,7 +3415,7 @@ function orderDetailModal(order) {
     <header class="legacy-order-detail-brand">
       <button type="button" class="legacy-detail-back" data-close-modal aria-label="Назад">${icon("back")}</button>
       <span class="legacy-detail-logo">${icon("logo")}</span>
-      <span class="legacy-detail-brand-copy"><strong>CRM by <b>Romanychev</b> 😎</strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></span>
+      <span class="legacy-detail-brand-copy"><strong>CRM by <b>Romanychev</b></strong><small>ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</small></span>
       <button type="button" class="legacy-detail-more" data-detail-action="more" aria-label="Ещё">${icon("more")}</button>
     </header>
 
