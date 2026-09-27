@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T10:59:32.384Z",
-  "testedSha": "6bdd198f35488a8ee6823e0fc5511355d16ba26f",
+  "generatedAt": "2026-09-27T11:07:24.424Z",
+  "testedSha": "ffc5e8363450c9ed2c9da4d04494e843f26594ab",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1222,32 +1222,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "settings-semantic-hierarchy",
-      "settingsSurface": {
-        "profile": "rgb(16, 11, 8)",
-        "app": "rgb(8, 16, 25)",
-        "data": "rgb(6, 11, 15)",
-        "field": "rgb(9, 15, 20)",
-        "toolsLink": "rgb(9, 15, 20)",
-        "backupLink": "rgb(7, 17, 12)",
-        "rowTitleFont": "11.5px"
-      }
-    },
-    {
-      "width": 390,
-      "type": "settings-semantic-hierarchy",
-      "settingsSurface": {
-        "profile": "rgb(16, 11, 8)",
-        "app": "rgb(8, 16, 25)",
-        "data": "rgb(6, 11, 15)",
-        "field": "rgb(9, 15, 20)",
-        "toolsLink": "rgb(9, 15, 20)",
-        "backupLink": "rgb(7, 17, 12)",
-        "rowTitleFont": "12px"
-      }
-    }
-  ]
+  "failures": []
 }
