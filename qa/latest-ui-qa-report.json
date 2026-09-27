@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T10:36:42.591Z",
-  "testedSha": "5c4db3b806957662e764b853ff244bf01a9fae8b",
+  "generatedAt": "2026-09-27T10:44:26.792Z",
+  "testedSha": "7237d9b96d53a2429ea05a4bd45a1fcbe814959a",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -235,6 +235,24 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse-movements",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse-shopping",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
       "tooSmall": []
     },
     {
@@ -805,6 +823,24 @@
       "tooSmall": []
     },
     {
+      "label": "warehouse-movements",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "warehouse-shopping",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
       "label": "finance-editor",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -1186,5 +1222,28 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "warehouse-shopping-hierarchy",
+      "shoppingSurface": {
+        "summary": "rgb(16, 13, 6)",
+        "card": "rgb(22, 9, 12)",
+        "critical": true,
+        "needBackground": "rgba(255, 102, 112, 0.067)",
+        "needWidth": 86
+      }
+    },
+    {
+      "width": 390,
+      "type": "warehouse-shopping-hierarchy",
+      "shoppingSurface": {
+        "summary": "rgb(16, 13, 6)",
+        "card": "rgb(22, 9, 12)",
+        "critical": true,
+        "needBackground": "rgba(255, 102, 112, 0.067)",
+        "needWidth": 86
+      }
+    }
+  ]
 }
