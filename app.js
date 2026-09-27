@@ -1925,6 +1925,76 @@ function goodsPage() {
     </details>
   </main>`;
 }
+function orderSourcesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop source-manager-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal source-manager-modal" role="dialog" aria-modal="true" aria-label="Источники заявок">
+    <div class="source-manager-head">
+      <div><small>НАСТРОЙКИ</small><h2>Источники заявок</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div id="source-manager-list" class="source-manager-list"></div>
+    <div class="source-manager-add">
+      <input class="field" id="new-source-name" placeholder="Новый источник" />
+      <button type="button" class="primary-button" id="add-order-source">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#source-manager-list");
+    const sources = [...(data.order_sources || [])]
+      .sort((a,b)=>Number(Boolean(a.archived))-Number(Boolean(b.archived)) || String(a.name||"").localeCompare(String(b.name||""),"ru"));
+    list.innerHTML = sources.length ? sources.map((source)=>`<div class="source-manager-row ${source.archived ? "archived" : ""}" data-source-id="${escapeHtml(source.id)}">
+      <input class="field" data-source-name value="${escapeHtml(source.name || "")}" aria-label="Название источника" />
+      <button type="button" data-source-archive aria-label="${source.archived ? "Вернуть источник" : "Архивировать источник"}">${icon(source.archived ? "restore" : "archive")}</button>
+    </div>`).join("") : `<div class="empty">Источников пока нет</div>`;
+  };
+
+  const close = () => modal.remove();
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const archiveButton = event.target.closest("[data-source-archive]");
+    if (!archiveButton) return;
+    const row = archiveButton.closest("[data-source-id]");
+    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
+    if (!source) return;
+    source.archived = !source.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    const input = event.target.closest("[data-source-name]");
+    if (!input) return;
+    const row = input.closest("[data-source-id]");
+    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
+    if (!source) return;
+    const name = String(input.value || "").trim();
+    if (!name) {
+      input.value = source.name || "";
+      return toast("Название источника не может быть пустым");
+    }
+    source.name = name;
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-order-source").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-source-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши название источника");
+    if ((data.order_sources || []).some((source)=>String(source.name||"").trim().toLowerCase()===name.toLowerCase() && !source.archived)) {
+      return toast("Такой источник уже есть");
+    }
+    data.order_sources.push({ id: crypto.randomUUID(), name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
@@ -1957,6 +2027,7 @@ function settingsPage() {
     <section class="legacy-settings-card settings-data-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Рабочие данные</h2></div>
       <div class="legacy-settings-links">
+        <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -4245,6 +4316,7 @@ app.addEventListener("click", async (event) => {
   if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
   if (action === "share-shopping-list") return shareShoppingList();
   if (action === "new-order") return newOrderModal();
+  if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
     orderVisitFilter = "all";
