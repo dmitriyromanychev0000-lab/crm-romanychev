@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.101";
+const APP_BUILD = "2026.09.27.159";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Просмотр заявки и блоки услуг/материалов доведены: убраны служебные артефакты, подписи больше не режутся, строки получили ясную визуальную иерархию";
+const APP_RELEASE = "Прайс: фокус поиска стабильно сохраняет коралловый акцент даже после live-render";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -4008,6 +4008,20 @@ app.addEventListener("click", async (event) => {
     await render();
     toast("Операция удалена");
   }
+});
+
+app.addEventListener("focusin", (event) => {
+  const priceSearch = event.target.closest?.("#price-search");
+  if (priceSearch) priceSearch.closest(".legacy-price-search")?.classList.add("is-focused");
+});
+
+app.addEventListener("focusout", (event) => {
+  const priceSearch = event.target.closest?.("#price-search");
+  if (!priceSearch) return;
+  requestAnimationFrame(() => {
+    const wrap = document.querySelector(".legacy-price-search");
+    if (wrap && !wrap.contains(document.activeElement)) wrap.classList.remove("is-focused");
+  });
 });
 
 app.addEventListener("input", (event) => {

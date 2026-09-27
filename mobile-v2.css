@@ -10936,12 +10936,14 @@
     transition: color .16s ease;
   }
 
-  .legacy-price-search:focus-within > .ui-icon {
+  .legacy-price-search:focus-within > .ui-icon,
+  .legacy-price-search.is-focused > .ui-icon {
     color: #ff765c !important;
   }
 
   .legacy-price-search .search:focus,
   .legacy-price-search .search:focus-visible,
+  .legacy-price-search.is-focused .search,
   .legacy-price-filters .field:focus,
   .legacy-price-filters .field:focus-visible {
     outline: 0 !important;
