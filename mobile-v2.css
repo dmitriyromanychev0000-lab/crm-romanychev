@@ -13539,3 +13539,96 @@
     color: #ff765c !important;
   }
 }
+
+
+/* 1.0.43 · Гарантийные обращения: связанная заявка без визуального шума. */
+@media screen and (max-width: 520px) {
+  .warranty-appeal-origin,
+  .legacy-warranty-origin {
+    display: grid !important;
+    grid-template-columns: 32px minmax(0,1fr) !important;
+    gap: 9px !important;
+    min-width: 0 !important;
+    padding: 10px 11px !important;
+    align-items: center !important;
+    border: 1px solid #26333b !important;
+    border-radius: 12px !important;
+    background: #070c10 !important;
+    color: #dce3e6 !important;
+  }
+
+  .warranty-appeal-origin {
+    margin-bottom: 10px !important;
+  }
+
+  .legacy-warranty-origin {
+    margin: 8px 0 2px !important;
+  }
+
+  .warranty-appeal-origin > .ui-icon,
+  .legacy-warranty-origin > .ui-icon {
+    width: 20px !important;
+    height: 20px !important;
+    justify-self: center !important;
+    color: #ff765c !important;
+  }
+
+  .warranty-appeal-origin div,
+  .legacy-warranty-origin span {
+    min-width: 0 !important;
+  }
+
+  .warranty-appeal-origin small,
+  .legacy-warranty-origin small {
+    display: block !important;
+    overflow: hidden !important;
+    color: #7f8a92 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .warranty-appeal-origin strong,
+  .legacy-warranty-origin strong {
+    display: block !important;
+    margin-top: 2px !important;
+    color: #f1f4f5 !important;
+    font-size: 12px !important;
+  }
+
+  .warranty-appeal-origin em {
+    display: block !important;
+    margin-top: 3px !important;
+    overflow: hidden !important;
+    color: #a0aab0 !important;
+    font-size: 10px !important;
+    font-style: normal !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-warranty-origin.detail {
+    grid-template-columns: 32px minmax(0,1fr) 20px !important;
+    width: 100% !important;
+    margin-bottom: 9px !important;
+    text-align: left !important;
+  }
+
+  .legacy-warranty-origin.detail .chevron {
+    color: #6f7b82 !important;
+  }
+
+  .order-editor-modal .warranty-result-field {
+    padding-top: 2px !important;
+  }
+
+  .order-actions-grid .warranty-appeal-action {
+    border-color: #3b3029 !important;
+    background: #100d0b !important;
+  }
+
+  .order-actions-grid .warranty-appeal-action .ui-icon {
+    color: #ff765c !important;
+  }
+}
