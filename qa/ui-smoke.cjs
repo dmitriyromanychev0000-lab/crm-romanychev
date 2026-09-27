@@ -1769,6 +1769,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         locationSeed.storage_locations.push({ id: "location-car", name: "Машина", archived: false, system: false });
         await writeSeed(page, locationSeed);
         await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+        await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+          const details = node.closest("details");
+          if (details) details.open = true;
+        });
         await page.locator('[data-stock-detail="w1"]').click();
         await page.locator('[data-stock-detail-action="transfer"]').click();
         await page.locator('.stock-transfer-modal [name="toLocationId"]').selectOption("location-car");

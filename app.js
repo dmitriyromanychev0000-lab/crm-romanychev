@@ -7,7 +7,7 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.175";
+const APP_BUILD = "2026.09.27.176";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Места хранения стали реальными остатками: приход, списание, резерв и перенос синхронизированы по локациям";
 const BACKUP_FORMAT_VERSION = 18;
@@ -4072,11 +4072,10 @@ const orderMaterialRow = (item = {}) => {
   return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(consumeUnit)}" data-storage-unit="${escapeHtml(storageUnit)}" data-write-off="${item.writeOff ? "true" : "false"}">
     <div class="material-card-head"><div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада${storageUnit!==consumeUnit?` · хранение: ${escapeHtml(storageUnit)}`:""}</small></div><button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button></div>
     <div class="material-card-controls">
-      <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
-      <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(consumeUnit)}</div></label>
+      <label><span>Кол-во · ${escapeHtml(consumeUnit)}</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
       <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost)||0}" /></label>
+      <label><span>Место хранения</span><select class="field" data-line="location">${options}</select></label>
     </div>
-    <label class="material-location-control"><span>Место хранения</span><select class="field" data-line="location">${options}</select></label>
   </div>`;
 };
 
