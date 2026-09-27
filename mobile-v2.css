@@ -10316,3 +10316,68 @@
   }
 }
 
+/* 1.0.23 · Редактор склада: глубокие поверхности вместо серо-синих карточек и полей. */
+@media screen and (max-width: 520px) {
+  .stock-editor-backdrop > form.modal.compact-modal.stock-editor-modal {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-head,
+  .stock-editor-modal .stock-editor-intro {
+    border-color: #151f25 !important;
+    background: #03070a !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-section {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .field {
+    border-color: #202d35 !important;
+    background-color: #090f14 !important;
+    background-image: none !important;
+    color: #f2f5f6 !important;
+  }
+
+  .stock-editor-modal .field::placeholder {
+    color: #66727a !important;
+    opacity: 1 !important;
+  }
+
+  .stock-editor-modal .field:focus {
+    border-color: rgba(255,104,74,.72) !important;
+    background-color: #0b1217 !important;
+    box-shadow: 0 0 0 3px rgba(255,104,74,.08) !important;
+    outline: 0 !important;
+  }
+
+  .stock-editor-modal .stock-editor-compat-details,
+  .stock-editor-modal .stock-editor-compat label,
+  .stock-editor-modal .stock-editor-toggle {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-compat-content {
+    border-top-color: #151f25 !important;
+    background: #060b0f !important;
+  }
+
+  .stock-editor-modal .modal-actions {
+    border-top-color: #202d35 !important;
+    background: rgba(3,7,10,.99) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.2) !important;
+  }
+
+  .stock-editor-modal .modal-actions .secondary-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+  }
+}
+

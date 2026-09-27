@@ -565,6 +565,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
+      const stockEditorSurface = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
+        section: getComputedStyle(document.querySelector(".stock-editor-section")).backgroundColor,
+        field: getComputedStyle(document.querySelector(".stock-editor-modal .field")).backgroundColor,
+        compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor
+      }));
+      if (stockEditorSurface.modal !== "rgb(3, 7, 10)"
+        || stockEditorSurface.section !== "rgb(6, 11, 15)"
+        || stockEditorSurface.field !== "rgb(9, 15, 20)"
+        || stockEditorSurface.compat !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
+      }
       report.results.push(await shot(page, width, "stock-editor", false));
       await page.keyboard.press("Escape");
 
