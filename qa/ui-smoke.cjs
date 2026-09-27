@@ -715,6 +715,59 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.failures.push({ width, type: "shopping-card-single-row", shoppingCardLayout });
     }
 
+    if (width === 390) {
+      const autoQty = page.locator("[data-shopping-auto-qty]").first();
+      const minimum = Number(await autoQty.getAttribute("min")) || 0;
+      await autoQty.fill(String(minimum + 3));
+      await autoQty.evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
+      await page.waitForTimeout(40);
+      let shoppingStored = await readStoredData(page);
+      const autoOverride = shoppingStored.shopping_overrides?.find((item) => item.warehouseId === "w2");
+      if (Number(autoOverride?.qty) !== minimum + 3) {
+        report.failures.push({ width, type: "shopping-auto-quantity-override", minimum, autoOverride });
+      }
+
+      await page.locator('[data-action="new-shopping-item"]').click();
+      await page.locator('.shopping-item-modal [name="name"]').fill("Перчатки");
+      await page.locator('.shopping-item-modal [name="qty"]').fill("4");
+      await page.locator('.shopping-item-modal button[type="submit"]').click();
+      await page.waitForTimeout(60);
+      const manualRow = page.locator(".legacy-shopping-card.manual").first();
+      const manualQty = manualRow.locator("[data-shopping-manual-qty]");
+      const manualState = await page.evaluate(() => {
+        const row = document.querySelector(".legacy-shopping-card.manual");
+        const remove = row?.querySelector(".shopping-remove");
+        const removeRect = remove?.getBoundingClientRect();
+        return {
+          rows: document.querySelectorAll(".legacy-shopping-card.manual").length,
+          text: row?.innerText || "",
+          removeWidth: removeRect ? Math.round(removeRect.width) : 0,
+          removeHeight: removeRect ? Math.round(removeRect.height) : 0
+        };
+      });
+      if (manualState.rows !== 1 || !manualState.text.includes("Перчатки") || manualState.removeWidth < 44 || manualState.removeHeight < 44) {
+        report.failures.push({ width, type: "shopping-manual-item-surface", manualState });
+      }
+      await manualQty.fill("6");
+      await manualQty.evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
+      shoppingStored = await readStoredData(page);
+      const manualStored = shoppingStored.shopping_manual?.find((item) => item.name === "Перчатки");
+      if (Number(manualStored?.qty) !== 6) {
+        report.failures.push({ width, type: "shopping-manual-quantity", manualStored });
+      }
+      report.results.push(await shot(page, width, "shopping-manual", false));
+
+      await manualRow.locator(".shopping-remove").click();
+      await page.locator("[data-confirm-primary]").click();
+      await page.waitForTimeout(40);
+      shoppingStored = await readStoredData(page);
+      if (shoppingStored.shopping_manual?.some((item) => item.name === "Перчатки")) {
+        report.failures.push({ width, type: "shopping-manual-delete", items: shoppingStored.shopping_manual });
+      }
+      await writeSeed(page, seed);
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
+    }
+
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "orders" }));
       await page.locator('[data-action="new-order"]').first().click();
@@ -1358,19 +1411,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const warehousePageSurfaces = await page.evaluate(() => ({
         group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
         stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
-        action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor
+        action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
+        filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value)
       }));
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
         || warehousePageSurfaces.stock !== "rgb(6, 11, 15)"
-        || warehousePageSurfaces.action !== "rgb(9, 15, 20)") {
+        || warehousePageSurfaces.action !== "rgb(9, 15, 20)"
+        || !warehousePageSurfaces.filters.includes("out")
+        || !warehousePageSurfaces.filters.includes("reserved")
+        || !warehousePageSurfaces.filters.includes("archived")) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       await page.locator("[data-stock-detail]").first().click();
       const stockDetailSurface = await page.evaluate(() => {
         const incoming = document.querySelector(".stock-detail-actions .incoming");
         const outgoing = document.querySelector(".stock-detail-actions .outgoing");
+        const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const incomingRect = incoming?.getBoundingClientRect();
+        const correctRect = correct?.getBoundingClientRect();
         const archiveRect = archive?.getBoundingClientRect();
         return {
           modal: getComputedStyle(document.querySelector(".stock-detail-modal")).backgroundColor,
@@ -1380,8 +1439,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           minimumKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .minimum")).backgroundColor,
           incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
           outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
+          correct: correct ? getComputedStyle(correct).backgroundColor : "missing",
           archive: archive ? getComputedStyle(archive).backgroundColor : "missing",
           incomingWidth: incomingRect ? Math.round(incomingRect.width) : 0,
+          correctWidth: correctRect ? Math.round(correctRect.width) : 0,
           archiveWidth: archiveRect ? Math.round(archiveRect.width) : 0
         };
       });
@@ -1392,8 +1453,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
         || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
         || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
+        || stockDetailSurface.correct !== "rgb(16, 13, 6)"
         || stockDetailSurface.archive !== "rgb(8, 16, 25)"
         || stockDetailSurface.incomingWidth < 100
+        || stockDetailSurface.correctWidth < stockDetailSurface.incomingWidth * 1.8
         || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8) {
         report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
@@ -1493,6 +1556,31 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || Number(fifoMovement?.batchCost) !== 14300
           || fifoMovement?.comment !== "Тест FIFO") {
           report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovement });
+        }
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+
+        const beforeCorrection = await readStoredData(page);
+        const expenseCountBeforeCorrection = beforeCorrection.expenses.length;
+        const physicalBeforeCorrection = Number(beforeCorrection.warehouse.find((item) => item.id === "w1")?.quantity) || 0;
+        await page.locator('[data-stock-detail="w1"]').click();
+        await page.locator('[data-stock-detail-action="correct"]').click();
+        await page.locator('.stock-correction-modal [name="quantity"]').fill(String(physicalBeforeCorrection + 1));
+        await page.locator('.stock-correction-modal [name="comment"]').fill("Контрольный пересчёт");
+        report.results.push(await shot(page, width, "stock-correction", false));
+        await page.locator('.stock-correction-modal button[type="submit"]').click();
+        await page.waitForTimeout(60);
+        const afterCorrection = await readStoredData(page);
+        const correctedItem = afterCorrection.warehouse.find((item) => item.id === "w1");
+        const correctionMovement = [...afterCorrection.warehouse_movements].reverse().find((item) => item.type === "correction_in" && item.warehouseId === "w1");
+        if (Number(correctedItem?.quantity) !== physicalBeforeCorrection + 1
+          || Number(correctionMovement?.before) !== physicalBeforeCorrection
+          || Number(correctionMovement?.after) !== physicalBeforeCorrection + 1
+          || Number(correctionMovement?.difference) !== 1
+          || correctionMovement?.comment !== "Контрольный пересчёт"
+          || afterCorrection.expenses.length !== expenseCountBeforeCorrection) {
+          report.failures.push({ width, type: "stock-correction-history", correctedItem, correctionMovement, expenseCountBeforeCorrection, expenseCountAfter: afterCorrection.expenses.length });
         }
 
         await writeSeed(page, seed);
