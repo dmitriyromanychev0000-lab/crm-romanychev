@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T18:38:42.569Z",
-  "testedSha": "ed82c4ca8460a075d98a163e03cee05567dc3fa4",
+  "generatedAt": "2026-09-27T18:46:06.696Z",
+  "testedSha": "3b1a23da6d2c5e8ca3eaa157fb9d38571c4282ad",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -50,6 +50,15 @@
     },
     {
       "label": "more",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "calendar",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -490,6 +499,15 @@
       "tooSmall": []
     },
     {
+      "label": "calendar",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
       "label": "finance",
       "width": 360,
       "bodyScrollWidth": 360,
@@ -589,6 +607,15 @@
       "tooSmall": []
     },
     {
+      "label": "calendar-selected-day",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
       "label": "orders",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -635,6 +662,15 @@
     },
     {
       "label": "more",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "calendar",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
@@ -1004,6 +1040,15 @@
     },
     {
       "label": "more",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "calendar",
       "width": 430,
       "bodyScrollWidth": 430,
       "viewportWidth": 430,
