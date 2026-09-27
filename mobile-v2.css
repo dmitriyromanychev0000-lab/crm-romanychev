@@ -12442,3 +12442,12 @@
     background-color: #131006 !important;
   }
 }
+
+
+/* 1.0.40 · Склад: минимум должен перекрывать старый last-child стиль. */
+@media screen and (max-width: 520px) {
+  .stock-detail-kpis > .minimum:last-child {
+    border-color: rgba(231,180,80,.28) !important;
+    background-color: #131006 !important;
+  }
+}
