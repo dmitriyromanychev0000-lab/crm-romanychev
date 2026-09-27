@@ -2810,7 +2810,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     return Boolean(registration?.active);
   });
   if (!swReady) report.failures.push({ type: "pwa-service-worker", message: "Service worker did not become active" });
-  await pwaPage.reload({ waitUntil: "networkidle" });
+  await pwaPage.reload({ waitUntil: "domcontentloaded" });
+  await pwaPage.waitForSelector("#app .shell", { timeout: 5000 });
   await pwaContext.setOffline(true);
   let offlineLoaded = true;
   try {
