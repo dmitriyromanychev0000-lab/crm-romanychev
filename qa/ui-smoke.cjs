@@ -499,11 +499,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (await addedStockCategory.count() !== 1) {
         report.failures.push({ width, type: "stock-category-add" });
       } else {
-        const addedInput = addedStockCategory.locator("[data-stock-category-name]");
+        const addedStockCategoryId = await addedStockCategory.getAttribute("data-stock-category-id");
+        const stableAddedStockCategory = page.locator(`[data-stock-category-id="${addedStockCategoryId}"]`);
+        const addedInput = stableAddedStockCategory.locator("[data-stock-category-name]");
         await addedInput.fill("Компрессорные узлы");
         await addedInput.press("Tab");
         await page.waitForTimeout(30);
-        await addedStockCategory.locator("[data-stock-category-archive]").click();
+        await stableAddedStockCategory.locator("[data-stock-category-archive]").click();
         await page.waitForTimeout(30);
         const stockDirectoryData = await readStoredData(page);
         const addedCategory = stockDirectoryData.stock_categories.find((entry) => entry.name === "Компрессорные узлы");
