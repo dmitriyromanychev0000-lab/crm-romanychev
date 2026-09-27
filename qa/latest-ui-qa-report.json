@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:53:34.199Z",
-  "testedSha": "6e0b42b68884c402bbe776c08aec676e6fb5e474",
+  "generatedAt": "2026-09-27T09:55:33.642Z",
+  "testedSha": "91489ddb6c724a372add89d310207eeb80d86b02",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1191,20 +1191,22 @@
       "width": 320,
       "type": "price-search-focus",
       "priceSearchFocus": {
-        "border": "rgb(32, 45, 53)",
+        "focused": true,
+        "border": "rgba(49, 49, 55, 0.973)",
         "background": "rgb(9, 15, 20)",
-        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
-        "icon": "rgb(127, 138, 146)"
+        "shadow": "rgba(255, 104, 74, 0.008) 0px 0px 0px 0.303924px",
+        "icon": "rgb(140, 136, 141)"
       }
     },
     {
       "width": 390,
       "type": "price-search-focus",
       "priceSearchFocus": {
-        "border": "rgb(32, 45, 53)",
+        "focused": true,
+        "border": "rgba(49, 49, 55, 0.973)",
         "background": "rgb(9, 15, 20)",
-        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
-        "icon": "rgb(127, 138, 146)"
+        "shadow": "rgba(255, 104, 74, 0.008) 0px 0px 0px 0.304938px",
+        "icon": "rgb(140, 136, 141)"
       }
     }
   ]
