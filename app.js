@@ -255,14 +255,16 @@ const normalizeStatus = (status) => {
 };
 
 function syncOrderCompletion(next, previous = null) {
-  const isClosed = normalizeStatus(next.status) === "closed";
-  const wasClosed = previous ? normalizeStatus(previous.status) === "closed" : false;
-  if (!isClosed) {
+  const nextStatus = normalizeStatus(next.status);
+  const previousStatus = previous ? normalizeStatus(previous.status) : null;
+  const isFinished = nextStatus === "closed" || nextStatus === "declined";
+  const wasFinished = previousStatus === "closed" || previousStatus === "declined";
+  if (!isFinished) {
     next.completed = null;
-  } else if (!wasClosed) {
+  } else if (!wasFinished) {
     next.completed = new Date().toISOString();
   } else {
-    next.completed = previous.completed || null;
+    next.completed = previous?.completed || null;
   }
   return next;
 }
@@ -295,7 +297,7 @@ function confirmDialog(message, options = {}) {
     modal.innerHTML = `<section class="crm-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="crm-confirm-title">
       <div class="crm-confirm-icon ${destructive ? "danger" : ""}">${icon(destructive ? "trash" : "warning")}</div>
       <h2 id="crm-confirm-title">${escapeHtml(title)}</h2>
-      <p>${escapeHtml(String(message || ""))}</p>
+      <p>${escapeHtml(String(message || "")).replaceAll("\n", "<br>")}</p>
       <div class="crm-confirm-actions">
         <button type="button" class="legacy-dark-button" data-confirm-cancel>Отмена</button>
         <button type="button" class="${destructive ? "crm-confirm-danger" : "legacy-orange-button"}" data-confirm-primary>${escapeHtml(confirmLabel)}</button>
@@ -762,7 +764,33 @@ function applianceIconName(tech) {
 }
 
 function orderNetAmount(order) {
-  return Math.max(0, (Number(order.sum) || 0) - (Number(order.expense_gray) || 0) - (Number(order.expense_white) || 0));
+  const sum = Number(order?.sum) || 0;
+  const gray = Number(order?.expense_gray) || 0;
+  const white = Number(order?.expense_white) || 0;
+  const percentRaw = order?.percent;
+  const percent = percentRaw === undefined || percentRaw === null || percentRaw === "" ? 50 : Math.min(100, Math.max(0, Number(percentRaw) || 0));
+  return (sum - gray) * (percent / 100) + (gray - white);
+}
+
+function orderCloseSummary(order) {
+  const lines = [
+    `Сумма заявки: ${money(order.sum)}`,
+    `Серый расход: ${money(order.expense_gray)}`,
+    `Белый расход: ${money(order.expense_white)}`,
+    `Процент: ${Number(order.percent) || 0}%`,
+    `Заработок: ${money(orderNetAmount(order))}`
+  ];
+  if ((Number(order.prepay) || 0) > (Number(order.sum) || 0)) {
+    lines.push("⚠ Предоплата больше итоговой суммы");
+  }
+  return lines.join("\n");
+}
+
+async function confirmOrderClose(order) {
+  return confirmDialog(orderCloseSummary(order), {
+    title: "Закрыть заявку?",
+    confirmLabel: "Закрыть"
+  });
 }
 
 function formatVisitDate(value) {
@@ -1688,7 +1716,6 @@ function settingsPage() {
       <div class="legacy-settings-links">
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" data-more="drafts"><span class="settings-link-icon">${icon("drafts")}</span><span><strong>Черновики</strong><small>Незавершённые заявки</small></span><b>${draftRecords().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
     </section>
@@ -2461,14 +2488,15 @@ function newOrderModal(existing = null, options = {}) {
     <section class="order-editor-section">
       <div class="form-section-title"><span class="order-editor-section-icon">${icon("clients")}</span><span>Клиент и техника</span></div>
       <div class="form-grid">
-      <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" required /></div>
+      <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" placeholder="Необязательно" /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
-      <div class="form-group"><label>Модель</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" /></div>
+      <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
       <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
+      <div class="form-group"><label>Дата заявки</label><input class="field" name="createdDate" type="date" value="${escapeHtml(localDateInputValue(orderDateValue(order) || new Date()))}" /></div>
       <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${escapeHtml(localDateTimeInputValue(order.nextVisit))}" /></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       </div>
@@ -2505,10 +2533,10 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
       <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>Гарантия</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="1" ${guaranteeMonths === 1 ? "selected" : ""}>1 месяц</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option><option value="24" ${guaranteeMonths === 24 ? "selected" : ""}>24 месяца</option></select></div>
+      <div class="form-group"><label>Гарантия</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="9" ${guaranteeMonths === 9 ? "selected" : ""}>9 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option></select></div>
       <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
       <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
-      <div class="form-group"><label>Ваш %</label><input class="field" name="percent" type="number" min="0" max="100" value="${Number(order.percent) || 0}" /></div>
+      <div class="form-group"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
       <div class="form-group"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
     </section>
@@ -2525,7 +2553,7 @@ function newOrderModal(existing = null, options = {}) {
       </div>
     </details>
     </div>
-    <div class="modal-actions"><button type="button" class="secondary-button" id="save-order-draft">Черновик</button><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
@@ -2561,7 +2589,8 @@ function newOrderModal(existing = null, options = {}) {
       syncModalScrollLock();
     };
     viewer.querySelector(".photo-viewer-close").addEventListener("click", closeViewer);
-    viewer.querySelector(".photo-viewer-delete").addEventListener("click", () => {
+    viewer.querySelector(".photo-viewer-delete").addEventListener("click", async () => {
+      if (!(await confirmDialog("Удалить фотографию из заявки?"))) return;
       orderPhotos.splice(index, 1);
       renderPhotos();
       closeViewer();
@@ -2633,7 +2662,7 @@ function newOrderModal(existing = null, options = {}) {
     return {
       ...order,
       id: asDraft ? crypto.randomUUID() : (order.id || newOrderId()),
-      created: orderDateValue(order) || new Date().toISOString(),
+      created: form.get("createdDate") ? new Date(`${form.get("createdDate")}T12:00:00`).toISOString() : (orderDateValue(order) || new Date().toISOString()),
       updatedAt: new Date().toISOString(),
       draft: asDraft || undefined,
       sourceOrderId: asDraft && order.id ? order.id : (order.sourceOrderId || null),
@@ -2675,22 +2704,6 @@ function newOrderModal(existing = null, options = {}) {
     };
   };
 
-  modal.querySelector("#save-order-draft").addEventListener("click", async () => {
-    const draft = collectOrderForm({ asDraft: true });
-    if (Array.isArray(data.draft)) data.draft.push(draft);
-    else if (looksLikeOrderDraft(data.draft)) data.draft = [structuredClone(data.draft), draft];
-    else if (data.draft && typeof data.draft === "object") data.draft[`draft_${Date.now()}`] = draft;
-    else data.draft = [draft];
-    await saveData();
-    modal.remove();
-    moreSection = "drafts";
-    activePage = "more";
-    saveUiState({ scrollY: 0 });
-    await render();
-    window.scrollTo(0, 0);
-    toast("Черновик сохранён");
-  });
-
   formElement.addEventListener("submit", async (event) => {
     event.preventDefault();
     const normalizedPhone = sanitizeRussianPhoneField(formElement.elements.phone);
@@ -2700,10 +2713,22 @@ function newOrderModal(existing = null, options = {}) {
     }
     const next = collectOrderForm();
     delete next.draft;
+    const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
+    const previous = index >= 0 ? data.orders[index] : null;
+    const nextStatus = normalizeStatus(next.status);
+    const previousStatus = previous ? normalizeStatus(previous.status) : null;
+    if (nextStatus === "closed" && (Number(next.sum) || 0) <= 0) {
+      formElement.elements.sum.focus();
+      return toast("Для закрытой заявки итоговая сумма должна быть больше 0");
+    }
+    if (nextStatus === "closed" && previousStatus !== "closed") {
+      if (!(await confirmOrderClose(next))) return;
+    } else if (nextStatus === "declined" && (Number(next.prepay) || 0) > (Number(next.sum) || 0)) {
+      if (!(await confirmDialog("Предоплата больше итоговой суммы. Сохранить отказ с такими данными?", { title: "Проверь сумму", confirmLabel: "Сохранить" }))) return;
+    }
     const stockSync = syncOrderStock(previousMaterials, next.materials, next.id);
     if (!stockSync.ok) return toast(stockSync.message);
-    const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
-    syncOrderCompletion(next, index >= 0 ? data.orders[index] : null);
+    syncOrderCompletion(next, previous);
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
     await saveData();
     modal.remove();
@@ -3384,7 +3409,7 @@ function orderActionsSheet(order) {
       <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт / PDF</b></button>
       ${tg ? `<a href="${escapeHtml(tg)}">${icon("telegram")}<b>Telegram</b></a>` : `<button type="button" disabled>${icon("telegram")}<b>Telegram</b></button>`}
       <button type="button" data-order-sheet-action="archive">${icon(order.archived ? "reopen" : "archive")}<b>${order.archived ? "Вернуть" : "В архив"}</b></button>
-      <button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить заявку</b></button>
+      ${order.archived ? `<button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить навсегда</b></button>` : ""}
     </div>
     <button type="button" class="order-actions-cancel" data-close-modal>Отмена</button>
   </section>`;
@@ -3531,8 +3556,13 @@ async function handleOrderAction(action, id) {
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
   if (action === "toggle") {
     const wasClosed = normalizeStatus(order.status) === "closed";
+    if (!wasClosed) {
+      if ((Number(order.sum) || 0) <= 0) return toast("Для закрытия заявки укажи итоговую сумму больше 0");
+      if (!(await confirmOrderClose(order))) return;
+    }
+    const previous = { ...order };
     order.status = wasClosed ? "В работе" : "Закрыта";
-    syncOrderCompletion(order, { ...order, status: wasClosed ? "Закрыта" : "В работе" });
+    syncOrderCompletion(order, previous);
   }
   if (action === "copy") {
     const copy = {
@@ -3555,7 +3585,8 @@ async function handleOrderAction(action, id) {
     order.archivedAt = order.archived ? new Date().toISOString() : null;
   }
   if (action === "delete") {
-    if (!(await confirmDialog(`Удалить заявку №${order.id || "—"} навсегда? Это действие нельзя отменить.`))) return;
+    if (!order.archived) return toast("Сначала перемести заявку в архив");
+    if (!(await confirmDialog(`Удалить заявку №${order.id || "—"} навсегда? История будет полностью стёрта.`))) return;
     const stockSync = syncOrderStock(Array.isArray(order.materials) ? order.materials : [], [], order.id);
     if (!stockSync.ok) return toast(stockSync.message);
     data.orders.splice(index, 1);
