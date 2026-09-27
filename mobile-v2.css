@@ -10031,3 +10031,99 @@
   }
 }
 
+/* 1.0.18 · Touch targets: все мобильные действия не меньше 44 px. */
+@media screen and (max-width: 520px) {
+  .legacy-order-filters button,
+  .legacy-stock-actions-v2 button,
+  .analytics-period-grid .chip,
+  .legacy-finance-periods button,
+  .movement-filter-chips button,
+  .legacy-special-filter button,
+  .legacy-custom-price-head button,
+  .legacy-settings-row > button:not(.toggle),
+  .legacy-backup-grid button,
+  .legacy-draft-actions button,
+  .stock-detail-actions .stock-detail-archive,
+  .manual-material-details > .secondary-button,
+  .order-calculation-summary > button {
+    min-height: 44px !important;
+  }
+
+  .legacy-visit-filter .field,
+  .legacy-warehouse-filter .field,
+  .legacy-price-filters .field,
+  .legacy-backup-page .legacy-settings-row select {
+    min-height: 44px !important;
+  }
+
+  .support-back,
+  .order-editor-close,
+  .stock-editor-close,
+  .stock-detail-edit,
+  .legacy-detail-more,
+  .legacy-price-head .legacy-back-button,
+  .legacy-client-profile-backdrop .client-profile-back,
+  .legacy-client-profile-backdrop .client-profile-head > a,
+  .catalog-modal .catalog-close,
+  .material-catalog-head-close,
+  .analytics-arrow,
+  .legacy-finance-row > button {
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .support-back,
+  .order-editor-close,
+  .stock-editor-close,
+  .stock-detail-edit,
+  .legacy-detail-more,
+  .legacy-price-head .legacy-back-button,
+  .legacy-client-profile-backdrop .client-profile-back,
+  .legacy-client-profile-backdrop .client-profile-head > a,
+  .catalog-modal .catalog-close,
+  .material-catalog-head-close,
+  .analytics-arrow,
+  .legacy-finance-row > button {
+    display: grid !important;
+    padding: 0 !important;
+    place-items: center !important;
+  }
+
+  .support-back .ui-icon,
+  .order-editor-close .ui-icon,
+  .stock-editor-close .ui-icon,
+  .stock-detail-edit .ui-icon,
+  .legacy-detail-more .ui-icon,
+  .legacy-price-head .legacy-back-button .ui-icon,
+  .legacy-client-profile-backdrop .client-profile-back .ui-icon,
+  .legacy-client-profile-backdrop .client-profile-head > a .ui-icon,
+  .catalog-modal .catalog-close .ui-icon,
+  .material-catalog-head-close .ui-icon,
+  .analytics-arrow .ui-icon,
+  .legacy-finance-row > button .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+  }
+
+  .legacy-finance-row {
+    grid-template-columns: 35px minmax(0,1fr) 44px !important;
+  }
+
+  .legacy-price-head {
+    grid-template-columns: 44px minmax(0,1fr) 44px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-finance-periods button,
+  .analytics-period-grid .chip,
+  .legacy-order-filters button,
+  .movement-filter-chips button {
+    min-height: 44px !important;
+  }
+}
+

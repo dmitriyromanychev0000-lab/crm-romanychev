@@ -134,7 +134,7 @@ async function inspect(page, label, width) {
         const rect = node.getBoundingClientRect();
         return { tag: node.tagName, text: (node.innerText || node.getAttribute("aria-label") || "").trim().slice(0, 60), w: Math.round(rect.width), h: Math.round(rect.height) };
       })
-      .filter((item) => item.w < 32 || item.h < 32)
+      .filter((item) => item.w < 44 || item.h < 44)
       .slice(0, 30);
     return {
       label: labelValue,
