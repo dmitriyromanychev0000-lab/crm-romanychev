@@ -1394,6 +1394,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               report.failures.push({ width, type: "stress-warehouse-long-name", stockTextState });
             }
           }
+          if (stressLabel === "stress-prices") {
+            await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+            await page.waitForTimeout(60);
+            const bottomClearance = await page.evaluate(() => {
+              const last = document.querySelector(".legacy-custom-price") || [...document.querySelectorAll(".legacy-price-group")].at(-1);
+              const nav = document.querySelector(".bottom-nav");
+              const shell = document.querySelector(".shell");
+              const lr = last?.getBoundingClientRect();
+              const nr = nav?.getBoundingClientRect();
+              return {
+                gap: lr && nr ? Math.round(nr.top - lr.bottom) : -999,
+                shellPaddingBottom: shell ? getComputedStyle(shell).paddingBottom : "missing",
+                scrollY: Math.round(window.scrollY),
+                maxScroll: Math.round(document.documentElement.scrollHeight - window.innerHeight)
+              };
+            });
+            if (bottomClearance.gap < 16
+              || parseFloat(bottomClearance.shellPaddingBottom) < 90
+              || Math.abs(bottomClearance.scrollY - bottomClearance.maxScroll) > 2) {
+              report.failures.push({ width, type: "fixed-nav-bottom-clearance", bottomClearance });
+            }
+          }
         }
 
         await setState(page, uiState({ activePage: "orders" }));

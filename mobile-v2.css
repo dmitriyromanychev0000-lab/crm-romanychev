@@ -12339,3 +12339,11 @@
     height: 21px !important;
   }
 }
+
+
+/* 1.0.46 · Нижний safe-space: последний контент полностью прокручивается выше fixed nav. */
+@media screen and (max-width: 520px) {
+  .shell {
+    padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
+  }
+}
