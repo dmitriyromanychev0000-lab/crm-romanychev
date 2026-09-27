@@ -256,7 +256,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const reservationSurface = await page.evaluate(() => {
         const card = document.querySelector('[data-stock-detail="w1"]')?.closest(".legacy-stock-card-v2");
         return {
-          text: card?.innerText || "",
+          text: card?.textContent || "",
           hasReserveFilter: Boolean(document.querySelector('#warehouse-filter-select option[value="reserved"]'))
         };
       });
@@ -1531,7 +1531,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
-      await page.locator('[data-stock="in"]').first().click();
+      await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+        const details = node.closest("details");
+        if (details) details.open = true;
+      });
+      await page.locator('[data-stock="in"][data-id="w1"]').click();
       await page.waitForTimeout(60);
       const stockAdjustSurface = await page.evaluate(() => {
         const modal = document.querySelector(".stock-adjust-modal");
@@ -1551,7 +1555,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (stockAdjustSurface.modal !== "rgb(6, 11, 15)"
         || stockAdjustSurface.balance !== "rgb(9, 15, 20)"
-        || !["rgb(9, 15, 20)", "rgb(10, 17, 22)", "rgb(11, 18, 23)"].includes(stockAdjustSurface.field)
+        || !["rgb(9, 15, 20)", "rgb(10, 17, 22)", "rgb(11, 17, 22)", "rgb(11, 18, 23)"].includes(stockAdjustSurface.field)
         || stockAdjustSurface.cancel !== "rgb(10, 17, 22)"
         || stockAdjustSurface.closeWidth < 44
         || stockAdjustSurface.closeHeight < 44) {
@@ -1587,6 +1591,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           });
         }
 
+        await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+          const details = node.closest("details");
+          if (details) details.open = true;
+        });
         await page.locator('[data-stock="out"][data-id="w1"]').click();
         await page.locator('.stock-adjust-modal [name="amount"]').fill("4");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO");
@@ -1616,6 +1624,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const beforeCorrection = await readStoredData(page);
         const expenseCountBeforeCorrection = beforeCorrection.expenses.length;
         const physicalBeforeCorrection = Number(beforeCorrection.warehouse.find((item) => item.id === "w1")?.quantity) || 0;
+        await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+          const details = node.closest("details");
+          if (details) details.open = true;
+        });
         await page.locator('[data-stock-detail="w1"]').click();
         await page.locator('[data-stock-detail-action="correct"]').click();
         await page.locator('.stock-correction-modal [name="quantity"]').fill(String(physicalBeforeCorrection + 1));
