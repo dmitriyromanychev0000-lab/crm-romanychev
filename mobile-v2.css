@@ -727,8 +727,6 @@
 }
 
 
-
-
 /* 0.85.0 · Фирменное подтверждение вместо системного confirm(). */
 .crm-confirm-backdrop {
   z-index: 500 !important;
@@ -8120,4 +8118,724 @@
     -webkit-line-clamp: 2;
   }
 }
+/* 1.0.6 · Редактор заявки: восстановленный тёмный стиль и цельные мобильные блоки. */
+@media screen and (max-width: 520px) {
+  :root {
+    --crm-bg: #050a0e;
+    --crm-surface: #0c1318;
+    --crm-surface-2: #121b22;
+    --crm-line: #26323b;
+    --crm-line-soft: #1b252c;
+    --crm-text: #f2f5f6;
+    --crm-muted: #8c979f;
+    --crm-accent: #ff684a;
+    --crm-accent-soft: rgba(255,104,74,.12);
+  }
 
+  html,
+  body,
+  .shell {
+    background: #050a0e !important;
+  }
+
+  .primary-button,
+  .legacy-orange-button {
+    border-color: #ff684a !important;
+    background: #ff684a !important;
+    color: #1c100c !important;
+    box-shadow: 0 6px 18px rgba(255,104,74,.16) !important;
+  }
+
+  .order-editor-backdrop > .order-editor-modal {
+    display: grid !important;
+    grid-template-rows: auto minmax(0,1fr) auto !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: 0 12px !important;
+    overflow: hidden !important;
+    background: #050a0e !important;
+  }
+
+  .order-editor-modal .order-editor-head {
+    position: relative !important;
+    top: auto !important;
+    min-height: calc(64px + env(safe-area-inset-top)) !important;
+    margin: 0 -12px !important;
+    padding: calc(9px + env(safe-area-inset-top)) 12px 9px !important;
+    border-bottom: 1px solid #1c272e !important;
+    background: #050a0e !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-title-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-color: rgba(255,104,74,.42) !important;
+    background: rgba(255,104,74,.09) !important;
+    color: #ff684a !important;
+  }
+
+  .order-editor-close {
+    width: 44px !important;
+    height: 44px !important;
+    border-color: #2b3841 !important;
+    background: #121b22 !important;
+  }
+
+  .order-editor-modal .order-editor-body {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 14px 0 24px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    scroll-padding-bottom: 24px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .order-editor-modal .order-editor-section {
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .form-section-title {
+    min-height: 34px !important;
+    margin: 0 0 10px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    color: #f2f5f6 !important;
+    font-size: 15px !important;
+    font-weight: 760 !important;
+  }
+
+  .order-editor-modal .order-editor-section-icon {
+    width: 32px !important;
+    height: 32px !important;
+    flex-basis: 32px !important;
+    border: 1px solid rgba(255,104,74,.18) !important;
+    border-radius: 10px !important;
+    background: rgba(255,104,74,.09) !important;
+    color: #ff684a !important;
+  }
+
+  .order-editor-modal .legacy-catalog-button,
+  .order-editor-modal .legacy-stock-button {
+    min-height: 50px !important;
+    margin-bottom: 9px !important;
+    border: 1px solid rgba(255,104,74,.5) !important;
+    border-radius: 13px !important;
+    background: rgba(255,104,74,.055) !important;
+    color: #ff8066 !important;
+    font-size: 13px !important;
+    box-shadow: inset 0 0 0 1px rgba(255,104,74,.035) !important;
+  }
+
+  .order-editor-modal .legacy-stock-button {
+    border-color: #33414b !important;
+    background: #10181e !important;
+    color: #edf2f4 !important;
+  }
+
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 24px minmax(0,1fr) 78px 44px !important;
+    gap: 7px !important;
+    min-height: 54px !important;
+    padding: 4px 0 !important;
+    border-bottom: 1px solid #202b32 !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-name-field,
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    min-height: 44px !important;
+    height: 44px !important;
+    color: #e6ebed !important;
+    font-size: 13px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field {
+    position: relative !important;
+    display: flex !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    width: 58px !important;
+    padding: 0 !important;
+    text-align: right !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field > span {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    flex: 0 0 auto !important;
+    margin-left: 3px !important;
+    transform: none !important;
+    color: #929ca3 !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-qty-field {
+    display: none !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-remove {
+    display: grid !important;
+    width: 44px !important;
+    height: 44px !important;
+    place-items: center !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: transparent !important;
+    color: var(--crm-red) !important;
+  }
+
+  .order-editor-modal .legacy-service-total {
+    margin-top: 4px !important;
+    padding: 10px 0 0 !important;
+    border-top: 0 !important;
+    color: #939da4 !important;
+  }
+
+  .order-editor-modal .legacy-material-help {
+    margin: -1px 0 9px !important;
+    color: #89949b !important;
+    font-size: 11px !important;
+  }
+
+  .order-editor-modal #material-lines {
+    gap: 8px !important;
+  }
+
+  .order-editor-modal .legacy-material-card {
+    gap: 8px !important;
+    padding: 12px !important;
+    border: 1px solid #2a3740 !important;
+    border-radius: 15px !important;
+    background: #0d151a !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.015) !important;
+  }
+
+  .order-editor-modal .material-card-head {
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  .order-editor-modal .material-card-head .material-name-field {
+    min-height: 38px !important;
+    height: 38px !important;
+    color: #f2f5f6 !important;
+    font-size: 14px !important;
+  }
+
+  .order-editor-modal .material-card-head small {
+    margin: 1px 0 0 !important;
+    color: #7f8a92 !important;
+    font-size: 10.5px !important;
+  }
+
+  .order-editor-modal .material-remove {
+    width: 44px !important;
+    height: 44px !important;
+    border-color: rgba(255,102,112,.32) !important;
+    background: rgba(255,102,112,.065) !important;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: .72fr .78fr 1.25fr !important;
+    gap: 7px !important;
+    margin-top: 2px !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    min-height: 24px !important;
+    color: #8e989f !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .order-editor-modal .material-card-controls .field {
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 10px !important;
+    border-color: #2c3942 !important;
+    background: #121b21 !important;
+    font-size: 13px !important;
+  }
+
+  .order-editor-modal .manual-material-details,
+  .order-editor-modal .order-extra-details {
+    margin: 10px 0 20px !important;
+    border: 1px solid #26333b !important;
+    border-radius: 14px !important;
+    background: #0b1217 !important;
+  }
+
+  .order-editor-modal .manual-material-details {
+    margin-bottom: 0 !important;
+  }
+
+  .order-editor-modal .order-extra-details > summary,
+  .order-editor-modal .manual-material-details > summary {
+    min-height: 48px !important;
+    padding: 0 12px !important;
+    color: #dce2e5 !important;
+    font-size: 12px !important;
+    line-height: normal !important;
+    list-style: none !important;
+  }
+
+  .order-editor-modal .order-extra-summary {
+    display: grid !important;
+    grid-template-columns: 30px minmax(0,1fr) 20px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    font-weight: 730 !important;
+  }
+
+  .order-extra-summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .order-extra-summary-icon {
+    display: grid !important;
+    width: 30px !important;
+    height: 30px !important;
+    place-items: center !important;
+    border-radius: 9px !important;
+    background: rgba(255,104,74,.09) !important;
+    color: #ff684a !important;
+  }
+
+  .order-extra-summary-icon .ui-icon,
+  .order-extra-chevron .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .order-extra-chevron {
+    display: grid !important;
+    place-items: center !important;
+    color: #7f8990 !important;
+    transition: transform .18s ease;
+  }
+
+  .order-extra-details[open] .order-extra-chevron {
+    transform: rotate(90deg) !important;
+  }
+
+  .order-editor-modal .order-extra-body {
+    padding: 12px !important;
+    border-top: 1px solid #202b32 !important;
+  }
+
+  .order-photo-input {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .order-photo-add {
+    display: flex !important;
+    min-height: 58px !important;
+    padding: 10px 12px !important;
+    align-items: center !important;
+    gap: 11px !important;
+    border: 1px dashed rgba(255,104,74,.55) !important;
+    border-radius: 13px !important;
+    background: rgba(255,104,74,.055) !important;
+    color: #ff8066 !important;
+    cursor: pointer;
+  }
+
+  .order-photo-add > .ui-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .order-photo-add span {
+    display: grid !important;
+    gap: 2px !important;
+    min-width: 0 !important;
+  }
+
+  .order-photo-add b {
+    color: #f3f5f6 !important;
+    font-size: 13px !important;
+  }
+
+  .order-photo-add small {
+    color: #929ca3 !important;
+    font-size: 10.5px !important;
+  }
+
+  .order-photo-input:focus + .order-photo-add {
+    outline: 2px solid rgba(255,104,74,.45) !important;
+    outline-offset: 2px !important;
+  }
+
+  .order-photo-input:disabled + .order-photo-add {
+    opacity: .55 !important;
+    pointer-events: none !important;
+  }
+
+  .order-photo-picker > .small {
+    margin-top: 7px !important;
+    color: #758189 !important;
+    font-size: 10px !important;
+  }
+
+  .order-editor-modal .photo-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 9px !important;
+    margin-top: 11px !important;
+  }
+
+  .order-editor-modal .photo-card {
+    display: grid !important;
+    grid-template-rows: auto 36px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #2b3841 !important;
+    border-radius: 13px !important;
+    background: #10181e !important;
+    color: #e9edef !important;
+    text-align: left !important;
+  }
+
+  .order-editor-modal .photo-card img,
+  .order-editor-modal .photo-missing {
+    width: 100% !important;
+    aspect-ratio: 4 / 3 !important;
+    object-fit: cover !important;
+  }
+
+  .order-editor-modal .photo-caption {
+    display: block !important;
+    min-width: 0 !important;
+    padding: 10px 36px 9px 10px !important;
+    overflow: hidden !important;
+    color: #cbd2d6 !important;
+    font-size: 11px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .order-editor-modal .photo-open-icon {
+    position: absolute !important;
+    right: 9px !important;
+    bottom: 9px !important;
+    display: grid !important;
+    width: 20px !important;
+    height: 20px !important;
+    place-items: center !important;
+    color: #ff765c !important;
+  }
+
+  .order-editor-modal .photo-open-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .order-editor-modal .photo-empty {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    min-height: 64px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    color: #76828a !important;
+    font-size: 11px !important;
+  }
+
+  .order-editor-modal .photo-empty .ui-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div {
+    min-height: 64px !important;
+    padding: 10px 11px !important;
+    border-color: #26333b !important;
+    background: #0e161b !important;
+  }
+
+  .order-editor-modal .order-calculation-summary .calculation-grand {
+    grid-column: 1 / -1 !important;
+    min-height: 68px !important;
+    border-color: rgba(255,104,74,.48) !important;
+    background: rgba(255,104,74,.055) !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div span {
+    color: #89949b !important;
+    font-size: 10px !important;
+    letter-spacing: .035em !important;
+    text-transform: uppercase !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div strong {
+    margin-top: 6px !important;
+    color: #f2f5f6 !important;
+    font-size: 16px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary .calculation-grand strong {
+    color: #ff7256 !important;
+    font-size: 18px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > button {
+    min-height: 44px !important;
+    border-color: #2c3942 !important;
+    background: #10181e !important;
+    color: #e7ecee !important;
+    font-size: 11px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid {
+    gap: 10px 8px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .field {
+    border-color: #2c3942 !important;
+    background: #111a20 !important;
+  }
+
+  .order-editor-modal .legacy-guarantee-card {
+    margin: 0 !important;
+    padding: 12px !important;
+    border: 1px solid rgba(255,104,74,.34) !important;
+    border-radius: 14px !important;
+    background: linear-gradient(145deg,rgba(255,104,74,.055),rgba(12,18,23,.94)) !important;
+  }
+
+  .order-editor-modal .legacy-guarantee-head {
+    grid-template-columns: 26px minmax(0,1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    margin-bottom: 12px !important;
+  }
+
+  .order-editor-modal .legacy-guarantee-head strong {
+    font-size: 14px !important;
+  }
+
+  .order-editor-modal .guarantee-date {
+    grid-column: auto !important;
+    justify-self: end !important;
+    padding: 5px 8px !important;
+    font-size: 9.5px !important;
+  }
+
+  .order-editor-modal .legacy-guarantee-card .textarea,
+  .order-editor-modal .order-comment .textarea {
+    min-height: 88px !important;
+    border-color: #2c3942 !important;
+    background: #10181e !important;
+  }
+
+  .order-editor-modal .order-comment {
+    margin-top: 12px !important;
+  }
+
+  .order-editor-modal .modal-actions {
+    position: static !important;
+    z-index: 3 !important;
+    display: grid !important;
+    grid-template-columns: .88fr .88fr 1.2fr !important;
+    gap: 7px !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 -12px !important;
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #202b32 !important;
+    background: #050a0e !important;
+    box-shadow: 0 -10px 28px rgba(0,0,0,.3) !important;
+  }
+
+  .order-editor-modal .modal-actions > * {
+    min-height: 48px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .modal-actions .secondary-button {
+    border-color: #2c3942 !important;
+    background: #121b22 !important;
+    color: #eef2f4 !important;
+  }
+
+  .photo-viewer-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 700 !important;
+    display: block !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #020507 !important;
+  }
+
+  .photo-viewer-modal {
+    display: grid !important;
+    grid-template-rows: auto minmax(0,1fr) auto !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    background: #020507 !important;
+  }
+
+  .photo-viewer-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 10px !important;
+    align-items: center !important;
+    min-height: calc(64px + env(safe-area-inset-top)) !important;
+    padding: calc(9px + env(safe-area-inset-top)) 12px 9px !important;
+    border-bottom: 1px solid #1f292f !important;
+    background: rgba(5,10,14,.98) !important;
+  }
+
+  .photo-viewer-head > div {
+    min-width: 0 !important;
+  }
+
+  .photo-viewer-head small,
+  .photo-viewer-head strong {
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .photo-viewer-head small {
+    color: #7f8a91 !important;
+    font-size: 9px !important;
+    letter-spacing: .055em !important;
+  }
+
+  .photo-viewer-head strong {
+    margin-top: 3px !important;
+    color: #f2f5f6 !important;
+    font-size: 14px !important;
+  }
+
+  .photo-viewer-close {
+    display: grid !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+    border: 1px solid #2d3941 !important;
+    border-radius: 12px !important;
+    background: #111a20 !important;
+    color: #eef2f4 !important;
+  }
+
+  .photo-viewer-close .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .photo-viewer-stage {
+    display: grid !important;
+    min-height: 0 !important;
+    padding: 12px !important;
+    place-items: center !important;
+    overflow: auto !important;
+  }
+
+  .photo-viewer-stage img {
+    display: block !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 10px !important;
+  }
+
+  .photo-viewer-actions {
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #1f292f !important;
+    background: #050a0e !important;
+  }
+
+  .photo-viewer-delete {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    border: 1px solid rgba(255,102,112,.46) !important;
+    border-radius: 13px !important;
+    background: rgba(255,102,112,.09) !important;
+    color: #ff727b !important;
+    font-size: 13px !important;
+    font-weight: 730 !important;
+  }
+
+  .photo-viewer-delete .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal .legacy-service-row {
+    grid-template-columns: 22px minmax(0,1fr) 65px 44px !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .legacy-service-row .service-price-field input {
+    width: 45px !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: .68fr .72fr 1.28fr !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .material-card-controls .field {
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal .modal-actions {
+    grid-template-columns: .82fr .82fr 1.18fr !important;
+    gap: 5px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  .order-editor-modal .modal-actions > * {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    font-size: 11px !important;
+  }
+}

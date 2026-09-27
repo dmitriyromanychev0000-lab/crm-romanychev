@@ -257,6 +257,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (serviceRowState.rows !== 1 || !serviceRowState.removeVisible || serviceRowState.removeWidth < 44 || serviceRowState.removeHeight < 44) {
         report.failures.push({ width, type: "service-row-actions", serviceRowState });
       }
+      const servicePriceLayout = await page.evaluate(() => {
+        const input = document.querySelector("#service-lines .service-price-field input");
+        const suffix = document.querySelector("#service-lines .service-price-field > span");
+        const inputRect = input?.getBoundingClientRect();
+        const suffixRect = suffix?.getBoundingClientRect();
+        return {
+          inputRight: inputRect ? Math.round(inputRect.right) : 0,
+          suffixLeft: suffixRect ? Math.round(suffixRect.left) : 0,
+          suffixPosition: suffix ? getComputedStyle(suffix).position : "missing"
+        };
+      });
+      if (servicePriceLayout.suffixPosition !== "static" || servicePriceLayout.suffixLeft < servicePriceLayout.inputRight) {
+        report.failures.push({ width, type: "service-price-overlap", servicePriceLayout });
+      }
       await page.locator("#service-lines [data-remove-line]").first().click();
       if (await page.locator("#service-lines [data-service-row]").count() !== 0) {
         report.failures.push({ width, type: "service-row-remove" });
@@ -332,6 +346,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         fixed: getComputedStyle(document.body).position === "fixed"
       }));
       if (editorClosed.count !== 0 || editorClosed.locked || editorClosed.fixed) report.failures.push({ width, type: "order-editor-unlock", editorClosed });
+
+      if (width === 390) {
+        const photoSeed = structuredClone(seed);
+        photoSeed.orders[0].photos = [{
+          name: "Фото холодильника",
+          dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAEAQH/9jzG9AAAAABJRU5ErkJggg=="
+        }];
+        await writeSeed(page, photoSeed);
+        await setState(page, uiState({ activePage: "orders" }));
+        await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
+        await page.locator("#open-service-catalog").scrollIntoViewIfNeeded();
+        report.results.push(await shot(page, width, "order-editor-restored", false));
+        await page.locator("[data-view-photo]").click();
+        const photoViewerState = await page.evaluate(() => {
+          const viewer = document.querySelector(".photo-viewer-modal");
+          const underlay = document.querySelector(".order-editor-backdrop");
+          const deleteButton = document.querySelector(".photo-viewer-delete");
+          const rect = deleteButton?.getBoundingClientRect();
+          return {
+            viewers: document.querySelectorAll(".photo-viewer-modal").length,
+            underlayInert: Boolean(underlay?.inert),
+            deleteWidth: rect ? Math.round(rect.width) : 0,
+            deleteHeight: rect ? Math.round(rect.height) : 0
+          };
+        });
+        if (photoViewerState.viewers !== 1 || !photoViewerState.underlayInert || photoViewerState.deleteWidth < 44 || photoViewerState.deleteHeight < 44) {
+          report.failures.push({ width, type: "photo-viewer", photoViewerState });
+        }
+        report.results.push(await shot(page, width, "photo-viewer", false));
+        await page.locator(".photo-viewer-delete").click();
+        const photoDeleted = await page.evaluate(() => ({
+          viewers: document.querySelectorAll(".photo-viewer-modal").length,
+          cards: document.querySelectorAll("[data-view-photo]").length,
+          locked: document.body.classList.contains("modal-open")
+        }));
+        if (photoDeleted.viewers !== 0 || photoDeleted.cards !== 0 || !photoDeleted.locked) {
+          report.failures.push({ width, type: "photo-delete", photoDeleted });
+        }
+        await page.keyboard.press("Escape");
+        await writeSeed(page, seed);
+      }
 
       await setState(page, uiState({ activePage: "orders" }));
       await page.locator(".legacy-order-card").first().click();
