@@ -2293,7 +2293,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       label: "stock-editor",
       state: uiState({ activePage: "warehouse", warehouseSection: "list" }),
       open: '[data-action="new-stock"]',
-      field: '.stock-editor-modal [name="lastPurchasePrice"]',
+      field: '.stock-editor-modal [name="initialPurchaseTotal"]',
       action: '.stock-editor-modal .modal-actions .primary-button'
     },
     {
