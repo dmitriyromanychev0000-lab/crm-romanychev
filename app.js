@@ -1152,6 +1152,7 @@ function orderCard(order) {
   const phoneHref = String(order.phone || "").replace(/[^+\d]/g, "");
   const guaranteeText = Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "без гарантии";
   const nextVisit = formatOrderVisit(order);
+  const overdueVisit = visitIsOverdue(order);
 
   return `<article class="legacy-order-card ${cardClass}" data-order-action="view" data-id="${escapeHtml(order.id)}">
     <div class="legacy-order-accent"></div>
@@ -1175,7 +1176,7 @@ function orderCard(order) {
       ${order.address ? `<a class="address" href="${escapeHtml(yandexMapsUrl(order.address))}" target="_blank" rel="noopener">${icon("location")}${escapeHtml(order.address)}</a>` : ""}
       <span>${icon("shield")}${guaranteeText}</span>
     </div>
-    ${nextVisit ? `<div class="legacy-next-visit">${icon("calendar")}<span>Следующий визит: ${escapeHtml(nextVisit)}</span></div>` : ""}
+    ${nextVisit ? `<div class="legacy-next-visit ${overdueVisit ? "overdue" : ""}">${icon("calendar")}<span>${overdueVisit ? "Визит просрочен" : "Следующий визит"}: ${escapeHtml(nextVisit)}</span></div>` : ""}
     ${photos.length ? `<div class="legacy-order-photos">${photos.map((src,index)=>`<button type="button" class="legacy-order-photo" data-order-action="view" data-id="${escapeHtml(order.id)}" aria-label="Открыть фото ${index+1}"><img src="${src}" alt="" /></button>`).join("")}</div>` : ""}
 
     <div class="legacy-order-actions">
@@ -3065,13 +3066,13 @@ function newOrderModal(existing = null, options = {}) {
     <button type="button" class="secondary-button wide direct-expense-add" id="add-manual-material">${icon("plus")}<span>Добавить расход без склада</span></button>
     </section>
 
-    <details class="order-extra-details order-photo-details" ${orderPhotos.length ? "open" : ""}>
-      <summary class="order-extra-summary"><span class="order-extra-summary-icon">${icon("camera")}</span><span>Фотографии</span><span class="order-extra-chevron">${icon("chevron")}</span></summary>
+    <section class="order-extra-details order-photo-details order-photo-static">
+      <div class="order-photo-static-head"><span class="order-extra-summary-icon">${icon("camera")}</span><span>Фотографии</span></div>
       <div class="order-extra-body">
         <div class="form-group full order-photo-picker"><input class="order-photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><label class="order-photo-add" for="order-photo-input">${icon("camera")}<span><b>Добавить фотографии</b><small>Открыть камеру или выбрать файлы</small></span></label><div class="small">Фото хранятся только в локальной CRM и бэкапе.</div></div>
         <div class="photo-grid" id="order-photo-list"></div>
       </div>
-    </details>
+    </section>
 
     <section class="order-editor-section order-editor-payment-section">
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт и гарантия</span></div>
