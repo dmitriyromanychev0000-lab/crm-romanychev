@@ -433,6 +433,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator(".warranty-manager-head [data-close-modal]").click();
       await page.waitForTimeout(20);
 
+      await page.locator('[data-action="manage-warranty-results"]').click();
+      await page.waitForTimeout(30);
+      const warrantyResultsInitial = await page.evaluate(() => ({
+        modal: document.querySelectorAll(".warranty-result-manager-modal").length,
+        rows: document.querySelectorAll("[data-warranty-result-id]").length,
+        names: [...document.querySelectorAll("[data-warranty-result-name]")].map((input) => input.value)
+      }));
+      if (warrantyResultsInitial.modal !== 1
+        || warrantyResultsInitial.rows !== 3
+        || !warrantyResultsInitial.names.includes("Гарантия подтверждена")
+        || !warrantyResultsInitial.names.includes("Гарантия не подтверждена")
+        || !warrantyResultsInitial.names.includes("Неисправность не выявлена")) {
+        report.failures.push({ width, type: "warranty-result-manager-defaults", warrantyResultsInitial });
+      }
+      await page.locator("#new-warranty-result-name").fill("Повторный платный ремонт");
+      await page.locator("#add-warranty-result").click();
+      await page.waitForTimeout(30);
+      const warrantyResultsAdded = await page.evaluate(() => ({
+        rows: document.querySelectorAll("[data-warranty-result-id]").length,
+        names: [...document.querySelectorAll("[data-warranty-result-name]")].map((input) => input.value)
+      }));
+      if (warrantyResultsAdded.rows !== 4 || !warrantyResultsAdded.names.includes("Повторный платный ремонт")) {
+        report.failures.push({ width, type: "warranty-result-manager-add", warrantyResultsAdded });
+      }
+      report.results.push(await shot(page, width, "warranty-result-manager", false));
+      await page.locator(".warranty-result-manager-modal [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
       await setState(page, uiState({ activePage: "orders" }));
       await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
       await page.waitForTimeout(30);
