@@ -2003,6 +2003,131 @@ function actPage() {
   </main>`;
 }
 
+function goodsPage() {
+  const sheets = Array.isArray(data.goods_sheets)
+    ? [...data.goods_sheets].sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+    : [];
+  const latest = sheets[0] || null;
+  const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
+  const closedOrders = ordersNewestFirst().filter((order) => !order.archived && normalizeStatus(order.status) === "closed");
+  const productPrice = data.receipt_prices
+    .filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+
+  return `<main class="content goods-content legacy-goods-page">
+    <div class="legacy-subpage-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
+      <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
+    </div>
+
+    <section class="legacy-goods-panel legacy-goods-new">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Новый товарник</h2></div>
+      <div class="legacy-goods-create-grid">
+        <button type="button" class="legacy-purple-button" data-action="new-goods-sheet"><span>${icon("plus")}</span>Создать вручную</button>
+        <button type="button" class="legacy-dark-button" data-action="new-goods-from-order">${icon("document")}<span>Из закрытой<br>заявки</span></button>
+      </div>
+      <label class="legacy-goods-order-source">
+        <span>ЗАЯВКА ДЛЯ АВТОЗАПОЛНЕНИЯ</span>
+        <select class="field" id="goods-source-order">
+          <option value="">— Выберите заявку —</option>
+          ${closedOrders.map((order) => `<option value="${escapeHtml(order.id)}">№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</option>`).join("")}
+        </select>
+      </label>
+      <p class="legacy-goods-help">Отдельный расчёт товаров — склад и статистика не изменяются.</p>
+    </section>
+
+    <section class="legacy-goods-panel legacy-goods-current">
+      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>${latest ? "Последний товарник" : "Товарник"}</h2></div>
+      ${latest ? `
+        <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>${latestItems.length} позиций</small></span><b>${money(latest.total || 0)}</b></div>
+        <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
+        <div class="legacy-goods-position-list">
+          ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
+          ${latestItems.length > 6 ? `<div class="legacy-goods-more">Ещё ${latestItems.length - 6} поз.</div>` : ""}
+        </div>
+        <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
+      ` : `<div class="legacy-goods-empty">Создай товарник вручную или выбери закрытую заявку для автозаполнения.</div>`}
+    </section>
+
+    <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">
+      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">${icon("chevron")}</span></summary>
+      ${productPrice.length ? `<div class="legacy-product-price-list">${productPrice.map((item) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
+    </details>
+  </main>`;
+}
+function orderSourcesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop source-manager-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal source-manager-modal" role="dialog" aria-modal="true" aria-label="Источники заявок">
+    <div class="source-manager-head">
+      <div><small>НАСТРОЙКИ</small><h2>Источники заявок</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div id="source-manager-list" class="source-manager-list"></div>
+    <div class="source-manager-add">
+      <input class="field" id="new-source-name" placeholder="Новый источник" />
+      <button type="button" class="primary-button" id="add-order-source">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#source-manager-list");
+    const sources = [...(data.order_sources || [])]
+      .sort((a,b)=>Number(Boolean(a.archived))-Number(Boolean(b.archived)) || String(a.name||"").localeCompare(String(b.name||""),"ru"));
+    list.innerHTML = sources.length ? sources.map((source)=>`<div class="source-manager-row ${source.archived ? "archived" : ""}" data-source-id="${escapeHtml(source.id)}">
+      <input class="field" data-source-name value="${escapeHtml(source.name || "")}" aria-label="Название источника" />
+      <button type="button" data-source-archive aria-label="${source.archived ? "Вернуть источник" : "Архивировать источник"}">${icon(source.archived ? "restore" : "archive")}</button>
+    </div>`).join("") : `<div class="empty">Источников пока нет</div>`;
+  };
+
+  const close = () => {
+    modal.remove();
+    syncModalScrollLock();
+  };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const archiveButton = event.target.closest("[data-source-archive]");
+    if (!archiveButton) return;
+    const row = archiveButton.closest("[data-source-id]");
+    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
+    if (!source) return;
+    source.archived = !source.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    const input = event.target.closest("[data-source-name]");
+    if (!input) return;
+    const row = input.closest("[data-source-id]");
+    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
+    if (!source) return;
+    const name = String(input.value || "").trim();
+    if (!name) {
+      input.value = source.name || "";
+      return toast("Название источника не может быть пустым");
+    }
+    source.name = name;
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-order-source").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-source-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши название источника");
+    if ((data.order_sources || []).some((source)=>String(source.name||"").trim().toLowerCase()===name.toLowerCase() && !source.archived)) {
+      return toast("Такой источник уже есть");
+    }
+    data.order_sources.push({ id: crypto.randomUUID(), name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
