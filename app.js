@@ -2842,11 +2842,12 @@ function warehouseMovementsPage() {
     in: "Приход",
     out: "Списание",
     manual_in: "Приход",
+    purchase_in: "Закупка",
     manual_out: "Ручное списание",
     order_out: "Списано в заявку",
     order_return: "Возврат из заявки"
   };
-  const incomingTypes = new Set(["initial", "in", "manual_in", "order_return"]);
+  const incomingTypes = new Set(["initial", "in", "manual_in", "purchase_in", "order_return"]);
   const source = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   const movements = source.filter((movement) => {
@@ -2877,7 +2878,7 @@ function warehouseMovementsPage() {
         const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
         return `<article class="movement-card ${incoming ? "incoming" : "outgoing"}">
           <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
-          <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
+          <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}${movement.totalCost ? ` · ${money(movement.totalCost)}` : ""}${movement.comment ? ` · ${escapeHtml(movement.comment)}` : ""}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
           <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
         </article>`;
       }).join("") : `<div class="panel empty warehouse-support-empty"><div class="empty-icon">${icon("history")}</div><h2>Движений нет</h2><p>Для выбранного фильтра записей пока нет.</p></div>`}
@@ -4350,6 +4351,7 @@ function stockDetailModal(item) {
     in: "Приход",
     out: "Списание",
     manual_in: "Приход",
+    purchase_in: "Закупка",
     manual_out: "Списание",
     order_out: "В заявку",
     order_return: "Возврат"
@@ -4381,8 +4383,8 @@ function stockDetailModal(item) {
       <section class="stock-detail-history">
         <h3>Последние движения</h3>
         ${movements.length ? movements.map((movement) => {
-          const incoming = ["initial","in","manual_in","order_return"].includes(movement.type);
-          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
+          const incoming = ["initial","in","manual_in","purchase_in","order_return"].includes(movement.type);
+          return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}${movement.totalCost ? ` · ${money(movement.totalCost)}` : ""}${movement.comment ? ` · ${escapeHtml(movement.comment)}` : ""}</small></p></div>`;
         }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
       </section>
     </main>
@@ -4451,7 +4453,9 @@ function stockModal(existing = null) {
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("finance")}</span><span>Цены и учёт</span></div>
     <div class="form-grid">
       <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
-      <div class="form-group"><label>Себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="1" value="${Number(item.lastPurchasePrice) || 0}" /></div>
+      ${existing
+        ? `<div class="form-group"><label>Текущая себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="0.01" value="${Number(item.lastPurchasePrice) || 0}" /><small>Только для будущих закупок; старые партии не меняются.</small></div>`
+        : `<div class="form-group"><label>Сумма первой закупки</label><input class="field" name="initialPurchaseTotal" type="number" min="0" step="1" value="0" inputmode="decimal" /><small id="stock-initial-unit-cost">Себестоимость: 0 ₽ / ед.</small></div>`}
       <div class="form-group full"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
     </div>
     </section>
@@ -4484,6 +4488,19 @@ function stockModal(existing = null) {
     consumeUnitSelect.value = allowed.includes(previous) ? previous : allowed[0];
   };
   storageUnitSelect?.addEventListener("change", syncConsumeUnits);
+  const initialQuantityInput = modal.querySelector('[name="quantity"]');
+  const initialPurchaseTotalInput = modal.querySelector('[name="initialPurchaseTotal"]');
+  const initialUnitCostPreview = modal.querySelector("#stock-initial-unit-cost");
+  const syncInitialUnitCost = () => {
+    if (!initialPurchaseTotalInput || !initialUnitCostPreview) return;
+    const qty = Math.max(0, Number(initialQuantityInput?.value) || 0);
+    const total = Math.max(0, Number(initialPurchaseTotalInput.value) || 0);
+    initialUnitCostPreview.textContent = `Себестоимость: ${money(qty > 0 ? total / qty : 0)} / ${normalizeStockUnit(storageUnitSelect?.value || "шт")}`;
+  };
+  initialQuantityInput?.addEventListener("input", syncInitialUnitCost);
+  initialPurchaseTotalInput?.addEventListener("input", syncInitialUnitCost);
+  storageUnitSelect?.addEventListener("change", syncInitialUnitCost);
+  syncInitialUnitCost();
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
@@ -4491,6 +4508,8 @@ function stockModal(existing = null) {
     const form = new FormData(event.currentTarget);
     const extraCompatibility = String(form.get("compatibilityExtra") || "").split(",").map((value) => value.trim()).filter(Boolean);
     const compatibility = [...new Set([...form.getAll("compatibility").map(String), ...extraCompatibility])];
+    const initialQuantity = Math.max(0, Number(form.get("quantity")) || 0);
+    const initialPurchaseTotal = existing ? 0 : Math.max(0, Number(form.get("initialPurchaseTotal")) || 0);
     const next = {
       ...item,
       id: item.id || crypto.randomUUID(),
@@ -4498,20 +4517,48 @@ function stockModal(existing = null) {
       category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
       unit: normalizeStockUnit(form.get("unit") || "шт"),
       consumeUnit: normalizeStockUnit(form.get("consumeUnit") || form.get("unit") || "шт"),
-      quantity: Number(form.get("quantity")) || 0,
+      quantity: initialQuantity,
       min: Number(form.get("min")) || 0,
       price: Number(form.get("price")) || 0,
-      lastPurchasePrice: Number(form.get("lastPurchasePrice")) || 0,
+      lastPurchasePrice: existing
+        ? Math.max(0, Number(form.get("lastPurchasePrice")) || 0)
+        : (initialQuantity > 0 ? initialPurchaseTotal / initialQuantity : 0),
       compatibility,
       archived: existing ? Boolean(item.archived) : false,
       hiddenFromOrders: form.get("hiddenFromOrders") === "on",
-      tracking: String(form.get("tracking") || "exact")
+      tracking: String(form.get("tracking") || "exact"),
+      batches: existing ? stockBatchList(item) : []
     };
     if (!next.name) return toast("Укажи название позиции");
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
     if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
     if (!existing && next.quantity > 0) {
-      data.warehouse_movements.push({ id: crypto.randomUUID(), warehouseId: next.id, name: next.name, qty: next.quantity, type: "initial", date: new Date().toISOString() });
+      const date = new Date().toISOString();
+      const movementId = crypto.randomUUID();
+      const batch = createStockBatch(next, next.quantity, initialPurchaseTotal, { acquiredAt: date, source: "purchase" });
+      data.warehouse_movements.push({
+        id: movementId,
+        warehouseId: next.id,
+        name: next.name,
+        qty: next.quantity,
+        type: "purchase_in",
+        totalCost: initialPurchaseTotal,
+        unitCost: Number(batch?.unitCost) || 0,
+        batchId: batch?.id || null,
+        date
+      });
+      if (initialPurchaseTotal > 0) {
+        data.expenses.push({
+          id: crypto.randomUUID(),
+          amount: initialPurchaseTotal,
+          category: "Закупка на склад",
+          description: next.name,
+          date,
+          source: "stock_purchase",
+          warehouseId: next.id,
+          movementId
+        });
+      }
     }
     await saveData();
     modal.remove();
@@ -5028,64 +5075,125 @@ async function adjustStock(id, direction) {
 
   const incoming = direction === "in";
   const physicalBefore = Number(item.quantity) || 0;
-  const reservedBefore = stockReservedQuantity(item.id);
   const before = stockAvailableQuantity(item);
+  const unit = normalizeStockUnit(item.unit || "шт");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-adjust-backdrop";
   modal.innerHTML = `<form class="modal stock-adjust-modal" id="stock-adjust-form">
     <div class="stock-adjust-head">
       <span class="stock-adjust-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
-      <div><strong>${incoming ? "Приход" : "Списание"}</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
+      <div><strong>${incoming ? "Новая закупка" : "Ручное списание"}</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
       <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="stock-adjust-balance">
-      <span>СЕЙЧАС НА СКЛАДЕ</span>
-      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(before)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong>
+      <span>ДОСТУПНО СЕЙЧАС</span>
+      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(before)} ${escapeHtml(unit)}</strong>
     </div>
     <label class="stock-adjust-field">
       <span>КОЛИЧЕСТВО</span>
-      <input class="field" name="amount" type="number" min="0.01" step="0.01" value="1" inputmode="decimal" required autofocus />
+      <input class="field" name="amount" type="number" min="0.001" step="0.001" value="1" inputmode="decimal" required autofocus />
+    </label>
+    ${incoming ? `<label class="stock-adjust-field">
+      <span>ОБЩАЯ СУММА ЗАКУПКИ</span>
+      <input class="field" name="totalCost" type="number" min="0" step="1" value="${Math.max(0, Number(item.lastPurchasePrice) || 0)}" inputmode="decimal" />
+    </label>` : ""}
+    <label class="stock-adjust-field">
+      <span>${incoming ? "КОММЕНТАРИЙ" : "ПРИЧИНА СПИСАНИЯ *"}</span>
+      <input class="field" name="comment" ${incoming ? "" : "required"} placeholder="${incoming ? "Необязательно" : "Например, повреждено или использовано вне заявки"}" />
     </label>
     <div class="stock-adjust-preview">
       <span>ОСТАТОК ПОСЛЕ ОПЕРАЦИИ</span>
-      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong>
+      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(unit)}</strong>
+      ${incoming ? `<small id="stock-adjust-unit-cost">Себестоимость партии: ${money(Number(item.lastPurchasePrice) || 0)} / ${escapeHtml(unit)}</small>` : ""}
     </div>
     <div class="stock-adjust-actions">
       <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
-      <button type="submit" class="${incoming ? "stock-adjust-confirm incoming" : "stock-adjust-confirm outgoing"}">${incoming ? "Добавить" : "Списать"}</button>
+      <button type="submit" class="${incoming ? "stock-adjust-confirm incoming" : "stock-adjust-confirm outgoing"}">${incoming ? "Сохранить закупку" : "Списать"}</button>
     </div>
   </form>`;
   document.body.appendChild(modal);
 
   const input = modal.querySelector('[name="amount"]');
+  const totalCostInput = modal.querySelector('[name="totalCost"]');
   const result = modal.querySelector("#stock-adjust-result");
+  const unitCostPreview = modal.querySelector("#stock-adjust-unit-cost");
   const updatePreview = () => {
-    const amount = Number(input.value) || 0;
+    const amount = Math.max(0, Number(input.value) || 0);
     const next = incoming ? before + amount : Math.max(0, before - amount);
-    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(next)} ${normalizeStockUnit(item.unit || "шт")}`;
+    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(next)} ${unit}`;
     result.className = !incoming && amount > before ? "red" : "";
+    if (unitCostPreview) {
+      const total = Math.max(0, Number(totalCostInput?.value) || 0);
+      unitCostPreview.textContent = `Себестоимость партии: ${money(amount > 0 ? total / amount : 0)} / ${unit}`;
+    }
   };
   input.addEventListener("input", updatePreview);
+  totalCostInput?.addEventListener("input", updatePreview);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const amount = Number(input.value);
+    const form = new FormData(event.currentTarget);
+    const amount = Number(form.get("amount"));
+    const comment = String(form.get("comment") || "").trim();
     if (!Number.isFinite(amount) || amount <= 0) return toast("Укажи количество");
-    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${normalizeStockUnit(item.unit || "шт")}`);
-    item.quantity = incoming ? physicalBefore + amount : physicalBefore - amount;
-    data.warehouse_movements.push({
-      id: crypto.randomUUID(),
-      warehouseId: item.id,
-      name: item.name,
-      qty: amount,
-      type: incoming ? "manual_in" : "manual_out",
-      date: new Date().toISOString()
-    });
+    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${unit}`);
+    if (!incoming && !comment) return toast("Напиши причину ручного списания");
+
+    const date = new Date().toISOString();
+    const movementId = crypto.randomUUID();
+
+    if (incoming) {
+      const totalCost = Math.max(0, Number(form.get("totalCost")) || 0);
+      const batch = createStockBatch(item, amount, totalCost, { acquiredAt: date, source: "purchase" });
+      item.quantity = physicalBefore + amount;
+      if (Number(batch?.unitCost) > 0) item.lastPurchasePrice = Number(batch.unitCost);
+      data.warehouse_movements.push({
+        id: movementId,
+        warehouseId: item.id,
+        name: item.name,
+        qty: amount,
+        type: "purchase_in",
+        totalCost,
+        unitCost: Number(batch?.unitCost) || 0,
+        batchId: batch?.id || null,
+        comment,
+        date
+      });
+      if (totalCost > 0) {
+        data.expenses.push({
+          id: crypto.randomUUID(),
+          amount: totalCost,
+          category: "Закупка на склад",
+          description: comment ? `${item.name} · ${comment}` : item.name,
+          date,
+          source: "stock_purchase",
+          warehouseId: item.id,
+          movementId
+        });
+      }
+    } else {
+      const consumed = consumeStockBatches(item, amount, null, movementId);
+      if (!consumed.ok) return toast("Не удалось распределить списание по партиям");
+      const batchCost = consumed.allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
+      item.quantity = physicalBefore - amount;
+      data.warehouse_movements.push({
+        id: movementId,
+        warehouseId: item.id,
+        name: item.name,
+        qty: amount,
+        type: "manual_out",
+        batchCost,
+        allocations: consumed.allocations,
+        comment,
+        date
+      });
+    }
+
     await saveData();
     modal.remove();
     await render();
-    toast(incoming ? "Приход сохранён" : "Списание сохранено");
+    toast(incoming ? "Закупка сохранена" : "Списание сохранено");
   });
   updatePreview();
   requestAnimationFrame(() => input.focus());
