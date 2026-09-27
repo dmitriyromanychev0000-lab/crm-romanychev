@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T07:47:40.759Z",
-  "testedSha": "ad11dcf14ea783ea20945471d42706d7f233eaa7",
+  "generatedAt": "2026-09-27T07:51:29.914Z",
+  "testedSha": "d80fc93769c1b4b8eace9d70d38c25210075d929",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -973,5 +973,32 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(7, 12, 16)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 26,
+        "costWidth": 123
+      }
+    },
+    {
+      "width": 390,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(7, 12, 16)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 40,
+        "costWidth": 152
+      }
+    }
+  ]
 }
