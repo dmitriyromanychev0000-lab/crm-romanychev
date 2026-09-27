@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:07:13.914Z",
-  "testedSha": "f1d3a5809e7136abd569babb45b63e5b010cfb89",
+  "generatedAt": "2026-09-27T09:10:16.269Z",
+  "testedSha": "04070e1bd095371cafc1705a8161a11b940fe3fe",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -266,6 +266,24 @@
     },
     {
       "label": "receipt-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "diagnostics-modal",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "confirm-dialog",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -788,6 +806,24 @@
     },
     {
       "label": "receipt-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "diagnostics-modal",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "confirm-dialog",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
