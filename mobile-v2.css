@@ -10602,3 +10602,55 @@
   }
 }
 
+/* 1.0.27 · Акт: глубокая экранная оболочка; печатный A4 остаётся белым и неизменным. */
+@media screen and (max-width: 520px) {
+  .legacy-act-control {
+    border-color: #202d35 !important;
+    background-color: #060b0f !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-control-title > span {
+    border: 1px solid rgba(255,104,74,.24) !important;
+    background: rgba(255,104,74,.08) !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-act-control .field {
+    border-color: #202d35 !important;
+    background-color: #090f14 !important;
+    background-image: none !important;
+    color: #f2f5f6 !important;
+    color-scheme: dark;
+  }
+
+  .legacy-act-control .field:focus {
+    border-color: rgba(255,104,74,.72) !important;
+    background-color: #0b1217 !important;
+    box-shadow: 0 0 0 3px rgba(255,104,74,.08) !important;
+    outline: 0 !important;
+  }
+
+  .legacy-act-control-actions .legacy-dark-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-preview {
+    box-sizing: border-box !important;
+    padding: 6px !important;
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-preview .act-sheet {
+    border-radius: 8px !important;
+    background: #fff !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,.18) !important;
+  }
+}
+

@@ -272,6 +272,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
+      const actScreenSurface = await page.evaluate(() => ({
+        control: getComputedStyle(document.querySelector(".legacy-act-control")).backgroundColor,
+        field: getComputedStyle(document.querySelector(".legacy-act-control .field")).backgroundColor,
+        secondary: getComputedStyle(document.querySelector(".legacy-act-control-actions .legacy-dark-button")).backgroundColor,
+        preview: getComputedStyle(document.querySelector(".legacy-act-preview")).backgroundColor,
+        sheet: getComputedStyle(document.querySelector(".legacy-act-preview .act-sheet")).backgroundColor
+      }));
+      if (actScreenSurface.control !== "rgb(6, 11, 15)"
+        || actScreenSurface.field !== "rgb(9, 15, 20)"
+        || actScreenSurface.secondary !== "rgb(10, 17, 22)"
+        || actScreenSurface.preview !== "rgb(6, 11, 15)"
+        || actScreenSurface.sheet !== "rgb(255, 255, 255)") {
+        report.failures.push({ width, type: "act-screen-surfaces", actScreenSurface });
+      }
       const actPreviewState = await page.evaluate(() => {
         const preview = document.querySelector(".legacy-act-preview");
         const sheet = document.querySelector(".legacy-act-preview .act-sheet");
