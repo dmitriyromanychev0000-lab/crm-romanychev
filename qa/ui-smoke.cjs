@@ -1823,7 +1823,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('.stock-correction-modal [name="comment"]').fill("Контрольный пересчёт");
         report.results.push(await shot(page, width, "stock-correction", false));
         await page.locator('.stock-correction-modal button[type="submit"]').click();
-        await page.waitForTimeout(60);
+        await page.locator(".stock-correction-modal").waitFor({ state: "detached" });
+        await page.waitForTimeout(20);
         const afterCorrection = await readStoredData(page);
         const correctedItem = afterCorrection.warehouse.find((item) => item.id === "w1");
         const correctionMovement = [...afterCorrection.warehouse_movements].reverse().find((item) => item.type === "correction_in" && item.warehouseId === "w1");
