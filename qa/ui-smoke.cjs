@@ -806,22 +806,61 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator(".stock-adjust-actions [data-close-modal]").click();
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "movements" }));
-      const movementSurface = await page.evaluate(() => ({
-        filter: getComputedStyle(document.querySelector(".movement-filter-chips")).backgroundColor,
-        card: getComputedStyle(document.querySelector(".movement-card")).backgroundColor
+      const movementSurface = await page.evaluate(() => {
+        const incoming = document.querySelector(".movement-card.incoming");
+        const outgoing = document.querySelector(".movement-card.outgoing");
+        return {
+          filter: getComputedStyle(document.querySelector(".movement-filter-chips")).backgroundColor,
+          incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
+          outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
+          incomingLabel: incoming?.querySelector(".movement-copy small")?.textContent || "",
+          outgoingLabel: outgoing?.querySelector(".movement-copy small")?.textContent || "",
+          inCount: document.querySelector('[data-movement-filter="in"] span')?.textContent || "",
+          outCount: document.querySelector('[data-movement-filter="out"] span')?.textContent || ""
+        };
+      });
+      if (movementSurface.filter !== "rgb(6, 11, 15)"
+        || movementSurface.incoming !== "rgb(7, 17, 12)"
+        || movementSurface.outgoing !== "rgb(20, 9, 11)"
+        || !movementSurface.incomingLabel.includes("Приход")
+        || !movementSurface.outgoingLabel.includes("Списание")
+        || movementSurface.inCount.trim() !== "1"
+        || movementSurface.outCount.trim() !== "1") {
+        report.failures.push({ width, type: "warehouse-movement-hierarchy", movementSurface });
+      }
+      report.results.push(await shot(page, width, "warehouse-movements", false));
+
+      await page.locator('[data-movement-filter="in"]').click();
+      const incomingFilterState = await page.evaluate(() => ({
+        active: document.querySelector('[data-movement-filter="in"]')?.classList.contains("active") || false,
+        cards: document.querySelectorAll(".movement-card").length,
+        incomingCards: document.querySelectorAll(".movement-card.incoming").length
       }));
-      if (movementSurface.filter !== "rgb(6, 11, 15)" || movementSurface.card !== "rgb(7, 12, 16)") {
-        report.failures.push({ width, type: "warehouse-movements-deep-dark", movementSurface });
+      if (!incomingFilterState.active || incomingFilterState.cards !== 1 || incomingFilterState.incomingCards !== 1) {
+        report.failures.push({ width, type: "warehouse-movement-filter-in", incomingFilterState });
       }
 
-      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
-      const shoppingSurface = await page.evaluate(() => ({
-        summary: getComputedStyle(document.querySelector(".shopping-summary")).backgroundColor,
-        card: getComputedStyle(document.querySelector(".shopping-card")).backgroundColor
-      }));
-      if (shoppingSurface.summary !== "rgb(7, 12, 16)" || shoppingSurface.card !== "rgb(7, 12, 16)") {
-        report.failures.push({ width, type: "warehouse-shopping-deep-dark", shoppingSurface });
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping", warehouseMovementFilter: "all" }));
+      const shoppingSurface = await page.evaluate(() => {
+        const card = document.querySelector(".shopping-card");
+        const need = card?.querySelector(".shopping-need");
+        const needRect = need?.getBoundingClientRect();
+        return {
+          summary: getComputedStyle(document.querySelector(".shopping-summary")).backgroundColor,
+          card: card ? getComputedStyle(card).backgroundColor : "missing",
+          critical: card?.classList.contains("critical") || false,
+          needBackground: need ? getComputedStyle(need).backgroundColor : "missing",
+          needWidth: needRect ? Math.round(needRect.width) : 0
+        };
+      });
+      if (shoppingSurface.summary !== "rgb(16, 13, 6)"
+        || shoppingSurface.card !== "rgb(22, 9, 12)"
+        || !shoppingSurface.critical
+        || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.065)"
+        || shoppingSurface.needWidth < 60) {
+        report.failures.push({ width, type: "warehouse-shopping-hierarchy", shoppingSurface });
       }
+      report.results.push(await shot(page, width, "warehouse-shopping", false));
 
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
       const financePageSurface = await page.evaluate(() => ({

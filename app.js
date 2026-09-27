@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.162";
+const APP_BUILD = "2026.09.27.163";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Деталка склада получила явную визуальную иерархию: остаток, минимум и себестоимость различаются, а Приход / Списать / Архив больше не выглядят одинаковыми серыми кнопками";
+const APP_RELEASE = "История склада различает приход и расход даже для старых записей in/out; движение и список покупок получили более ясную цветовую иерархию и акцент на критических остатках";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1912,12 +1912,14 @@ async function copyTextToClipboard(text, successMessage = "Скопирован�
 function warehouseMovementsPage() {
   const movementLabels = {
     initial: "Начальный остаток",
+    in: "Приход",
+    out: "Списание",
     manual_in: "Приход",
     manual_out: "Ручное списание",
     order_out: "Списано в заявку",
     order_return: "Возврат из заявки"
   };
-  const incomingTypes = new Set(["initial", "manual_in", "order_return"]);
+  const incomingTypes = new Set(["initial", "in", "manual_in", "order_return"]);
   const source = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   const movements = source.filter((movement) => {
@@ -1946,7 +1948,7 @@ function warehouseMovementsPage() {
         const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
         const incoming = incomingTypes.has(movement.type);
         const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
-        return `<article class="movement-card">
+        return `<article class="movement-card ${incoming ? "incoming" : "outgoing"}">
           <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
           <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
           <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
@@ -1977,7 +1979,7 @@ function shoppingPage(backAction = "more-menu") {
     <div class="shopping-page-actions"><button type="button" class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button type="button" class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
     ${items.length ? `<div class="shopping-list">${items.map((item) => {
       const need = Math.max(0, Number(item.min || 0) - Number(item.quantity || 0));
-      return `<article class="shopping-card legacy-shopping-card"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · осталось ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
+      return `<article class="shopping-card legacy-shopping-card ${Number(item.quantity || 0) <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · осталось ${escapeHtml(item.quantity || 0)} ${escapeHtml(item.unit || "шт.")}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${need > 0 ? `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(item.unit || "шт.")}` : "проверить"}</strong></div></article>`;
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
@@ -3026,6 +3028,8 @@ function stockDetailModal(item) {
     .slice(0, 5);
   const movementLabels = {
     initial: "Начальный остаток",
+    in: "Приход",
+    out: "Списание",
     manual_in: "Приход",
     manual_out: "Списание",
     order_out: "В заявку",
@@ -3058,7 +3062,7 @@ function stockDetailModal(item) {
       <section class="stock-detail-history">
         <h3>Последние движения</h3>
         ${movements.length ? movements.map((movement) => {
-          const incoming = ["initial","manual_in","order_return"].includes(movement.type);
+          const incoming = ["initial","in","manual_in","order_return"].includes(movement.type);
           return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item.unit || "шт.")}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}</small></p></div>`;
         }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
       </section>
