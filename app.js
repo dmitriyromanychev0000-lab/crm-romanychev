@@ -71,7 +71,7 @@ let orderFilter = ["all", "closed", "active", "declined", "archived"].includes(i
 let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(initialUiState.orderVisitFilter)) ? String(initialUiState.orderVisitFilter) : "all";
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
-let warehouseFilter = ["active", "low", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
+let warehouseFilter = ["active", "out", "reserved", "low", "archived", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
 let warehouseSection = ["list", "movements", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "list";
 let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiState.warehouseMovementFilter)) ? String(initialUiState.warehouseMovementFilter) : "all";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -1502,15 +1502,21 @@ function warehousePage() {
   const query = warehouseSearch.trim().toLowerCase();
   const activeItems = [...data.warehouse].filter((item) => !item.archived);
   const inStockItems = activeItems.filter((item) => stockAvailableQuantity(item) > 0);
+  const outItems = activeItems.filter((item) => stockAvailableQuantity(item) <= 0);
   const reservedItems = activeItems.filter((item) => stockReservedQuantity(item.id) > 0);
   const lowItems = activeItems.filter((item) => Number(item.min || 0) > 0 && stockAvailableQuantity(item) <= Number(item.min || 0));
+  const archivedItems = [...data.warehouse].filter((item) => item.archived);
   const sourceItems = warehouseFilter === "low"
     ? lowItems
     : warehouseFilter === "reserved"
       ? reservedItems
-      : warehouseFilter === "all"
-        ? [...data.warehouse]
-        : inStockItems;
+      : warehouseFilter === "out"
+        ? outItems
+        : warehouseFilter === "archived"
+          ? archivedItems
+          : warehouseFilter === "all"
+            ? [...data.warehouse]
+            : inStockItems;
   const items = sourceItems.filter((item) => {
     const compatibility = Array.isArray(item.compatibility) ? item.compatibility.join(" ") : item.compatibility || "";
     const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
@@ -1539,8 +1545,10 @@ function warehousePage() {
     <div class="legacy-warehouse-filter">
       <select class="field" id="warehouse-filter-select" aria-label="Фильтр склада">
         <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>В наличии</option>
+        <option value="out" ${warehouseFilter === "out" ? "selected" : ""}>Закончились</option>
         <option value="reserved" ${warehouseFilter === "reserved" ? "selected" : ""}>В резерве</option>
         <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось</option>
+        <option value="archived" ${warehouseFilter === "archived" ? "selected" : ""}>Архивные</option>
         <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
       </select>
       <span>${icon("chevron")}</span>
@@ -2898,10 +2906,12 @@ function warehouseMovementsPage() {
     manual_in: "Приход",
     purchase_in: "Закупка",
     manual_out: "Ручное списание",
+    correction_in: "Корректировка +",
+    correction_out: "Корректировка −",
     order_out: "Списано в заявку",
     order_return: "Возврат из заявки"
   };
-  const incomingTypes = new Set(["initial", "in", "manual_in", "purchase_in", "order_return"]);
+  const incomingTypes = new Set(["initial", "in", "manual_in", "purchase_in", "correction_in", "order_return"]);
   const source = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   const movements = source.filter((movement) => {
@@ -4449,6 +4459,8 @@ function stockDetailModal(item) {
     manual_in: "Приход",
     purchase_in: "Закупка",
     manual_out: "Списание",
+    correction_in: "Корректировка +",
+    correction_out: "Корректировка −",
     order_out: "В заявку",
     order_return: "Возврат"
   };
@@ -4478,12 +4490,13 @@ function stockDetailModal(item) {
       <div class="stock-detail-actions">
         <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
         <button type="button" class="outgoing" data-stock-detail-action="out"><span class="stock-action-icon">${icon("minus")}</span><span><b>Списать</b><small>Уменьшить остаток</small></span></button>
+        <button type="button" class="stock-detail-correct" data-stock-detail-action="correct">${icon("edit")}<span><b>Корректировать остаток</b><small>Указать фактическое количество с причиной</small></span></button>
         <button type="button" class="stock-detail-archive" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть из архива" : "Переместить в архив"}</b></button>
       </div>
       <section class="stock-detail-history">
         <h3>Последние движения</h3>
         ${movements.length ? movements.map((movement) => {
-          const incoming = ["initial","in","manual_in","purchase_in","order_return"].includes(movement.type);
+          const incoming = ["initial","in","manual_in","purchase_in","correction_in","order_return"].includes(movement.type);
           return `<div class="stock-detail-movement"><span class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</span><p><strong>${movementLabels[movement.type] || "Движение"}</strong><small>${shortDate(movement.date)}${movement.orderId ? ` · заявка №${escapeHtml(movement.orderId)}` : ""}${movement.totalCost ? ` · ${money(movement.totalCost)}` : ""}${movement.comment ? ` · ${escapeHtml(movement.comment)}` : ""}</small></p></div>`;
         }).join("") : `<p class="detail-empty">Движений пока нет</p>`}
       </section>
@@ -4498,6 +4511,7 @@ function stockDetailModal(item) {
     close();
     if (action === "edit") return stockModal(item);
     if (action === "in" || action === "out") return adjustStock(item.id, action);
+    if (action === "correct") return correctStock(item.id);
     if (action === "archive") {
       item.archived = !item.archived;
       await saveData();
@@ -4505,6 +4519,93 @@ function stockDetailModal(item) {
       return toast(item.archived ? "Позиция перемещена в архив" : "Позиция возвращена на склад");
     }
   }));
+}
+
+async function correctStock(id) {
+  const item = data.warehouse.find((entry) => String(entry.id) === String(id));
+  if (!item) return;
+
+  const unit = normalizeStockUnit(item.unit || "шт");
+  const physicalBefore = Math.max(0, Number(item.quantity) || 0);
+  const reserved = stockReservedQuantity(item.id);
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop stock-correction-backdrop";
+  modal.innerHTML = `<form class="modal stock-adjust-modal stock-correction-modal" id="stock-correction-form">
+    <div class="stock-adjust-head">
+      <span class="stock-adjust-icon correction">${icon("edit")}</span>
+      <div><strong>Корректировка остатка</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="stock-correction-before">
+      <span><small>БЫЛО</small><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(physicalBefore)} ${escapeHtml(unit)}</strong></span>
+      <span><small>В РЕЗЕРВЕ</small><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reserved)} ${escapeHtml(unit)}</strong></span>
+    </div>
+    <label class="stock-adjust-field"><span>ФАКТИЧЕСКИЙ ОСТАТОК</span><input class="field" name="quantity" type="number" min="${reserved}" step="0.001" value="${physicalBefore}" required inputmode="decimal" autofocus /></label>
+    <label class="stock-adjust-field"><span>ПРИЧИНА *</span><input class="field" name="comment" required placeholder="Например, пересчитал склад" /></label>
+    <div class="stock-adjust-preview"><span>ИЗМЕНЕНИЕ</span><strong id="stock-correction-diff">0 ${escapeHtml(unit)}</strong><small>Резерв активных заявок уменьшать нельзя.</small></div>
+    <div class="stock-adjust-actions"><button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="stock-adjust-confirm incoming">Сохранить корректировку</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+
+  const quantityInput = modal.querySelector('[name="quantity"]');
+  const diffOutput = modal.querySelector("#stock-correction-diff");
+  const update = () => {
+    const next = Math.max(0, Number(quantityInput.value) || 0);
+    const diff = next - physicalBefore;
+    diffOutput.textContent = `${diff > 0 ? "+" : ""}${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(diff)} ${unit}`;
+    diffOutput.className = diff > 0 ? "green" : diff < 0 ? "red" : "";
+  };
+  quantityInput.addEventListener("input", update);
+  const close = () => modal.remove();
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", close));
+  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
+  modal.querySelector("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const next = Math.max(0, Number(form.get("quantity")) || 0);
+    const comment = String(form.get("comment") || "").trim();
+    if (!comment) return toast("Напиши причину корректировки");
+    if (next + 1e-9 < reserved) return toast(`Нельзя поставить меньше резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reserved)} ${unit}`);
+    const delta = next - physicalBefore;
+    if (Math.abs(delta) <= 1e-9) return toast("Остаток не изменился");
+
+    const movementId = crypto.randomUUID();
+    const date = new Date().toISOString();
+    let allocations = [];
+    let batchCost = 0;
+    if (delta > 0) {
+      const unitCost = Math.max(0, Number(item.lastPurchasePrice) || 0);
+      const batch = createStockBatch(item, delta, delta * unitCost, { acquiredAt: date, unitCost, totalCost: delta * unitCost, source: "correction" });
+      allocations = batch ? [{ batchId: batch.id, qty: delta, unitCost: Number(batch.unitCost) || 0 }] : [];
+      batchCost = delta * unitCost;
+    } else {
+      const consumed = consumeStockBatches(item, Math.abs(delta), null, movementId);
+      if (!consumed.ok) return toast("Не удалось распределить корректировку по партиям");
+      allocations = consumed.allocations;
+      batchCost = allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
+    }
+    item.quantity = next;
+    data.warehouse_movements.push({
+      id: movementId,
+      warehouseId: item.id,
+      name: item.name,
+      qty: Math.abs(delta),
+      type: delta > 0 ? "correction_in" : "correction_out",
+      before: physicalBefore,
+      after: next,
+      difference: delta,
+      batchCost,
+      allocations,
+      comment,
+      date
+    });
+    await saveData();
+    close();
+    await render();
+    toast("Остаток скорректирован");
+  });
+  update();
+  requestAnimationFrame(() => quantityInput.focus());
 }
 
 function stockModal(existing = null) {
