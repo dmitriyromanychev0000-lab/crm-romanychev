@@ -1694,11 +1694,6 @@ function settingsPage() {
         <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
         <label><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
       </div>
-      <label class="legacy-settings-toggle-row">
-        <input type="checkbox" name="catalogApplyWithoutFit" ${settings.catalogApplyWithoutFit ? "checked" : ""} />
-        <span class="settings-checkbox"></span>
-        <span><strong>Применять услуги без подгонки</strong><small>Оставлять цену прайса без автоматического изменения под сумму заявки</small></span>
-      </label>
       <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>
 
@@ -2073,13 +2068,53 @@ async function render() {
   app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
 }
 
-const orderServiceRow = (item = {}) => `<div class="line-item legacy-service-row" data-service-row>
-  <span class="service-check">${icon("check")}</span>
-  <input class="field service-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название услуги" />
-  <input class="field compact service-qty-field" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
-  <div class="service-price-field"><input class="field compact" data-line="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" aria-label="Цена" /><span>₽</span></div>
-  <button type="button" class="remove-line service-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
-</div>`;
+const orderServiceRow = (item = {}) => {
+  const price = Number(item.price) || 0;
+  const basePrice = Number(item.basePrice ?? item.catalogPrice ?? item.price) || 0;
+  return `<div class="line-item legacy-service-row" data-service-row data-base-price="${basePrice}">
+    <span class="service-check">${icon("check")}</span>
+    <input class="field service-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Название услуги" />
+    <input class="field compact service-qty-field" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" aria-label="Количество" />
+    <div class="service-price-field"><input class="field compact" data-line="price" type="number" min="0" step="0.01" value="${price}" aria-label="Цена, рассчитывается автоматически" readonly title="Цена автоматически подгоняется под итоговую сумму заявки" /><span>₽</span></div>
+    <button type="button" class="remove-line service-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
+  </div>`;
+};
+
+function fitServiceRowsToTarget(orderModal, targetValue) {
+  const rows = [...orderModal.querySelectorAll("[data-service-row]")];
+  const target = Math.max(0, Number(targetValue) || 0);
+  if (!rows.length || target <= 0) return false;
+
+  const source = rows.map((row) => {
+    const qty = Math.max(0.01, Number(row.querySelector('[data-line="qty"]')?.value) || 1);
+    const currentPrice = Math.max(0, Number(row.querySelector('[data-line="price"]')?.value) || 0);
+    const basePrice = Math.max(0, Number(row.dataset.basePrice) || currentPrice);
+    if (!(Number(row.dataset.basePrice) > 0) && basePrice > 0) row.dataset.basePrice = String(basePrice);
+    return { row, qty, basePrice, baseTotal: basePrice * qty };
+  });
+
+  const baseTotal = source.reduce((sum, item) => sum + item.baseTotal, 0);
+  const rawTotals = source.map((item) => baseTotal > 0
+    ? target * item.baseTotal / baseTotal
+    : target / source.length);
+  const roundedTotals = rawTotals.map((value) => Math.max(0, Math.round(value / 10) * 10));
+  const assigned = roundedTotals.reduce((sum, value) => sum + value, 0);
+  const remainder = target - assigned;
+
+  let mostExpensiveIndex = 0;
+  rawTotals.forEach((value, index) => {
+    if (value > rawTotals[mostExpensiveIndex]) mostExpensiveIndex = index;
+  });
+  roundedTotals[mostExpensiveIndex] = Math.max(0, roundedTotals[mostExpensiveIndex] + remainder);
+
+  source.forEach((item, index) => {
+    const priceInput = item.row.querySelector('[data-line="price"]');
+    if (!priceInput) return;
+    const unitPrice = roundedTotals[index] / item.qty;
+    priceInput.value = Number.isInteger(unitPrice) ? String(unitPrice) : String(Number(unitPrice.toFixed(2)));
+  });
+  return true;
+}
 
 const orderMaterialRow = (item = {}) => `<div class="line-item material-line legacy-material-card" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
   <div class="material-card-head">
@@ -2209,7 +2244,8 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   const currentRows = [...orderModal.querySelectorAll("[data-service-row]")].map((row) => ({
     name: row.querySelector('[data-line="name"]').value.trim(),
     qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
-    price: Number(row.querySelector('[data-line="price"]').value) || 0
+    price: Number(row.querySelector('[data-line="price"]').value) || 0,
+    basePrice: Number(row.dataset.basePrice) || Number(row.querySelector('[data-line="price"]').value) || 0
   })).filter((item) => item.name);
   const currentByName = new Map(currentRows.map((item) => [item.name.toLowerCase(), item]));
   const catalogNames = new Set(serviceCatalog.map((item) => String(item.name || "").trim().toLowerCase()).filter(Boolean));
@@ -2218,7 +2254,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
 
   serviceCatalog.forEach((item, index) => {
     const existing = currentByName.get(String(item.name || "").trim().toLowerCase());
-    if (existing) selected.set(index, { ...item, name: existing.name, qty: existing.qty, price: existing.price });
+    if (existing) selected.set(index, { ...item, name: existing.name, qty: existing.qty, price: existing.price, basePrice: existing.basePrice || Number(item.price) || 0 });
   });
 
   const modal = document.createElement("div");
@@ -2290,35 +2326,13 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     updateSummary();
   };
 
-  const applySelection = (fitToTarget) => {
+  const applySelection = () => {
     const chosen = [...selected.values()].map((item) => ({
       name: item.name || "Услуга",
       qty: Number(item.qty) || 1,
-      price: Number(item.price) || 0,
-      basePrice: Number(item.price) || 0
+      price: Number(item.price) || Number(item.basePrice) || 0,
+      basePrice: Number(item.basePrice ?? item.price) || 0
     }));
-
-    if (fitToTarget && target > 0 && chosen.length) {
-      const total = chosen.reduce((sum, item) => sum + item.qty * item.price, 0);
-      if (total > 0) {
-        let assigned = 0;
-        chosen.forEach((item, index) => {
-          if (index === chosen.length - 1) {
-            item.price = Math.max(0, (target - assigned) / item.qty);
-          } else {
-            item.price = Math.max(0, Math.round((item.price * target / total)));
-            assigned += item.price * item.qty;
-          }
-        });
-      } else {
-        const each = target / chosen.length;
-        chosen.forEach((item, index) => {
-          item.price = index === chosen.length - 1
-            ? Math.max(0, target - each * (chosen.length - 1))
-            : Math.max(0, Math.round(each));
-        });
-      }
-    }
 
     const rows = [...customRows, ...chosen];
     orderModal.querySelector("#service-lines").innerHTML = rows.map(orderServiceRow).join("");
@@ -2336,7 +2350,9 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     if (!item) return;
     if (checkbox.checked) {
       const existing = currentByName.get(String(item.name || "").trim().toLowerCase());
-      selected.set(index, existing ? { ...item, ...existing } : { ...item, qty: 1, price: Number(item.price) || 0 });
+      selected.set(index, existing
+        ? { ...item, ...existing, basePrice: Number(existing.basePrice) || Number(item.price) || 0 }
+        : { ...item, qty: 1, price: Number(item.price) || 0, basePrice: Number(item.price) || 0 });
     } else {
       selected.delete(index);
     }
@@ -2344,9 +2360,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   });
   modal.querySelector(".catalog-close").addEventListener("click", closeCatalog);
   modal.querySelector(".catalog-cancel").addEventListener("click", closeCatalog);
-  modal.querySelector("#catalog-apply").addEventListener("click", () => {
-    applySelection(!Boolean(data.settings?.catalogApplyWithoutFit));
-  });
+  modal.querySelector("#catalog-apply").addEventListener("click", applySelection);
   modal.addEventListener("click", (event) => { if (event.target === modal) closeCatalog(); });
   renderCatalog();
 }
@@ -2630,13 +2644,17 @@ function newOrderModal(existing = null, options = {}) {
   const calculateLines = () => {
     const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
     const materialTotal = [...modal.querySelectorAll("[data-material-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="unit-cost"]').value) || 0), 0);
-    const total = serviceTotal + materialTotal;
     modal.querySelector("#service-total").textContent = money(serviceTotal);
     modal.querySelector("#material-total").textContent = money(materialTotal);
-    modal.querySelector("#calculated-total").textContent = money(total);
+    modal.querySelector("#calculated-total").textContent = money(serviceTotal);
     const legacyServiceTotal = modal.querySelector("#legacy-service-total");
     if (legacyServiceTotal) legacyServiceTotal.textContent = money(serviceTotal);
-    return total;
+    return serviceTotal;
+  };
+  const refitServices = () => {
+    const target = Number(formElement.elements.sum.value) || 0;
+    if (target > 0) fitServiceRowsToTarget(modal, target);
+    return calculateLines();
   };
   modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
   modal.querySelector("#open-material-catalog").addEventListener("click", () => openMaterialCatalog(modal));
@@ -2646,14 +2664,27 @@ function newOrderModal(existing = null, options = {}) {
   });
   modal.addEventListener("click", (event) => {
     if (event.target.closest("[data-remove-line]")) {
+      const removedService = Boolean(event.target.closest("[data-service-row]"));
       event.target.closest(".line-item").remove();
-      calculateLines();
+      if (removedService) refitServices(); else calculateLines();
     }
   });
   modal.addEventListener("input", (event) => {
-    if (event.target.closest(".line-item") || event.target.name === "sum") calculateLines();
+    if (event.target.name === "sum" || event.target.closest("[data-service-row]")) {
+      refitServices();
+      return;
+    }
+    if (event.target.closest("[data-material-row]")) calculateLines();
   });
-  modal.querySelector("#use-calculated-total").addEventListener("click", () => { formElement.elements.sum.value = calculateLines(); });
+  modal.querySelector("#use-calculated-total").addEventListener("click", () => {
+    const baseTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => {
+      const qty = Number(row.querySelector('[data-line="qty"]').value) || 0;
+      const basePrice = Number(row.dataset.basePrice) || Number(row.querySelector('[data-line="price"]').value) || 0;
+      return sum + qty * basePrice;
+    }, 0);
+    formElement.elements.sum.value = baseTotal;
+    formElement.elements.sum.dispatchEvent(new Event("input", { bubbles: true }));
+  });
   calculateLines();
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
@@ -2690,7 +2721,7 @@ function newOrderModal(existing = null, options = {}) {
         name: row.querySelector('[data-line="name"]').value,
         qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
         price: Number(row.querySelector('[data-line="price"]').value) || 0,
-        basePrice: Number(row.querySelector('[data-line="price"]').value) || 0
+        basePrice: Number(row.dataset.basePrice) || Number(row.querySelector('[data-line="price"]').value) || 0
       })).filter((item) => item.name.trim()),
       materials: [...modal.querySelectorAll("[data-material-row]")].map((row) => ({
         warehouseId: row.dataset.warehouseId || null,
@@ -4121,8 +4152,7 @@ app.addEventListener("submit", async (event) => {
     name: form.get("name"),
     phone: normalizedSettingsPhone,
     companyAddress: form.get("companyAddress"),
-    inn: form.get("inn"),
-    catalogApplyWithoutFit: form.get("catalogApplyWithoutFit") === "on"
+    inn: form.get("inn")
   };
   await saveData();
   toast("Настройки сохранены");
