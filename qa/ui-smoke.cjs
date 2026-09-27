@@ -310,6 +310,105 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await writeSeed(page);
       await setState(page, uiState({ activePage: "orders" }));
+
+      await page.locator('[data-action="new-order"]').first().click();
+      await page.waitForTimeout(60);
+      const sourceVisitFields = await page.evaluate(() => ({
+        sourceOptions: document.querySelectorAll('.order-editor-modal [name="sourceId"] option').length,
+        hasVisitDate: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDate"]')),
+        hasVisitTime: Boolean(document.querySelector('.order-editor-modal [name="nextVisitTime"]')),
+        hasVisitDuration: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDuration"]'))
+      }));
+      if (sourceVisitFields.sourceOptions < 3 || !sourceVisitFields.hasVisitDate || !sourceVisitFields.hasVisitTime || !sourceVisitFields.hasVisitDuration) {
+        report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
+      }
+
+      await page.locator('.order-editor-modal [name="phone"]').fill("+79991234567");
+      await page.locator('.order-editor-modal [name="phone"]').blur();
+      await page.waitForTimeout(40);
+      const recalledClient = await page.evaluate(() => ({
+        name: document.querySelector('.order-editor-modal [name="name"]')?.value || "",
+        address: document.querySelector('.order-editor-modal [name="address"]')?.value || "",
+        hint: document.querySelector(".client-match-card")?.innerText || ""
+      }));
+      if (recalledClient.name !== "Анна Смирнова"
+        || !recalledClient.address.includes("Испытателей")
+        || !recalledClient.hint.includes("Клиент найден")) {
+        report.failures.push({ width, type: "client-phone-recall", recalledClient });
+      }
+
+      await page.locator('.order-editor-modal [name="sourceId"]').selectOption("source-avito");
+      await page.locator('.order-editor-modal [name="nextVisitDate"]').fill("2030-01-02");
+      await page.locator('.order-editor-modal [name="nextVisitTime"]').fill("14:30");
+      await page.locator('.order-editor-modal [name="nextVisitDuration"]').selectOption("90");
+      await page.locator('.order-editor-modal button[type="submit"]').click();
+      await page.waitForTimeout(80);
+
+      const savedSourceVisit = await readStoredData(page);
+      const created = [...savedSourceVisit.orders].reverse().find((item) => item.phone === "+79991234567" && item.nextVisitDate === "2030-01-02");
+      const profile = savedSourceVisit.client_profiles?.find((item) => item.phone === "+79991234567");
+      if (!created
+        || created.sourceId !== "source-avito"
+        || created.nextVisitTime !== "14:30"
+        || Number(created.nextVisitDuration) !== 90
+        || !profile
+        || !String(profile.lastAddress || "").includes("Испытателей")) {
+        report.failures.push({
+          width,
+          type: "order-source-visit-persist",
+          created: created ? {
+            sourceId: created.sourceId,
+            nextVisitDate: created.nextVisitDate,
+            nextVisitTime: created.nextVisitTime,
+            nextVisitDuration: created.nextVisitDuration
+          } : null,
+          profile
+        });
+      }
+
+      const nearestVisitState = await page.evaluate(() => ({
+        rows: document.querySelectorAll(".legacy-nearest-visits-list .legacy-nearest-line").length,
+        text: document.querySelector(".legacy-nearest-visit")?.innerText || ""
+      }));
+      if (nearestVisitState.rows < 1 || !nearestVisitState.text.includes("02.01.2030")) {
+        report.failures.push({ width, type: "nearest-visits-three-slot", nearestVisitState });
+      }
+
+      await writeSeed(page);
+      await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
+      await page.locator('[data-action="manage-order-sources"]').click();
+      await page.waitForTimeout(40);
+      const sourceManagerInitial = await page.evaluate(() => ({
+        modal: document.querySelectorAll(".source-manager-modal").length,
+        rows: document.querySelectorAll(".source-manager-row").length,
+        locked: document.body.classList.contains("modal-open")
+      }));
+      if (sourceManagerInitial.modal !== 1 || sourceManagerInitial.rows < 2 || !sourceManagerInitial.locked) {
+        report.failures.push({ width, type: "source-manager-open", sourceManagerInitial });
+      }
+      await page.locator("#new-source-name").fill("Сайт");
+      await page.locator("#add-order-source").click();
+      await page.waitForTimeout(40);
+      const sourceManagerAdded = await page.evaluate(() => ({
+        rows: document.querySelectorAll(".source-manager-row").length,
+        names: [...document.querySelectorAll("[data-source-name]")].map((input) => input.value)
+      }));
+      if (sourceManagerAdded.rows < 3 || !sourceManagerAdded.names.includes("Сайт")) {
+        report.failures.push({ width, type: "source-manager-add", sourceManagerAdded });
+      }
+      report.results.push(await shot(page, width, "source-manager", false));
+      await page.locator(".source-manager-head [data-close-modal]").click();
+      await page.waitForTimeout(30);
+      const sourceManagerClosed = await page.evaluate(() => ({
+        modal: document.querySelectorAll(".source-manager-modal").length,
+        locked: document.body.classList.contains("modal-open")
+      }));
+      if (sourceManagerClosed.modal !== 0 || sourceManagerClosed.locked) {
+        report.failures.push({ width, type: "source-manager-close", sourceManagerClosed });
+      }
+
+      await writeSeed(page);
+      await setState(page, uiState({ activePage: "orders" }));
     }
 
     const shellSurface = await page.evaluate(() => {
