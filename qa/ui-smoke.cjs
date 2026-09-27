@@ -335,6 +335,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (materialRowState.rows !== 1 || materialRowState.removeWidth < 44 || materialRowState.removeHeight < 44) {
         report.failures.push({ width, type: "material-row-actions", materialRowState });
       }
+      const editorSurfaceState = await page.evaluate(() => ({
+        material: getComputedStyle(document.querySelector("#material-lines [data-material-row]")).backgroundColor,
+        materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
+        secondaryAction: getComputedStyle(document.querySelector(".order-editor-modal .modal-actions .secondary-button")).backgroundColor
+      }));
+      if (editorSurfaceState.material !== "rgb(7, 12, 16)"
+        || editorSurfaceState.materialField !== "rgb(9, 15, 20)"
+        || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)") {
+        report.failures.push({ width, type: "order-editor-deep-dark-surfaces", editorSurfaceState });
+      }
       await page.locator("#material-lines [data-remove-line]").first().click();
       if (await page.locator("#material-lines [data-material-row]").count() !== 0) {
         report.failures.push({ width, type: "material-row-remove" });
