@@ -7,7 +7,7 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.172";
+const APP_BUILD = "2026.09.27.173";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Типы техники и категории прайса стали настраиваемыми, а каталог услуг теперь зависит от выбранной техники";
 const BACKUP_FORMAT_VERSION = 18;
@@ -6682,12 +6682,19 @@ fileInput.addEventListener("change", async () => {
 async function start() {
   try {
     const stored = await dbGet(DATA_KEY);
-    if (stored) data = validateBackup(stored);
-    let migrated = ensureDataIds();
-    if (migrateStockReservationModel()) migrated = true;
-    if (migrateStockBatchModel()) migrated = true;
-    if (migrateStockLocationModel()) migrated = true;
-    if (migrated) await saveData();
+    if (stored) {
+      data = validateBackup(stored);
+      let migrated = ensureDataIds();
+      if (migrateStockReservationModel()) migrated = true;
+      if (migrateStockBatchModel()) migrated = true;
+      if (migrateStockLocationModel()) migrated = true;
+      if (migrated) await saveData();
+    } else {
+      ensureDataIds();
+      migrateStockReservationModel();
+      migrateStockBatchModel();
+      migrateStockLocationModel();
+    }
   } catch (error) {
     console.error("Не удалось прочитать локальную базу", error);
     toast("Не удалось открыть локальную базу");
