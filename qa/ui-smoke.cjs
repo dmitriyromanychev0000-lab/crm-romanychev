@@ -515,15 +515,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const field = document.querySelector(".finance-entry-modal .field");
         const footer = document.querySelector(".finance-entry-modal .modal-actions");
         const footerRect = footer?.getBoundingClientRect();
+        const close = document.querySelector(".finance-entry-close");
+        const closeRect = close?.getBoundingClientRect();
+        const action = footer?.querySelector("button");
+        const actionRect = action?.getBoundingClientRect();
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
           field: field ? getComputedStyle(field).backgroundColor : "missing",
+          fieldFont: field ? getComputedStyle(field).fontSize : "missing",
+          closeWidth: closeRect ? Math.round(closeRect.width) : 0,
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0,
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0,
           footerBottom: footerRect ? Math.round(footerRect.bottom) : 0,
           viewportHeight: window.innerHeight
         };
       });
       if (financeEditorState.modal !== "rgb(3, 7, 10)"
         || financeEditorState.field !== "rgb(9, 15, 20)"
+        || parseFloat(financeEditorState.fieldFont) < 13.5
+        || financeEditorState.closeWidth < 44
+        || financeEditorState.closeHeight < 44
+        || financeEditorState.actionHeight < 48
         || financeEditorState.footerBottom < financeEditorState.viewportHeight - 24) {
         report.failures.push({ width, type: "finance-editor-layout", financeEditorState });
       }
@@ -534,14 +546,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const pricePageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor);
       if (pricePageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
       await page.locator('[data-action="new-price"]').click();
-      const priceEditorState = await page.evaluate(() => ({
-        card: getComputedStyle(document.querySelector(".legacy-price-editor-card")).backgroundColor,
-        field: getComputedStyle(document.querySelector(".legacy-price-editor .field")).backgroundColor,
-        secondary: getComputedStyle(document.querySelector(".legacy-price-editor-actions .legacy-dark-button")).backgroundColor
-      }));
+      const priceEditorState = await page.evaluate(() => {
+        const back = document.querySelector(".legacy-price-editor .legacy-back-button");
+        const backRect = back?.getBoundingClientRect();
+        const action = document.querySelector(".legacy-price-editor-actions button");
+        const actionRect = action?.getBoundingClientRect();
+        const field = document.querySelector(".legacy-price-editor .field");
+        return {
+          card: getComputedStyle(document.querySelector(".legacy-price-editor-card")).backgroundColor,
+          field: getComputedStyle(field).backgroundColor,
+          fieldFont: getComputedStyle(field).fontSize,
+          secondary: getComputedStyle(document.querySelector(".legacy-price-editor-actions .legacy-dark-button")).backgroundColor,
+          backWidth: backRect ? Math.round(backRect.width) : 0,
+          backHeight: backRect ? Math.round(backRect.height) : 0,
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0
+        };
+      });
       if (priceEditorState.card !== "rgb(6, 11, 15)"
         || priceEditorState.field !== "rgb(9, 15, 20)"
-        || priceEditorState.secondary !== "rgb(10, 17, 22)") {
+        || parseFloat(priceEditorState.fieldFont) < 13.5
+        || priceEditorState.secondary !== "rgb(10, 17, 22)"
+        || priceEditorState.backWidth < 44
+        || priceEditorState.backHeight < 44
+        || priceEditorState.actionHeight < 48) {
         report.failures.push({ width, type: "price-editor-deep-dark", priceEditorState });
       }
       report.results.push(await shot(page, width, "price-editor", false));
@@ -572,14 +599,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const goodsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-goods-panel")).backgroundColor);
       if (goodsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "goods-deep-dark-page", goodsPageSurface });
       await page.locator('[data-action="new-goods-sheet"]').click();
-      const goodsEditorState = await page.evaluate(() => ({
-        modal: getComputedStyle(document.querySelector(".legacy-goods-editor")).backgroundColor,
-        panel: getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).backgroundColor,
-        field: getComputedStyle(document.querySelector(".legacy-goods-editor .field")).backgroundColor
-      }));
+      const goodsEditorState = await page.evaluate(() => {
+        const field = document.querySelector(".legacy-goods-editor .field");
+        const back = document.querySelector(".legacy-goods-editor .legacy-back-button");
+        const backRect = back?.getBoundingClientRect();
+        const action = document.querySelector(".legacy-goods-savebar button");
+        const actionRect = action?.getBoundingClientRect();
+        return {
+          modal: getComputedStyle(document.querySelector(".legacy-goods-editor")).backgroundColor,
+          panel: getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).backgroundColor,
+          field: getComputedStyle(field).backgroundColor,
+          fieldFont: getComputedStyle(field).fontSize,
+          backWidth: backRect ? Math.round(backRect.width) : 0,
+          backHeight: backRect ? Math.round(backRect.height) : 0,
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0
+        };
+      });
       if (goodsEditorState.modal !== "rgb(3, 7, 10)"
         || goodsEditorState.panel !== "rgb(6, 11, 15)"
-        || goodsEditorState.field !== "rgb(9, 15, 20)") {
+        || goodsEditorState.field !== "rgb(9, 15, 20)"
+        || parseFloat(goodsEditorState.fieldFont) < 13.5
+        || goodsEditorState.backWidth < 44
+        || goodsEditorState.backHeight < 44
+        || goodsEditorState.actionHeight < 48) {
         report.failures.push({ width, type: "goods-editor-deep-dark", goodsEditorState });
       }
       report.results.push(await shot(page, width, "goods-editor", false));
@@ -592,15 +634,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const toolEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".tool-editor-modal .modal-actions");
         const rect = footer?.getBoundingClientRect();
+        const field = document.querySelector(".tool-editor-modal .field");
+        const close = document.querySelector(".tool-editor-close");
+        const closeRect = close?.getBoundingClientRect();
+        const action = footer?.querySelector("button");
+        const actionRect = action?.getBoundingClientRect();
         return {
           modal: getComputedStyle(document.querySelector(".tool-editor-modal")).backgroundColor,
-          field: getComputedStyle(document.querySelector(".tool-editor-modal .field")).backgroundColor,
+          field: getComputedStyle(field).backgroundColor,
+          fieldFont: getComputedStyle(field).fontSize,
+          closeWidth: closeRect ? Math.round(closeRect.width) : 0,
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0,
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0,
           footerBottom: rect ? Math.round(rect.bottom) : 0,
           viewportHeight: window.innerHeight
         };
       });
       if (toolEditorState.modal !== "rgb(3, 7, 10)"
         || toolEditorState.field !== "rgb(9, 15, 20)"
+        || parseFloat(toolEditorState.fieldFont) < 13.5
+        || toolEditorState.closeWidth < 44
+        || toolEditorState.closeHeight < 44
+        || toolEditorState.actionHeight < 48
         || toolEditorState.footerBottom < toolEditorState.viewportHeight - 2) {
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
       }
@@ -614,15 +669,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const receiptEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".receipt-editor-modal .modal-actions");
         const rect = footer?.getBoundingClientRect();
+        const field = document.querySelector(".receipt-editor-modal .field");
+        const close = document.querySelector(".receipt-editor-close");
+        const closeRect = close?.getBoundingClientRect();
+        const action = footer?.querySelector("button");
+        const actionRect = action?.getBoundingClientRect();
         return {
           modal: getComputedStyle(document.querySelector(".receipt-editor-modal")).backgroundColor,
-          field: getComputedStyle(document.querySelector(".receipt-editor-modal .field")).backgroundColor,
+          field: getComputedStyle(field).backgroundColor,
+          fieldFont: getComputedStyle(field).fontSize,
+          closeWidth: closeRect ? Math.round(closeRect.width) : 0,
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0,
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0,
           footerBottom: rect ? Math.round(rect.bottom) : 0,
           viewportHeight: window.innerHeight
         };
       });
       if (receiptEditorState.modal !== "rgb(3, 7, 10)"
         || receiptEditorState.field !== "rgb(9, 15, 20)"
+        || parseFloat(receiptEditorState.fieldFont) < 13.5
+        || receiptEditorState.closeWidth < 44
+        || receiptEditorState.closeHeight < 44
+        || receiptEditorState.actionHeight < 48
         || receiptEditorState.footerBottom < receiptEditorState.viewportHeight - 2) {
         report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
       }
