@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T07:51:29.914Z",
-  "testedSha": "d80fc93769c1b4b8eace9d70d38c25210075d929",
+  "generatedAt": "2026-09-27T07:53:50.586Z",
+  "testedSha": "3cf8215de05d7ba7c7d0b8c74abd1be9f4f1e7d9",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -960,45 +960,12 @@
       "tooSmall": [],
       "backupRoundtripOk": true,
       "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
     }
   ],
   "failures": [
     {
-      "width": 320,
-      "type": "order-editor-polish",
-      "editorSurfaceState": {
-        "material": "rgb(7, 12, 16)",
-        "materialField": "rgb(9, 15, 20)",
-        "secondaryAction": "rgb(10, 17, 22)",
-        "serviceMatchCount": 0,
-        "clippedMaterialLabels": [],
-        "qtyWidth": 26,
-        "costWidth": 123
-      }
-    },
-    {
-      "width": 390,
-      "type": "order-editor-polish",
-      "editorSurfaceState": {
-        "material": "rgb(7, 12, 16)",
-        "materialField": "rgb(9, 15, 20)",
-        "secondaryAction": "rgb(10, 17, 22)",
-        "serviceMatchCount": 0,
-        "clippedMaterialLabels": [],
-        "qtyWidth": 40,
-        "costWidth": 152
-      }
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"networkidle\"\n"
     }
   ]
 }
