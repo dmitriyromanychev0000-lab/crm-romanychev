@@ -9848,3 +9848,186 @@
   }
 }
 
+/* 1.0.17 · Вторичные разделы: читаемая типографика вместо старых 8–9 px. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-item strong {
+    font-size: 12.5px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-more-list .menu-item small {
+    margin-top: 3px !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-finance-periods button {
+    font-size: 10px !important;
+  }
+
+  .legacy-finance-summary span,
+  .legacy-clients-stats span {
+    font-size: 9.5px !important;
+  }
+
+  .legacy-finance-summary small,
+  .legacy-clients-stats small {
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-finance-copy strong {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-finance-copy small {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-finance-row > b {
+    font-size: 11.5px !important;
+  }
+
+  .legacy-client-copy strong {
+    font-size: 12.5px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-client-copy small {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-client-copy em,
+  .legacy-client-meta {
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-client-side b {
+    font-size: 12px !important;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    font-size: 10.5px !important;
+  }
+
+  .legacy-price-filters label > span {
+    font-size: 9.5px !important;
+  }
+
+  .legacy-price-filters .field {
+    font-size: 12.5px !important;
+  }
+
+  .legacy-price-group > h3,
+  .legacy-custom-price-head,
+  .legacy-custom-price-head h3 {
+    font-size: 10px !important;
+  }
+
+  .legacy-custom-price-head button {
+    font-size: 9.5px !important;
+  }
+
+  .legacy-price-row strong {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-price-row small {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-price-row > b {
+    font-size: 12px !important;
+  }
+
+  .legacy-section-title h2 {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-goods-current-summary strong,
+  .legacy-goods-position strong,
+  .legacy-product-price-list strong {
+    font-size: 11.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-goods-current-summary small,
+  .legacy-goods-position small,
+  .legacy-product-price-list small,
+  .legacy-goods-help,
+  .legacy-goods-intro {
+    font-size: 9.5px !important;
+    line-height: 1.25 !important;
+  }
+
+  .legacy-goods-current-summary > b,
+  .legacy-goods-position > b,
+  .legacy-product-price-list > div > b {
+    font-size: 11.5px !important;
+  }
+
+  .legacy-document-row strong,
+  .legacy-document-row.tool strong {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-document-row small,
+  .legacy-document-row.tool small {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-document-row > b,
+  .legacy-document-row.tool > b {
+    font-size: 11.5px !important;
+  }
+
+  .legacy-settings-row strong,
+  .legacy-settings-links strong {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-settings-row small,
+  .legacy-settings-links small {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-settings-row > button:not(.toggle),
+  .legacy-settings-links > button {
+    font-size: 10.5px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-more-list .menu-item strong,
+  .legacy-client-copy strong,
+  .legacy-price-row strong,
+  .legacy-document-row strong,
+  .legacy-document-row.tool strong,
+  .legacy-settings-row strong,
+  .legacy-settings-links strong {
+    font-size: 11.5px !important;
+  }
+
+  .legacy-more-list .menu-item small,
+  .legacy-client-copy small,
+  .legacy-price-row small,
+  .legacy-document-row small,
+  .legacy-document-row.tool small,
+  .legacy-settings-row small,
+  .legacy-settings-links small {
+    font-size: 9.5px !important;
+  }
+}
+

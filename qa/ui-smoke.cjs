@@ -507,8 +507,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
-      const financePageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".finance-result-hero")).backgroundColor);
-      if (financePageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "finance-deep-dark-page", financePageSurface });
+      const financePageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".finance-result-hero")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
+      }));
+      if (financePageSurface.background !== "rgb(7, 12, 16)" || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "finance-deep-dark-page", financePageSurface });
+      }
       await page.locator('[data-action="add-finance"][data-type="income"]').click();
       const financeEditorState = await page.evaluate(() => {
         const modal = document.querySelector(".finance-entry-modal");
@@ -543,8 +548,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
-      const pricePageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor);
-      if (pricePageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
+      const pricePageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-price-row strong")).fontSize
+      }));
+      if (pricePageSurface.background !== "rgb(7, 12, 16)" || parseFloat(pricePageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
+      }
       await page.locator('[data-action="new-price"]').click();
       const priceEditorState = await page.evaluate(() => {
         const back = document.querySelector(".legacy-price-editor .legacy-back-button");
@@ -575,8 +585,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "clients" }));
-      const clientPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-client-card")).backgroundColor);
-      if (clientPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "clients-deep-dark-page", clientPageSurface });
+      const clientPageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".legacy-client-card")).backgroundColor,
+        titleFont: getComputedStyle(document.querySelector(".legacy-client-copy strong")).fontSize
+      }));
+      if (clientPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(clientPageSurface.titleFont) < 11.5) {
+        report.failures.push({ width, type: "clients-deep-dark-page", clientPageSurface });
+      }
       await page.locator('[data-action="open-client"]').first().click();
       const clientProfileState = await page.evaluate(() => ({
         modal: getComputedStyle(document.querySelector(".client-profile-modal")).backgroundColor,
@@ -592,12 +607,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
-      const moreMenuSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-more-list .menu-item")).backgroundColor);
-      if (moreMenuSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "more-menu-deep-dark", moreMenuSurface });
+      const moreMenuSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".legacy-more-list .menu-item")).backgroundColor,
+        titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-item strong")).fontSize
+      }));
+      if (moreMenuSurface.background !== "rgb(7, 12, 16)" || parseFloat(moreMenuSurface.titleFont) < 11.5) {
+        report.failures.push({ width, type: "more-menu-deep-dark", moreMenuSurface });
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
-      const goodsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-goods-panel")).backgroundColor);
-      if (goodsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "goods-deep-dark-page", goodsPageSurface });
+      const goodsPageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".legacy-goods-panel")).backgroundColor,
+        itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize
+      }));
+      if (goodsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
+        report.failures.push({ width, type: "goods-deep-dark-page", goodsPageSurface });
+      }
       await page.locator('[data-action="new-goods-sheet"]').click();
       const goodsEditorState = await page.evaluate(() => {
         const field = document.querySelector(".legacy-goods-editor .field");
@@ -628,8 +653,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
-      const toolsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".tools-stats > div")).backgroundColor);
-      if (toolsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "tools-deep-dark-page", toolsPageSurface });
+      const toolsPageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".tools-stats > div")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.tool strong")).fontSize
+      }));
+      if (toolsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(toolsPageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "tools-deep-dark-page", toolsPageSurface });
+      }
       await page.locator('[data-action="new-tool"]').click();
       const toolEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".tool-editor-modal .modal-actions");
@@ -663,8 +693,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "receipts" }));
-      const receiptsPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".receipts-stats > div")).backgroundColor);
-      if (receiptsPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "receipts-deep-dark-page", receiptsPageSurface });
+      const receiptsPageSurface = await page.evaluate(() => ({
+        background: getComputedStyle(document.querySelector(".receipts-stats > div")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row:not(.tool) strong")).fontSize
+      }));
+      if (receiptsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "receipts-deep-dark-page", receiptsPageSurface });
+      }
       await page.locator('[data-action="new-receipt"]').click();
       const receiptEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".receipt-editor-modal .modal-actions");
@@ -700,9 +735,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       const settingsSurface = await page.evaluate(() => ({
         card: getComputedStyle(document.querySelector(".legacy-settings-card")).backgroundColor,
-        field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor
+        field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor,
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize
       }));
-      if (settingsSurface.card !== "rgb(7, 12, 16)" || settingsSurface.field !== "rgb(9, 15, 20)") {
+      if (settingsSurface.card !== "rgb(7, 12, 16)"
+        || settingsSurface.field !== "rgb(9, 15, 20)"
+        || parseFloat(settingsSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "settings-deep-dark", settingsSurface });
       }
 
