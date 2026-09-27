@@ -535,6 +535,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.waitForTimeout(80);
       const copyAction = await page.locator('[data-order-sheet-action="copy"]').count();
       if (copyAction !== 1) report.failures.push({ width, type: "order-actions-copy", count: copyAction });
+      const orderActionsSurface = await page.evaluate(() => ({
+        sheet: getComputedStyle(document.querySelector(".order-actions-sheet")).backgroundColor,
+        action: getComputedStyle(document.querySelector(".order-actions-grid button, .order-actions-grid a")).backgroundColor,
+        cancel: getComputedStyle(document.querySelector(".order-actions-cancel")).backgroundColor
+      }));
+      if (orderActionsSurface.sheet !== "rgb(6, 11, 15)"
+        || orderActionsSurface.action !== "rgb(9, 15, 20)"
+        || orderActionsSurface.cancel !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "order-actions-deep-dark", orderActionsSurface });
+      }
       report.results.push(await shot(page, width, "order-actions", false));
       await page.keyboard.press("Escape");
 

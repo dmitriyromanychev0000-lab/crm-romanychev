@@ -10465,3 +10465,47 @@
   }
 }
 
+/* 1.0.25 · Действия заявки: глубокий bottom sheet без серо-синей подложки. */
+@media screen and (max-width: 520px) {
+  .legacy-order-actions-backdrop {
+    background: rgba(0,0,0,.82) !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-sheet {
+    border-color: #202d35 !important;
+    background-color: #060b0f !important;
+    background-image: none !important;
+    box-shadow: 0 -18px 50px rgba(0,0,0,.42) !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-close {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid button,
+  .legacy-order-actions-backdrop .order-actions-grid a {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid button:active,
+  .legacy-order-actions-backdrop .order-actions-grid a:active {
+    background: #0b1217 !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid .order-actions-delete {
+    border-color: rgba(255,102,112,.28) !important;
+    background: rgba(255,102,112,.06) !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-cancel {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+  }
+}
+
