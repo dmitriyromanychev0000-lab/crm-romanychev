@@ -1108,7 +1108,7 @@ function orderCard(order) {
   const photos = (Array.isArray(order.photos) ? order.photos : []).map(photoSource).filter(Boolean).slice(0, 4);
   const phoneHref = String(order.phone || "").replace(/[^+\d]/g, "");
   const guaranteeText = Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "без гарантии";
-  const nextVisit = order.nextVisit ? formatVisitDate(order.nextVisit) : "";
+  const nextVisit = formatOrderVisit(order);
 
   return `<article class="legacy-order-card ${cardClass}" data-order-action="view" data-id="${escapeHtml(order.id)}">
     <div class="legacy-order-accent"></div>
@@ -1154,23 +1154,25 @@ function ordersPage() {
     const filterMatch = orderFilter === "archived"
       ? isArchived
       : !isArchived && (orderFilter === "all" || orderFilter === status);
-    const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id].join(" ").toLowerCase();
+    const haystack = [order.name, order.phone, order.tech, order.brand, order.address, order.id, orderSourceName(order), order.issue, order.diagnosis].join(" ").toLowerCase();
     const normalizedOrderPhone = normalizeRussianPhone(order.phone || "");
     const searchMatch = !query || haystack.includes(query) || (phoneQuery && normalizedOrderPhone.includes(phoneQuery));
-    const visitTime = order.nextVisit ? new Date(order.nextVisit).getTime() : NaN;
-    const today = new Date();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-    const tomorrowStart = todayStart + 86400000;
+    const visitParts = visitDateParts(order);
+    const todayKey = localDateInputValue();
     const visitMatch = orderVisitFilter === "all"
-      || (orderVisitFilter === "today" && Number.isFinite(visitTime) && visitTime >= todayStart && visitTime < tomorrowStart)
-      || (orderVisitFilter === "upcoming" && Number.isFinite(visitTime) && visitTime >= Date.now())
-      || (orderVisitFilter === "overdue" && Number.isFinite(visitTime) && visitTime < Date.now() && status === "active");
+      || (orderVisitFilter === "today" && visitParts.date === todayKey)
+      || (orderVisitFilter === "upcoming" && visitParts.date && !visitIsOverdue(order))
+      || (orderVisitFilter === "overdue" && visitIsOverdue(order));
     return filterMatch && visitMatch && searchMatch;
   });
 
-  const nearestVisit = data.orders
-    .filter((order) => !order.archived && normalizeStatus(order.status) === "active" && order.nextVisit && new Date(order.nextVisit).getTime() >= Date.now())
-    .sort((a, b) => new Date(a.nextVisit) - new Date(b.nextVisit))[0];
+  const nearestVisits = data.orders
+    .filter((order) => !order.archived
+      && normalizeStatus(order.status) === "active"
+      && visitDateParts(order).date
+      && !visitIsOverdue(order))
+    .sort((a, b) => visitSortTimestamp(a) - visitSortTimestamp(b))
+    .slice(0, 3);
 
   return `<main class="content orders-content legacy-orders-page">
     <div class="legacy-page-head">
@@ -1178,10 +1180,10 @@ function ordersPage() {
       <button type="button" class="legacy-page-add" data-action="new-order" aria-label="Новая заявка">${icon("plus")}</button>
     </div>
 
-    ${nearestVisit ? `<button type="button" class="legacy-nearest-visit" data-order-action="view" data-id="${escapeHtml(nearestVisit.id)}">
-      <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong></div>
-      <div class="legacy-nearest-line"><strong>${escapeHtml(formatVisitDate(nearestVisit.nextVisit))}</strong><span>· ${escapeHtml(nearestVisit.name || "Клиент")} · ${escapeHtml(nearestVisit.address || nearestVisit.tech || "")}</span><em>№${escapeHtml(nearestVisit.id)}</em></div>
-    </button>` : ""}
+    ${nearestVisits.length ? `<section class="legacy-nearest-visit">
+      <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong><span>${nearestVisits.length}</span></div>
+      <div class="legacy-nearest-visits-list">${nearestVisits.map((visit) => `<button type="button" class="legacy-nearest-line" data-order-action="view" data-id="${escapeHtml(visit.id)}"><strong>${escapeHtml(formatOrderVisit(visit))}</strong><span>${escapeHtml(visit.name || "Клиент")} · ${escapeHtml(visit.address || visit.tech || "")}</span><em>№${escapeHtml(visit.id)}</em></button>`).join("")}</div>
+    </section>` : ""}
 
     <div class="legacy-order-search search-row search-with-icon">${icon("search")}<input class="search" id="order-search" value="${escapeHtml(searchQuery)}" placeholder="Имя, телефон, техника или модель" aria-label="Поиск заявок" /></div>
 
