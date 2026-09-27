@@ -13632,3 +13632,58 @@
     color: #ff765c !important;
   }
 }
+
+
+/* 1.0.44 · Склад: партии/FIFO и складская аналитика без перегруза. */
+@media screen and (max-width: 520px) {
+  .stock-batch-summary,
+  .analytics-stock-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .stock-batch-summary {
+    margin-top: 8px !important;
+  }
+
+  .stock-batch-summary > span {
+    min-width: 0 !important;
+    padding: 10px !important;
+    border: 1px solid #172128 !important;
+    border-radius: 11px !important;
+    background: #070c10 !important;
+  }
+
+  .stock-batch-summary small {
+    display: block !important;
+    color: #7f8a92 !important;
+    font-size: 8.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .stock-batch-summary strong {
+    display: block !important;
+    margin-top: 5px !important;
+    color: #eef2f4 !important;
+    font-size: 13px !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .analytics-stock-grid .metric {
+    min-width: 0 !important;
+    min-height: 66px !important;
+  }
+
+  .stock-adjust-modal .stock-adjust-field + .stock-adjust-field {
+    margin-top: 8px !important;
+  }
+
+  .stock-adjust-preview > small {
+    display: block !important;
+    margin-top: 5px !important;
+    color: #8e989f !important;
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+  }
+}
