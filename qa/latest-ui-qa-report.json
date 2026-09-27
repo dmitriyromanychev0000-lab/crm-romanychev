@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T08:24:34.034Z",
-  "testedSha": "a474c41d584dedef0fd614259f113b2cdd2bd924",
+  "generatedAt": "2026-09-27T08:29:42.549Z",
+  "testedSha": "5d53e30ba83c8bddc13968cbd9a029b85137ca97",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -46,7 +46,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
     },
     {
       "label": "more",
@@ -64,7 +71,26 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 296,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 296,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "clients",
@@ -73,7 +99,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "prices",
@@ -91,7 +124,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tools",
@@ -100,7 +140,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipts",
@@ -109,7 +156,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "settings",
@@ -118,7 +172,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "backup",
@@ -127,7 +188,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "act",
@@ -136,7 +204,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "order-editor",
@@ -190,7 +265,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 36,
+          "h": 36
+        }
+      ]
     },
     {
       "label": "order-actions",
@@ -199,7 +281,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Закрыть",
+          "w": 34,
+          "h": 34
+        }
+      ]
     },
     {
       "label": "stock-detail",
@@ -208,7 +297,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 34,
+          "h": 34
+        }
+      ]
     },
     {
       "label": "stock-editor",
@@ -226,7 +322,26 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 296,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 296,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "price-editor",
@@ -244,7 +359,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "goods-editor",
@@ -253,7 +375,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tool-editor",
@@ -262,7 +391,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipt-editor",
@@ -271,7 +407,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "stress-orders",
@@ -307,7 +450,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 36,
+          "h": 36
+        }
+      ]
     },
     {
       "label": "empty-orders",
@@ -316,7 +466,20 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Новая заявка",
+          "w": 268,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Импортировать",
+          "w": 268,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "empty-warehouse",
@@ -334,7 +497,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "empty-goods",
@@ -343,7 +513,14 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "archived-orders",
@@ -406,7 +583,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
     },
     {
       "label": "more",
@@ -424,7 +608,26 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 166,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 166,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "clients",
@@ -433,7 +636,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "prices",
@@ -451,7 +661,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tools",
@@ -460,7 +677,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipts",
@@ -469,7 +693,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "settings",
@@ -478,7 +709,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "backup",
@@ -487,7 +725,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "act",
@@ -496,7 +741,14 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "orders",
@@ -541,7 +793,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
     },
     {
       "label": "more",
@@ -559,7 +818,26 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 181,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 181,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "clients",
@@ -568,7 +846,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "prices",
@@ -586,7 +871,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tools",
@@ -595,7 +887,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipts",
@@ -604,7 +903,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "settings",
@@ -613,7 +919,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "backup",
@@ -622,7 +935,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "act",
@@ -631,7 +951,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "order-editor",
@@ -712,7 +1039,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 38,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "order-actions",
@@ -721,7 +1055,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Закрыть",
+          "w": 34,
+          "h": 34
+        }
+      ]
     },
     {
       "label": "stock-detail",
@@ -730,7 +1071,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 34,
+          "h": 34
+        }
+      ]
     },
     {
       "label": "stock-editor",
@@ -748,7 +1096,26 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 181,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 181,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "price-editor",
@@ -766,7 +1133,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "goods-editor",
@@ -775,7 +1149,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tool-editor",
@@ -784,7 +1165,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipt-editor",
@@ -793,7 +1181,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "orders",
@@ -838,7 +1233,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
     },
     {
       "label": "more",
@@ -856,7 +1258,26 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 201,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 201,
+          "h": 38
+        }
+      ]
     },
     {
       "label": "clients",
@@ -865,7 +1286,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "prices",
@@ -883,7 +1311,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "tools",
@@ -892,7 +1327,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "receipts",
@@ -901,7 +1343,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "settings",
@@ -910,7 +1359,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "backup",
@@ -919,7 +1375,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "act",
@@ -928,7 +1391,14 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "keyboard-order-editor",
@@ -973,5 +1443,812 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "analytics",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "finance",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 296,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 296,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "clients",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "goods",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "tools",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "receipts",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "settings",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "backup",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "act",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "order-detail",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 36,
+          "h": 36
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "order-actions",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Закрыть",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "stock-detail",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "finance-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 296,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 296,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "client-profile",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "goods-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "tool-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "receipt-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "stress-order-detail",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 36,
+          "h": 36
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "empty-orders",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Новая заявка",
+          "w": 268,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Импортировать",
+          "w": 268,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "empty-clients",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "empty-goods",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "analytics",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "finance",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 166,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 166,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "clients",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "goods",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "tools",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "receipts",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "settings",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "backup",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "type": "small-touch-target",
+      "label": "act",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "analytics",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "finance",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 181,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 181,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "clients",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "goods",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "tools",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "receipts",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "settings",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "backup",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "act",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "order-detail",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 38,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "order-actions",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Закрыть",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "stock-detail",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "finance-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 181,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 181,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "client-profile",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "goods-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "tool-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "receipt-editor",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "analytics",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Свой период",
+          "w": 38,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "finance",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить доход",
+          "w": 201,
+          "h": 38
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Добавить расход",
+          "w": 201,
+          "h": 38
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "clients",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "goods",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "tools",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "receipts",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "settings",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "backup",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "type": "small-touch-target",
+      "label": "act",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Назад",
+          "w": 42,
+          "h": 42
+        }
+      ]
+    }
+  ]
 }
