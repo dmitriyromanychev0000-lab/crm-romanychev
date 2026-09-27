@@ -1053,15 +1053,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const serviceRowState = await page.evaluate(() => {
         const row = document.querySelector("#service-lines [data-service-row]");
         const remove = row?.querySelector("[data-remove-line]");
+        const name = row?.querySelector(".service-name-field");
+        const price = row?.querySelector(".service-price-field input");
         const rect = remove?.getBoundingClientRect();
+        const nameStyle = name ? getComputedStyle(name) : null;
+        const priceStyle = price ? getComputedStyle(price) : null;
         return {
           rows: document.querySelectorAll("#service-lines [data-service-row]").length,
           removeVisible: Boolean(remove && getComputedStyle(remove).display !== "none"),
           removeWidth: rect ? Math.round(rect.width) : 0,
-          removeHeight: rect ? Math.round(rect.height) : 0
+          removeHeight: rect ? Math.round(rect.height) : 0,
+          nameBackground: nameStyle?.backgroundColor || "missing",
+          nameBackgroundImage: nameStyle?.backgroundImage || "missing",
+          nameBorderTop: nameStyle?.borderTopWidth || "missing",
+          nameShadow: nameStyle?.boxShadow || "missing",
+          priceBackground: priceStyle?.backgroundColor || "missing"
         };
       });
-      if (serviceRowState.rows !== 1 || !serviceRowState.removeVisible || serviceRowState.removeWidth < 44 || serviceRowState.removeHeight < 44) {
+      if (serviceRowState.rows !== 1
+        || !serviceRowState.removeVisible
+        || serviceRowState.removeWidth < 44
+        || serviceRowState.removeHeight < 44
+        || serviceRowState.nameBackground !== "rgba(0, 0, 0, 0)"
+        || serviceRowState.nameBackgroundImage !== "none"
+        || serviceRowState.nameBorderTop !== "0px"
+        || serviceRowState.nameShadow !== "none"
+        || serviceRowState.priceBackground !== "rgba(0, 0, 0, 0)") {
         report.failures.push({ width, type: "service-row-actions", serviceRowState });
       }
       const servicePriceLayout = await page.evaluate(() => {

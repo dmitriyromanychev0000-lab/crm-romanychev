@@ -13854,3 +13854,101 @@
     font-size: 9px !important;
   }
 }
+
+/* 1.0.43 · Услуги в заявке: выбранные позиции выглядят строками, а не вложенными input-карточками. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal #service-lines .legacy-service-row {
+    grid-template-columns: 24px minmax(0,1fr) 78px 44px !important;
+    gap: 7px !important;
+    min-height: 54px !important;
+    padding: 4px 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid #202b32 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal #service-lines .legacy-service-row:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .order-editor-modal #service-lines .service-name-field,
+  .order-editor-modal #service-lines .service-price-field input,
+  .order-editor-modal #service-lines .service-name-field:focus,
+  .order-editor-modal #service-lines .service-price-field input:focus {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    color: #e9eef0 !important;
+  }
+
+  .order-editor-modal #service-lines .service-name-field {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 13px !important;
+    font-weight: 560 !important;
+    line-height: 1.25 !important;
+  }
+
+  .order-editor-modal #service-lines .service-price-field {
+    position: relative !important;
+    display: flex !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+  }
+
+  .order-editor-modal #service-lines .service-price-field input {
+    width: 58px !important;
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .order-editor-modal #service-lines .service-price-field > span {
+    position: static !important;
+    flex: 0 0 auto !important;
+    margin-left: 3px !important;
+    transform: none !important;
+    color: #929ca3 !important;
+    font-size: 12px !important;
+  }
+
+  .order-editor-modal #service-lines .service-qty-field {
+    display: none !important;
+  }
+
+  .order-editor-modal #service-lines .service-remove {
+    display: grid !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: var(--crm-red) !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal #service-lines .legacy-service-row {
+    grid-template-columns: 22px minmax(0,1fr) 65px 44px !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal #service-lines .service-price-field input {
+    width: 45px !important;
+    font-size: 12px !important;
+  }
+}
