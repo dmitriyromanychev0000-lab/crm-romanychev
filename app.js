@@ -31,6 +31,7 @@ const defaultData = () => ({
     { id: "source-word-of-mouth", name: "Сарафанное радио", archived: false }
   ],
   client_profiles: [],
+  warranty_options: [],
   settings: {
     autoBackup: false,
     autoBackupDays: 1,
@@ -340,7 +341,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -411,6 +412,59 @@ function ensureClientProfileIds() {
     changed = true;
   });
   return changed;
+}
+
+const BASE_APPLIANCE_TYPES = [
+  "Холодильник",
+  "Коммерческое холод. оборудование",
+  "Стиральная машина",
+  "Посудомоечная машина",
+  "Сушильная машина",
+  "Плита / духовка",
+  "Кондиционер",
+  "Водонагреватель",
+  "Мелкая бытовая техника",
+  "Другое"
+];
+
+function applianceTypes() {
+  return [...new Set([
+    ...BASE_APPLIANCE_TYPES,
+    ...(data.orders || []).map((order) => String(order.tech || "").trim()),
+    ...(data.receipt_prices || []).map((item) => String(item.tech || "").trim()),
+    ...(data.warranty_options || []).map((item) => String(item.tech || "").trim())
+  ].filter(Boolean))];
+}
+
+function ensureWarrantyOptionIds() {
+  let changed = false;
+  (Array.isArray(data.warranty_options) ? data.warranty_options : []).forEach((option) => {
+    if (String(option?.id || "").trim()) return;
+    option.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function warrantyOptionsForTech(tech, { includeArchived = false } = {}) {
+  const currentTech = String(tech || "").trim();
+  return (Array.isArray(data.warranty_options) ? data.warranty_options : [])
+    .filter((option) => String(option.tech || "").trim() === currentTech)
+    .filter((option) => includeArchived || !option.archived)
+    .sort((a, b) => Number(Boolean(a.archived)) - Number(Boolean(b.archived))
+      || String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
+function normalizeWarrantyTargets(order = {}) {
+  return (Array.isArray(order.guaranteeTargets) ? order.guaranteeTargets : [])
+    .map((target) => typeof target === "string"
+      ? { id: "", name: target, tech: order.tech || "" }
+      : {
+          id: String(target?.id || ""),
+          name: String(target?.name || "").trim(),
+          tech: String(target?.tech || order.tech || "").trim()
+        })
+    .filter((target) => target.name);
 }
 
 function activeOrderSources() {
@@ -539,6 +593,7 @@ function ensureDataIds() {
   if (ensureGoodsSheetIds()) changed = true;
   if (ensureOrderSourceIds()) changed = true;
   if (ensureClientProfileIds()) changed = true;
+  if (ensureWarrantyOptionIds()) changed = true;
   return changed;
 }
 
@@ -2913,6 +2968,7 @@ function newOrderModal(existing = null, options = {}) {
   const guaranteeMonths = order.guarantee === undefined || order.guarantee === null || order.guarantee === ""
     ? 6
     : Number(order.guarantee);
+  const originalWarrantyTargets = normalizeWarrantyTargets(order);
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
   const visitParts = visitDateParts(order);
@@ -2937,7 +2993,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-grid">
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" placeholder="Необязательно" /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
-      <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Техника</label><select class="field" name="tech">${applianceTypes().map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
       <div class="client-match-slot full" id="client-match-slot"></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
@@ -2960,6 +3016,18 @@ function newOrderModal(existing = null, options = {}) {
     <div class="legacy-service-total"><span>Итого услуг</span><strong id="legacy-service-total">0 ₽</strong></div>
     </section>
 
+    <section class="order-editor-section order-warranty-section">
+      <div class="form-section-title"><span class="order-editor-section-icon">${icon("shield")}</span><span>Гарантия</span></div>
+      <div class="warranty-term-row">
+        <label><span>Срок</span><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="9" ${guaranteeMonths === 9 ? "selected" : ""}>9 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option></select></label>
+      </div>
+      <div id="warranty-target-wrap" class="warranty-target-wrap">
+        <div class="warranty-target-copy"><strong>На что распространяется</strong><small>Список зависит от типа техники</small></div>
+        <div id="warranty-target-grid" class="warranty-target-grid"></div>
+        <label class="warranty-extra"><span>Дополнительно</span><textarea class="field textarea compact-textarea" name="guaranteeNote" placeholder="Если нужного пункта нет — допиши своими словами">${escapeHtml(order.guaranteeNote || "")}</textarea></label>
+      </div>
+    </section>
+
     <section class="order-editor-section">
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("warehouse")}</span><span>Запчасти и материалы</span></div>
     <p class="legacy-material-help">Выбери позицию со склада или добавь ручную — количество и себестоимость можно изменить.</p>
@@ -2977,14 +3045,13 @@ function newOrderModal(existing = null, options = {}) {
     </section>
 
     <section class="order-editor-section order-editor-payment-section">
-    <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт и гарантия</span></div>
+    <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт</span></div>
     <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Без склада</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Итог услуг</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
 
     <div class="form-grid legacy-payment-grid">
       <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
       <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>Гарантия</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="9" ${guaranteeMonths === 9 ? "selected" : ""}>9 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option></select></div>
       <div class="form-group"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
       <div class="form-group white-expense-group"><label>Белый расход</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /><small class="white-expense-hint" id="white-expense-minimum">Минимум: 0 ₽</small></div>
       <div class="form-group"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
@@ -2992,17 +3059,10 @@ function newOrderModal(existing = null, options = {}) {
     </div>
     </section>
 
-    <details class="order-extra-details order-guarantee-details" ${order.guaranteeNote || order.comment ? "open" : ""}>
-      <summary class="order-extra-summary"><span class="order-extra-summary-icon">${icon("shield")}</span><span>Гарантия и комментарий</span><span class="order-extra-chevron">${icon("chevron")}</span></summary>
-      <div class="order-extra-body">
-        <section class="legacy-guarantee-card">
-          <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">${escapeHtml(warrantyUntilText(order))}</span></div>
-          <label>Что покрывает</label>
-          <textarea class="field textarea" name="guaranteeNote" placeholder="Опиши условия гарантии">${escapeHtml(order.guaranteeNote || "")}</textarea>
-        </section>
-        <div class="form-group order-comment"><label>Комментарий</label><textarea class="field textarea" name="comment">${escapeHtml(order.comment || "")}</textarea></div>
-      </div>
-    </details>
+    <section class="order-editor-section order-master-comment-section">
+      <div class="form-section-title"><span class="order-editor-section-icon">${icon("document")}</span><span>Комментарий мастера</span></div>
+      <div class="form-group order-comment"><textarea class="field textarea" name="comment" placeholder="Внутренняя заметка только для тебя">${escapeHtml(order.comment || "")}</textarea><small>Не попадает в акт и клиентские документы.</small></div>
+    </section>
     </div>
     <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -3045,6 +3105,42 @@ function newOrderModal(existing = null, options = {}) {
     applyKnownClient();
   });
   applyKnownClient();
+
+  const warrantyGrid = modal.querySelector("#warranty-target-grid");
+  const warrantyWrap = modal.querySelector("#warranty-target-wrap");
+  const guaranteeSelect = formElement.elements.guarantee;
+  const renderWarrantyTargets = () => {
+    const tech = String(formElement.elements.tech.value || "");
+    const active = warrantyOptionsForTech(tech);
+    const historical = originalWarrantyTargets.filter((target) => (!target.tech || target.tech === tech)
+      && !active.some((option) => String(option.id) === String(target.id) || String(option.name) === String(target.name)));
+    const rows = [
+      ...active.map((option) => ({
+        id: String(option.id || ""),
+        name: String(option.name || ""),
+        tech,
+        archived: false,
+        checked: originalWarrantyTargets.some((target) =>
+          (target.id && String(target.id) === String(option.id))
+          || (!target.id && String(target.name) === String(option.name)))
+      })),
+      ...historical.map((target) => ({ ...target, archived: true, checked: true }))
+    ];
+    warrantyGrid.innerHTML = rows.length
+      ? rows.map((target) => `<label class="warranty-target-option ${target.archived ? "archived" : ""}"><input type="checkbox" data-warranty-target value="${escapeHtml(target.id)}" data-name="${escapeHtml(target.name)}" data-tech="${escapeHtml(tech)}" ${target.checked ? "checked" : ""}/><span class="warranty-check">${icon("check")}</span><strong>${escapeHtml(target.name)}</strong></label>`).join("")
+      : `<div class="warranty-target-empty">Для «${escapeHtml(tech)}» пункты ещё не настроены. Добавь их в Настройки → Гарантии.</div>`;
+  };
+  const syncWarrantyState = () => {
+    warrantyWrap?.classList.toggle("is-disabled", Number(guaranteeSelect?.value) === 0);
+  };
+  renderWarrantyTargets();
+  syncWarrantyState();
+  formElement.elements.tech.addEventListener("change", () => {
+    renderWarrantyTargets();
+    syncWarrantyState();
+  });
+  guaranteeSelect?.addEventListener("change", syncWarrantyState);
+
   const photoList = modal.querySelector("#order-photo-list");
   const photoInput = modal.querySelector("#order-photo-input");
   const renderPhotos = () => {
@@ -3200,6 +3296,11 @@ function newOrderModal(existing = null, options = {}) {
       expense_gray: Number(form.get("expense_gray")),
       expense_white: Number(form.get("expense_white")),
       guarantee: Number(form.get("guarantee")),
+      guaranteeTargets: [...modal.querySelectorAll("[data-warranty-target]:checked")].map((input) => ({
+        id: String(input.value || ""),
+        name: String(input.dataset.name || "").trim(),
+        tech: String(input.dataset.tech || form.get("tech") || "").trim()
+      })).filter((target) => target.name),
       tag: form.get("tag"),
       address: form.get("address"),
       issue: form.get("issue"),
