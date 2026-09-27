@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.26.95";
+const APP_BUILD = "2026.09.27.96";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Релиз 1.0: мобильная CRM прошла полный Chromium stress-QA, backup round-trip с настройками, offline PWA, узкий keyboard-height сценарий и одностраничный A4 PDF";
+const APP_RELEASE = "Редактор заявки: восстановлен глубокий тёмный стиль, исправлены цены услуг, материалы, фотографии и блок расчёта с гарантией";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2476,10 +2476,10 @@ function newOrderModal(existing = null, options = {}) {
     <details class="manual-material-details"><summary>Материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">${icon("plus")}<span>Добавить ручную позицию</span></button></details>
     </section>
 
-    <details class="order-extra-details" ${orderPhotos.length ? "open" : ""}>
-      <summary>Фотографии</summary>
+    <details class="order-extra-details order-photo-details" ${orderPhotos.length ? "open" : ""}>
+      <summary class="order-extra-summary"><span class="order-extra-summary-icon">${icon("camera")}</span><span>Фотографии</span><span class="order-extra-chevron">${icon("chevron")}</span></summary>
       <div class="order-extra-body">
-        <div class="form-group full"><label>Добавить фото</label><input class="field photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><div class="small">Фото хранятся только в локальной CRM и бэкапе.</div></div>
+        <div class="form-group full order-photo-picker"><input class="order-photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><label class="order-photo-add" for="order-photo-input">${icon("camera")}<span><b>Добавить фотографии</b><small>Открыть камеру или выбрать файлы</small></span></label><div class="small">Фото хранятся только в локальной CRM и бэкапе.</div></div>
         <div class="photo-grid" id="order-photo-list"></div>
       </div>
     </details>
@@ -2500,8 +2500,8 @@ function newOrderModal(existing = null, options = {}) {
     </div>
     </section>
 
-    <details class="order-extra-details" ${order.guaranteeNote || order.comment ? "open" : ""}>
-      <summary>Гарантия и комментарий</summary>
+    <details class="order-extra-details order-guarantee-details" ${order.guaranteeNote || order.comment ? "open" : ""}>
+      <summary class="order-extra-summary"><span class="order-extra-summary-icon">${icon("shield")}</span><span>Гарантия и комментарий</span><span class="order-extra-chevron">${icon("chevron")}</span></summary>
       <div class="order-extra-body">
         <section class="legacy-guarantee-card">
           <div class="legacy-guarantee-head"><span class="guarantee-icon">${icon("shield")}</span><strong>Условия гарантии</strong><span class="guarantee-date">${escapeHtml(warrantyUntilText(order))}</span></div>
@@ -2528,8 +2528,37 @@ function newOrderModal(existing = null, options = {}) {
     photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
       const source = photoSource(photo);
       const label = photoLabel(photo, index);
-      return `<div class="photo-card">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<div class="photo-missing">${icon("camera")}<small>Старый формат</small></div>`}<div class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</div><button type="button" class="photo-remove" data-remove-photo="${index}" aria-label="Удалить фото">${icon("close")}</button></div>`;
-    }).join("") : `<div class="small">Фотографий пока нет</div>`;
+      return `<button type="button" class="photo-card" data-view-photo="${index}" aria-label="Открыть ${escapeHtml(label)}">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<span class="photo-missing">${icon("camera")}<small>Старый формат</small></span>`}<span class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</span><span class="photo-open-icon">${icon("eye")}</span></button>`;
+    }).join("") : `<div class="photo-empty">${icon("camera")}<span>Фотографий пока нет</span></div>`;
+  };
+  const openPhotoViewer = (index) => {
+    const photo = orderPhotos[index];
+    const source = photoSource(photo);
+    if (!photo || !source) return;
+    const label = photoLabel(photo, index);
+    const viewer = document.createElement("div");
+    viewer.className = "modal-backdrop photo-viewer-backdrop";
+    viewer.innerHTML = `<section class="photo-viewer-modal" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
+      <header class="photo-viewer-head"><div><small>ФОТО ${index + 1} ИЗ ${orderPhotos.length}</small><strong>${escapeHtml(label)}</strong></div><button type="button" class="photo-viewer-close" aria-label="Закрыть">${icon("close")}</button></header>
+      <div class="photo-viewer-stage"><img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" /></div>
+      <footer class="photo-viewer-actions"><button type="button" class="photo-viewer-delete">${icon("trash")}<span>Удалить фотографию</span></button></footer>
+    </section>`;
+    const closeViewer = () => {
+      viewer.remove();
+      syncModalScrollLock();
+    };
+    viewer.querySelector(".photo-viewer-close").addEventListener("click", closeViewer);
+    viewer.querySelector(".photo-viewer-delete").addEventListener("click", () => {
+      orderPhotos.splice(index, 1);
+      renderPhotos();
+      closeViewer();
+      toast("Фотография удалена");
+    });
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) closeViewer();
+    });
+    document.body.appendChild(viewer);
+    syncModalScrollLock();
   };
   photoInput.addEventListener("change", async () => {
     const files = [...(photoInput.files || [])];
@@ -2551,10 +2580,9 @@ function newOrderModal(existing = null, options = {}) {
     renderPhotos();
   });
   photoList.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-remove-photo]");
-    if (!button) return;
-    orderPhotos.splice(Number(button.dataset.removePhoto), 1);
-    renderPhotos();
+    const card = event.target.closest("[data-view-photo]");
+    if (!card) return;
+    openPhotoViewer(Number(card.dataset.viewPhoto));
   });
   renderPhotos();
   const calculateLines = () => {
