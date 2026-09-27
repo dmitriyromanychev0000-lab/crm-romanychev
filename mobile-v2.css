@@ -12451,3 +12451,250 @@
     background-color: #131006 !important;
   }
 }
+
+
+/* 1.0.41 · Источники, клиент и визиты: компактная мобильная компоновка. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .client-match-slot:empty {
+    display: none !important;
+  }
+
+  .order-editor-modal .client-match-slot {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .client-match-card {
+    display: grid !important;
+    grid-template-columns: 32px minmax(0,1fr) !important;
+    gap: 9px !important;
+    min-height: 48px !important;
+    padding: 9px 11px !important;
+    align-items: center !important;
+    border: 1px solid #223b52 !important;
+    border-radius: 12px !important;
+    background: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .order-editor-modal .client-match-card > .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    justify-self: center !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .order-editor-modal .client-match-card span {
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .client-match-card strong,
+  .order-editor-modal .client-match-card small {
+    display: block !important;
+  }
+
+  .order-editor-modal .client-match-card strong {
+    font-size: 11px !important;
+  }
+
+  .order-editor-modal .client-match-card small {
+    margin-top: 3px !important;
+    overflow: hidden !important;
+    color: #91a8b8 !important;
+    font-size: 9.5px !important;
+    line-height: 1.25 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-nearest-visit {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .legacy-nearest-title {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .legacy-nearest-title > span:last-child {
+    min-width: 24px !important;
+    height: 24px !important;
+    margin-left: auto !important;
+    border-radius: 999px !important;
+    background: rgba(92,169,255,.12) !important;
+    color: #b9daf5 !important;
+    font-size: 10px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+  }
+
+  .legacy-nearest-visits-list {
+    display: grid !important;
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-nearest-visits-list .legacy-nearest-line {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    grid-template-areas:
+      "date id"
+      "copy id" !important;
+    gap: 2px 8px !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 7px 9px !important;
+    align-items: center !important;
+    border: 1px solid #223b52 !important;
+    border-radius: 10px !important;
+    background: #071019 !important;
+    text-align: left !important;
+  }
+
+  .legacy-nearest-visits-list .legacy-nearest-line > strong {
+    grid-area: date !important;
+    overflow: hidden !important;
+    color: #d7eafa !important;
+    font-size: 10px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-nearest-visits-list .legacy-nearest-line > span {
+    grid-area: copy !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    color: #91a8b8 !important;
+    font-size: 9.5px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-nearest-visits-list .legacy-nearest-line > em {
+    grid-area: id !important;
+    color: #6f8797 !important;
+    font-size: 9px !important;
+    font-style: normal !important;
+  }
+
+  .source-manager-modal {
+    width: min(100%, 420px) !important;
+    max-height: min(86dvh, 720px) !important;
+    overflow: hidden !important;
+    border-color: #202d35 !important;
+    background: #03070a !important;
+  }
+
+  .source-manager-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    align-items: center !important;
+    border-bottom: 1px solid #151f25 !important;
+  }
+
+  .source-manager-head small {
+    color: #71808a !important;
+    font-size: 9px !important;
+  }
+
+  .source-manager-head h2 {
+    margin: 2px 0 0 !important;
+    font-size: 18px !important;
+  }
+
+  .source-manager-head > button {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid #202d35 !important;
+    border-radius: 11px !important;
+    background: #0a1116 !important;
+    color: #dce3e6 !important;
+  }
+
+  .source-manager-list {
+    display: grid !important;
+    gap: 7px !important;
+    max-height: 52dvh !important;
+    padding: 12px 14px !important;
+    overflow: auto !important;
+  }
+
+  .source-manager-row {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 44px !important;
+    gap: 7px !important;
+    align-items: center !important;
+  }
+
+  .source-manager-row.archived {
+    opacity: .56 !important;
+  }
+
+  .source-manager-row .field {
+    min-height: 44px !important;
+    background: #090f14 !important;
+  }
+
+  .source-manager-row > button {
+    width: 44px !important;
+    height: 44px !important;
+    border: 1px solid #2a3740 !important;
+    border-radius: 11px !important;
+    background: #0a1116 !important;
+    color: #aebbc2 !important;
+  }
+
+  .source-manager-add {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 7px !important;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #151f25 !important;
+  }
+
+  .source-manager-add .field,
+  .source-manager-add .primary-button {
+    min-height: 48px !important;
+  }
+
+  .source-manager-add .primary-button {
+    padding: 0 13px !important;
+  }
+
+  .client-profile-note {
+    display: grid !important;
+    gap: 7px !important;
+    padding: 12px !important;
+    border: 1px solid #202d35 !important;
+    border-radius: 13px !important;
+    background: #060b0f !important;
+  }
+
+  .client-profile-note label {
+    color: #aab4ba !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  .client-profile-note .textarea {
+    min-height: 82px !important;
+    background: #090f14 !important;
+  }
+
+  .client-profile-note .secondary-button {
+    min-height: 44px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-address {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+  .legacy-order-meta .address {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
