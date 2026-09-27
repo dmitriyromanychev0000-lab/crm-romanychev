@@ -236,12 +236,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     if (width === 390) {
       const migratedStock = await readStoredData(page);
       const migratedW1 = migratedStock.warehouse.find((item) => item.id === "w1");
-      if (Number(migratedStock.settings?.stockReservationModel) !== 1 || Number(migratedW1?.quantity) !== 3) {
+      if (Number(migratedStock.settings?.stockReservationModel) !== 1
+        || Number(migratedStock.settings?.stockBatchModel) !== 1
+        || Number(migratedW1?.quantity) !== 3
+        || migratedW1?.batches?.length !== 1
+        || Number(migratedW1?.batches?.[0]?.remainingQty) !== 3
+        || Number(migratedW1?.batches?.[0]?.unitCost) !== 3100) {
         report.failures.push({
           width,
           type: "stock-reservation-migration",
-          model: migratedStock.settings?.stockReservationModel,
-          quantity: migratedW1?.quantity
+          reservationModel: migratedStock.settings?.stockReservationModel,
+          batchModel: migratedStock.settings?.stockBatchModel,
+          quantity: migratedW1?.quantity,
+          batches: migratedW1?.batches
         });
       }
 
@@ -1436,7 +1443,63 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "stock-adjust-deep-dark", stockAdjustSurface });
       }
       report.results.push(await shot(page, width, "stock-adjust", false));
-      await page.locator(".stock-adjust-actions [data-close-modal]").click();
+
+      if (width === 390) {
+        await page.locator('.stock-adjust-modal [name="amount"]').fill("2");
+        await page.locator('.stock-adjust-modal [name="totalCost"]').fill("10000");
+        await page.locator('.stock-adjust-modal [name="comment"]').fill("Партия 2");
+        await page.locator('.stock-adjust-modal button[type="submit"]').click();
+        await page.waitForTimeout(80);
+
+        const afterPurchase = await readStoredData(page);
+        const purchasedItem = afterPurchase.warehouse.find((item) => item.id === "w1");
+        const purchaseExpense = [...afterPurchase.expenses].reverse().find((item) => item.source === "stock_purchase" && item.warehouseId === "w1");
+        const purchaseMovement = [...afterPurchase.warehouse_movements].reverse().find((item) => item.type === "purchase_in" && item.warehouseId === "w1");
+        if (Number(purchasedItem?.quantity) !== 5
+          || purchasedItem?.batches?.length !== 2
+          || Number(purchasedItem?.batches?.[0]?.remainingQty) !== 3
+          || Number(purchasedItem?.batches?.[0]?.unitCost) !== 3100
+          || Number(purchasedItem?.batches?.[1]?.remainingQty) !== 2
+          || Number(purchasedItem?.batches?.[1]?.unitCost) !== 5000
+          || Number(purchaseExpense?.amount) !== 10000
+          || Number(purchaseMovement?.totalCost) !== 10000) {
+          report.failures.push({
+            width,
+            type: "stock-purchase-batch",
+            item: purchasedItem,
+            purchaseExpense,
+            purchaseMovement
+          });
+        }
+
+        await page.locator('[data-stock="out"][data-id="w1"]').click();
+        await page.locator('.stock-adjust-modal [name="amount"]').fill("4");
+        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO");
+        await page.locator('.stock-adjust-modal button[type="submit"]').click();
+        await page.waitForTimeout(80);
+
+        const afterFifo = await readStoredData(page);
+        const fifoItem = afterFifo.warehouse.find((item) => item.id === "w1");
+        const fifoMovement = [...afterFifo.warehouse_movements].reverse().find((item) => item.type === "manual_out" && item.warehouseId === "w1");
+        const allocations = fifoMovement?.allocations || [];
+        if (Number(fifoItem?.quantity) !== 1
+          || Number(fifoItem?.batches?.[0]?.remainingQty) !== 0
+          || Number(fifoItem?.batches?.[1]?.remainingQty) !== 1
+          || allocations.length !== 2
+          || Number(allocations[0]?.qty) !== 3
+          || Number(allocations[0]?.unitCost) !== 3100
+          || Number(allocations[1]?.qty) !== 1
+          || Number(allocations[1]?.unitCost) !== 5000
+          || Number(fifoMovement?.batchCost) !== 14300
+          || fifoMovement?.comment !== "Тест FIFO") {
+          report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovement });
+        }
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+      } else {
+        await page.locator(".stock-adjust-actions [data-close-modal]").click();
+      }
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "movements" }));
       const movementSurface = await page.evaluate(() => {
