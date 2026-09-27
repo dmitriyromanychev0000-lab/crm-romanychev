@@ -8066,3 +8066,58 @@
   }
 }
 
+/* 1.0.5 · Склад: редактор без перекрытия контента фиксированным футером. */
+@media screen and (max-width: 520px) {
+  .stock-editor-backdrop > .stock-editor-modal {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0,1fr) auto !important;
+    box-sizing: border-box !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: 0 12px !important;
+    overflow: hidden !important;
+  }
+
+  .stock-editor-modal .stock-editor-head {
+    position: relative !important;
+    top: auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  .stock-editor-modal .stock-editor-intro {
+    margin: 0 -12px !important;
+    padding: 9px 12px !important;
+    border-bottom: 1px solid var(--crm-line-soft) !important;
+    background: #080d11 !important;
+  }
+
+  .stock-editor-modal .stock-editor-body {
+    min-height: 0 !important;
+    padding: 10px 0 14px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stock-editor-modal .modal-actions {
+    position: static !important;
+    z-index: 3 !important;
+    margin: 0 -12px !important;
+    padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid var(--crm-line) !important;
+    background: rgba(8,13,17,.99) !important;
+    box-shadow: 0 -10px 24px rgba(0,0,0,.18) !important;
+  }
+
+  .stock-detail-hero h2 {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    line-height: 1.18 !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
