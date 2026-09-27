@@ -124,6 +124,22 @@ async function writeSeed(page, payload = seed) {
   }, payload);
 }
 
+async function readStoredData(page) {
+  return page.evaluate(async () => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("crm-romanychev", 1);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        const tx = db.transaction("keyval", "readonly");
+        const get = tx.objectStore("keyval").get("crm-data");
+        get.onsuccess = () => { const value = get.result; db.close(); resolve(value); };
+        get.onerror = () => { db.close(); reject(get.error); };
+      };
+    });
+  });
+}
+
 async function setState(page, state) {
   await page.evaluate((stateValue) => sessionStorage.setItem("__crm_qa_next_state", JSON.stringify(stateValue)), state);
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -214,6 +230,88 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     await writeSeed(page);
 
     await setState(page, uiState({ activePage: "orders" }));
+
+    if (width === 390) {
+      const migratedStock = await readStoredData(page);
+      const migratedW1 = migratedStock.warehouse.find((item) => item.id === "w1");
+      if (Number(migratedStock.settings?.stockReservationModel) !== 1 || Number(migratedW1?.quantity) !== 3) {
+        report.failures.push({
+          width,
+          type: "stock-reservation-migration",
+          model: migratedStock.settings?.stockReservationModel,
+          quantity: migratedW1?.quantity
+        });
+      }
+
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list", warehouseFilter: "all" }));
+      const reservationSurface = await page.evaluate(() => {
+        const card = document.querySelector('[data-stock-detail="w1"]')?.closest(".legacy-stock-card-v2");
+        return {
+          text: card?.innerText || "",
+          hasReserveFilter: Boolean(document.querySelector('#warehouse-filter-select option[value="reserved"]'))
+        };
+      });
+      if (!reservationSurface.text.includes("резерв 1")
+        || !reservationSurface.text.includes("2")
+        || !reservationSurface.hasReserveFilter) {
+        report.failures.push({ width, type: "stock-reservation-surface", reservationSurface });
+      }
+
+      await setState(page, uiState({ activePage: "orders" }));
+      await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
+      await page.locator('#material-lines [data-warehouse-id="w1"] [data-line="qty"]').fill("2");
+      await page.locator('.order-editor-modal button[type="submit"]').click();
+      await page.waitForTimeout(80);
+      const afterReserveEdit = await readStoredData(page);
+      const afterReserveW1 = afterReserveEdit.warehouse.find((item) => item.id === "w1");
+      const afterReserveOrder = afterReserveEdit.orders.find((item) => item.id === "0060");
+      if (Number(afterReserveW1?.quantity) !== 3
+        || Number(afterReserveOrder?.materials?.find((item) => item.warehouseId === "w1")?.qty) !== 2) {
+        report.failures.push({
+          width,
+          type: "stock-active-order-reserves-without-writeoff",
+          quantity: afterReserveW1?.quantity,
+          orderQty: afterReserveOrder?.materials?.find((item) => item.warehouseId === "w1")?.qty
+        });
+      }
+
+      await page.locator('.legacy-order-card [data-order-action="toggle"]').first().click();
+      await page.locator("[data-confirm-primary]").click();
+      await page.waitForTimeout(80);
+      const afterClose = await readStoredData(page);
+      const closedW1 = afterClose.warehouse.find((item) => item.id === "w1");
+      const closedOrder = afterClose.orders.find((item) => item.id === "0060");
+      const closeMovement = [...afterClose.warehouse_movements].reverse().find((item) => item.orderId === "0060" && item.type === "order_out");
+      if (Number(closedW1?.quantity) !== 1
+        || closedOrder?.status !== "Закрыта"
+        || Number(closeMovement?.qty) !== 2) {
+        report.failures.push({
+          width,
+          type: "stock-close-final-writeoff",
+          quantity: closedW1?.quantity,
+          status: closedOrder?.status,
+          movement: closeMovement
+        });
+      }
+
+      await page.locator('.legacy-order-card [data-order-action="toggle"]').first().click();
+      await page.waitForTimeout(80);
+      const afterReopen = await readStoredData(page);
+      const reopenedW1 = afterReopen.warehouse.find((item) => item.id === "w1");
+      const reopenedOrder = afterReopen.orders.find((item) => item.id === "0060");
+      if (Number(reopenedW1?.quantity) !== 3 || reopenedOrder?.status !== "В работе") {
+        report.failures.push({
+          width,
+          type: "stock-reopen-restores-to-reserve",
+          quantity: reopenedW1?.quantity,
+          status: reopenedOrder?.status
+        });
+      }
+
+      await writeSeed(page);
+      await setState(page, uiState({ activePage: "orders" }));
+    }
+
     const shellSurface = await page.evaluate(() => {
       const header = document.querySelector(".legacy-mobile-header");
       const title = document.querySelector(".legacy-mobile-header .brand-title");
