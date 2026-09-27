@@ -1986,7 +1986,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           price: 1000 + index * 125
         }));
         actSeed.orders[0].guarantee = 6;
-        actSeed.orders[0].guaranteeTargets = ["Компрессор", "Контур охлаждения"];
+        actSeed.orders[0].guaranteeTargets = [
+          { id: "war-fridge-compressor", name: "Компрессор", tech: "Холодильник" },
+          { id: "war-fridge-circuit", name: "Контур охлаждения", tech: "Холодильник" }
+        ];
         actSeed.orders[0].guaranteeNote = "Дополнительные условия гарантии";
         await writeSeed(page, actSeed);
         await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
