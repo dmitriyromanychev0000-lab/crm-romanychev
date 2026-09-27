@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.97";
+const APP_BUILD = "2026.09.27.98";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор заявки: карточки, поля и нижние действия переведены с серых поверхностей на глубокий почти чёрный фон";
+const APP_RELEASE = "Финансы, клиенты и прайс приведены к глубокой тёмной системе редактора заявки; формы получили чистые поля и стабильные нижние действия";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({

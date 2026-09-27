@@ -424,17 +424,60 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
+      const financePageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".finance-result-hero")).backgroundColor);
+      if (financePageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "finance-deep-dark-page", financePageSurface });
       await page.locator('[data-action="add-finance"][data-type="income"]').click();
+      const financeEditorState = await page.evaluate(() => {
+        const modal = document.querySelector(".finance-entry-modal");
+        const field = document.querySelector(".finance-entry-modal .field");
+        const footer = document.querySelector(".finance-entry-modal .modal-actions");
+        const footerRect = footer?.getBoundingClientRect();
+        return {
+          modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          field: field ? getComputedStyle(field).backgroundColor : "missing",
+          footerBottom: footerRect ? Math.round(footerRect.bottom) : 0,
+          viewportHeight: window.innerHeight
+        };
+      });
+      if (financeEditorState.modal !== "rgb(3, 7, 10)"
+        || financeEditorState.field !== "rgb(9, 15, 20)"
+        || financeEditorState.footerBottom < financeEditorState.viewportHeight - 24) {
+        report.failures.push({ width, type: "finance-editor-layout", financeEditorState });
+      }
       report.results.push(await shot(page, width, "finance-editor", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
+      const pricePageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor);
+      if (pricePageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
       await page.locator('[data-action="new-price"]').click();
+      const priceEditorState = await page.evaluate(() => ({
+        card: getComputedStyle(document.querySelector(".legacy-price-editor-card")).backgroundColor,
+        field: getComputedStyle(document.querySelector(".legacy-price-editor .field")).backgroundColor,
+        secondary: getComputedStyle(document.querySelector(".legacy-price-editor-actions .legacy-dark-button")).backgroundColor
+      }));
+      if (priceEditorState.card !== "rgb(6, 11, 15)"
+        || priceEditorState.field !== "rgb(9, 15, 20)"
+        || priceEditorState.secondary !== "rgb(10, 17, 22)") {
+        report.failures.push({ width, type: "price-editor-deep-dark", priceEditorState });
+      }
       report.results.push(await shot(page, width, "price-editor", false));
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "clients" }));
+      const clientPageSurface = await page.evaluate(() => getComputedStyle(document.querySelector(".legacy-client-card")).backgroundColor);
+      if (clientPageSurface !== "rgb(7, 12, 16)") report.failures.push({ width, type: "clients-deep-dark-page", clientPageSurface });
       await page.locator('[data-action="open-client"]').first().click();
+      const clientProfileState = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".client-profile-modal")).backgroundColor,
+        hero: getComputedStyle(document.querySelector(".client-profile-hero")).backgroundColor,
+        kpi: getComputedStyle(document.querySelector(".client-profile-kpis > div")).backgroundColor
+      }));
+      if (clientProfileState.modal !== "rgb(3, 7, 10)"
+        || clientProfileState.hero !== "rgb(7, 12, 16)"
+        || clientProfileState.kpi !== "rgb(7, 12, 16)") {
+        report.failures.push({ width, type: "client-profile-deep-dark", clientProfileState });
+      }
       report.results.push(await shot(page, width, "client-profile", false));
       await page.keyboard.press("Escape");
 
