@@ -4458,11 +4458,17 @@ function copyComputedStylesForImage(source, target) {
   if (!(source instanceof Element) || !(target instanceof Element)) return;
   const computed = getComputedStyle(source);
   for (const property of computed) {
-    target.style.setProperty(property, computed.getPropertyValue(property), computed.getPropertyPriority(property));
+    const value = computed.getPropertyValue(property);
+    if (/url\s*\(/i.test(value)) continue;
+    target.style.setProperty(property, value, computed.getPropertyPriority(property));
   }
+  target.querySelectorAll?.("img,video,canvas").forEach((node) => node.remove());
   const sourceChildren = [...source.children];
   const targetChildren = [...target.children];
-  sourceChildren.forEach((child, index) => copyComputedStylesForImage(child, targetChildren[index]));
+  sourceChildren.forEach((child, index) => {
+    const targetChild = targetChildren[index];
+    if (targetChild) copyComputedStylesForImage(child, targetChild);
+  });
 }
 
 async function saveActAsImage() {
@@ -4488,14 +4494,13 @@ async function saveActAsImage() {
         <div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;background:#fff;">${serialized}</div>
       </foreignObject>
     </svg>`;
-    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     const image = new Image();
     image.decoding = "async";
     await new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = () => reject(new Error("Не удалось отрисовать акт"));
-      image.src = url;
+      image.src = svgUrl;
     });
 
     const scale = Math.min(3, Math.max(2, 1080 / width));
@@ -4507,7 +4512,6 @@ async function saveActAsImage() {
     context.fillStyle = "#fff";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    URL.revokeObjectURL(url);
 
     const png = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 1));
     if (!png) throw new Error("Не удалось сохранить PNG");
