@@ -747,16 +747,6 @@ async function runAppDiagnostics() {
   modal.className = "modal-backdrop";
   modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="secondary-button" id="copy-diagnostics">Скопировать отчёт</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
   document.body.appendChild(modal);
-  const storageUnitSelect = modal.querySelector("#stock-storage-unit");
-  const consumeUnitSelect = modal.querySelector("#stock-consume-unit");
-  const syncConsumeUnits = () => {
-    if (!storageUnitSelect || !consumeUnitSelect) return;
-    const allowed = allowedConsumeUnits(storageUnitSelect.value);
-    const previous = normalizeStockUnit(consumeUnitSelect.value);
-    consumeUnitSelect.innerHTML = allowed.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
-    consumeUnitSelect.value = allowed.includes(previous) ? previous : allowed[0];
-  };
-  storageUnitSelect?.addEventListener("change", syncConsumeUnits);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("#diagnostic-backup-test").addEventListener("click", () => runBackupSelfTest());
@@ -3475,6 +3465,16 @@ function stockModal(existing = null) {
     <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
+  const storageUnitSelect = modal.querySelector("#stock-storage-unit");
+  const consumeUnitSelect = modal.querySelector("#stock-consume-unit");
+  const syncConsumeUnits = () => {
+    if (!storageUnitSelect || !consumeUnitSelect) return;
+    const allowed = allowedConsumeUnits(storageUnitSelect.value);
+    const previous = normalizeStockUnit(consumeUnitSelect.value);
+    consumeUnitSelect.innerHTML = allowed.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    consumeUnitSelect.value = allowed.includes(previous) ? previous : allowed[0];
+  };
+  storageUnitSelect?.addEventListener("change", syncConsumeUnits);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
   modal.querySelector("form").addEventListener("submit", async (event) => {
