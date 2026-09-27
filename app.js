@@ -1852,6 +1852,30 @@ function rublesInWords(value) {
   return out.join(" ");
 }
 
+function actDateText(value) {
+  const date = value ? new Date(value) : new Date();
+  const safe = Number.isFinite(date.getTime()) ? date : new Date();
+  const day = safe.getDate();
+  const month = new Intl.DateTimeFormat("ru-RU", { month: "long" }).format(safe);
+  return `«${day}» ${month} ${safe.getFullYear()} г.`;
+}
+
+function actWarrantyHtml(order = {}) {
+  const months = Number(order.guarantee) || 0;
+  if (months <= 0) return "";
+  const targets = Array.isArray(order.guaranteeTargets)
+    ? order.guaranteeTargets.map((item) => String(item || "").trim()).filter(Boolean)
+    : [];
+  const extra = String(order.guaranteeNote || "").trim();
+  const parts = [];
+  if (targets.length) parts.push(`Гарантия распространяется на: ${targets.map(escapeHtml).join(", ")}.`);
+  if (extra) parts.push(escapeHtml(extra));
+  return `<section class="act-guarantee">
+    <b>Гарантия: ${months} мес.</b>
+    ${parts.length ? `<span>${parts.join(" ")}</span>` : ""}
+  </section>`;
+}
+
 function actPage() {
   const orders = ordersNewestFirst().filter((item) => !item.archived);
   if (orders.length && !orders.some((item) => String(item.id) === String(selectedActOrderId))) selectedActOrderId = String(orders[0].id);
@@ -1861,46 +1885,48 @@ function actPage() {
     : [];
   if (order && !actItems.length) actItems.push({ name: "Ремонт техники", qty: 1, price: Number(order.sum) || 0, actType: "service" });
 
-  const date = new Date();
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = new Intl.DateTimeFormat("ru-RU", { month: "long" }).format(date);
-  const year = date.getFullYear();
   const itemsTotal = actItems.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
   const actTotal = Number(order?.sum) || itemsTotal;
   const amountWords = rublesInWords(actTotal);
+  const contractDate = order ? actDateText(orderDateValue(order)) : "";
+  const acceptanceDate = order ? actDateText(order.completed || order.updatedAt || new Date()) : "";
+  const blank = (value) => String(value || "").trim() ? escapeHtml(String(value).trim()) : "&nbsp;";
+  const executorName = String(data.settings.name || "").trim();
+  const customerName = String(order?.name || "").trim();
 
   return `<main class="content legacy-act-page">
     <div class="legacy-subpage-head legacy-act-head no-print">
       <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
-      <div><h1>Акт</h1><p>Подготовка и печать документа</p></div>
+      <div><h1>Акт</h1><p>Предпросмотр перед сохранением</p></div>
     </div>
 
     <section class="legacy-act-control no-print">
-      <div class="legacy-act-control-title"><span>${icon("printer")}</span><div><h2>Акт выполненных работ</h2><small>Формат A4 · печать или PDF</small></div></div>
+      <div class="legacy-act-control-title"><span>${icon("document")}</span><div><h2>Акт выполненных работ</h2><small>Предпросмотр · сохранение картинкой</small></div></div>
       <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
       ${order ? `<div class="legacy-act-selected">
         <span class="legacy-act-selected-icon">${icon(applianceIconName(order.tech))}</span>
         <span><small>В АКТЕ</small><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.name || "Клиент")}</strong><em>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" · ") || "Техника")} · ${money(actTotal)}</em></span>
       </div>` : ""}
-      <div class="legacy-act-control-actions">
-        <button type="button" class="legacy-dark-button" data-action="open-receipts">${icon("receipt")}<span>Документы</span></button>
-        <button type="button" class="legacy-orange-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button>
+      <div class="legacy-act-control-actions single">
+        <button type="button" class="legacy-orange-button" data-action="save-act-image" ${order ? "" : "disabled"}>${icon("download")}<span>Сохранить картинку</span></button>
       </div>
     </section>
 
     ${order ? `<div class="legacy-act-preview">
-      <article class="act-sheet">
+      <article class="act-sheet" data-act-order-id="${escapeHtml(order.id || "")}">
         <h2>АКТ ВЫПОЛНЕННЫХ РАБОТ</h2>
-        <div class="act-contract-line">по договору № ___ от «${day}» ${month} ${year} г.</div>
+        <div class="act-contract-line">по договору №${escapeHtml(order.id || "")} от ${contractDate}</div>
 
         <div class="act-main-fields">
-          <div><b>Тип, модель техники:</b><span>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" ") || "—")}</span></div>
-          <div><b>Неисправность со слов клиента:</b><span>${escapeHtml(order.issue || "—")}</span></div>
-          <div><b>Результат диагностики:</b><span>${escapeHtml(order.diagnosis || "—")}</span></div>
-          <div><b>Внешние дефекты:</b><span>${escapeHtml(order.defects || "—")}</span></div>
+          <div><b>Тип, модель техники:</b><span>${blank([order.tech, order.brand].filter(Boolean).join(" "))}</span></div>
+          <div><b>Неисправность со слов клиента:</b><span>${blank(order.issue)}</span></div>
+          <div><b>Результат диагностики:</b><span>${blank(order.diagnosis)}</span></div>
+          <div><b>Внешние дефекты:</b><span>${blank(order.defects)}</span></div>
         </div>
 
-        <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th><th>Гарантия</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td><td>${Number(order.guarantee) > 0 ? `${escapeHtml(order.guarantee)} мес.` : "—"}</td></tr>`).join("")}</tbody></table>
+        <table class="act-work-table"><thead><tr><th>п/п</th><th>Наименование работ</th><th>Стоимость</th><th>Кол-во</th><th>Сумма</th></tr></thead><tbody>${actItems.map((item, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(item.name || "Услуга")}</td><td>${money(item.price)}</td><td>${Number(item.qty) || 1}</td><td>${money((Number(item.price) || 0) * (Number(item.qty) || 1))}</td></tr>`).join("")}</tbody></table>
+
+        ${actWarrantyHtml(order)}
 
         <div class="act-totals">
           <div><b>Общая стоимость:</b><strong>${money(itemsTotal || actTotal)}</strong></div>
@@ -1910,140 +1936,16 @@ function actPage() {
 
         <section class="act-acceptance">
           <h3>АКТ СДАЧИ-ПРИЕМКИ ОКАЗАННЫХ УСЛУГ</h3>
-          <div class="act-acceptance-date">от «${day}» ${month} ${year} г.</div>
-          <p>Мы, нижеподписавшиеся, <b>Исполнитель ${escapeHtml(data.settings.name || data.settings.companyName || "________________")}</b> с одной стороны, и представитель Заказчика <b>${escapeHtml(order.name || "________________")}</b> с другой стороны, составили настоящий Акт о том, что в соответствии с настоящим договором Исполнителем выполнен в полном объёме перечень работ по обслуживанию оборудования, указанного в данном договоре. С условиями обслуживания и оплаты Заказчик ознакомлен. К качеству работ (услуг) и состоянию оборудования заказчик претензий не имеет.</p>
+          <div class="act-acceptance-date">от ${acceptanceDate}</div>
+          <p>Мы, нижеподписавшиеся, <b>Исполнитель ${blank(executorName)}</b> с одной стороны, и представитель Заказчика <b>${blank(customerName)}</b> с другой стороны, составили настоящий Акт о том, что в соответствии с настоящим договором Исполнителем выполнен в полном объёме перечень работ по обслуживанию оборудования, указанного в данном договоре. С условиями обслуживания и оплаты Заказчик ознакомлен. К качеству работ (услуг) и состоянию оборудования Заказчик претензий не имеет.</p>
           <div class="act-signatures">
-            <div><b>Исполнитель:</b><br>Ф.И.О.: ${escapeHtml(data.settings.name || "________________")}<br>Подпись: ____________<br><br>Адрес оказания услуг:<br>${escapeHtml(order.address || "________________")}</div>
-            <div><b>Заказчик:</b><br>Ф.И.О.: ${escapeHtml(order.name || "________________")}<br>Телефон: ${escapeHtml(order.phone || "________________")}<br>Подпись: ____________</div>
+            <div><b>Исполнитель:</b><br>Ф.И.О.: ${blank(executorName)}<br>Подпись: ____________<br><br>Адрес оказания услуг:<br>${blank(order.address)}</div>
+            <div><b>Заказчик:</b><br>Ф.И.О.: ${blank(customerName)}<br>Телефон: ${blank(order.phone)}<br>Подпись: ____________</div>
           </div>
         </section>
       </article>
     </div>` : emptyState("document", "Нет заявки для акта", "Сначала создай или импортируй заявку.")}
   </main>`;
-}
-function goodsPage() {
-  const sheets = Array.isArray(data.goods_sheets)
-    ? [...data.goods_sheets].sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
-    : [];
-  const latest = sheets[0] || null;
-  const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
-  const closedOrders = ordersNewestFirst().filter((order) => !order.archived && normalizeStatus(order.status) === "closed");
-  const productPrice = data.receipt_prices
-    .filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
-    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
-
-  return `<main class="content goods-content legacy-goods-page">
-    <div class="legacy-subpage-head">
-      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
-      <div><h1>Товарник</h1><p>Товары и материалы · отдельный расчёт</p></div>
-    </div>
-
-    <section class="legacy-goods-panel legacy-goods-new">
-      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Новый товарник</h2></div>
-      <div class="legacy-goods-create-grid">
-        <button type="button" class="legacy-purple-button" data-action="new-goods-sheet"><span>${icon("plus")}</span>Создать вручную</button>
-        <button type="button" class="legacy-dark-button" data-action="new-goods-from-order">${icon("document")}<span>Из закрытой<br>заявки</span></button>
-      </div>
-      <label class="legacy-goods-order-source">
-        <span>ЗАЯВКА ДЛЯ АВТОЗАПОЛНЕНИЯ</span>
-        <select class="field" id="goods-source-order">
-          <option value="">— Выберите заявку —</option>
-          ${closedOrders.map((order) => `<option value="${escapeHtml(order.id)}">№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</option>`).join("")}
-        </select>
-      </label>
-      <p class="legacy-goods-help">Отдельный расчёт товаров — склад и статистика не изменяются.</p>
-    </section>
-
-    <section class="legacy-goods-panel legacy-goods-current">
-      <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>${latest ? "Последний товарник" : "Товарник"}</h2></div>
-      ${latest ? `
-        <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>${latestItems.length} позиций</small></span><b>${money(latest.total || 0)}</b></div>
-        <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
-        <div class="legacy-goods-position-list">
-          ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
-          ${latestItems.length > 6 ? `<div class="legacy-goods-more">Ещё ${latestItems.length - 6} поз.</div>` : ""}
-        </div>
-        <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
-      ` : `<div class="legacy-goods-empty">Создай товарник вручную или выбери закрытую заявку для автозаполнения.</div>`}
-    </section>
-
-    <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">
-      <summary><span class="legacy-section-title"><span class="legacy-section-icon">${icon("goods")}</span><h2>Прайс товаров</h2></span><span class="legacy-price-chevron">${icon("chevron")}</span></summary>
-      ${productPrice.length ? `<div class="legacy-product-price-list">${productPrice.map((item) => `<div><span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(item.category || "Товар")}</small></span><b>${money(item.price || 0)}</b></div>`).join("")}</div>` : `<p class="legacy-goods-help">В прайс-листе пока нет товарных позиций.</p>`}
-    </details>
-  </main>`;
-}
-function orderSourcesModal() {
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop source-manager-backdrop";
-  modal.innerHTML = `<section class="modal compact-modal source-manager-modal" role="dialog" aria-modal="true" aria-label="Источники заявок">
-    <div class="source-manager-head">
-      <div><small>НАСТРОЙКИ</small><h2>Источники заявок</h2></div>
-      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
-    </div>
-    <div id="source-manager-list" class="source-manager-list"></div>
-    <div class="source-manager-add">
-      <input class="field" id="new-source-name" placeholder="Новый источник" />
-      <button type="button" class="primary-button" id="add-order-source">${icon("plus")}<span>Добавить</span></button>
-    </div>
-  </section>`;
-  document.body.appendChild(modal);
-
-  const renderList = () => {
-    const list = modal.querySelector("#source-manager-list");
-    const sources = [...(data.order_sources || [])]
-      .sort((a,b)=>Number(Boolean(a.archived))-Number(Boolean(b.archived)) || String(a.name||"").localeCompare(String(b.name||""),"ru"));
-    list.innerHTML = sources.length ? sources.map((source)=>`<div class="source-manager-row ${source.archived ? "archived" : ""}" data-source-id="${escapeHtml(source.id)}">
-      <input class="field" data-source-name value="${escapeHtml(source.name || "")}" aria-label="Название источника" />
-      <button type="button" data-source-archive aria-label="${source.archived ? "Вернуть источник" : "Архивировать источник"}">${icon(source.archived ? "restore" : "archive")}</button>
-    </div>`).join("") : `<div class="empty">Источников пока нет</div>`;
-  };
-
-  const close = () => {
-    modal.remove();
-    syncModalScrollLock();
-  };
-  modal.querySelector("[data-close-modal]").addEventListener("click", close);
-  modal.addEventListener("click", async (event) => {
-    if (event.target === modal) return close();
-    const archiveButton = event.target.closest("[data-source-archive]");
-    if (!archiveButton) return;
-    const row = archiveButton.closest("[data-source-id]");
-    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
-    if (!source) return;
-    source.archived = !source.archived;
-    await saveData();
-    renderList();
-  });
-  modal.addEventListener("change", async (event) => {
-    const input = event.target.closest("[data-source-name]");
-    if (!input) return;
-    const row = input.closest("[data-source-id]");
-    const source = data.order_sources.find((item)=>String(item.id)===String(row?.dataset.sourceId||""));
-    if (!source) return;
-    const name = String(input.value || "").trim();
-    if (!name) {
-      input.value = source.name || "";
-      return toast("Название источника не может быть пустым");
-    }
-    source.name = name;
-    await saveData();
-    renderList();
-  });
-  modal.querySelector("#add-order-source").addEventListener("click", async () => {
-    const input = modal.querySelector("#new-source-name");
-    const name = String(input.value || "").trim();
-    if (!name) return toast("Напиши название источника");
-    if ((data.order_sources || []).some((source)=>String(source.name||"").trim().toLowerCase()===name.toLowerCase() && !source.archived)) {
-      return toast("Такой источник уже есть");
-    }
-    data.order_sources.push({ id: crypto.randomUUID(), name, archived: false });
-    input.value = "";
-    await saveData();
-    renderList();
-  });
-  renderList();
-  syncModalScrollLock();
 }
 
 function settingsPage() {
@@ -4235,18 +4137,77 @@ function orderDetailModal(order) {
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
 }
 
-function printActOnePage() {
+function copyComputedStylesForImage(source, target) {
+  if (!(source instanceof Element) || !(target instanceof Element)) return;
+  const computed = getComputedStyle(source);
+  for (const property of computed) {
+    target.style.setProperty(property, computed.getPropertyValue(property), computed.getPropertyPriority(property));
+  }
+  const sourceChildren = [...source.children];
+  const targetChildren = [...target.children];
+  sourceChildren.forEach((child, index) => copyComputedStylesForImage(child, targetChildren[index]));
+}
+
+async function saveActAsImage() {
   const sheet = document.querySelector(".act-sheet");
-  if (!sheet) return;
-  const rows = sheet.querySelectorAll("tbody tr").length;
-  const textLength = String(sheet.innerText || "").length;
-  let zoom = 1;
-  if (rows > 18 || textLength > 2200) zoom = 0.94;
-  if (rows > 24 || textLength > 3000) zoom = 0.88;
-  if (rows > 30 || textLength > 3800) zoom = 0.82;
-  if (rows > 36 || textLength > 4600) zoom = 0.76;
-  document.documentElement.style.setProperty("--act-print-zoom", String(zoom));
-  requestAnimationFrame(() => window.print());
+  if (!sheet) return toast("Сначала выбери заявку");
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+    const rect = sheet.getBoundingClientRect();
+    const width = Math.max(320, Math.ceil(rect.width));
+    const height = Math.max(1, Math.ceil(sheet.scrollHeight));
+    const clone = sheet.cloneNode(true);
+    copyComputedStylesForImage(sheet, clone);
+    clone.style.width = `${width}px`;
+    clone.style.height = "auto";
+    clone.style.margin = "0";
+    clone.style.boxSizing = "border-box";
+    clone.style.transform = "none";
+    clone.style.zoom = "1";
+
+    const serialized = new XMLSerializer().serializeToString(clone);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;background:#fff;">${serialized}</div>
+      </foreignObject>
+    </svg>`;
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+    image.decoding = "async";
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () => reject(new Error("Не удалось отрисовать акт"));
+      image.src = url;
+    });
+
+    const scale = Math.min(3, Math.max(2, 1080 / width));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Не удалось создать изображение");
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+
+    const png = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 1));
+    if (!png) throw new Error("Не удалось сохранить PNG");
+    const pngUrl = URL.createObjectURL(png);
+    const orderId = sheet.dataset.actOrderId || "act";
+    const link = document.createElement("a");
+    link.href = pngUrl;
+    link.download = `Акт_${orderId}.png`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(pngUrl), 2000);
+    toast("Акт сохранён картинкой");
+  } catch (error) {
+    console.error(error);
+    toast(error.message || "Не удалось сохранить акт");
+  }
 }
 
 async function handleOrderAction(action, id) {
@@ -4762,7 +4723,7 @@ app.addEventListener("click", async (event) => {
     const sheet = (data.goods_sheets || []).find((item) => String(item.id) === String(id));
     if (sheet) return goodsModal(sheet);
   }
-  if (action === "print-act") return printActOnePage();
+  if (action === "save-act-image") return saveActAsImage();
   if (action === "toggle-auto") {
     data.settings.autoBackup = !data.settings.autoBackup;
     await saveData();
