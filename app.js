@@ -2858,6 +2858,11 @@ function newOrderModal(existing = null, options = {}) {
     : Number(order.guarantee);
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
+  const visitParts = visitDateParts(order);
+  const sourceOptions = activeOrderSources().map((source) => `<option value="${escapeHtml(source.id)}" ${String(order.sourceId || "") === String(source.id) ? "selected" : ""}>${escapeHtml(source.name)}</option>`).join("");
+  const archivedSourceOption = order.sourceId && !activeOrderSources().some((source) => String(source.id) === String(order.sourceId))
+    ? `<option value="${escapeHtml(order.sourceId)}" selected>${escapeHtml(orderSourceName(order) || "Архивный источник")}</option>`
+    : "";
   const stockOptions = data.warehouse
     .filter((item) => !item.archived && !item.hiddenFromOrders)
     .map((item, index) => `<option value="${index}">${escapeHtml(item.name)} · ${escapeHtml(item.quantity || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</option>`).join("");
@@ -2877,12 +2882,16 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${["Холодильник","Коммерческое холод. оборудование","Стиральная машина","Посудомоечная машина","Сушильная машина","Плита / духовка","Кондиционер","Водонагреватель","Мелкая бытовая техника","Другое"].map((value) => `<option ${order.tech === value ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
+      <div class="client-match-slot full" id="client-match-slot"></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
+      <div class="form-group"><label>Источник заявки *</label><select class="field" name="sourceId"><option value="">Выбери источник</option>${sourceOptions}${archivedSourceOption}</select></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
       <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
       <div class="form-group"><label>Дата заявки</label><input class="field" name="createdDate" type="date" value="${escapeHtml(localDateInputValue(orderDateValue(order) || new Date()))}" /></div>
-      <div class="form-group"><label>Следующий визит</label><input class="field" name="nextVisit" type="datetime-local" value="${escapeHtml(localDateTimeInputValue(order.nextVisit))}" /></div>
+      <div class="form-group"><label>Дата визита</label><input class="field" name="nextVisitDate" type="date" value="${escapeHtml(visitParts.date)}" /></div>
+      <div class="form-group"><label>Время визита</label><input class="field" name="nextVisitTime" type="time" value="${escapeHtml(visitParts.time)}" /></div>
+      <div class="form-group"><label>Длительность</label><select class="field" name="nextVisitDuration">${[30,45,60,90,120,180].map((minutes) => `<option value="${minutes}" ${visitParts.duration === minutes ? "selected" : ""}>${minutes < 60 ? `${minutes} мин.` : minutes === 60 ? "1 час" : minutes === 90 ? "1 ч 30 мин." : `${minutes / 60} ч.`}</option>`).join("")}</select></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       </div>
     </section>
@@ -2943,11 +2952,42 @@ function newOrderModal(existing = null, options = {}) {
   document.body.appendChild(modal);
   const formElement = modal.querySelector("form");
   const phoneInput = formElement.elements.phone;
-  phoneInput?.addEventListener("input", () => sanitizeRussianPhoneField(phoneInput));
+  const clientMatchSlot = modal.querySelector("#client-match-slot");
+  const applyKnownClient = () => {
+    const normalized = sanitizeRussianPhoneField(phoneInput);
+    if (!normalized || !isValidRussianPhone(normalized)) {
+      if (clientMatchSlot) clientMatchSlot.innerHTML = "";
+      return null;
+    }
+    const profile = clientProfileByPhone(normalized);
+    const latest = latestOrderByPhone(normalized, { excludeOrderId: order.id || null });
+    if (!profile && !latest) {
+      if (clientMatchSlot) clientMatchSlot.innerHTML = "";
+      return null;
+    }
+    const knownName = profile?.name || latest?.name || "";
+    const knownAddress = profile?.lastAddress || latest?.address || "";
+    if (!String(formElement.elements.name.value || "").trim() && knownName) formElement.elements.name.value = knownName;
+    if (!String(formElement.elements.address.value || "").trim() && knownAddress) formElement.elements.address.value = knownAddress;
+    if (clientMatchSlot) {
+      const details = [
+        profile?.note || "",
+        latest ? `последняя заявка: ${money(latest.sum)}` : ""
+      ].filter(Boolean).join(" · ");
+      clientMatchSlot.innerHTML = `<div class="client-match-card">${icon("clients")}<span><strong>Клиент найден</strong><small>${escapeHtml(details || "История клиента найдена")}</small></span></div>`;
+    }
+    return { profile, latest };
+  };
+  phoneInput?.addEventListener("input", () => {
+    sanitizeRussianPhoneField(phoneInput);
+    if (isValidRussianPhone(phoneInput.value || "")) applyKnownClient();
+  });
   phoneInput?.addEventListener("blur", () => {
     const normalized = sanitizeRussianPhoneField(phoneInput);
-    if (normalized && !isValidRussianPhone(normalized)) toast("Телефон: только российский номер +7XXXXXXXXXX");
+    if (normalized && !isValidRussianPhone(normalized)) return toast("Телефон: только российский номер +7XXXXXXXXXX");
+    applyKnownClient();
   });
+  applyKnownClient();
   const photoList = modal.querySelector("#order-photo-list");
   const photoInput = modal.querySelector("#order-photo-input");
   const renderPhotos = () => {
@@ -3110,7 +3150,12 @@ function newOrderModal(existing = null, options = {}) {
       defects: form.get("defects"),
       comment: form.get("comment"),
       guaranteeNote: form.get("guaranteeNote"),
-      nextVisit: form.get("nextVisit") || null,
+      sourceId: String(form.get("sourceId") || ""),
+      sourceName: activeOrderSources().find((source) => String(source.id) === String(form.get("sourceId") || ""))?.name || orderSourceName(order) || "",
+      nextVisitDate: String(form.get("nextVisitDate") || ""),
+      nextVisitTime: String(form.get("nextVisitTime") || ""),
+      nextVisitDuration: Number(form.get("nextVisitDuration")) || 60,
+      nextVisit: form.get("nextVisitDate") ? `${form.get("nextVisitDate")}T${form.get("nextVisitTime") || "12:00"}:00` : null,
       status: form.get("status"),
       services: [...modal.querySelectorAll("[data-service-row]")].map((row) => ({
         name: row.querySelector('[data-line="name"]').value,
@@ -3150,6 +3195,14 @@ function newOrderModal(existing = null, options = {}) {
     delete next.draft;
     const index = data.orders.findIndex((item) => String(item.id) === String(next.id));
     const previous = index >= 0 ? data.orders[index] : null;
+    if (index < 0 && !next.sourceId) {
+      formElement.elements.sourceId.focus();
+      return toast("Выбери источник заявки");
+    }
+    if (next.nextVisitTime && !next.nextVisitDate) {
+      formElement.elements.nextVisitDate.focus();
+      return toast("Для времени визита сначала выбери дату");
+    }
     const nextStatus = normalizeStatus(next.status);
     const previousStatus = previous ? normalizeStatus(previous.status) : null;
     const directExpenseMinimum = next.materials
@@ -3181,6 +3234,7 @@ function newOrderModal(existing = null, options = {}) {
     if (!stockSync.ok) return toast(stockSync.message);
     syncOrderCompletion(next, previous);
     if (index >= 0) data.orders[index] = next; else data.orders.push(next);
+    syncClientProfileFromOrder(next);
     await saveData();
     modal.remove();
     render();
