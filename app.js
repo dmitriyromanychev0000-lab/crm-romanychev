@@ -2128,6 +2128,98 @@ function orderSourcesModal() {
   syncModalScrollLock();
 }
 
+function warrantyOptionsModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop warranty-manager-backdrop";
+  const types = applianceTypes();
+  let selectedTech = types[0] || "Другое";
+
+  modal.innerHTML = `<section class="modal compact-modal warranty-manager-modal" role="dialog" aria-modal="true" aria-label="Гарантии по технике">
+    <div class="warranty-manager-head">
+      <div><small>НАСТРОЙКИ</small><h2>Гарантии по технике</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="warranty-manager-tech">
+      <label><span>Тип техники</span><select class="field" id="warranty-manager-tech">${types.map((tech) => `<option>${escapeHtml(tech)}</option>`).join("")}</select></label>
+    </div>
+    <div id="warranty-manager-list" class="warranty-manager-list"></div>
+    <div class="warranty-manager-add">
+      <input class="field" id="new-warranty-name" placeholder="Например, компрессор" />
+      <button type="button" class="primary-button" id="add-warranty-option">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#warranty-manager-list");
+    const options = warrantyOptionsForTech(selectedTech, { includeArchived: true });
+    list.innerHTML = options.length
+      ? options.map((option) => `<div class="warranty-manager-row ${option.archived ? "archived" : ""}" data-warranty-option-id="${escapeHtml(option.id)}">
+          <input class="field" data-warranty-option-name value="${escapeHtml(option.name || "")}" aria-label="Пункт гарантии" />
+          <button type="button" data-warranty-option-archive aria-label="${option.archived ? "Вернуть пункт" : "Архивировать пункт"}">${icon(option.archived ? "restore" : "archive")}</button>
+        </div>`).join("")
+      : `<div class="warranty-manager-empty">Для этого типа техники пунктов пока нет.</div>`;
+  };
+
+  const close = () => {
+    modal.remove();
+    syncModalScrollLock();
+  };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const archiveButton = event.target.closest("[data-warranty-option-archive]");
+    if (!archiveButton) return;
+    const row = archiveButton.closest("[data-warranty-option-id]");
+    const option = data.warranty_options.find((item) => String(item.id) === String(row?.dataset.warrantyOptionId || ""));
+    if (!option) return;
+    option.archived = !option.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    if (event.target.id === "warranty-manager-tech") {
+      selectedTech = event.target.value;
+      renderList();
+      return;
+    }
+    const input = event.target.closest("[data-warranty-option-name]");
+    if (!input) return;
+    const row = input.closest("[data-warranty-option-id]");
+    const option = data.warranty_options.find((item) => String(item.id) === String(row?.dataset.warrantyOptionId || ""));
+    if (!option) return;
+    const name = String(input.value || "").trim();
+    if (!name) {
+      input.value = option.name || "";
+      return toast("Пункт гарантии не может быть пустым");
+    }
+    option.name = name;
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-warranty-option").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-warranty-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши, на что распространяется гарантия");
+    if (warrantyOptionsForTech(selectedTech, { includeArchived: false })
+      .some((option) => String(option.name || "").trim().toLowerCase() === name.toLowerCase())) {
+      return toast("Такой пункт уже есть");
+    }
+    data.warranty_options.push({
+      id: crypto.randomUUID(),
+      tech: selectedTech,
+      name,
+      archived: false
+    });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+
+  renderList();
+  syncModalScrollLock();
+}
+
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
@@ -2161,6 +2253,7 @@ function settingsPage() {
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Рабочие данные</h2></div>
       <div class="legacy-settings-links">
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -4764,6 +4857,7 @@ app.addEventListener("click", async (event) => {
   if (action === "share-shopping-list") return shareShoppingList();
   if (action === "new-order") return newOrderModal();
   if (action === "manage-order-sources") return orderSourcesModal();
+  if (action === "manage-warranty-options") return warrantyOptionsModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
     orderVisitFilter = "all";
