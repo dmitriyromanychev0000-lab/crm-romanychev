@@ -2116,17 +2116,35 @@ function fitServiceRowsToTarget(orderModal, targetValue) {
   return true;
 }
 
-const orderMaterialRow = (item = {}) => `<div class="line-item material-line legacy-material-card" data-material-row data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
-  <div class="material-card-head">
-    <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>${item.warehouseId ? "Материал со склада" : "Материал вне склада · только наличие"}</small></div>
-    <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
-  </div>
-  <div class="material-card-controls">
-    <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${Number(item.qty) || 1}" /></label>
-    <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
-    <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
-  </div>
-</div>`;
+const orderMaterialRow = (item = {}) => {
+  const directExpense = Boolean(item.directExpense || !item.warehouseId);
+  const qty = Number(item.qty) || 1;
+  const amount = Number(item.amount ?? (qty * (Number(item.unitCost) || 0))) || 0;
+  if (directExpense) {
+    return `<div class="line-item material-line legacy-material-card direct-expense-card" data-material-row data-direct-expense="true" data-warehouse-id="" data-write-off="false">
+      <div class="material-card-head">
+        <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Например, ремонт платы" /><small>Расход конкретной заявки · без склада</small></div>
+        <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
+      </div>
+      <div class="direct-expense-controls">
+        <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
+        <label><span>Сумма</span><input class="field compact" data-line="amount" type="number" min="0" step="1" value="${amount}" inputmode="decimal" /></label>
+        <label class="direct-expense-comment"><span>Комментарий</span><input class="field" data-line="comment" value="${escapeHtml(item.comment || "")}" placeholder="Необязательно" /></label>
+      </div>
+    </div>`;
+  }
+  return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(item.unit || "шт.")}" data-write-off="${item.writeOff ? "true" : "false"}">
+    <div class="material-card-head">
+      <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада</small></div>
+      <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
+    </div>
+    <div class="material-card-controls">
+      <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
+      <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(item.unit || "шт.")}</div></label>
+      <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
+    </div>
+  </div>`;
+};
 
 function syncOrderStock(previousMaterials = [], nextMaterials = [], orderId) {
   const totals = (materials) => {
@@ -2528,7 +2546,7 @@ function newOrderModal(existing = null, options = {}) {
     <p class="legacy-material-help">Выбери позицию со склада или добавь ручную — количество и себестоимость можно изменить.</p>
     <button type="button" class="legacy-stock-button material-catalog-open" id="open-material-catalog">${icon("warehouse")}<span>Выбрать со склада</span></button>
     <div id="material-lines" class="line-list">${materials.map(orderMaterialRow).join("")}</div>
-    <details class="manual-material-details"><summary>Материал без склада</summary><button type="button" class="secondary-button wide" id="add-manual-material">${icon("plus")}<span>Добавить ручную позицию</span></button></details>
+    <button type="button" class="secondary-button wide direct-expense-add" id="add-manual-material">${icon("plus")}<span>Добавить расход без склада</span></button>
     </section>
 
     <details class="order-extra-details order-photo-details" ${orderPhotos.length ? "open" : ""}>
@@ -2541,15 +2559,15 @@ function newOrderModal(existing = null, options = {}) {
 
     <section class="order-editor-section order-editor-payment-section">
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт и гарантия</span></div>
-    <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Материалы</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Расчёт</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
+    <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Без склада</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Итог услуг</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
 
     <div class="form-grid legacy-payment-grid">
       <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
       <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
       <div class="form-group"><label>Гарантия</label><select class="field" name="guarantee"><option value="0" ${guaranteeMonths === 0 ? "selected" : ""}>Без гарантии</option><option value="3" ${guaranteeMonths === 3 ? "selected" : ""}>3 месяца</option><option value="6" ${guaranteeMonths === 6 ? "selected" : ""}>6 месяцев</option><option value="9" ${guaranteeMonths === 9 ? "selected" : ""}>9 месяцев</option><option value="12" ${guaranteeMonths === 12 ? "selected" : ""}>12 месяцев</option></select></div>
-      <div class="form-group"><label>Серые расходы</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
-      <div class="form-group"><label>Белые расходы</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /></div>
+      <div class="form-group"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+      <div class="form-group white-expense-group"><label>Белый расход</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /><small class="white-expense-hint" id="white-expense-minimum">Минимум: 0 ₽</small></div>
       <div class="form-group"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
       <div class="form-group"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
@@ -2641,14 +2659,30 @@ function newOrderModal(existing = null, options = {}) {
     openPhotoViewer(Number(card.dataset.viewPhoto));
   });
   renderPhotos();
+  const directExpenseTotal = () => [...modal.querySelectorAll('[data-material-row][data-direct-expense="true"]')].reduce((sum, row) => {
+    return sum + (Number(row.querySelector('[data-line="amount"]')?.value) || 0);
+  }, 0);
+  const syncWhiteExpenseMinimum = ({ raise = true } = {}) => {
+    const minimum = directExpenseTotal();
+    const input = formElement.elements.expense_white;
+    const hint = modal.querySelector("#white-expense-minimum");
+    if (input) {
+      input.min = String(minimum);
+      const current = Number(input.value) || 0;
+      if (raise && current < minimum) input.value = String(minimum);
+    }
+    if (hint) hint.textContent = minimum > 0 ? `Минимум по расходам без склада: ${money(minimum)}` : "Минимум: 0 ₽";
+    return minimum;
+  };
   const calculateLines = () => {
     const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
-    const materialTotal = [...modal.querySelectorAll("[data-material-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="unit-cost"]').value) || 0), 0);
+    const directTotal = directExpenseTotal();
     modal.querySelector("#service-total").textContent = money(serviceTotal);
-    modal.querySelector("#material-total").textContent = money(materialTotal);
+    modal.querySelector("#material-total").textContent = money(directTotal);
     modal.querySelector("#calculated-total").textContent = money(serviceTotal);
     const legacyServiceTotal = modal.querySelector("#legacy-service-total");
     if (legacyServiceTotal) legacyServiceTotal.textContent = money(serviceTotal);
+    syncWhiteExpenseMinimum();
     return serviceTotal;
   };
   const refitServices = () => {
@@ -2659,8 +2693,9 @@ function newOrderModal(existing = null, options = {}) {
   modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
   modal.querySelector("#open-material-catalog").addEventListener("click", () => openMaterialCatalog(modal));
   modal.querySelector("#add-manual-material").addEventListener("click", () => {
-    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({ qty: 1, unit: "шт.", unitCost: 0, writeOff: false }));
+    modal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({ qty: 1, amount: 0, directExpense: true, writeOff: false }));
     calculateLines();
+    modal.querySelector('#material-lines [data-material-row]:last-child [data-line="name"]')?.focus();
   });
   modal.addEventListener("click", (event) => {
     if (event.target.closest("[data-remove-line]")) {
@@ -2675,6 +2710,13 @@ function newOrderModal(existing = null, options = {}) {
       return;
     }
     if (event.target.closest("[data-material-row]")) calculateLines();
+  });
+  formElement.elements.expense_white?.addEventListener("change", () => {
+    const minimum = syncWhiteExpenseMinimum({ raise: false });
+    if ((Number(formElement.elements.expense_white.value) || 0) < minimum) {
+      formElement.elements.expense_white.value = String(minimum);
+      toast(`Белый расход не может быть меньше ${money(minimum)}`);
+    }
   });
   modal.querySelector("#use-calculated-total").addEventListener("click", () => {
     const baseTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => {
@@ -2723,14 +2765,22 @@ function newOrderModal(existing = null, options = {}) {
         price: Number(row.querySelector('[data-line="price"]').value) || 0,
         basePrice: Number(row.dataset.basePrice) || Number(row.querySelector('[data-line="price"]').value) || 0
       })).filter((item) => item.name.trim()),
-      materials: [...modal.querySelectorAll("[data-material-row]")].map((row) => ({
-        warehouseId: row.dataset.warehouseId || null,
-        name: row.querySelector('[data-line="name"]').value,
-        qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
-        unitCost: Number(row.querySelector('[data-line="unit-cost"]').value) || 0,
-        unit: row.dataset.unit || "шт.",
-        writeOff: row.dataset.writeOff === "true"
-      })).filter((item) => item.name.trim()),
+      materials: [...modal.querySelectorAll("[data-material-row]")].map((row) => {
+        const directExpense = row.dataset.directExpense === "true";
+        const qty = Number(row.querySelector('[data-line="qty"]')?.value) || 1;
+        const amount = directExpense ? Number(row.querySelector('[data-line="amount"]')?.value) || 0 : 0;
+        return {
+          warehouseId: directExpense ? null : (row.dataset.warehouseId || null),
+          name: row.querySelector('[data-line="name"]').value,
+          qty,
+          unitCost: directExpense ? (qty > 0 ? amount / qty : 0) : (Number(row.querySelector('[data-line="unit-cost"]')?.value) || 0),
+          unit: directExpense ? "" : (row.dataset.unit || "шт."),
+          writeOff: directExpense ? false : row.dataset.writeOff === "true",
+          directExpense,
+          amount: directExpense ? amount : undefined,
+          comment: directExpense ? String(row.querySelector('[data-line="comment"]')?.value || "").trim() : undefined
+        };
+      }).filter((item) => item.name.trim()),
       photos: orderPhotos
     };
   };
@@ -2748,6 +2798,22 @@ function newOrderModal(existing = null, options = {}) {
     const previous = index >= 0 ? data.orders[index] : null;
     const nextStatus = normalizeStatus(next.status);
     const previousStatus = previous ? normalizeStatus(previous.status) : null;
+    const directExpenseMinimum = next.materials
+      .filter((item) => item.directExpense)
+      .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    if ((Number(next.percent) || 0) < 0 || (Number(next.percent) || 0) > 100) {
+      formElement.elements.percent.focus();
+      return toast("Процент по заявке должен быть от 0 до 100");
+    }
+    if ((Number(next.expense_gray) || 0) > (Number(next.sum) || 0)) {
+      formElement.elements.expense_gray.focus();
+      return toast("Серый расход не может быть больше итоговой суммы");
+    }
+    if ((Number(next.expense_white) || 0) < directExpenseMinimum) {
+      formElement.elements.expense_white.value = String(directExpenseMinimum);
+      formElement.elements.expense_white.focus();
+      return toast(`Белый расход не может быть меньше ${money(directExpenseMinimum)}`);
+    }
     if (nextStatus === "closed" && (Number(next.sum) || 0) <= 0) {
       formElement.elements.sum.focus();
       return toast("Для закрытой заявки итоговая сумма должна быть больше 0");
