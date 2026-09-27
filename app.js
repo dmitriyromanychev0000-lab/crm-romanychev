@@ -1231,6 +1231,9 @@ function orderCard(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
   const isDeclined = statusType === "declined";
+  const isFinished = isClosed || isDeclined;
+  const warrantyAppeal = isWarrantyAppeal(order);
+  const warrantyResult = warrantyAppeal ? warrantyResultName(order) : "";
   const isArchived = Boolean(order.archived);
   const applianceIcon = applianceIconName(order.tech);
   const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "active";
@@ -1242,12 +1245,13 @@ function orderCard(order) {
   const nextVisit = formatOrderVisit(order);
   const overdueVisit = visitIsOverdue(order);
 
-  return `<article class="legacy-order-card ${cardClass}" data-order-action="view" data-id="${escapeHtml(order.id)}">
+  return `<article class="legacy-order-card ${cardClass} ${warrantyAppeal ? "warranty-appeal" : ""}" data-order-action="view" data-id="${escapeHtml(order.id)}">
     <div class="legacy-order-accent"></div>
     <div class="legacy-order-head">
       <div class="legacy-order-title"><span>№${escapeHtml(order.id || "—")}</span><strong>${escapeHtml(order.name || "Без имени")}</strong></div>
       <div class="legacy-order-head-side"><time>${shortDate(orderDateValue(order))}</time><span class="legacy-status ${cardClass}">${escapeHtml(statusText)}</span></div>
     </div>
+    ${warrantyAppeal ? `<div class="legacy-warranty-origin">${icon("shield")}<span><strong>Гарантийное обращение</strong><small>к заявке №${escapeHtml(order.parentOrderId || "—")}${warrantyResult ? ` · ${escapeHtml(warrantyResult)}` : ""}</small></span></div>` : ""}
 
     <div class="legacy-order-device">
       <div class="legacy-device-icon">${icon(applianceIcon)}</div>
@@ -1256,7 +1260,7 @@ function orderCard(order) {
 
     <div class="legacy-order-money">
       <div><span>СУММА КЛИЕНТА</span><strong>${money(order.sum)}</strong></div>
-      <div><span class="legacy-net-label">${icon("goods")} НА РУКИ</span><strong class="${isClosed ? "green" : isDeclined ? "muted" : "pending"}">${isClosed ? money(net) : isDeclined ? "—" : "После закрытия"}</strong></div>
+      <div><span class="legacy-net-label">${icon("goods")} НА РУКИ</span><strong class="${isFinished ? (net >= 0 ? "green" : "red") : "pending"}">${isFinished ? money(net) : "После закрытия"}</strong></div>
     </div>
 
     <div class="legacy-order-meta">
@@ -1269,7 +1273,7 @@ function orderCard(order) {
 
     <div class="legacy-order-actions">
       <button type="button" data-order-action="edit" data-id="${escapeHtml(order.id)}">${icon("edit")}<span>Изменить</span></button>
-      <button type="button" data-order-action="toggle" data-id="${escapeHtml(order.id)}" class="action-toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
+      <button type="button" data-order-action="toggle" data-id="${escapeHtml(order.id)}" class="action-toggle">${icon(isFinished ? "reopen" : "check")}<span>${isFinished ? "Открыть" : "Закрыть"}</span></button>
       ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="action-phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled class="action-phone">${icon("phone")}<span>Позвонить</span></button>`}
       <button type="button" data-order-action="more" data-id="${escapeHtml(order.id)}" class="action-more">${icon("more")}<span>Ещё</span></button>
     </div>
@@ -1296,6 +1300,8 @@ function ordersPage() {
       orderSourceName(order),
       order.issue,
       order.diagnosis,
+      order.parentOrderId,
+      warrantyResultName(order),
       data.settings?.searchMasterComment ? order.comment : ""
     ].join(" ").toLowerCase();
     const normalizedOrderPhone = normalizeRussianPhone(order.phone || "");
@@ -3830,7 +3836,7 @@ function newOrderModal(existing = null, options = {}) {
       formElement.elements.expense_white.focus();
       return toast(`Белый расход не может быть меньше ${money(directExpenseMinimum)}`);
     }
-    if (nextStatus === "closed" && (Number(next.sum) || 0) <= 0) {
+    if (nextStatus === "closed" && !isWarrantyAppeal(next) && (Number(next.sum) || 0) <= 0) {
       formElement.elements.sum.focus();
       return toast("Для закрытой заявки итоговая сумма должна быть больше 0");
     }
@@ -4635,6 +4641,10 @@ function orderDetailModal(order) {
   const statusType = normalizeStatus(order.status);
   const isClosed = statusType === "closed";
   const isDeclined = statusType === "declined";
+  const isFinished = isClosed || isDeclined;
+  const warrantyAppeal = isWarrantyAppeal(order);
+  const warrantyResult = warrantyAppeal ? warrantyResultName(order) : "";
+  const parentOrder = warrantyAppeal ? data.orders.find((item) => String(item.id) === String(order.parentOrderId || "")) : null;
   const cardClass = isClosed ? "closed" : isDeclined ? "declined" : "active";
   const statusText = order.archived ? "Архив" : (order.status || "В работе");
   const services = Array.isArray(order.services) ? order.services : [];
@@ -4657,13 +4667,14 @@ function orderDetailModal(order) {
     </header>
 
     <main class="legacy-order-detail-content">
-      <article class="legacy-expanded-order-card ${cardClass}">
+      <article class="legacy-expanded-order-card ${cardClass} ${warrantyAppeal ? "warranty-appeal" : ""}">
         <span class="legacy-expanded-accent"></span>
 
         <div class="legacy-expanded-head">
           <div class="legacy-expanded-title"><b>№${escapeHtml(order.id || "—")}</b><strong>${escapeHtml(order.name || "Без имени")}</strong></div>
           <div class="legacy-expanded-head-side"><time>${shortDate(orderDateValue(order))}</time><span class="legacy-expanded-status ${cardClass}">${escapeHtml(statusText)}</span></div>
         </div>
+        ${warrantyAppeal ? `<button type="button" class="legacy-warranty-origin detail" data-warranty-parent="${escapeHtml(order.parentOrderId || "")}">${icon("shield")}<span><strong>Гарантийное обращение</strong><small>Исходная заявка №${escapeHtml(order.parentOrderId || "—")}${warrantyResult ? ` · ${escapeHtml(warrantyResult)}` : ""}</small></span><span class="chevron">${icon("chevron")}</span></button>` : ""}
 
         <div class="legacy-expanded-device">
           <span class="legacy-expanded-device-icon">${icon(applianceIconName(order.tech))}</span>
@@ -4672,7 +4683,7 @@ function orderDetailModal(order) {
 
         <div class="legacy-expanded-money">
           <div><span>СУММА КЛИЕНТА</span><strong>${money(order.sum)}</strong></div>
-          <div><span class="net">${icon("goods")} НА РУКИ</span><strong class="${isClosed ? "green" : ""}">${isClosed ? money(net) : "После закрытия"}</strong></div>
+          <div><span class="net">${icon("goods")} НА РУКИ</span><strong class="${isFinished ? (net >= 0 ? "green" : "red") : ""}">${isFinished ? money(net) : "После закрытия"}</strong></div>
         </div>
 
         <div class="legacy-expanded-meta">
@@ -4686,7 +4697,7 @@ function orderDetailModal(order) {
 
         <div class="legacy-expanded-actions">
           <button type="button" data-detail-action="edit">${icon("edit")}<span>Изменить</span></button>
-          <button type="button" data-detail-action="toggle" class="action-toggle">${icon(isClosed ? "reopen" : "check")}<span>${isClosed ? "Открыть" : "Закрыть"}</span></button>
+          <button type="button" data-detail-action="toggle" class="action-toggle">${icon(isFinished ? "reopen" : "check")}<span>${isFinished ? "Открыть" : "Закрыть"}</span></button>
           ${phoneHref ? `<a href="tel:${escapeHtml(phoneHref)}" class="phone">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" class="phone" disabled>${icon("phone")}<span>Позвонить</span></button>`}
           <button type="button" data-detail-action="more" class="more">${icon("more")}<span>Ещё</span></button>
         </div>
@@ -4725,6 +4736,11 @@ function orderDetailModal(order) {
     return handleOrderAction(action, order.id);
   };
   modal.querySelectorAll("[data-detail-action]").forEach((button) => button.addEventListener("click", () => run(button.dataset.detailAction)));
+  modal.querySelector("[data-warranty-parent]")?.addEventListener("click", () => {
+    if (!parentOrder) return toast("Исходная заявка не найдена");
+    modal.remove();
+    orderDetailModal(parentOrder);
+  });
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
 }
@@ -4815,13 +4831,18 @@ async function handleOrderAction(action, id) {
   if (action === "more") return orderActionsSheet(order);
   if (action === "receipt") return receiptModal({ title: "Квитанция", date: new Date().toISOString(), amount: Number(order.sum) || 0, orderId: order.id, note: [order.tech, order.brand].filter(Boolean).join(" ") });
   if (action === "toggle") {
-    const wasClosed = normalizeStatus(order.status) === "closed";
-    if (!wasClosed) {
-      if ((Number(order.sum) || 0) <= 0) return toast("Для закрытия заявки укажи итоговую сумму больше 0");
+    const currentStatus = normalizeStatus(order.status);
+    const wasFinished = currentStatus === "closed" || currentStatus === "declined";
+    if (!wasFinished) {
+      if (isWarrantyAppeal(order) && !order.warrantyResultId) {
+        toast("Сначала выбери результат гарантийного обращения");
+        return newOrderModal(order);
+      }
+      if (!isWarrantyAppeal(order) && (Number(order.sum) || 0) <= 0) return toast("Для закрытия заявки укажи итоговую сумму больше 0");
       if (!(await confirmOrderClose(order))) return;
     }
     const previous = structuredClone(order);
-    const next = { ...structuredClone(order), status: wasClosed ? "В работе" : "Закрыта" };
+    const next = { ...structuredClone(order), status: wasFinished ? "В работе" : "Закрыта" };
     const stockSync = syncOrderStock(previous, next);
     if (!stockSync.ok) return toast(stockSync.message);
     Object.assign(order, next);
