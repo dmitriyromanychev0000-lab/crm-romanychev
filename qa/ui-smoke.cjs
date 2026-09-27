@@ -1727,7 +1727,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('.stock-adjust-modal [name="totalCost"]').fill("10000");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Партия 2");
         await page.locator('.stock-adjust-modal button[type="submit"]').click();
-        await page.waitForTimeout(80);
+        await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
+        await page.waitForTimeout(20);
 
         const afterPurchase = await readStoredData(page);
         const purchasedItem = afterPurchase.warehouse.find((item) => item.id === "w1");
@@ -2148,12 +2149,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       const expectedMoreNames = ["Календарь","Клиенты","Прайс-лист","Калькулятор","Акт","Настройки"];
+      const expectedMoreBackgrounds = [
+        "rgb(7, 12, 16)",
+        "rgb(8, 16, 25)",
+        "rgb(16, 11, 23)",
+        "rgb(16, 11, 23)",
+        "rgb(16, 11, 8)",
+        "rgb(9, 15, 20)"
+      ];
+      const expectedMoreIconBackgrounds = [
+        "rgba(255, 107, 79, 0.1)",
+        "rgba(92, 169, 255, 0.12)",
+        "rgba(168, 138, 240, 0.12)",
+        "rgba(255, 113, 83, 0.12)",
+        "rgba(65, 201, 220, 0.12)",
+        "rgba(137, 148, 156, 0.11)"
+      ];
       if (JSON.stringify(moreMenuSurface.names) !== JSON.stringify(expectedMoreNames)
         || moreMenuSurface.finance !== 0
         || moreMenuSurface.shopping !== 0
         || moreMenuSurface.tools !== 0
-        || moreMenuSurface.backgrounds.some((value) => value !== "rgb(7, 12, 16)")
-        || moreMenuSurface.iconBackgrounds.some((value) => value !== "rgb(10, 17, 22)")
+        || JSON.stringify(moreMenuSurface.backgrounds) !== JSON.stringify(expectedMoreBackgrounds)
+        || JSON.stringify(moreMenuSurface.iconBackgrounds) !== JSON.stringify(expectedMoreIconBackgrounds)
+        || new Set(moreMenuSurface.backgrounds).size < 4
         || parseFloat(moreMenuSurface.titleFont) < 11.5) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
