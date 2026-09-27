@@ -11675,3 +11675,98 @@
     color: #e7b450 !important;
   }
 }
+
+
+/* 1.0.41 · Ещё и инструменты: акценты разделов и статус оборудования. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-item {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-more-list .menu-finance {
+    border-left-color: #214734 !important;
+    background-color: #07100b !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(89,216,137,.045), transparent 105px) !important;
+  }
+
+  .legacy-more-list .menu-shopping {
+    border-left-color: #4a3b1c !important;
+    background-color: #100d06 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(231,180,80,.045), transparent 105px) !important;
+  }
+
+  .legacy-more-list .menu-clients,
+  .legacy-more-list .menu-tools {
+    border-left-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(92,169,255,.04), transparent 105px) !important;
+  }
+
+  .legacy-more-list .menu-prices,
+  .legacy-more-list .menu-goods {
+    border-left-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(168,138,240,.045), transparent 105px) !important;
+  }
+
+  .legacy-more-list .menu-act {
+    border-left-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(255,113,83,.04), transparent 105px) !important;
+  }
+
+  .legacy-more-list .menu-settings {
+    border-left-color: #2b3942 !important;
+    background-color: #090f14 !important;
+  }
+
+  .tools-stats > .service-stat-primary {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(92,169,255,.08), transparent 105px) !important;
+  }
+
+  .tools-stats > div:nth-child(2) {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+    background-image: none !important;
+  }
+
+  .legacy-document-row.tool {
+    background-image: none !important;
+  }
+
+  .legacy-document-row.tool.available {
+    border-color: #1d3b2b !important;
+    background-color: #07100b !important;
+  }
+
+  .legacy-document-row.tool.busy {
+    border-color: #4a3b1c !important;
+    background-color: #131006 !important;
+  }
+
+  .legacy-document-row.tool.retired {
+    border-color: #48242a !important;
+    background-color: #12090b !important;
+  }
+
+  .legacy-document-row.tool.available .legacy-document-icon {
+    border: 1px solid rgba(89,216,137,.22);
+    background: rgba(89,216,137,.09) !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-document-row.tool.busy .legacy-document-icon {
+    border: 1px solid rgba(231,180,80,.22);
+    background: rgba(231,180,80,.09) !important;
+    color: var(--crm-yellow) !important;
+  }
+
+  .legacy-document-row.tool.retired .legacy-document-icon {
+    border: 1px solid rgba(255,102,112,.22);
+    background: rgba(255,102,112,.09) !important;
+    color: var(--crm-red) !important;
+  }
+}

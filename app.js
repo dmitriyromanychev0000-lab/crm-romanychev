@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.165";
+const APP_BUILD = "2026.09.27.166";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс и товарник получили отдельные визуальные роли: услуги, материалы и свои услуги различаются, а создание, текущий товарник и товарный прайс больше не сливаются в одинаковые панели";
+const APP_RELEASE = "Экран «Ещё» получил спокойные цветовые акценты по разделам, а инструменты теперь визуально различают доступные, занятые и списанные позиции";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1826,7 +1826,13 @@ function toolsPage() {
       const name = item.name || item.title || item.tool || "Инструмент";
       const status = item.status || item.state || "В наличии";
       const category = item.category || item.type || "";
-      return `<button type="button" class="legacy-document-row tool" data-action="edit-tool" data-index="${index}">
+      const statusKey = String(status).toLowerCase();
+      const toolState = statusKey.includes("спис")
+        ? "retired"
+        : statusKey.includes("выезд") || statusKey.includes("ремонт") || statusKey.includes("занят")
+          ? "busy"
+          : "available";
+      return `<button type="button" class="legacy-document-row tool ${toolState}" data-action="edit-tool" data-index="${index}">
         <span class="legacy-document-icon">${icon("tools")}</span>
         <span><strong>${escapeHtml(name)}</strong><small>${escapeHtml([category,status].filter(Boolean).join(" · "))}${item.serial || item.serialNumber ? ` · № ${escapeHtml(item.serial || item.serialNumber)}` : ""}</small></span>
         <b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b>

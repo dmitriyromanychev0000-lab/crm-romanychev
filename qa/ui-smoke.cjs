@@ -1028,11 +1028,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
       const moreMenuSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".legacy-more-list .menu-item")).backgroundColor,
+        finance: getComputedStyle(document.querySelector(".legacy-more-list .menu-finance")).backgroundColor,
+        shopping: getComputedStyle(document.querySelector(".legacy-more-list .menu-shopping")).backgroundColor,
+        goods: getComputedStyle(document.querySelector(".legacy-more-list .menu-goods")).backgroundColor,
+        settings: getComputedStyle(document.querySelector(".legacy-more-list .menu-settings")).backgroundColor,
         titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
       }));
-      if (moreMenuSurface.background !== "rgb(7, 12, 16)" || parseFloat(moreMenuSurface.titleFont) < 11.5) {
-        report.failures.push({ width, type: "more-menu-deep-dark", moreMenuSurface });
+      if (moreMenuSurface.finance !== "rgb(7, 16, 11)"
+        || moreMenuSurface.shopping !== "rgb(16, 13, 6)"
+        || moreMenuSurface.goods !== "rgb(16, 11, 23)"
+        || moreMenuSurface.settings !== "rgb(9, 15, 20)"
+        || parseFloat(moreMenuSurface.titleFont) < 11.5) {
+        report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
 
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
@@ -1081,11 +1088,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
       const toolsPageSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".tools-stats > div")).backgroundColor,
+        totalStat: getComputedStyle(document.querySelector(".tools-stats > .service-stat-primary")).backgroundColor,
+        activeStat: getComputedStyle(document.querySelector(".tools-stats > div:nth-child(2)")).backgroundColor,
+        available: getComputedStyle(document.querySelector(".legacy-document-row.tool.available")).backgroundColor,
+        busy: getComputedStyle(document.querySelector(".legacy-document-row.tool.busy")).backgroundColor,
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.tool strong")).fontSize
       }));
-      if (toolsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(toolsPageSurface.rowTitleFont) < 11.5) {
-        report.failures.push({ width, type: "tools-deep-dark-page", toolsPageSurface });
+      if (toolsPageSurface.totalStat !== "rgb(8, 16, 25)"
+        || toolsPageSurface.activeStat !== "rgb(7, 17, 12)"
+        || toolsPageSurface.available !== "rgb(7, 16, 11)"
+        || toolsPageSurface.busy !== "rgb(19, 16, 6)"
+        || parseFloat(toolsPageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "tools-status-hierarchy", toolsPageSurface });
       }
       await page.locator('[data-action="new-tool"]').click();
       const toolEditorState = await page.evaluate(() => {
