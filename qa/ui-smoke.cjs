@@ -410,6 +410,54 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await writeSeed(page);
+      await setState(page, uiState({
+        activePage: "more",
+        moreSection: "calendar",
+        calendarMonthOffset: 0,
+        calendarSelectedDate: "2026-09-27"
+      }));
+      await page.waitForTimeout(50);
+      const calendarState = await page.evaluate(() => {
+        const grid = document.querySelector(".calendar-grid");
+        const dayButtons = [...document.querySelectorAll(".calendar-day")];
+        const selected = document.querySelector('.calendar-day[data-calendar-date="2026-09-27"]');
+        const event = document.querySelector('.calendar-event[data-calendar-order="0060"]');
+        const timelineRows = document.querySelectorAll(".calendar-hour-row");
+        const root = document.documentElement;
+        return {
+          dayButtons: dayButtons.length,
+          weekdayLabels: document.querySelectorAll(".calendar-weekdays span").length,
+          selectedText: selected?.innerText || "",
+          eventText: event?.innerText || "",
+          timelineRows: timelineRows.length,
+          overflow: Math.max(root.scrollWidth, document.body.scrollWidth) - window.innerWidth,
+          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
+        };
+      });
+      if (calendarState.dayButtons < 28
+        || calendarState.weekdayLabels !== 7
+        || !calendarState.selectedText.includes("27")
+        || !calendarState.eventText.includes("11:30")
+        || !calendarState.eventText.includes("Анна Смирнова")
+        || calendarState.timelineRows !== 13
+        || calendarState.overflow > 0) {
+        report.failures.push({ width, type: "calendar-month-day-timeline", calendarState });
+      }
+      report.results.push(await shot(page, width, "calendar-selected-day", false));
+
+      await page.locator('.calendar-event[data-calendar-order="0060"]').click();
+      await page.waitForTimeout(30);
+      const calendarOpenedOrder = await page.evaluate(() => ({
+        detail: document.querySelectorAll(".order-detail-modal").length,
+        text: document.querySelector(".order-detail-modal")?.innerText || ""
+      }));
+      if (calendarOpenedOrder.detail !== 1 || !calendarOpenedOrder.text.includes("0060")) {
+        report.failures.push({ width, type: "calendar-open-order", calendarOpenedOrder });
+      }
+      await page.locator(".order-detail-modal [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
+      await writeSeed(page);
       await setState(page, uiState({ activePage: "orders" }));
     }
 
