@@ -37,6 +37,8 @@ const defaultData = () => ({
     { id: "warranty-not-confirmed", name: "Гарантия не подтверждена", archived: false },
     { id: "warranty-no-fault", name: "Неисправность не выявлена", archived: false }
   ],
+  shopping_manual: [],
+  shopping_overrides: [],
   settings: {
     autoBackup: false,
     autoBackupDays: 1,
@@ -348,7 +350,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -482,6 +484,16 @@ function ensureWarrantyResultIds() {
   (Array.isArray(data.warranty_results) ? data.warranty_results : []).forEach((result) => {
     if (String(result?.id || "").trim()) return;
     result.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function ensureShoppingManualIds() {
+  let changed = false;
+  (Array.isArray(data.shopping_manual) ? data.shopping_manual : []).forEach((item) => {
+    if (String(item?.id || "").trim()) return;
+    item.id = crypto.randomUUID();
     changed = true;
   });
   return changed;
@@ -631,6 +643,7 @@ function ensureDataIds() {
   if (ensureClientProfileIds()) changed = true;
   if (ensureWarrantyOptionIds()) changed = true;
   if (ensureWarrantyResultIds()) changed = true;
+  if (ensureShoppingManualIds()) changed = true;
   return changed;
 }
 
@@ -2820,14 +2833,45 @@ function shoppingItems() {
     .sort((a, b) => (stockAvailableQuantity(a) - Number(a.min || 0)) - (stockAvailableQuantity(b) - Number(b.min || 0)));
 }
 
+function shoppingManualItems() {
+  return (Array.isArray(data.shopping_manual) ? data.shopping_manual : [])
+    .filter((item) => !item.archived && String(item.name || "").trim())
+    .sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+}
+
+function shoppingOverrideQuantity(item) {
+  const minimum = Math.max(0, Number(item?.min) || 0);
+  const override = (Array.isArray(data.shopping_overrides) ? data.shopping_overrides : [])
+    .find((entry) => String(entry.warehouseId) === String(item?.id || ""));
+  return Math.max(minimum, Number(override?.qty) || 0);
+}
+
+function setShoppingOverrideQuantity(warehouseId, qty) {
+  if (!Array.isArray(data.shopping_overrides)) data.shopping_overrides = [];
+  const item = data.warehouse.find((entry) => String(entry.id) === String(warehouseId));
+  const minimum = Math.max(0, Number(item?.min) || 0);
+  const value = Math.max(minimum, Number(qty) || minimum);
+  const index = data.shopping_overrides.findIndex((entry) => String(entry.warehouseId) === String(warehouseId));
+  if (value <= minimum + 1e-9) {
+    if (index >= 0) data.shopping_overrides.splice(index, 1);
+    return minimum;
+  }
+  const next = { warehouseId: String(warehouseId), qty: value, updatedAt: new Date().toISOString() };
+  if (index >= 0) data.shopping_overrides[index] = next;
+  else data.shopping_overrides.push(next);
+  return value;
+}
+
 function shoppingListText() {
-  const items = shoppingItems();
-  const lines = items.map((item) => {
-    const need = Math.max(0, Number(item.min || 0));
-    const amount = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need);
+  const autoLines = shoppingItems().map((item) => {
+    const amount = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 3 }).format(shoppingOverrideQuantity(item));
     return `• ${item.name || "Позиция"} — ${amount} ${normalizeStockUnit(item.unit || "шт")}`;
   });
-  return ["Список покупок", ...lines].join("\n");
+  const manualLines = shoppingManualItems().map((item) => {
+    const amount = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 3 }).format(Number(item.qty) || 1);
+    return `• ${item.name || "Позиция"} — ${amount} ${normalizeStockUnit(item.unit || "шт")}`;
+  });
+  return ["Список покупок", ...autoLines, ...manualLines].join("\n");
 }
 
 async function copyTextToClipboard(text, successMessage = "Скопировано") {
@@ -2898,7 +2942,7 @@ function warehouseMovementsPage() {
 
 async function shareShoppingList() {
   const text = shoppingListText();
-  if (!shoppingItems().length) return toast("Список покупок пуст");
+  if (!shoppingItems().length && !shoppingManualItems().length) return toast("Список покупок пуст");
   if (navigator.share) {
     try {
       await navigator.share({ title: "Список покупок", text });
@@ -2910,18 +2954,60 @@ async function shareShoppingList() {
   return copyTextToClipboard(text, "Список скопирован — можно отправить");
 }
 
+function shoppingItemModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop shopping-item-backdrop";
+  modal.innerHTML = `<form class="modal compact-modal shopping-item-modal" id="shopping-item-form">
+    <div class="stock-adjust-head">
+      <span class="stock-adjust-icon incoming">${icon("shopping")}</span>
+      <div><strong>Добавить в покупки</strong><small>Произвольная позиция без склада</small></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Название</label><input class="field" name="name" required autofocus placeholder="Например, перчатки" /></div>
+      <div class="form-group"><label>Количество</label><input class="field" name="qty" type="number" min="0.001" step="0.001" value="1" required inputmode="decimal" /></div>
+      <div class="form-group"><label>Единица</label><select class="field" name="unit">${STOCK_UNITS.map((unit)=>`<option value="${escapeHtml(unit)}">${escapeHtml(unit)}</option>`).join("")}</select></div>
+    </div>
+    <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button type="submit" class="primary-button">Добавить</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+  const close=()=>modal.remove();
+  modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",close));
+  modal.addEventListener("click",(event)=>{ if(event.target===modal) close(); });
+  modal.querySelector("form").addEventListener("submit",async(event)=>{
+    event.preventDefault();
+    const form=new FormData(event.currentTarget);
+    const name=String(form.get("name")||"").trim();
+    const qty=Math.max(0,Number(form.get("qty"))||0);
+    const unit=normalizeStockUnit(form.get("unit")||"шт");
+    if(!name) return toast("Напиши, что купить");
+    if(qty<=0) return toast("Укажи количество");
+    data.shopping_manual.push({id:crypto.randomUUID(),name,qty,unit,createdAt:new Date().toISOString(),archived:false});
+    await saveData();
+    close();
+    await render();
+    toast("Добавлено в список покупок");
+  });
+}
+
 function shoppingPage(backAction = "more-menu") {
   const items = shoppingItems();
-  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">${icon("back")}</button><div><h1>Список покупок</h1><p>Позиции ниже минимального остатка</p></div></div>
-    <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${items.length} ${items.length === 1 ? "позицию" : items.length >= 2 && items.length <= 4 ? "позиции" : "позиций"}</strong></span></section>
-    <div class="shopping-page-actions"><button type="button" class="secondary-button" data-action="share-shopping-list" ${items.length ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button type="button" class="primary-button" data-action="copy-shopping-list" ${items.length ? "" : "disabled"}>${icon("copy")}<span>Копировать список</span></button></div>
-    ${items.length ? `<div class="shopping-list">${items.map((item) => {
+  const manualItems = shoppingManualItems();
+  const totalCount = items.length + manualItems.length;
+  return `<main class="content shopping-content"><div class="support-page-head shopping-support-head"><button type="button" class="support-back" data-action="${backAction}" aria-label="Назад">${icon("back")}</button><div><h1>Список покупок</h1><p>Автоматические и ручные позиции</p></div></div>
+    <section class="shopping-summary"><span class="shopping-summary-icon">${icon("shopping")}</span><span><small>НУЖНО ДОКУПИТЬ</small><strong>${totalCount} ${totalCount === 1 ? "позицию" : totalCount >= 2 && totalCount <= 4 ? "позиции" : "позиций"}</strong></span></section>
+    <div class="shopping-page-actions shopping-page-actions-primary"><button type="button" class="secondary-button" data-action="new-shopping-item">${icon("plus")}<span>Добавить вручную</span></button><button type="button" class="secondary-button" data-action="share-shopping-list" ${totalCount ? "" : "disabled"}>${icon("telegram")}<span>Поделиться</span></button><button type="button" class="primary-button" data-action="copy-shopping-list" ${totalCount ? "" : "disabled"}>${icon("copy")}<span>Копировать</span></button></div>
+    ${items.length ? `<div class="shopping-list shopping-auto-list">${items.map((item) => {
       const available = stockAvailableQuantity(item);
-      const need = Math.max(0, Number(item.min || 0));
-      return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</div></div><div class="shopping-need"><span>ДОКУПИТЬ</span><strong>${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(need)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div></article>`;
-    }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
+      const need = shoppingOverrideQuantity(item);
+      const min = Math.max(0, Number(item.min) || 0);
+      return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</div></div><label class="shopping-need shopping-qty-editor"><span>КУПИТЬ</span><input class="field" data-shopping-auto-qty="${escapeHtml(item.id)}" type="number" min="${min}" step="0.001" value="${need}" inputmode="decimal" aria-label="Количество к покупке" /><small>${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</small></label></article>`;
+    }).join("")}</div>` : ""}
+    ${manualItems.length ? `<section class="shopping-manual-section"><h2>Добавлено вручную</h2><div class="shopping-list">${manualItems.map((item)=>`<article class="shopping-card legacy-shopping-card manual"><span class="shopping-item-icon">${icon("shopping")}</span><div><div class="stock-name">${escapeHtml(item.name)}</div><div class="small">Ручная позиция</div></div><label class="shopping-need shopping-qty-editor"><span>КУПИТЬ</span><input class="field" data-shopping-manual-qty="${escapeHtml(item.id)}" type="number" min="0.001" step="0.001" value="${Number(item.qty)||1}" inputmode="decimal" aria-label="Количество к покупке" /><small>${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</small></label><button type="button" class="shopping-remove" data-action="delete-shopping-manual" data-id="${escapeHtml(item.id)}" aria-label="Удалить">${icon("trash")}</button></article>`).join("")}</div></section>` : ""}
+    ${!totalCount ? emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка. Можно добавить произвольную покупку вручную.") : ""}
   </main>`;
 }
+
 function calendarPage() {
   const now = new Date();
   const monthDate = new Date(now.getFullYear(), now.getMonth() + calendarMonthOffset, 1);
@@ -5411,6 +5497,17 @@ app.addEventListener("click", async (event) => {
   }
   if (action === "copy-shopping-list") return copyTextToClipboard(shoppingListText(), "Список покупок скопирован");
   if (action === "share-shopping-list") return shareShoppingList();
+  if (action === "new-shopping-item") return shoppingItemModal();
+  if (action === "delete-shopping-manual") {
+    const id = event.target.closest("[data-action]")?.dataset.id;
+    const item = data.shopping_manual.find((entry) => String(entry.id) === String(id));
+    if (!item) return;
+    if (!(await confirmDialog(`Убрать «${item.name || "позицию"}» из списка покупок?`))) return;
+    data.shopping_manual = data.shopping_manual.filter((entry) => String(entry.id) !== String(id));
+    await saveData();
+    await render();
+    return toast("Позиция удалена из покупок");
+  }
   if (action === "new-order") return newOrderModal();
   if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "manage-warranty-options") return warrantyOptionsModal();
@@ -5717,6 +5814,26 @@ app.addEventListener("submit", async (event) => {
 });
 
 app.addEventListener("change", async (event) => {
+  const autoShoppingQty = event.target.closest?.("[data-shopping-auto-qty]");
+  if (autoShoppingQty) {
+    const saved = setShoppingOverrideQuantity(autoShoppingQty.dataset.shoppingAutoQty, autoShoppingQty.value);
+    autoShoppingQty.value = String(saved);
+    await saveData();
+    toast("Количество к покупке сохранено");
+    return;
+  }
+  const manualShoppingQty = event.target.closest?.("[data-shopping-manual-qty]");
+  if (manualShoppingQty) {
+    const item = data.shopping_manual.find((entry) => String(entry.id) === String(manualShoppingQty.dataset.shoppingManualQty));
+    if (!item) return;
+    const qty = Math.max(0.001, Number(manualShoppingQty.value) || 1);
+    item.qty = qty;
+    item.updatedAt = new Date().toISOString();
+    manualShoppingQty.value = String(qty);
+    await saveData();
+    toast("Количество сохранено");
+    return;
+  }
   if (event.target.id === "search-master-comment-toggle") {
     data.settings.searchMasterComment = Boolean(event.target.checked);
     await saveData();
