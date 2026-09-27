@@ -1972,6 +1972,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.waitForTimeout(80);
         const visibleOrdersAfterSearch = await page.locator(".legacy-order-card").count();
         if (visibleOrdersAfterSearch !== 1) report.failures.push({ width, type: "order-search", count: visibleOrdersAfterSearch });
+
+        const commentSearchSeed = structuredClone(seed);
+        commentSearchSeed.orders[0].comment = "внутренний маркер магистраль 7788";
+        commentSearchSeed.settings.searchMasterComment = false;
+        await writeSeed(page, commentSearchSeed);
+        await setState(page, uiState({ activePage: "orders", searchQuery: "" }));
+        await page.locator("#order-search").fill("магистраль 7788");
+        await page.waitForTimeout(70);
+        const hiddenCommentMatches = await page.locator(".legacy-order-card").count();
+        if (hiddenCommentMatches !== 0) report.failures.push({ width, type: "master-comment-search-disabled", count: hiddenCommentMatches });
+
+        await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
+        const commentToggle = page.locator("#search-master-comment-toggle");
+        if (await commentToggle.count() !== 1 || await commentToggle.isChecked()) {
+          report.failures.push({ width, type: "master-comment-search-setting-default" });
+        } else {
+          await commentToggle.check();
+          await page.waitForTimeout(70);
+        }
+        await setState(page, uiState({ activePage: "orders", searchQuery: "" }));
+        await page.locator("#order-search").fill("магистраль 7788");
+        await page.waitForTimeout(70);
+        const enabledCommentMatches = await page.locator(".legacy-order-card").count();
+        if (enabledCommentMatches !== 1) report.failures.push({ width, type: "master-comment-search-enabled", count: enabledCommentMatches });
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "orders", searchQuery: "Анна" }));
         await page.locator('[data-filter="closed"]').click();
         await page.waitForTimeout(60);
         const visibleClosedAfterSearch = await page.locator(".legacy-order-card").count();
