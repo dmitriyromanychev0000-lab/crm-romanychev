@@ -574,11 +574,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const detailWorkState = await page.evaluate(() => ({
         serviceSection: getComputedStyle(document.querySelector(".legacy-detail-services")).backgroundColor,
         materialSection: getComputedStyle(document.querySelector(".legacy-detail-materials")).backgroundColor,
+        notesSection: getComputedStyle(document.querySelector(".legacy-detail-notes")).backgroundColor,
         serviceRows: document.querySelectorAll(".legacy-detail-services .legacy-detail-line").length,
         materialRows: document.querySelectorAll(".legacy-detail-materials .legacy-detail-line").length
       }));
       if (detailWorkState.serviceSection !== "rgb(6, 11, 15)"
         || detailWorkState.materialSection !== "rgb(6, 11, 15)"
+        || detailWorkState.notesSection !== "rgb(6, 11, 15)"
         || detailWorkState.serviceRows < 1
         || detailWorkState.materialRows < 1) {
         report.failures.push({ width, type: "order-detail-work-materials", detailWorkState });

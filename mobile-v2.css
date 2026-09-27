@@ -10988,3 +10988,41 @@
   }
 }
 
+/* 1.0.33 · Деталка заявки: описание ремонта без старой серо-синей подложки. */
+@media screen and (max-width: 520px) {
+  .legacy-detail-notes {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-detail-notes .legacy-detail-section-head > span {
+    border: 1px solid rgba(148,163,184,.18) !important;
+    background: #0a1116 !important;
+    color: #a9b4bc !important;
+  }
+
+  .legacy-detail-notes > div:not(.legacy-detail-section-head) {
+    padding: 10px 0 !important;
+    border-top: 1px solid #151f25 !important;
+  }
+
+  .legacy-detail-notes > div:not(.legacy-detail-section-head):first-of-type {
+    border-top: 0 !important;
+  }
+
+  .legacy-detail-notes > div > span {
+    color: #7f8a92 !important;
+    font-size: 9.5px !important;
+    font-weight: 760 !important;
+    letter-spacing: .055em !important;
+  }
+
+  .legacy-detail-notes p {
+    margin: 5px 0 0 !important;
+    color: #e7ecee !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+}
+
