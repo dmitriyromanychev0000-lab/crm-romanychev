@@ -856,7 +856,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (shoppingSurface.summary !== "rgb(16, 13, 6)"
         || shoppingSurface.card !== "rgb(22, 9, 12)"
         || !shoppingSurface.critical
-        || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.065)"
+        || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.067)"
         || shoppingSurface.needWidth < 60) {
         report.failures.push({ width, type: "warehouse-shopping-hierarchy", shoppingSurface });
       }
