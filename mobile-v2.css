@@ -12175,3 +12175,167 @@
     grid-column: 1 / -1 !important;
   }
 }
+
+
+/* 1.0.45 · Оболочка: мягкая шапка и стабильная нижняя навигация с активными иконками. */
+@media screen and (max-width: 520px) {
+  .legacy-mobile-header {
+    min-height: calc(68px + env(safe-area-inset-top)) !important;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 10px !important;
+    border-bottom: 0 !important;
+    background:
+      radial-gradient(circle at 100% 0, rgba(255,113,83,.045), transparent 150px),
+      rgba(4,8,11,.985) !important;
+    box-shadow: 0 10px 24px rgba(0,0,0,.14) !important;
+    backdrop-filter: blur(18px);
+  }
+
+  .legacy-mobile-header .logo {
+    display: none !important;
+  }
+
+  .legacy-mobile-header .brand {
+    display: grid;
+    min-width: 0;
+    gap: 2px;
+    align-content: center;
+  }
+
+  .legacy-mobile-header .brand-title {
+    font-size: 19px !important;
+    font-weight: 800 !important;
+    line-height: 1.05 !important;
+    letter-spacing: -.025em !important;
+  }
+
+  .legacy-mobile-header .brand-subtitle {
+    margin-top: 0 !important;
+    color: #7f8b93 !important;
+    font-size: 10px !important;
+    font-weight: 680 !important;
+    line-height: 1.15 !important;
+    letter-spacing: .11em !important;
+  }
+
+  .bottom-nav {
+    min-height: calc(70px + env(safe-area-inset-bottom)) !important;
+    padding: 6px 8px calc(7px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #151f25 !important;
+    background: rgba(3,7,10,.985) !important;
+    box-shadow: 0 -14px 32px rgba(0,0,0,.26) !important;
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-button {
+    --nav-accent: #ff765c;
+    --nav-bg: rgba(255,113,83,.10);
+    --nav-border: rgba(255,113,83,.24);
+    display: grid !important;
+    grid-template-rows: 30px 14px !important;
+    min-height: 56px !important;
+    padding: 3px 2px !important;
+    align-content: center !important;
+    justify-items: center !important;
+    gap: 3px !important;
+    border-radius: 11px !important;
+    color: #7f8b93 !important;
+    font-size: 10.5px !important;
+    font-weight: 690 !important;
+    line-height: 1 !important;
+    transition: color .14s ease, transform .14s ease !important;
+  }
+
+  .nav-button[data-nav="warehouse"] {
+    --nav-accent: #5ca9ff;
+    --nav-bg: rgba(92,169,255,.10);
+    --nav-border: rgba(92,169,255,.24);
+  }
+
+  .nav-button[data-nav="analytics"] {
+    --nav-accent: #a88af0;
+    --nav-bg: rgba(168,138,240,.10);
+    --nav-border: rgba(168,138,240,.24);
+  }
+
+  .nav-button[data-nav="more"] {
+    --nav-accent: #e7b450;
+    --nav-bg: rgba(231,180,80,.10);
+    --nav-border: rgba(231,180,80,.24);
+  }
+
+  .nav-button .nav-icon {
+    display: grid !important;
+    box-sizing: border-box !important;
+    width: 32px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    place-items: center !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: currentColor;
+    transition: border-color .14s ease, background-color .14s ease, color .14s ease !important;
+  }
+
+  .nav-button .nav-icon .ui-icon,
+  .nav-button[data-nav="more"] .nav-icon .ui-icon {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2.05 !important;
+  }
+
+  .nav-button.active,
+  .nav-button[aria-current="page"] {
+    background: transparent !important;
+    color: var(--nav-accent) !important;
+    box-shadow: none !important;
+  }
+
+  .nav-button.active .nav-icon,
+  .nav-button[aria-current="page"] .nav-icon {
+    border-color: var(--nav-border) !important;
+    background: var(--nav-bg) !important;
+    color: var(--nav-accent) !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .nav-button > span:last-child {
+    display: flex !important;
+    min-height: 14px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .nav-button:active {
+    transform: scale(.96) !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-mobile-header .brand-title {
+    font-size: 18px !important;
+  }
+
+  .legacy-mobile-header .brand-subtitle {
+    font-size: 9.5px !important;
+  }
+
+  .nav-button {
+    font-size: 10px !important;
+  }
+
+  .nav-button .nav-icon {
+    width: 30px !important;
+  }
+
+  .nav-button .nav-icon .ui-icon,
+  .nav-button[data-nav="more"] .nav-icon .ui-icon {
+    width: 21px !important;
+    height: 21px !important;
+  }
+}

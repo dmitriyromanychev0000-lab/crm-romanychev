@@ -213,6 +213,60 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     page.on("console", (msg) => { if (msg.type() === "error") report.failures.push({ width, type: "console", message: msg.text() }); });
     await writeSeed(page);
 
+    await setState(page, uiState({ activePage: "orders" }));
+    const shellSurface = await page.evaluate(() => {
+      const header = document.querySelector(".legacy-mobile-header");
+      const title = document.querySelector(".legacy-mobile-header .brand-title");
+      const nav = document.querySelector(".bottom-nav");
+      const buttons = [...document.querySelectorAll(".nav-button")];
+      const active = document.querySelector('.nav-button[data-nav="orders"]');
+      const activeIcon = active?.querySelector(".nav-icon");
+      const labelTops = buttons.map((button) => Math.round(button.querySelector(":scope > span:last-child")?.getBoundingClientRect().top || 0));
+      const hr = header?.getBoundingClientRect();
+      const ir = activeIcon?.getBoundingClientRect();
+      return {
+        headerHeight: hr ? Math.round(hr.height) : 0,
+        headerBorder: header ? getComputedStyle(header).borderBottomWidth : "missing",
+        headerBackground: header ? getComputedStyle(header).backgroundColor : "missing",
+        titleFont: title ? getComputedStyle(title).fontSize : "missing",
+        navBackground: nav ? getComputedStyle(nav).backgroundColor : "missing",
+        navBorder: nav ? getComputedStyle(nav).borderTopColor : "missing",
+        activeColor: active ? getComputedStyle(active).color : "missing",
+        activeIconBackground: activeIcon ? getComputedStyle(activeIcon).backgroundColor : "missing",
+        activeIconWidth: ir ? Math.round(ir.width) : 0,
+        activeIconHeight: ir ? Math.round(ir.height) : 0,
+        labelSpread: labelTops.length ? Math.max(...labelTops) - Math.min(...labelTops) : 999
+      };
+    });
+    if (shellSurface.headerHeight < 64
+      || shellSurface.headerHeight > 86
+      || shellSurface.headerBorder !== "0px"
+      || shellSurface.headerBackground !== "rgba(4, 8, 11, 0.985)"
+      || parseFloat(shellSurface.titleFont) < 18
+      || shellSurface.navBackground !== "rgba(3, 7, 10, 0.985)"
+      || shellSurface.navBorder !== "rgb(21, 31, 37)"
+      || shellSurface.activeColor !== "rgb(255, 118, 92)"
+      || shellSurface.activeIconBackground !== "rgba(255, 113, 83, 0.1)"
+      || shellSurface.activeIconWidth < 30
+      || shellSurface.activeIconHeight < 30
+      || shellSurface.labelSpread > 1) {
+      report.failures.push({ width, type: "shell-header-nav", shellSurface });
+    }
+
+    await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
+    const moreNavSurface = await page.evaluate(() => {
+      const active = document.querySelector('.nav-button[data-nav="more"]');
+      const icon = active?.querySelector(".nav-icon");
+      return {
+        color: active ? getComputedStyle(active).color : "missing",
+        iconBackground: icon ? getComputedStyle(icon).backgroundColor : "missing"
+      };
+    });
+    if (moreNavSurface.color !== "rgb(231, 180, 80)"
+      || moreNavSurface.iconBackground !== "rgba(231, 180, 80, 0.1)") {
+      report.failures.push({ width, type: "shell-more-nav-state", moreNavSurface });
+    }
+
     for (const [label, state] of screens) {
       console.log(`QA ${width}px · ${label}`);
       await setState(page, state);

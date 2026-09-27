@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.169";
+const APP_BUILD = "2026.09.27.170";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Черновики получили отдельную рабочую иерархию: заметный статус, компактную карточку, сумму и ясные действия продолжения или удаления";
+const APP_RELEASE = "Общая мобильная оболочка доведена: шапка без жёсткой разделительной линии, нижняя навигация с ровной геометрией и отдельным цветовым активным состоянием каждой вкладки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
