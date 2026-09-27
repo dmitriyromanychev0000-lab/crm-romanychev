@@ -12698,3 +12698,20 @@
     text-decoration: none !important;
   }
 }
+
+
+/* 1.0.42 · Яндекс Карты: адрес остаётся компактным, но имеет нормальную touch-зону. */
+@media screen and (max-width: 520px) {
+  .legacy-order-meta .address {
+    display: flex !important;
+    min-height: 44px !important;
+    padding: 7px 0 !important;
+    align-items: center !important;
+    gap: 5px !important;
+    box-sizing: border-box !important;
+  }
+
+  .legacy-order-meta .address .ui-icon {
+    flex: 0 0 auto !important;
+  }
+}
