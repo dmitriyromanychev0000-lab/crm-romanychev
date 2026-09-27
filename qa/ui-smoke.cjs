@@ -254,6 +254,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     }
 
     if (width === 320 || width === 390) {
+      await setState(page, uiState({ activePage: "orders" }));
+      await page.locator('[data-action="new-order"]').first().click();
+      await page.waitForTimeout(80);
+      const orderFieldSurfaces = await page.evaluate(() => ({
+        input: getComputedStyle(document.querySelector('.order-editor-modal input[name="name"]')).backgroundColor,
+        textarea: getComputedStyle(document.querySelector('.order-editor-modal textarea[name="issue"]')).backgroundColor,
+        select: getComputedStyle(document.querySelector('.order-editor-modal select[name="tech"]')).backgroundColor
+      }));
+      if (orderFieldSurfaces.input !== "rgb(9, 15, 20)"
+        || orderFieldSurfaces.textarea !== "rgb(9, 15, 20)"
+        || orderFieldSurfaces.select !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "order-editor-field-surfaces", orderFieldSurfaces });
+      }
+      await page.keyboard.press("Escape");
+    }
+
+    if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
       const actPreviewState = await page.evaluate(() => {
         const preview = document.querySelector(".legacy-act-preview");

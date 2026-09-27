@@ -10286,3 +10286,33 @@
   }
 }
 
+/* 1.0.22 · Редактор заявки: основные поля без серо-синей заливки. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-editor-body .field {
+    border-color: #202d35 !important;
+    background-color: #090f14 !important;
+    background-image: none !important;
+    color: #f2f5f6 !important;
+  }
+
+  .order-editor-modal .order-editor-body .field::placeholder {
+    color: #66727a !important;
+    opacity: 1 !important;
+  }
+
+  .order-editor-modal .order-editor-body select.field {
+    color-scheme: dark;
+  }
+
+  .order-editor-modal .order-editor-body .field:focus {
+    border-color: rgba(255,104,74,.72) !important;
+    background-color: #0b1217 !important;
+    box-shadow: 0 0 0 3px rgba(255,104,74,.08) !important;
+    outline: 0 !important;
+  }
+
+  .order-editor-modal .order-editor-body textarea.field {
+    scrollbar-color: #26343d #090f14;
+  }
+}
+
