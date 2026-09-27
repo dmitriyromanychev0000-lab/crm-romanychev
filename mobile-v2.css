@@ -11092,3 +11092,53 @@
   }
   .analytics-chart-panel .bar-wrap:only-child > span:first-child { font-size: 17px !important; }
 }
+
+/* 1.0.35 · Список покупок: фикс каскада, одна компактная строка на позицию. */
+@media screen and (max-width: 520px) {
+  .shopping-content .legacy-shopping-card {
+    display: grid !important;
+    grid-template-columns: 42px minmax(0,1fr) auto !important;
+    grid-template-rows: auto !important;
+    gap: 10px !important;
+    align-items: center !important;
+    min-height: 72px !important;
+    padding: 10px 11px !important;
+  }
+
+  .shopping-content .legacy-shopping-card > .shopping-item-icon {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+  }
+
+  .shopping-content .legacy-shopping-card > div:not(.shopping-need) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    align-self: center !important;
+    text-align: left !important;
+  }
+
+  .shopping-content .legacy-shopping-card > .shopping-need {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    min-width: 68px !important;
+    align-self: center !important;
+    justify-self: end !important;
+    text-align: right !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .shopping-content .legacy-shopping-card {
+    grid-template-columns: 38px minmax(0,1fr) auto !important;
+    gap: 7px !important;
+    padding-right: 9px !important;
+    padding-left: 9px !important;
+  }
+
+  .shopping-content .legacy-shopping-card > .shopping-need {
+    min-width: 62px !important;
+  }
+}
+

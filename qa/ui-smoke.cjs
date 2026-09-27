@@ -253,6 +253,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.failures.push({ width, type: "goods-position-surface", goodsRowSurface });
     }
 
+    await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
+    const shoppingCardLayout = await page.evaluate(() => {
+      const card = document.querySelector(".shopping-content .legacy-shopping-card");
+      const icon = card?.querySelector(".shopping-item-icon");
+      const copy = card?.querySelector(":scope > div:not(.shopping-need)");
+      const need = card?.querySelector(".shopping-need");
+      const cr = card?.getBoundingClientRect();
+      const ir = icon?.getBoundingClientRect();
+      const xr = copy?.getBoundingClientRect();
+      const nr = need?.getBoundingClientRect();
+      return {
+        cardHeight: cr ? Math.round(cr.height) : 0,
+        iconCenterY: ir ? Math.round(ir.top + ir.height / 2) : 0,
+        copyCenterY: xr ? Math.round(xr.top + xr.height / 2) : 0,
+        needCenterY: nr ? Math.round(nr.top + nr.height / 2) : 0,
+        copyLeft: xr ? Math.round(xr.left) : 0,
+        iconRight: ir ? Math.round(ir.right) : 0,
+        needLeft: nr ? Math.round(nr.left) : 0,
+        copyRight: xr ? Math.round(xr.right) : 0,
+        needRight: nr ? Math.round(nr.right) : 0,
+        cardRight: cr ? Math.round(cr.right) : 0
+      };
+    });
+    if (shoppingCardLayout.cardHeight > 86
+      || Math.abs(shoppingCardLayout.iconCenterY - shoppingCardLayout.needCenterY) > 12
+      || Math.abs(shoppingCardLayout.copyCenterY - shoppingCardLayout.needCenterY) > 16
+      || shoppingCardLayout.copyLeft <= shoppingCardLayout.iconRight
+      || shoppingCardLayout.needLeft < shoppingCardLayout.copyRight - 1
+      || shoppingCardLayout.needRight > shoppingCardLayout.cardRight + 1) {
+      report.failures.push({ width, type: "shopping-card-single-row", shoppingCardLayout });
+    }
+
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "orders" }));
       await page.locator('[data-action="new-order"]').first().click();
