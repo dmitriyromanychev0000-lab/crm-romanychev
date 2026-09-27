@@ -9540,3 +9540,16 @@
   }
 }
 
+/* 1.0.13 · Материалы: нейтрализуем старое grid-позиционирование line-item внутри вложенных label. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .material-card-controls [data-line="qty"],
+  .order-editor-modal .material-card-controls [data-line="unit-cost"] {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  .order-editor-modal .material-card-controls label {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+
