@@ -11802,7 +11802,7 @@
     border-color: #1b2a33 !important;
   }
 
-  .legacy-settings-page .settings-links > button[data-more="tools"] {
+  .legacy-settings-page .legacy-settings-links > button[data-more="tools"] {
     border-color: #223b52 !important;
     background: #081019 !important;
   }
