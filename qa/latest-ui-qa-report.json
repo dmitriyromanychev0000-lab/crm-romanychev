@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T19:11:57.786Z",
-  "testedSha": "63fd22c846303245f0bd3b9f0aa3b69b0ac15073",
+  "generatedAt": "2026-09-27T19:17:01.516Z",
+  "testedSha": "1f601880228a65072d8e8d90dc2c4bcbfca09d5b",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1339,5 +1339,48 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "analytics-product-model",
+      "analyticsModelState": {
+        "values": {
+          "Получено от клиентов": 10400,
+          "Потрачено": 4100,
+          "Заработал": 5050,
+          "Средний чек": 8900
+        },
+        "conversion": 33,
+        "weekdays": 7,
+        "bars": 2,
+        "barWidths": [
+          28,
+          28
+        ],
+        "hasSources": true,
+        "expenseButtonHeight": 44
+      }
+    },
+    {
+      "width": 390,
+      "type": "analytics-product-model",
+      "analyticsModelState": {
+        "values": {
+          "Получено от клиентов": 10400,
+          "Потрачено": 4100,
+          "Заработал": 5050,
+          "Средний чек": 8900
+        },
+        "conversion": 33,
+        "weekdays": 7,
+        "bars": 2,
+        "barWidths": [
+          28,
+          28
+        ],
+        "hasSources": true,
+        "expenseButtonHeight": 44
+      }
+    }
+  ]
 }
