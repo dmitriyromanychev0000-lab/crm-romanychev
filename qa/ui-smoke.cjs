@@ -666,6 +666,59 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (await page.locator("#material-lines [data-material-row]").count() !== 0) {
         report.failures.push({ width, type: "material-row-remove" });
       }
+
+      if (width === 390) {
+        await page.locator("#add-manual-material").click();
+        await page.locator('[data-material-row][data-direct-expense="true"] [data-line="name"]').fill("Ремонт платы");
+        await page.locator('[data-material-row][data-direct-expense="true"] [data-line="amount"]').fill("3000");
+        await page.waitForTimeout(30);
+        const directExpenseState = await page.evaluate(() => {
+          const row = document.querySelector('[data-material-row][data-direct-expense="true"]');
+          const amount = row?.querySelector('[data-line="amount"]');
+          const comment = row?.querySelector('[data-line="comment"]');
+          const white = document.querySelector('.order-editor-modal [name="expense_white"]');
+          const hint = document.querySelector("#white-expense-minimum");
+          const add = document.querySelector("#add-manual-material");
+          return {
+            rows: document.querySelectorAll('[data-material-row][data-direct-expense="true"]').length,
+            amount: Number(amount?.value) || 0,
+            hasComment: Boolean(comment),
+            white: Number(white?.value) || 0,
+            whiteMin: Number(white?.min) || 0,
+            hint: hint?.textContent || "",
+            addAlign: add ? getComputedStyle(add).justifyContent : "missing",
+            addHeight: Math.round(add?.getBoundingClientRect().height || 0)
+          };
+        });
+        if (directExpenseState.rows !== 1
+          || directExpenseState.amount !== 3000
+          || !directExpenseState.hasComment
+          || directExpenseState.white !== 3000
+          || directExpenseState.whiteMin !== 3000
+          || !directExpenseState.hint.includes("3")
+          || directExpenseState.addAlign !== "center"
+          || directExpenseState.addHeight < 44) {
+          report.failures.push({ width, type: "direct-expense-white-minimum", directExpenseState });
+        }
+
+        await page.locator('.order-editor-modal [name="expense_white"]').fill("2000");
+        await page.locator('.order-editor-modal [name="expense_white"]').evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
+        const clampedWhite = Number(await page.locator('.order-editor-modal [name="expense_white"]').inputValue());
+        if (clampedWhite !== 3000) {
+          report.failures.push({ width, type: "direct-expense-white-clamp", clampedWhite });
+        }
+
+        await page.locator('.order-editor-modal [name="expense_white"]').fill("4000");
+        await page.locator('.order-editor-modal [name="expense_white"]').evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
+        const raisedWhite = Number(await page.locator('.order-editor-modal [name="expense_white"]').inputValue());
+        if (raisedWhite !== 4000) {
+          report.failures.push({ width, type: "direct-expense-white-manual-increase", raisedWhite });
+        }
+        await page.locator('[data-material-row][data-direct-expense="true"]').scrollIntoViewIfNeeded();
+        report.results.push(await shot(page, width, "order-editor-direct-expense", false));
+        await page.locator('[data-material-row][data-direct-expense="true"] [data-remove-line]').click();
+      }
+
       await page.keyboard.press("Escape");
       const editorClosed = await page.evaluate(() => ({
         count: document.querySelectorAll(".modal-backdrop").length,
