@@ -614,6 +614,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
         report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
       }
+      const analyticsSingleBar = await page.evaluate(() => {
+        const wrap = document.querySelector(".analytics-chart-panel .bar-wrap:only-child");
+        const bar = wrap?.querySelector(".bar");
+        const rect = wrap?.getBoundingClientRect();
+        const barRect = bar?.getBoundingClientRect();
+        return {
+          exists: Boolean(wrap),
+          width: rect ? Math.round(rect.width) : 0,
+          height: rect ? Math.round(rect.height) : 0,
+          background: wrap ? getComputedStyle(wrap).backgroundColor : "missing",
+          radius: wrap ? getComputedStyle(wrap).borderRadius : "missing",
+          barWidth: barRect ? Math.round(barRect.width) : 0,
+          barHeight: barRect ? Math.round(barRect.height) : 0
+        };
+      });
+      if (!analyticsSingleBar.exists
+        || analyticsSingleBar.height < 74
+        || analyticsSingleBar.height > 100
+        || analyticsSingleBar.background !== "rgb(9, 15, 20)"
+        || analyticsSingleBar.radius !== "12px"
+        || analyticsSingleBar.barWidth !== 10
+        || analyticsSingleBar.barHeight !== 44) {
+        report.failures.push({ width, type: "analytics-single-bar-layout", analyticsSingleBar });
+      }
 
       await page.locator('[data-analytics-period="custom"]').click();
       await page.waitForTimeout(60);
