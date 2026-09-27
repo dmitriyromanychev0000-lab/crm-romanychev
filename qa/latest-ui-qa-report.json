@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:15:21.639Z",
-  "testedSha": "8000513fcdeecef0b5c9412aa1ab7e6ea4bdfea5",
+  "generatedAt": "2026-09-27T09:21:09.990Z",
+  "testedSha": "6ffe91552936969fc09f98814e399f0b51cd277f",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -374,6 +374,15 @@
     },
     {
       "label": "empty-goods",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "toast-feedback",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -1032,12 +1041,29 @@
       "tooSmall": [],
       "backupRoundtripOk": true,
       "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
   "failures": [
     {
-      "type": "fatal",
-      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"networkidle\"\n"
+      "width": 320,
+      "type": "toast-feedback-surface",
+      "toastFeedback": {
+        "background": "rgb(10, 17, 22)",
+        "radius": "12px",
+        "bottom": 842,
+        "navTop": 831
+      }
     }
   ]
 }
