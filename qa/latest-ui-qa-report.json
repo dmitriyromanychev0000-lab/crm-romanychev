@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T05:57:03.032Z",
-  "testedSha": "f4c6783a95bbb64fbf3134574f90b0a0033b3ffe",
+  "generatedAt": "2026-09-27T06:28:05.220Z",
+  "testedSha": "6b9d261cfe1c7bed6d6d04ed67928e3f3e601366",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -679,6 +679,24 @@
       "tooSmall": []
     },
     {
+      "label": "order-editor-restored",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "photo-viewer",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
       "label": "order-detail",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -914,10 +932,10 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 468,
-        "bottom": 512,
-        "width": 300,
-        "height": 44,
+        "top": 463,
+        "bottom": 511,
+        "width": 304,
+        "height": 48,
         "viewportHeight": 520,
         "locked": true,
         "bodyFixed": true
