@@ -3401,6 +3401,12 @@ function newOrderModal(existing = null, options = {}) {
     ? 6
     : Number(order.guarantee);
   const originalWarrantyTargets = normalizeWarrantyTargets(order);
+  const warrantyAppeal = isWarrantyAppeal(order);
+  const parentOrder = warrantyAppeal ? data.orders.find((item) => String(item.id) === String(order.parentOrderId || "")) : null;
+  const warrantyResultOptions = activeWarrantyResults().map((result) => `<option value="${escapeHtml(result.id)}" ${String(order.warrantyResultId || "") === String(result.id) ? "selected" : ""}>${escapeHtml(result.name)}</option>`).join("");
+  const archivedWarrantyResult = warrantyAppeal && order.warrantyResultId && !activeWarrantyResults().some((result) => String(result.id) === String(order.warrantyResultId))
+    ? `<option value="${escapeHtml(order.warrantyResultId)}" selected>${escapeHtml(warrantyResultName(order) || "Архивный результат")}</option>`
+    : "";
   let orderPhotos = Array.isArray(order.photos) ? structuredClone(order.photos) : [];
   const serviceCatalog = availableServices();
   const visitParts = visitDateParts(order);
@@ -3415,11 +3421,15 @@ function newOrderModal(existing = null, options = {}) {
   modal.className = "modal-backdrop order-editor-backdrop";
   modal.innerHTML = `<form class="modal order-editor-modal" id="order-form" data-order-id="${escapeHtml(order.id || "")}">
     <div class="order-editor-head">
-      <span class="order-editor-title-icon">${icon("orders")}</span>
-      <div class="order-editor-title-copy"><small>${existing && !forceNew ? `ЗАЯВКА №${escapeHtml(order.id || "—")}` : "НОВАЯ ЗАЯВКА"}</small><h2>${existing && !forceNew ? "Редактирование" : "Создание заявки"}</h2></div>
+      <span class="order-editor-title-icon">${icon(warrantyAppeal ? "shield" : "orders")}</span>
+      <div class="order-editor-title-copy"><small>${warrantyAppeal ? (existing && !forceNew ? `ГАРАНТИЙНОЕ ОБРАЩЕНИЕ №${escapeHtml(order.id || "—")}` : "НОВОЕ ГАРАНТИЙНОЕ ОБРАЩЕНИЕ") : (existing && !forceNew ? `ЗАЯВКА №${escapeHtml(order.id || "—")}` : "НОВАЯ ЗАЯВКА")}</small><h2>${existing && !forceNew ? "Редактирование" : "Создание заявки"}</h2></div>
       <button type="button" class="order-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button>
     </div>
     <div class="order-editor-body">
+    ${warrantyAppeal ? `<section class="warranty-appeal-origin">
+      <span>${icon("shield")}</span>
+      <div><small>СВЯЗАНО С ИСХОДНЫМ РЕМОНТОМ</small><strong>Заявка №${escapeHtml(order.parentOrderId || "—")}</strong><em>${escapeHtml([parentOrder?.tech || order.tech, parentOrder?.brand || order.brand].filter(Boolean).join(" · "))}</em></div>
+    </section>` : ""}
     <section class="order-editor-section">
       <div class="form-section-title"><span class="order-editor-section-icon">${icon("clients")}</span><span>Клиент и техника</span></div>
       <div class="form-grid">
@@ -3438,6 +3448,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Время визита</label><input class="field" name="nextVisitTime" type="time" value="${escapeHtml(visitParts.time)}" /></div>
       <div class="form-group"><label>Длительность</label><select class="field" name="nextVisitDuration">${[30,45,60,90,120,180].map((minutes) => `<option value="${minutes}" ${visitParts.duration === minutes ? "selected" : ""}>${minutes < 60 ? `${minutes} мин.` : minutes === 60 ? "1 час" : minutes === 90 ? "1 ч 30 мин." : `${minutes / 60} ч.`}</option>`).join("")}</select></div>
       <div class="form-group"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      ${warrantyAppeal ? `<div class="form-group full warranty-result-field"><label>Результат гарантийного обращения</label><select class="field" name="warrantyResultId"><option value="">Пока не определён</option>${warrantyResultOptions}${archivedWarrantyResult}</select></div>` : ""}
       </div>
     </section>
 
@@ -3481,7 +3492,7 @@ function newOrderModal(existing = null, options = {}) {
     <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Без склада</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Итог услуг</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
 
     <div class="form-grid legacy-payment-grid">
-      <div class="form-group"><label>Итоговая сумма</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group"><label>${warrantyAppeal ? "Получено от клиента" : "Итоговая сумма"}</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
       <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
       <div class="form-group"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
@@ -3747,6 +3758,10 @@ function newOrderModal(existing = null, options = {}) {
       nextVisitDuration: Number(form.get("nextVisitDuration")) || 60,
       nextVisit: form.get("nextVisitDate") ? `${form.get("nextVisitDate")}T${form.get("nextVisitTime") || "12:00"}:00` : null,
       status: form.get("status"),
+      warrantyResultId: warrantyAppeal ? String(form.get("warrantyResultId") || "") : (order.warrantyResultId || ""),
+      warrantyResultName: warrantyAppeal
+        ? (activeWarrantyResults().find((result) => String(result.id) === String(form.get("warrantyResultId") || ""))?.name || warrantyResultName(order) || "")
+        : (order.warrantyResultName || ""),
       services: [...modal.querySelectorAll("[data-service-row]")].map((row) => ({
         name: row.querySelector('[data-line="name"]').value,
         qty: Number(row.querySelector('[data-line="qty"]').value) || 1,
@@ -3795,6 +3810,10 @@ function newOrderModal(existing = null, options = {}) {
     }
     const nextStatus = normalizeStatus(next.status);
     const previousStatus = previous ? normalizeStatus(previous.status) : null;
+    if (isWarrantyAppeal(next) && (nextStatus === "closed" || nextStatus === "declined") && !next.warrantyResultId) {
+      formElement.elements.warrantyResultId?.focus();
+      return toast("Выбери результат гарантийного обращения");
+    }
     const directExpenseMinimum = next.materials
       .filter((item) => item.directExpense)
       .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
@@ -4532,6 +4551,44 @@ function goodsModal(existing = null, seed = null) {
   calculate();
 }
 
+function openWarrantyAppeal(order) {
+  if (!order || normalizeStatus(order.status) !== "closed") return toast("Гарантийное обращение создаётся из закрытой заявки");
+  const draft = {
+    orderType: "warranty",
+    parentOrderId: String(order.id || ""),
+    warrantyResultId: "",
+    warrantyResultName: "",
+    name: order.name || "",
+    phone: order.phone || "",
+    tech: order.tech || "",
+    brand: order.brand || "",
+    address: order.address || "",
+    sourceId: order.sourceId || "",
+    sourceName: orderSourceName(order) || order.sourceName || "",
+    issue: "",
+    diagnosis: "",
+    defects: "",
+    comment: "",
+    status: "В работе",
+    sum: 0,
+    prepay: 0,
+    discount: 0,
+    percent: order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent),
+    expense_gray: 0,
+    expense_white: 0,
+    guarantee: 0,
+    guaranteeTargets: [],
+    guaranteeNote: "",
+    nextVisitDate: "",
+    nextVisitTime: "",
+    nextVisitDuration: 60,
+    services: [],
+    materials: [],
+    photos: []
+  };
+  newOrderModal(draft, { forceNew: true });
+}
+
 function orderActionsSheet(order) {
   const tg = telegramPhoneLink(order.phone);
   const modal = document.createElement("div");
@@ -4543,8 +4600,9 @@ function orderActionsSheet(order) {
     </div>
     <div class="order-actions-grid">
       <button type="button" data-order-sheet-action="copy">${icon("copy")}<b>Копия заявки</b></button>
+      ${normalizeStatus(order.status) === "closed" && !isWarrantyAppeal(order) ? `<button type="button" class="warranty-appeal-action" data-order-sheet-action="warranty">${icon("shield")}<b>Гарантийное обращение</b></button>` : ""}
       <button type="button" data-order-sheet-action="receipt">${icon("document")}<b>Квитанция</b></button>
-      <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт / PDF</b></button>
+      <button type="button" data-order-sheet-action="act">${icon("printer")}<b>Акт</b></button>
       ${tg ? `<a href="${escapeHtml(tg)}">${icon("telegram")}<b>Telegram</b></a>` : `<button type="button" disabled>${icon("telegram")}<b>Telegram</b></button>`}
       <button type="button" data-order-sheet-action="archive">${icon(order.archived ? "reopen" : "archive")}<b>${order.archived ? "Вернуть" : "В архив"}</b></button>
       ${order.archived ? `<button type="button" class="danger order-actions-delete" data-order-sheet-action="delete">${icon("trash")}<b>Удалить навсегда</b></button>` : ""}
@@ -4559,6 +4617,7 @@ function orderActionsSheet(order) {
   modal.querySelectorAll("[data-order-sheet-action]").forEach((button) => button.addEventListener("click", async () => {
     const action = button.dataset.orderSheetAction;
     close();
+    if (action === "warranty") return openWarrantyAppeal(order);
     if (action === "act") {
       selectedActOrderId = String(order.id);
       activePage = "more";
