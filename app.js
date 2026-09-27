@@ -43,6 +43,7 @@ const defaultData = () => ({
     lastBackupAt: null,
     catalogApplyWithoutFit: false,
     stockReservationModel: 1,
+    stockBatchModel: 1,
     searchMasterComment: false,
     companyName: "CRM by Romanychev",
     name: "",
@@ -355,6 +356,9 @@ function validateBackup(candidate) {
   const migratedSettings = { ...defaultData().settings, ...candidate.settings };
   if (!Object.prototype.hasOwnProperty.call(candidate.settings, "stockReservationModel")) {
     migratedSettings.stockReservationModel = 0;
+  }
+  if (!Object.prototype.hasOwnProperty.call(candidate.settings, "stockBatchModel")) {
+    migratedSettings.stockBatchModel = 0;
   }
   if (!Object.prototype.hasOwnProperty.call(candidate.settings, "catalogApplyWithoutFit")
       && Object.prototype.hasOwnProperty.call(candidate.settings, "autoPriceAdjust")) {
@@ -751,6 +755,125 @@ function migrateStockReservationModel() {
     if (item) item.quantity = (Number(item.quantity) || 0) + qty;
   });
   data.settings = { ...data.settings, stockReservationModel: 1 };
+  return true;
+}
+
+
+function stockBatchList(item = {}) {
+  return Array.isArray(item.batches) ? item.batches : [];
+}
+
+function stockBatchRemaining(item = {}) {
+  return stockBatchList(item).reduce((sum, batch) => sum + Math.max(0, Number(batch.remainingQty) || 0), 0);
+}
+
+function stockInventoryCost(item = {}) {
+  return stockBatchList(item).reduce((sum, batch) => {
+    return sum + Math.max(0, Number(batch.remainingQty) || 0) * Math.max(0, Number(batch.unitCost) || 0);
+  }, 0);
+}
+
+function createStockBatch(item, qty, totalCost = 0, options = {}) {
+  const quantity = Math.max(0, Number(qty) || 0);
+  if (quantity <= 0) return null;
+  if (!Array.isArray(item.batches)) item.batches = [];
+  const cost = Math.max(0, Number(totalCost) || 0);
+  const unitCost = options.unitCost !== undefined
+    ? Math.max(0, Number(options.unitCost) || 0)
+    : (quantity > 0 ? cost / quantity : 0);
+  const batch = {
+    id: options.id || crypto.randomUUID(),
+    acquiredAt: options.acquiredAt || new Date().toISOString(),
+    initialQty: quantity,
+    remainingQty: quantity,
+    totalCost: options.totalCost !== undefined ? Math.max(0, Number(options.totalCost) || 0) : cost,
+    unitCost,
+    source: options.source || "purchase",
+    consumptions: []
+  };
+  item.batches.push(batch);
+  return batch;
+}
+
+function consumeStockBatches(item, qty, orderId = null, referenceId = null) {
+  let remaining = Math.max(0, Number(qty) || 0);
+  const allocations = [];
+  const batches = stockBatchList(item)
+    .slice()
+    .sort((a, b) => new Date(a.acquiredAt || 0) - new Date(b.acquiredAt || 0));
+
+  for (const batch of batches) {
+    if (remaining <= 1e-9) break;
+    const available = Math.max(0, Number(batch.remainingQty) || 0);
+    if (available <= 0) continue;
+    const take = Math.min(available, remaining);
+    batch.remainingQty = Math.max(0, available - take);
+    if (orderId) {
+      if (!Array.isArray(batch.consumptions)) batch.consumptions = [];
+      const existing = batch.consumptions.find((entry) => String(entry.orderId) === String(orderId) && String(entry.referenceId || "") === String(referenceId || ""));
+      if (existing) existing.qty = (Number(existing.qty) || 0) + take;
+      else batch.consumptions.push({ orderId: String(orderId), referenceId: referenceId || null, qty: take });
+    }
+    allocations.push({ batchId: batch.id, qty: take, unitCost: Number(batch.unitCost) || 0 });
+    remaining -= take;
+  }
+
+  return { ok: remaining <= 1e-7, remaining, allocations };
+}
+
+function restoreOrderStockBatches(item, qty, orderId) {
+  let remaining = Math.max(0, Number(qty) || 0);
+  const allocations = [];
+  const batches = stockBatchList(item)
+    .slice()
+    .sort((a, b) => new Date(b.acquiredAt || 0) - new Date(a.acquiredAt || 0));
+
+  for (const batch of batches) {
+    if (remaining <= 1e-9) break;
+    const entries = Array.isArray(batch.consumptions) ? batch.consumptions : [];
+    for (let index = entries.length - 1; index >= 0 && remaining > 1e-9; index -= 1) {
+      const entry = entries[index];
+      if (String(entry.orderId) !== String(orderId)) continue;
+      const used = Math.max(0, Number(entry.qty) || 0);
+      if (used <= 0) continue;
+      const restore = Math.min(used, remaining);
+      entry.qty = used - restore;
+      batch.remainingQty = (Number(batch.remainingQty) || 0) + restore;
+      allocations.push({ batchId: batch.id, qty: restore, unitCost: Number(batch.unitCost) || 0 });
+      remaining -= restore;
+      if (entry.qty <= 1e-9) entries.splice(index, 1);
+    }
+  }
+
+  // Old closed orders created before batch accounting have no consumption ledger.
+  // When reopened, restore their quantity as a compatibility batch without inventing an expense.
+  if (remaining > 1e-7) {
+    const fallback = createStockBatch(item, remaining, 0, {
+      unitCost: Number(item.lastPurchasePrice) || 0,
+      totalCost: remaining * (Number(item.lastPurchasePrice) || 0),
+      source: "legacy-return"
+    });
+    allocations.push({ batchId: fallback.id, qty: remaining, unitCost: Number(fallback.unitCost) || 0 });
+    remaining = 0;
+  }
+
+  return { ok: true, allocations };
+}
+
+function migrateStockBatchModel() {
+  if (Number(data.settings?.stockBatchModel) >= 1) return false;
+  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+    item.batches = [];
+    const quantity = Math.max(0, Number(item.quantity) || 0);
+    if (quantity > 0) {
+      createStockBatch(item, quantity, quantity * (Number(item.lastPurchasePrice) || 0), {
+        unitCost: Number(item.lastPurchasePrice) || 0,
+        acquiredAt: item.createdAt || item.updatedAt || data.date || new Date().toISOString(),
+        source: "opening"
+      });
+    }
+  });
+  data.settings = { ...data.settings, stockBatchModel: 1 };
   return true;
 }
 
@@ -3048,7 +3171,7 @@ function syncOrderStock(previousOrder = null, nextOrder = null) {
     const otherReserved = stockReservedQuantity(warehouseId, { excludeOrderId: orderId });
     const availableBefore = Math.max(0, physical - otherReserved);
 
-    if (consumptionDelta > availableBefore + 1e-9) {
+    if (consumptionDelta > availableBefore + 1e-9 || consumptionDelta > stockBatchRemaining(item) + 1e-9) {
       return {
         ok: false,
         message: `Недостаточно доступного остатка: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableBefore)} ${normalizeStockUnit(item.unit || "шт")}`
@@ -3067,21 +3190,31 @@ function syncOrderStock(previousOrder = null, nextOrder = null) {
       }
     }
 
-    if (Math.abs(consumptionDelta) > 1e-9) {
-      changes.push({ item, consumptionDelta });
-    }
+    if (Math.abs(consumptionDelta) > 1e-9) changes.push({ item, consumptionDelta });
   }
 
   const date = new Date().toISOString();
   changes.forEach(({ item, consumptionDelta }) => {
+    const movementId = crypto.randomUUID();
+    let allocations = [];
+    if (consumptionDelta > 0) {
+      const consumed = consumeStockBatches(item, consumptionDelta, orderId, movementId);
+      allocations = consumed.allocations;
+    } else {
+      const restored = restoreOrderStockBatches(item, Math.abs(consumptionDelta), orderId);
+      allocations = restored.allocations;
+    }
     item.quantity = Math.max(0, (Number(item.quantity) || 0) - consumptionDelta);
+    const batchCost = allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
     data.warehouse_movements.push({
-      id: crypto.randomUUID(),
+      id: movementId,
       warehouseId: item.id,
       orderId,
       name: item.name,
       qty: Math.abs(consumptionDelta),
       type: consumptionDelta > 0 ? "order_out" : "order_return",
+      batchCost,
+      allocations,
       date
     });
   });
@@ -5183,6 +5316,7 @@ app.addEventListener("click", async (event) => {
     data = validateBackup(structuredClone(rollback));
     ensureDataIds();
     migrateStockReservationModel();
+    migrateStockBatchModel();
     await saveData();
     await dbSet(PRE_IMPORT_KEY, current);
     activePage = "orders";
@@ -5520,6 +5654,7 @@ fileInput.addEventListener("change", async () => {
     data = restored;
     ensureDataIds();
     migrateStockReservationModel();
+    migrateStockBatchModel();
     await saveData();
     activePage = "orders";
     moreSection = "menu";
@@ -5541,6 +5676,7 @@ async function start() {
       data = validateBackup(stored);
       let migrated = ensureDataIds();
       if (migrateStockReservationModel()) migrated = true;
+      if (migrateStockBatchModel()) migrated = true;
       if (migrated) await saveData();
     }
   } catch (error) {
