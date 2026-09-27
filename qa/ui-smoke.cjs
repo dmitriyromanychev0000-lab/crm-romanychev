@@ -774,7 +774,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       await page.waitForTimeout(80);
       await page.locator("#price-search").click();
-      await page.waitForTimeout(40);
+      await page.waitForTimeout(220);
       const priceSearchFocus = await page.evaluate(() => {
         const search = document.querySelector("#price-search");
         const icon = document.querySelector(".legacy-price-search > .ui-icon");
