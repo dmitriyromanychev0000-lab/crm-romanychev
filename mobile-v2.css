@@ -12347,3 +12347,83 @@
     padding-bottom: calc(94px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* 1.0.38 · Заявка: компактный расход без склада и явный минимум белого расхода. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .direct-expense-add {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin-top: 9px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border-color: #2a3740 !important;
+    background: #0a1116 !important;
+    color: #dce3e6 !important;
+    font-size: 12px !important;
+    font-weight: 740 !important;
+    text-align: center !important;
+  }
+
+  .order-editor-modal .direct-expense-add .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    color: #ff765c !important;
+  }
+
+  .order-editor-modal .direct-expense-card {
+    gap: 8px !important;
+    border-color: rgba(255,104,74,.24) !important;
+    background-color: #0c0b0a !important;
+    background-image: linear-gradient(135deg, rgba(255,104,74,.045), transparent 56%) !important;
+  }
+
+  .order-editor-modal .direct-expense-controls {
+    display: grid !important;
+    grid-template-columns: minmax(74px,.72fr) minmax(0,1.28fr) !important;
+    gap: 7px !important;
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .direct-expense-controls label {
+    display: grid !important;
+    min-width: 0 !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .direct-expense-controls label > span {
+    color: #8e989f !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .direct-expense-controls .field {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 10px !important;
+    border-color: #342f2d !important;
+    background: #100f0e !important;
+    font-size: 13px !important;
+  }
+
+  .order-editor-modal .direct-expense-comment {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .white-expense-group {
+    align-content: start !important;
+  }
+
+  .order-editor-modal .white-expense-hint {
+    display: block !important;
+    margin-top: 5px !important;
+    color: #8e989f !important;
+    font-size: 9.5px !important;
+    line-height: 1.25 !important;
+  }
+}
