@@ -8118,14 +8118,14 @@
     -webkit-line-clamp: 2;
   }
 }
-/* 1.0.6 · Редактор заявки: восстановленный тёмный стиль и цельные мобильные блоки. */
+/* 1.0.7 · Редактор заявки: глубокие почти чёрные поверхности без серой подложки. */
 @media screen and (max-width: 520px) {
   :root {
-    --crm-bg: #050a0e;
-    --crm-surface: #0c1318;
-    --crm-surface-2: #121b22;
-    --crm-line: #26323b;
-    --crm-line-soft: #1b252c;
+    --crm-bg: #03070a;
+    --crm-surface: #070c10;
+    --crm-surface-2: #0a1116;
+    --crm-line: #202d35;
+    --crm-line-soft: #151f25;
     --crm-text: #f2f5f6;
     --crm-muted: #8c979f;
     --crm-accent: #ff684a;
@@ -8135,7 +8135,7 @@
   html,
   body,
   .shell {
-    background: #050a0e !important;
+    background: #03070a !important;
   }
 
   .primary-button,
@@ -8155,7 +8155,7 @@
     max-height: 100dvh !important;
     padding: 0 12px !important;
     overflow: hidden !important;
-    background: #050a0e !important;
+    background: #03070a !important;
   }
 
   .order-editor-modal .order-editor-head {
@@ -8165,7 +8165,7 @@
     margin: 0 -12px !important;
     padding: calc(9px + env(safe-area-inset-top)) 12px 9px !important;
     border-bottom: 1px solid #1c272e !important;
-    background: #050a0e !important;
+    background: #03070a !important;
     box-shadow: none !important;
   }
 
@@ -8181,7 +8181,7 @@
     width: 44px !important;
     height: 44px !important;
     border-color: #2b3841 !important;
-    background: #121b22 !important;
+    background: #0a1116 !important;
   }
 
   .order-editor-modal .order-editor-body {
@@ -8238,7 +8238,7 @@
 
   .order-editor-modal .legacy-stock-button {
     border-color: #33414b !important;
-    background: #10181e !important;
+    background: #090f14 !important;
     color: #edf2f4 !important;
   }
 
@@ -8321,7 +8321,7 @@
     padding: 12px !important;
     border: 1px solid #2a3740 !important;
     border-radius: 15px !important;
-    background: #0d151a !important;
+    background: #070c10 !important;
     box-shadow: inset 0 1px rgba(255,255,255,.015) !important;
   }
 
@@ -8369,7 +8369,7 @@
     height: 44px !important;
     padding: 0 10px !important;
     border-color: #2c3942 !important;
-    background: #121b21 !important;
+    background: #090f14 !important;
     font-size: 13px !important;
   }
 
@@ -8378,7 +8378,7 @@
     margin: 10px 0 20px !important;
     border: 1px solid #26333b !important;
     border-radius: 14px !important;
-    background: #0b1217 !important;
+    background: #060b0f !important;
   }
 
   .order-editor-modal .manual-material-details {
@@ -8515,7 +8515,7 @@
     overflow: hidden !important;
     border: 1px solid #2b3841 !important;
     border-radius: 13px !important;
-    background: #10181e !important;
+    background: #080e12 !important;
     color: #e9edef !important;
     text-align: left !important;
   }
@@ -8580,7 +8580,7 @@
     min-height: 64px !important;
     padding: 10px 11px !important;
     border-color: #26333b !important;
-    background: #0e161b !important;
+    background: #080e12 !important;
   }
 
   .order-editor-modal .order-calculation-summary .calculation-grand {
@@ -8611,7 +8611,7 @@
   .order-editor-modal .order-calculation-summary > button {
     min-height: 44px !important;
     border-color: #2c3942 !important;
-    background: #10181e !important;
+    background: #090f14 !important;
     color: #e7ecee !important;
     font-size: 11px !important;
   }
@@ -8622,7 +8622,7 @@
 
   .order-editor-modal .legacy-payment-grid .field {
     border-color: #2c3942 !important;
-    background: #111a20 !important;
+    background: #090f14 !important;
   }
 
   .order-editor-modal .legacy-guarantee-card {
@@ -8630,7 +8630,7 @@
     padding: 12px !important;
     border: 1px solid rgba(255,104,74,.34) !important;
     border-radius: 14px !important;
-    background: linear-gradient(145deg,rgba(255,104,74,.055),rgba(12,18,23,.94)) !important;
+    background: linear-gradient(145deg,rgba(255,104,74,.055),rgba(6,11,15,.96)) !important;
   }
 
   .order-editor-modal .legacy-guarantee-head {
@@ -8655,7 +8655,7 @@
   .order-editor-modal .order-comment .textarea {
     min-height: 88px !important;
     border-color: #2c3942 !important;
-    background: #10181e !important;
+    background: #090f14 !important;
   }
 
   .order-editor-modal .order-comment {
@@ -8673,7 +8673,7 @@
     margin: 0 -12px !important;
     padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
     border-top: 1px solid #202b32 !important;
-    background: #050a0e !important;
+    background: #03070a !important;
     box-shadow: 0 -10px 28px rgba(0,0,0,.3) !important;
   }
 
@@ -8685,7 +8685,7 @@
 
   .order-editor-modal .modal-actions .secondary-button {
     border-color: #2c3942 !important;
-    background: #121b22 !important;
+    background: #0a1116 !important;
     color: #eef2f4 !important;
   }
 
@@ -8780,7 +8780,7 @@
   .photo-viewer-actions {
     padding: 9px 12px calc(9px + env(safe-area-inset-bottom)) !important;
     border-top: 1px solid #1f292f !important;
-    background: #050a0e !important;
+    background: #03070a !important;
   }
 
   .photo-viewer-delete {
