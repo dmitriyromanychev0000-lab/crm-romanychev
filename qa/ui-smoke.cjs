@@ -1412,15 +1412,46 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
         stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
         action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
-        filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value)
+        filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value),
+        techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
+        categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
+        hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
+        hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter"))
       }));
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
         || warehousePageSurfaces.stock !== "rgb(6, 11, 15)"
         || warehousePageSurfaces.action !== "rgb(9, 15, 20)"
         || !warehousePageSurfaces.filters.includes("out")
         || !warehousePageSurfaces.filters.includes("reserved")
-        || !warehousePageSurfaces.filters.includes("archived")) {
+        || !warehousePageSurfaces.filters.includes("archived")
+        || !warehousePageSurfaces.techGroups.includes("Холодильник")
+        || warehousePageSurfaces.categoryBlocks < 1
+        || !warehousePageSurfaces.hasTechFilter
+        || !warehousePageSurfaces.hasCategoryFilter) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
+      }
+      if (width === 390) {
+        await page.locator("#warehouse-tech-filter").selectOption({ label: "Холодильник" });
+        await page.waitForTimeout(50);
+        const techFiltered = await page.evaluate(() => ({
+          cards: [...document.querySelectorAll("[data-stock-detail]")].map((node) => node.dataset.stockDetail),
+          techValue: document.querySelector("#warehouse-tech-filter")?.value || ""
+        }));
+        if (techFiltered.techValue !== "Холодильник" || techFiltered.cards.some((id) => !["w1","w3"].includes(id)) || techFiltered.cards.length !== 2) {
+          report.failures.push({ width, type: "warehouse-tech-filter", techFiltered });
+        }
+
+        await page.locator("#warehouse-category-filter").selectOption({ label: "Расходники" });
+        await page.waitForTimeout(50);
+        const categoryFiltered = await page.evaluate(() => ({
+          cards: [...document.querySelectorAll("[data-stock-detail]")].map((node) => node.dataset.stockDetail),
+          categoryValue: document.querySelector("#warehouse-category-filter")?.value || ""
+        }));
+        if (categoryFiltered.categoryValue !== "Расходники" || categoryFiltered.cards.length !== 1 || categoryFiltered.cards[0] !== "w3") {
+          report.failures.push({ width, type: "warehouse-category-filter", categoryFiltered });
+        }
+
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
       }
       await page.locator("[data-stock-detail]").first().click();
       const stockDetailSurface = await page.evaluate(() => {
@@ -1467,16 +1498,37 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
         section: getComputedStyle(document.querySelector(".stock-editor-section")).backgroundColor,
         field: getComputedStyle(document.querySelector(".stock-editor-modal .field")).backgroundColor,
-        compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor
+        compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor,
+        hasStockTech: Boolean(document.querySelector('.stock-editor-modal [name="stockTech"]')),
+        categoryRequired: Boolean(document.querySelector('.stock-editor-modal [name="category"]')?.required)
       }));
       if (stockEditorSurface.modal !== "rgb(3, 7, 10)"
         || stockEditorSurface.section !== "rgb(6, 11, 15)"
         || stockEditorSurface.field !== "rgb(9, 15, 20)"
-        || stockEditorSurface.compat !== "rgb(9, 15, 20)") {
+        || stockEditorSurface.compat !== "rgb(9, 15, 20)"
+        || !stockEditorSurface.hasStockTech
+        || !stockEditorSurface.categoryRequired) {
         report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
       }
       report.results.push(await shot(page, width, "stock-editor", false));
-      await page.keyboard.press("Escape");
+      if (width === 390) {
+        await page.locator('.stock-editor-modal [name="name"]').fill("Датчик температуры 10 кОм");
+        await page.locator('.stock-editor-modal [name="stockTech"]').selectOption("Холодильник");
+        await page.locator('.stock-editor-modal [name="category"]').fill("Датчики");
+        await page.locator('.stock-editor-modal [name="quantity"]').fill("2");
+        await page.locator('.stock-editor-modal [name="initialPurchaseTotal"]').fill("1000");
+        await page.locator('.stock-editor-modal button[type="submit"]').click();
+        await page.waitForTimeout(70);
+        const hierarchyStored = await readStoredData(page);
+        const createdStock = hierarchyStored.warehouse.find((item) => item.name === "Датчик температуры 10 кОм");
+        if (createdStock?.stockTech !== "Холодильник" || createdStock?.category !== "Датчики") {
+          report.failures.push({ width, type: "warehouse-hierarchy-save", createdStock });
+        }
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+      } else {
+        await page.keyboard.press("Escape");
+      }
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
       await page.locator('[data-stock="in"]').first().click();
