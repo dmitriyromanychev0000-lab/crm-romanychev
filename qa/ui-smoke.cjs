@@ -210,6 +210,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "orders" }));
+      const orderPageSurfaces = await page.evaluate(() => ({
+        card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
+        money: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-money > div")).backgroundColor,
+        action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor
+      }));
+      if (orderPageSurfaces.card !== "rgb(7, 12, 16)"
+        || orderPageSurfaces.money !== "rgb(9, 15, 20)"
+        || orderPageSurfaces.action !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "orders-deep-dark-page", orderPageSurfaces });
+      }
       await page.locator('[data-action="new-order"]').first().click();
       await page.waitForTimeout(100);
       let modalCheck = await page.evaluate(() => ({
@@ -415,7 +425,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "order-actions", false));
       await page.keyboard.press("Escape");
 
+      await setState(page, uiState({ activePage: "analytics" }));
+      const analyticsPageSurfaces = await page.evaluate(() => ({
+        panel: getComputedStyle(document.querySelector(".analytics-content .panel")).backgroundColor,
+        kpi: getComputedStyle(document.querySelector(".analytics-kpi")).backgroundColor,
+        focus: getComputedStyle(document.querySelector(".analytics-focus-row")).backgroundColor
+      }));
+      if (analyticsPageSurfaces.panel !== "rgb(7, 12, 16)"
+        || analyticsPageSurfaces.kpi !== "rgb(9, 15, 20)"
+        || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
+        report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
+      }
+
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+      const warehousePageSurfaces = await page.evaluate(() => ({
+        group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
+        stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
+        action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor
+      }));
+      if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
+        || warehousePageSurfaces.stock !== "rgb(6, 11, 15)"
+        || warehousePageSurfaces.action !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
+      }
       await page.locator("[data-stock-detail]").first().click();
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");

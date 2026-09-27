@@ -9265,3 +9265,101 @@
   }
 }
 
+/* 1.0.10 · Основные вкладки: глубокая иерархия карточек вместо серо-синей заливки. */
+@media screen and (max-width: 520px) {
+  .legacy-order-search .search,
+  .legacy-warehouse-search .search,
+  .legacy-visit-filter .field,
+  .legacy-warehouse-filter .field,
+  .legacy-warehouse-shortcuts button,
+  .analytics-period-grid .chip,
+  .analytics-range-nav {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-order-filters {
+    border-color: #151f25 !important;
+    background: #060b0f !important;
+  }
+
+  .legacy-order-card {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-order-money > div {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-order-actions {
+    border-color: #151f25 !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-order-actions > a:active,
+  .legacy-order-actions > button:active {
+    background: #0a1116 !important;
+  }
+
+  .legacy-warehouse-group {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-stock-card-v2 {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-stock-main,
+  .legacy-stock-actions-v2 {
+    border-color: #151f25 !important;
+  }
+
+  .legacy-stock-actions-v2 button {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .analytics-content .panel {
+    border-color: #202d35 !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-summary-strip > span,
+  .analytics-focus-row,
+  .analytics-work .metric {
+    border-color: #151f25 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-ranking-row,
+  .analytics-list-panel .goods-sheet {
+    border-color: #151f25 !important;
+  }
+
+  .analytics-chart-panel .bars {
+    border-color: #151f25 !important;
+  }
+}
+

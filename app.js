@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.99";
+const APP_BUILD = "2026.09.27.100";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Оставшиеся рабочие разделы Ещё, товарник, инструменты, документы и настройки приведены к единой глубокой тёмной системе и стабильным мобильным футерам";
+const APP_RELEASE = "Основные вкладки Заявки, Склад и Аналитика получили ту же глубокую тёмную иерархию карточек, вложенных блоков и действий без серо-синей заливки";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
