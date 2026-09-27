@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:10:16.269Z",
-  "testedSha": "04070e1bd095371cafc1705a8161a11b940fe3fe",
+  "generatedAt": "2026-09-27T09:12:47.077Z",
+  "testedSha": "505a40b989b82d3c7c76d7636de5b1404e134b18",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -202,6 +202,15 @@
       "tooSmall": []
     },
     {
+      "label": "analytics-range",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
       "label": "stock-detail",
       "width": 320,
       "bodyScrollWidth": 320,
@@ -212,6 +221,15 @@
     },
     {
       "label": "stock-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-adjust",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -742,6 +760,15 @@
       "tooSmall": []
     },
     {
+      "label": "analytics-range",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
       "label": "stock-detail",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -752,6 +779,15 @@
     },
     {
       "label": "stock-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-adjust",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
@@ -1009,5 +1045,30 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stock-adjust-deep-dark",
+      "stockAdjustSurface": {
+        "modal": "rgb(6, 11, 15)",
+        "balance": "rgb(9, 15, 20)",
+        "field": "rgb(10, 17, 22)",
+        "cancel": "rgb(10, 17, 22)",
+        "closeWidth": 44,
+        "closeHeight": 44
+      }
+    },
+    {
+      "width": 390,
+      "type": "stock-adjust-deep-dark",
+      "stockAdjustSurface": {
+        "modal": "rgb(6, 11, 15)",
+        "balance": "rgb(9, 15, 20)",
+        "field": "rgb(10, 17, 22)",
+        "cancel": "rgb(10, 17, 22)",
+        "closeWidth": 44,
+        "closeHeight": 44
+      }
+    }
+  ]
 }
