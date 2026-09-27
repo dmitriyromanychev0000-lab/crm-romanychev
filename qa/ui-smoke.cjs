@@ -1062,10 +1062,50 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })]
         ]) {
           await setState(page, emptyState);
+          const emptySurface = await page.evaluate(() => {
+            const node = document.querySelector(".panel.empty, .legacy-client-empty, .legacy-goods-empty, .legacy-price-empty.standalone, .legacy-finance-empty, .legacy-service-empty");
+            if (!node) return { found: false };
+            const style = getComputedStyle(node);
+            return {
+              found: true,
+              background: style.backgroundColor,
+              borderStyle: style.borderStyle,
+              radius: style.borderRadius
+            };
+          });
+          if (!emptySurface.found
+            || emptySurface.background !== "rgb(6, 11, 15)"
+            || emptySurface.borderStyle !== "dashed"
+            || parseFloat(emptySurface.radius) < 12) {
+            report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
+          }
           const emptyResult = await shot(page, width, emptyLabel, true);
           report.results.push(emptyResult);
           if (emptyResult.overflow > 2) report.failures.push({ width, type: "empty-horizontal-overflow", label: emptyLabel, overflow: emptyResult.overflow });
         }
+
+        const toastFeedback = await page.evaluate(() => {
+          const toast = document.querySelector("#toast");
+          toast.textContent = "Изменения сохранены";
+          toast.classList.add("show");
+          const style = getComputedStyle(toast);
+          const rect = toast.getBoundingClientRect();
+          const nav = document.querySelector(".bottom-nav")?.getBoundingClientRect();
+          return {
+            background: style.backgroundColor,
+            radius: style.borderRadius,
+            bottom: Math.round(rect.bottom),
+            navTop: nav ? Math.round(nav.top) : 0
+          };
+        });
+        if (toastFeedback.background !== "rgb(10, 17, 22)"
+          || parseFloat(toastFeedback.radius) < 12
+          || (toastFeedback.navTop && toastFeedback.bottom > toastFeedback.navTop - 2)) {
+          report.failures.push({ width, type: "toast-feedback-surface", toastFeedback });
+        }
+        const toastShot = await shot(page, width, "toast-feedback", false);
+        report.results.push(toastShot);
+        await page.evaluate(() => document.querySelector("#toast")?.classList.remove("show"));
 
         const archiveSeed = structuredClone(seed);
         archiveSeed.orders[0].archived = true;
