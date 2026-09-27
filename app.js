@@ -2386,8 +2386,111 @@ function shoppingPage(backAction = "more-menu") {
     }).join("")}</div>` : emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка.")}
   </main>`;
 }
+function calendarPage() {
+  const now = new Date();
+  const monthDate = new Date(now.getFullYear(), now.getMonth() + calendarMonthOffset, 1);
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const monthName = new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" }).format(monthDate);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
+  const todayKey = localDateInputValue();
+  const dateKey = (day) => `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  const visits = (data.orders || []).filter((order) => !order.archived && visitDateParts(order).date);
+  const byDate = new Map();
+  visits.forEach((order) => {
+    const key = visitDateParts(order).date;
+    if (!byDate.has(key)) byDate.set(key, []);
+    byDate.get(key).push(order);
+  });
+
+  const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}-`;
+  if (!String(calendarSelectedDate || "").startsWith(monthPrefix)) {
+    calendarSelectedDate = dateKey(1);
+  }
+  const selectedOrders = [...(byDate.get(calendarSelectedDate) || [])]
+    .sort((a, b) => visitSortTimestamp(a) - visitSortTimestamp(b));
+  const allDay = selectedOrders.filter((order) => !visitDateParts(order).time);
+  const timed = selectedOrders.filter((order) => visitDateParts(order).time);
+  const outsideTimeline = timed.filter((order) => {
+    const hour = Number(visitDateParts(order).time.slice(0, 2));
+    return hour < 10 || hour > 22;
+  });
+
+  const dayCells = [
+    ...Array.from({ length: firstWeekday }, () => '<span class="calendar-day-spacer"></span>'),
+    ...Array.from({ length: daysInMonth }, (_, index) => {
+      const day = index + 1;
+      const key = dateKey(day);
+      const items = byDate.get(key) || [];
+      const hasVisits = items.length > 0;
+      const past = key < todayKey;
+      const future = key >= todayKey;
+      const classes = [
+        "calendar-day",
+        key === todayKey ? "today" : "",
+        key === calendarSelectedDate ? "selected" : "",
+        hasVisits && past ? "has-past" : "",
+        hasVisits && future ? "has-future" : ""
+      ].filter(Boolean).join(" ");
+      return `<button type="button" class="${classes}" data-calendar-date="${key}" aria-label="${day} ${monthName}">
+        <span>${day}</span>${hasVisits ? `<i>${items.length}</i>` : ""}
+      </button>`;
+    })
+  ].join("");
+
+  const eventButton = (order, compact = false) => {
+    const status = normalizeStatus(order.status);
+    return `<button type="button" class="calendar-event ${status} ${compact ? "compact" : ""}" data-calendar-order="${escapeHtml(order.id)}">
+      <strong>${escapeHtml(visitTimeRange(order))}</strong>
+      <span>${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</span>
+      <small>${escapeHtml(order.address || order.brand || "")}</small>
+      <em>№${escapeHtml(order.id)}</em>
+    </button>`;
+  };
+
+  const timeline = Array.from({ length: 13 }, (_, i) => 10 + i).map((hour) => {
+    const events = timed.filter((order) => Number(visitDateParts(order).time.slice(0, 2)) === hour);
+    return `<div class="calendar-hour-row">
+      <time>${String(hour).padStart(2, "0")}:00</time>
+      <div>${events.map((order) => eventButton(order)).join("")}</div>
+    </div>`;
+  }).join("");
+
+  const selectedDateText = new Intl.DateTimeFormat("ru-RU", { weekday: "long", day: "numeric", month: "long" })
+    .format(new Date(`${calendarSelectedDate}T12:00:00`));
+
+  return `<main class="content legacy-calendar-page">
+    <div class="legacy-subpage-head calendar-page-head">
+      <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
+      <div><h1>Календарь</h1><p>Визиты и расписание</p></div>
+    </div>
+
+    <section class="calendar-month-card">
+      <div class="calendar-month-head">
+        <button type="button" data-calendar-shift="-1" aria-label="Предыдущий месяц">${icon("back")}</button>
+        <strong>${escapeHtml(monthName)}</strong>
+        <button type="button" class="next" data-calendar-shift="1" aria-label="Следующий месяц">${icon("chevron")}</button>
+      </div>
+      <div class="calendar-weekdays">${["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map((day)=>`<span>${day}</span>`).join("")}</div>
+      <div class="calendar-grid">${dayCells}</div>
+      <div class="calendar-legend"><span class="future">Будущие</span><span class="past">Прошедшие</span></div>
+    </section>
+
+    <section class="calendar-day-card">
+      <div class="calendar-day-head"><div><small>РАСПИСАНИЕ</small><h2>${escapeHtml(selectedDateText)}</h2></div><b>${selectedOrders.length}</b></div>
+      ${allDay.length ? `<div class="calendar-all-day"><span>Без времени</span><div>${allDay.map((order)=>eventButton(order,true)).join("")}</div></div>` : ""}
+      ${outsideTimeline.length ? `<div class="calendar-all-day outside"><span>Вне шкалы 10:00–22:00</span><div>${outsideTimeline.map((order)=>eventButton(order,true)).join("")}</div></div>` : ""}
+      <div class="calendar-timeline">${timeline}</div>
+      ${!selectedOrders.length ? `<div class="calendar-empty">На этот день визитов нет.</div>` : ""}
+    </section>
+  </main>`;
+}
+
 function moreMenu() {
   const primaryItems = [
+    ["calendar", "calendar", "Календарь", "Визиты и расписание"],
     ["finance", "finance", "Финансы", "Доходы, расходы и результат"],
     ["shopping", "shoppingList", "Список покупок", "Что нужно докупить на склад"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
@@ -2415,6 +2518,7 @@ function moreMenu() {
 }
 
 async function morePage() {
+  if (moreSection === "calendar") return calendarPage();
   if (moreSection === "shopping") return shoppingPage();
   if (moreSection === "backup") return backupSettings();
   if (moreSection === "prices") return priceList();
@@ -4627,7 +4731,7 @@ app.addEventListener("click", async (event) => {
   }
   const more = event.target.closest("[data-more]")?.dataset.more;
   if (more) {
-    const supportedMoreSections = ["shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
+    const supportedMoreSections = ["calendar", "shopping", "backup", "prices", "clients", "finance", "goods", "tools", "receipts", "drafts", "act", "settings"];
     if (!supportedMoreSections.includes(more)) return toast("Раздел недоступен");
     if (more === "shopping") activePage = "more";
     moreReturnSection = moreSection === "settings" ? "settings" : "menu";
