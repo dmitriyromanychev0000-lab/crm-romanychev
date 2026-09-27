@@ -488,6 +488,11 @@ function formatOrderVisit(order = {}) {
   return time ? `${dateText} · ${time} · ${duration} мин.` : `${dateText} · без времени`;
 }
 
+function yandexMapsUrl(address) {
+  const value = String(address || "").trim();
+  return value ? `https://yandex.ru/maps/?text=${encodeURIComponent(value)}` : "";
+}
+
 function ensureDataIds() {
   let changed = false;
   if (ensureOrderIds()) changed = true;
@@ -1129,7 +1134,7 @@ function orderCard(order) {
 
     <div class="legacy-order-meta">
       ${order.phone ? `<span>${icon("phone")}${escapeHtml(order.phone)}</span>` : ""}
-      ${order.address ? `<span class="address">${icon("location")}${escapeHtml(order.address)}</span>` : ""}
+      ${order.address ? `<a class="address" href="${escapeHtml(yandexMapsUrl(order.address))}" target="_blank" rel="noopener">${icon("location")}${escapeHtml(order.address)}</a>` : ""}
       <span>${icon("shield")}${guaranteeText}</span>
     </div>
     ${nextVisit ? `<div class="legacy-next-visit">${icon("calendar")}<span>Следующий визит: ${escapeHtml(nextVisit)}</span></div>` : ""}
@@ -1662,11 +1667,13 @@ function clientsPage() {
     if (!key) return;
     const orderDate = orderDateValue(order);
     const orderTime = orderCreatedTimestamp(order) || 0;
+    const profile = clientProfileByPhone(order.phone || "");
     const current = clients.get(key) || {
       key,
-      name: order.name || "Без имени",
+      name: profile?.name || order.name || "Без имени",
       phone: normalizeRussianPhone(order.phone || "") || order.phone || "",
-      address: order.address || "",
+      address: profile?.lastAddress || order.address || "",
+      note: profile?.note || "",
       orders: [],
       total: 0,
       last: orderDate,
@@ -1689,7 +1696,7 @@ function clientsPage() {
   const queryDigits = clientSearch.replace(/\D/g, "");
   const phoneQuery = queryDigits.length >= 3 ? normalizeRussianPhone(clientSearch) : "";
   const filtered = sorted.filter((client) => {
-    const haystack = [client.name, client.phone, client.address].join(" ").toLowerCase();
+    const haystack = [client.name, client.phone, client.address, client.note].join(" ").toLowerCase();
     const normalizedClientPhone = normalizeRussianPhone(client.phone || "");
     return !query || haystack.includes(query) || (phoneQuery && normalizedClientPhone.includes(phoneQuery));
   });
@@ -3449,8 +3456,11 @@ function clientModal(clientKey) {
   if (!orders.length) return;
   const client = orders[0];
   const total = orders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
-  const closed = orders.filter((order) => normalizeStatus(order.status) === "closed").length;
+  const closedOrders = orders.filter((order) => normalizeStatus(order.status) === "closed");
+  const closed = closedOrders.length;
   const active = orders.filter((order) => normalizeStatus(order.status) === "active").length;
+  const average = closed ? closedOrders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0) / closed : 0;
+  const profile = clientProfileByPhone(client.phone || "");
   const modal = document.createElement("div");
   modal.className = "modal-backdrop client-profile-backdrop legacy-client-profile-backdrop";
   modal.innerHTML = `<section class="modal client-profile-modal" aria-label="Профиль клиента">
@@ -3465,7 +3475,7 @@ function clientModal(clientKey) {
         <div><h2>${escapeHtml(client.name || "Клиент")}</h2><p>${escapeHtml(client.phone || "Телефон не указан")}</p></div>
       </section>
 
-      ${client.address ? `<div class="client-profile-address">${icon("location")}<span><small>Последний адрес</small><strong>${escapeHtml(client.address)}</strong></span></div>` : ""}
+      ${client.address ? `<a class="client-profile-address" href="${escapeHtml(yandexMapsUrl(client.address))}" target="_blank" rel="noopener">${icon("location")}<span><small>Последний адрес · открыть в Яндекс Картах</small><strong>${escapeHtml(client.address)}</strong></span></a>` : ""}
 
       <div class="client-profile-actions">
         ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled>${icon("phone")}<span>Нет телефона</span></button>`}
@@ -3475,9 +3485,15 @@ function clientModal(clientKey) {
       <section class="client-profile-kpis">
         <div><span>Обращений</span><strong>${orders.length}</strong></div>
         <div><span>Закрыто</span><strong class="green">${closed}</strong></div>
-        <div><span>В работе</span><strong class="blue">${active}</strong></div>
+        <div><span>Средний чек</span><strong class="blue">${money(average)}</strong></div>
         <div><span>Общая сумма</span><strong class="yellow">${money(total)}</strong></div>
       </section>
+
+      ${client.phone ? `<section class="client-profile-note">
+        <label for="client-profile-note">Заметка о клиенте</label>
+        <textarea class="field textarea" id="client-profile-note" placeholder="Домофон, подъезд, особенности клиента...">${escapeHtml(profile?.note || "")}</textarea>
+        <button type="button" class="secondary-button" id="save-client-profile-note">Сохранить заметку</button>
+      </section>` : ""}
 
       <section class="client-profile-history">
         <h3>История ремонтов</h3>
@@ -3495,6 +3511,19 @@ function clientModal(clientKey) {
   document.body.appendChild(modal);
   const close = () => modal.remove();
   modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.querySelector("#save-client-profile-note")?.addEventListener("click", async () => {
+    const phone = normalizeRussianPhone(client.phone || "");
+    if (!phone) return;
+    let currentProfile = clientProfileByPhone(phone);
+    if (!currentProfile) {
+      currentProfile = { id: crypto.randomUUID(), phone, name: client.name || "", note: "", lastAddress: client.address || "", updatedAt: null };
+      data.client_profiles.push(currentProfile);
+    }
+    currentProfile.note = String(modal.querySelector("#client-profile-note")?.value || "").trim();
+    currentProfile.updatedAt = new Date().toISOString();
+    await saveData();
+    toast("Заметка клиента сохранена");
+  });
   modal.addEventListener("click", (event) => {
     if (event.target === modal) return close();
     const newOrderButton = event.target.closest("[data-client-new-order]");
