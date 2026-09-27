@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.170";
+const APP_BUILD = "2026.09.27.171";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Общая мобильная оболочка доведена: шапка без жёсткой разделительной линии, нижняя навигация с ровной геометрией и отдельным цветовым активным состоянием каждой вкладки";
+const APP_RELEASE = "Прайс сохраняет исторические позиции через архив, а калькулятор товаров использует ту же точную пропорциональную подгонку, что и услуги";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -84,7 +84,7 @@ let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiStat
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
 let priceSearch = typeof initialUiState.priceSearch === "string" ? initialUiState.priceSearch : "";
 let priceTechFilter = typeof initialUiState.priceTechFilter === "string" ? initialUiState.priceTechFilter : "all";
-let priceKindFilter = ["all", "service", "material", "custom"].includes(String(initialUiState.priceKindFilter)) ? String(initialUiState.priceKindFilter) : "all";
+let priceKindFilter = ["all", "service", "material", "custom", "archived"].includes(String(initialUiState.priceKindFilter)) ? String(initialUiState.priceKindFilter) : "all";
 let analyticsPeriod = ["today", "7", "30", "365", "all", "custom"].includes(String(initialUiState.analyticsPeriod)) ? String(initialUiState.analyticsPeriod) : "30";
 let analyticsOffset = Number.isInteger(Number(initialUiState.analyticsOffset)) ? Number(initialUiState.analyticsOffset) : 0;
 let analyticsCustomStart = typeof initialUiState.analyticsCustomStart === "string" ? initialUiState.analyticsCustomStart : "";
@@ -2153,14 +2153,16 @@ function analyticsPage() {
 
 function availableServices() {
   const regular = data.receipt_prices
-    .filter((item) => item.kind !== "material")
+    .filter((item) => !item.archived && item.kind !== "material")
     .map((item) => ({ ...item, name: item.name || item.title || "Услуга", price: Number(item.price) || 0, source: "price" }));
   const custom = (Array.isArray(data.service_custom) ? data.service_custom : [])
+    .filter((item) => !item.archived)
     .map((item) => ({ ...item, name: item.name || item.title || item.service || "Услуга", price: Number(item.price || item.cost || item.sum) || 0, source: "custom" }));
   return [...regular, ...custom];
 }
 function priceList() {
   const query = priceSearch.trim().toLowerCase();
+  const archivedMode = priceKindFilter === "archived";
   const techs = [...new Set([
     ...data.receipt_prices.map((item) => String(item.tech || "").trim()),
     ...(Array.isArray(data.service_custom) ? data.service_custom.map((item) => String(item.tech || item.category || "").trim()) : [])
@@ -2170,8 +2172,9 @@ function priceList() {
     const techMatch = priceTechFilter === "all" || String(item.tech || "") === priceTechFilter;
     const kind = item.kind === "material" ? "material" : "service";
     const kindMatch = priceKindFilter === "all" || priceKindFilter === kind;
+    const archiveMatch = archivedMode ? Boolean(item.archived) : !item.archived;
     const haystack = [item.name, item.category, item.tech, item.unit, item.kind].join(" ").toLowerCase();
-    return techMatch && kindMatch && (!query || haystack.includes(query));
+    return techMatch && archiveMatch && (archivedMode || kindMatch) && (!query || haystack.includes(query));
   });
 
   const groups = [...prices.reduce((map, item) => {
@@ -2183,16 +2186,17 @@ function priceList() {
     .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
     .sort(([a], [b]) => a.localeCompare(b, "ru"));
 
-  const customServices = (priceKindFilter === "all" || priceKindFilter === "custom" ? (Array.isArray(data.service_custom) ? data.service_custom : []) : [])
+  const customServices = (priceKindFilter === "all" || priceKindFilter === "custom" || archivedMode ? (Array.isArray(data.service_custom) ? data.service_custom : []) : [])
     .filter((item) => {
       const techValue = String(item.tech || item.category || "").trim();
       const techMatch = priceTechFilter === "all" || techValue === priceTechFilter;
+      const archiveMatch = archivedMode ? Boolean(item.archived) : !item.archived;
       const haystack = [item.name, item.title, item.service, item.category, item.tech].join(" ").toLowerCase();
-      return techMatch && (!query || haystack.includes(query));
+      return techMatch && archiveMatch && (!query || haystack.includes(query));
     })
     .sort((a, b) => String(a.name || a.title || a.service || "").localeCompare(String(b.name || b.title || b.service || ""), "ru"));
 
-  const scopeTitle = priceTechFilter === "all" ? "Прайс-лист" : `Каталог · ${priceTechFilter}`;
+  const scopeTitle = archivedMode ? "Архив прайса" : priceTechFilter === "all" ? "Прайс-лист" : `Каталог · ${priceTechFilter}`;
 
   return `<main class="content legacy-price-page">
     <div class="legacy-subpage-head legacy-price-head">
@@ -2209,6 +2213,7 @@ function priceList() {
         <option value="service" ${priceKindFilter === "service" ? "selected" : ""}>Услуги</option>
         <option value="material" ${priceKindFilter === "material" ? "selected" : ""}>Материалы</option>
         <option value="custom" ${priceKindFilter === "custom" ? "selected" : ""}>Свои услуги</option>
+        <option value="archived" ${priceKindFilter === "archived" ? "selected" : ""}>Архив</option>
       </select></label>
       <label><span>ТЕХНИКА</span><select class="field" id="price-tech-filter">
         <option value="all">Вся техника</option>
@@ -2221,8 +2226,8 @@ function priceList() {
         <h3>${escapeHtml(category)}</h3>
         <div class="legacy-price-list">${items.map((item) => {
           const index = data.receipt_prices.indexOf(item);
-          const meta = [item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга");
-          return `<button type="button" class="legacy-price-row ${item.kind === "material" ? "material" : "service"}" data-action="edit-price" data-index="${index}">
+          const meta = [item.unit, item.tech, item.archived ? "Архив" : ""].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга");
+          return `<button type="button" class="legacy-price-row ${item.kind === "material" ? "material" : "service"} ${item.archived ? "archived" : ""}" data-action="edit-price" data-index="${index}">
             <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(meta)}</small></span>
             <b>${money(item.price || 0)}</b>
           </button>`;
@@ -2234,9 +2239,9 @@ function priceList() {
       ${customServices.length ? `<div class="legacy-price-list">${customServices.map((item) => {
         const index = data.service_custom.indexOf(item);
         const name = item.name || item.title || item.service || "Услуга";
-        const meta = item.category || item.tech || "Своя услуга";
+        const meta = [item.category || item.tech || "Своя услуга", item.archived ? "Архив" : ""].filter(Boolean).join(" · ");
         const price = Number(item.price || item.cost || item.sum) || 0;
-        return `<button type="button" class="legacy-price-row custom" data-action="edit-custom-service" data-index="${index}">
+        return `<button type="button" class="legacy-price-row custom ${item.archived ? "archived" : ""}" data-action="edit-custom-service" data-index="${index}">
           <span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(meta)}</small></span>
           <b>${money(price)}</b>
         </button>`;
@@ -2508,6 +2513,7 @@ function goodsPage() {
   const latestItems = latest && Array.isArray(latest.items) ? latest.items : [];
   const closedOrders = ordersNewestFirst().filter((order) => !order.archived && normalizeStatus(order.status) === "closed");
   const productPrice = data.receipt_prices
+    .filter((item) => !item.archived)
     .filter((item) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
     .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
 
@@ -4495,14 +4501,15 @@ function customServiceModal(existing = null, serviceIndex = -1) {
       </div>
     </section>
 
-    <div class="legacy-price-editor-actions">${existing ? '<button type="button" class="legacy-editor-delete" id="delete-custom-service">Удалить</button>' : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
+    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete" id="toggle-custom-service-archive">${item.archived ? "Вернуть" : "В архив"}</button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
-  modal.querySelector("#delete-custom-service")?.addEventListener("click", async () => {
-    if (!(await confirmDialog("Удалить пользовательскую услугу?"))) return;
-    if (serviceIndex >= 0) data.service_custom.splice(serviceIndex, 1);
-    await saveData(); modal.remove(); await render(); toast("Услуга удалена");
+  modal.querySelector("#toggle-custom-service-archive")?.addEventListener("click", async () => {
+    const nextArchived = !Boolean(item.archived);
+    if (!(await confirmDialog(nextArchived ? "Переместить пользовательскую услугу в архив?" : "Вернуть пользовательскую услугу из архива?"))) return;
+    if (serviceIndex >= 0) data.service_custom[serviceIndex].archived = nextArchived;
+    await saveData(); modal.remove(); await render(); toast(nextArchived ? "Услуга перенесена в архив" : "Услуга возвращена");
   });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -4546,14 +4553,15 @@ function priceModal(existing = null, priceIndex = -1) {
       </div>
     </section>
 
-    <div class="legacy-price-editor-actions">${existing ? '<button type="button" class="legacy-editor-delete" id="delete-price">Удалить</button>' : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
+    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete" id="toggle-price-archive">${item.archived ? "Вернуть" : "В архив"}</button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
-  modal.querySelector("#delete-price")?.addEventListener("click", async () => {
-    if (!(await confirmDialog("Удалить позицию из прайса?"))) return;
-    if (priceIndex >= 0) data.receipt_prices.splice(priceIndex, 1);
-    await saveData(); modal.remove(); await render(); toast("Позиция удалена");
+  modal.querySelector("#toggle-price-archive")?.addEventListener("click", async () => {
+    const nextArchived = !Boolean(item.archived);
+    if (!(await confirmDialog(nextArchived ? "Переместить позицию прайса в архив?" : "Вернуть позицию прайса из архива?"))) return;
+    if (priceIndex >= 0) data.receipt_prices[priceIndex].archived = nextArchived;
+    await saveData(); modal.remove(); await render(); toast(nextArchived ? "Позиция перенесена в архив" : "Позиция возвращена");
   });
   modal.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -5061,6 +5069,7 @@ function goodsModal(existing = null, seed = null) {
   const sheet = existing || seed || { id: crypto.randomUUID(), title: "Новый товарник", items: [], target: 0, createdAt: new Date().toISOString() };
   const goodsPriceEntries = data.receipt_prices
     .map((item, index) => ({ item, index }))
+    .filter(({ item }) => !item.archived)
     .filter(({ item }) => item.kind === "material" || String(item.category || "").toLowerCase().includes("товар"))
     .sort((a, b) => String(a.item.name || "").localeCompare(String(b.item.name || ""), "ru"));
   const options = goodsPriceEntries.map(({ item, index }) => `<option value="${index}">${escapeHtml(item.name)} · ${money(item.price)}</option>`).join("");
@@ -5162,12 +5171,29 @@ function goodsModal(existing = null, seed = null) {
   modal.querySelector("#adjust-goods-prices").addEventListener("click", () => {
     const rows = [...modal.querySelectorAll("[data-goods-row]")];
     const target = Number(modal.querySelector("#goods-target").value);
-    const current = calculate();
     if (!rows.length || !Number.isFinite(target) || target <= 0) return toast("Добавь позиции и укажи целевую сумму");
-    rows.forEach((row) => {
-      const qty = Number(row.querySelector('[data-line="qty"]').value) || 1;
-      const price = Number(row.querySelector('[data-line="price"]').value) || 0;
-      row.querySelector('[data-line="price"]').value = Math.max(0, Math.round(current ? price * target / current : target / rows.length / qty));
+
+    const source = rows.map((row) => {
+      const qty = Math.max(0.01, Number(row.querySelector('[data-line="qty"]').value) || 1);
+      const currentPrice = Math.max(0, Number(row.querySelector('[data-line="price"]').value) || 0);
+      const originalPrice = Math.max(0, Number(row.dataset.originalPrice) || currentPrice);
+      if (!(Number(row.dataset.originalPrice) > 0) && originalPrice > 0) row.dataset.originalPrice = String(originalPrice);
+      return { row, qty, baseTotal: originalPrice * qty };
+    });
+    const baseTotal = source.reduce((sum, item) => sum + item.baseTotal, 0);
+    const rawTotals = source.map((item) => baseTotal > 0 ? target * item.baseTotal / baseTotal : target / source.length);
+    const fittedTotals = rawTotals.map((value) => Math.max(0, Math.round(value / 10) * 10));
+    const assigned = fittedTotals.reduce((sum, value) => sum + value, 0);
+    const remainder = target - assigned;
+    let mostExpensiveIndex = 0;
+    rawTotals.forEach((value, index) => {
+      if (value > rawTotals[mostExpensiveIndex]) mostExpensiveIndex = index;
+    });
+    fittedTotals[mostExpensiveIndex] = Math.max(0, fittedTotals[mostExpensiveIndex] + remainder);
+
+    source.forEach((item, index) => {
+      const unitPrice = fittedTotals[index] / item.qty;
+      item.row.querySelector('[data-line="price"]').value = Number.isInteger(unitPrice) ? String(unitPrice) : String(Number(unitPrice.toFixed(6)));
     });
     calculate();
     toast("Цены подогнаны под целевую сумму");

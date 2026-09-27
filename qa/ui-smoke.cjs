@@ -1841,6 +1841,76 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "price-editor", false));
       await page.keyboard.press("Escape");
 
+      if (width === 390) {
+        await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
+        await page.locator('[data-action="new-goods-sheet"]').click();
+        const goodsPicker = page.locator("#goods-picker");
+        await goodsPicker.selectOption("2");
+        await page.locator("#add-goods-line").click();
+        await goodsPicker.selectOption("3");
+        await page.locator("#add-goods-line").click();
+        await page.locator("#goods-target").fill("10003");
+        await page.locator("#adjust-goods-prices").click();
+        const goodsFitState = await page.evaluate(() => {
+          const totals = [...document.querySelectorAll("[data-goods-row]")].map((row) => {
+            const qty = Number(row.querySelector('[data-line="qty"]')?.value) || 0;
+            const price = Number(row.querySelector('[data-line="price"]')?.value) || 0;
+            return qty * price;
+          });
+          return { totals, total: totals.reduce((sum, value) => sum + value, 0) };
+        });
+        if (Math.abs(goodsFitState.total - 10003) > 0.001
+          || goodsFitState.totals.length !== 2
+          || goodsFitState.totals[0] <= goodsFitState.totals[1]) {
+          report.failures.push({ width, type: "goods-proportional-target-fit", goodsFitState });
+        }
+        await page.locator("#restore-goods-prices").click();
+        const restoredGoodsTotal = await page.evaluate(() => [...document.querySelectorAll("[data-goods-row]")].reduce((sum, row) => {
+          const qty = Number(row.querySelector('[data-line="qty"]')?.value) || 0;
+          const price = Number(row.querySelector('[data-line="price"]')?.value) || 0;
+          return sum + qty * price;
+        }, 0));
+        if (Math.abs(restoredGoodsTotal - 9100) > 0.001) {
+          report.failures.push({ width, type: "goods-restore-base-prices", restoredGoodsTotal });
+        }
+        await page.keyboard.press("Escape");
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
+        await page.locator('.legacy-price-row.service').filter({ hasText: "Диагностика" }).click();
+        await page.locator("#toggle-price-archive").click();
+        await page.locator("[data-confirm-primary]").click();
+        await page.waitForTimeout(80);
+        const archivedPriceData = await readStoredData(page);
+        const archivedPrice = archivedPriceData.receipt_prices.find((item) => item.id === "p1");
+        if (!archivedPrice?.archived || archivedPriceData.receipt_prices.length !== seed.receipt_prices.length) {
+          report.failures.push({
+            width,
+            type: "price-archive-preserves-history",
+            archived: archivedPrice?.archived,
+            count: archivedPriceData.receipt_prices.length
+          });
+        }
+
+        await setState(page, uiState({ activePage: "more", moreSection: "prices", priceKindFilter: "archived" }));
+        const archivedPriceSurface = await page.evaluate(() => ({
+          text: document.querySelector(".legacy-price-page")?.innerText || "",
+          rows: document.querySelectorAll(".legacy-price-row.archived").length
+        }));
+        if (!archivedPriceSurface.text.includes("Диагностика") || archivedPriceSurface.rows < 1) {
+          report.failures.push({ width, type: "price-archive-visible", archivedPriceSurface });
+        }
+        await page.locator('.legacy-price-row.archived').filter({ hasText: "Диагностика" }).click();
+        await page.locator("#toggle-price-archive").click();
+        await page.locator("[data-confirm-primary]").click();
+        await page.waitForTimeout(80);
+        const restoredPriceData = await readStoredData(page);
+        if (restoredPriceData.receipt_prices.find((item) => item.id === "p1")?.archived) {
+          report.failures.push({ width, type: "price-archive-restore" });
+        }
+        await writeSeed(page, seed);
+      }
+
       await setState(page, uiState({ activePage: "more", moreSection: "clients" }));
       const clientPageSurface = await page.evaluate(() => ({
         background: getComputedStyle(document.querySelector(".legacy-client-card")).backgroundColor,
