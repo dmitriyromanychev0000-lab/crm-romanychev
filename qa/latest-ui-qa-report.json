@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:21:09.990Z",
-  "testedSha": "6ffe91552936969fc09f98814e399f0b51cd277f",
+  "generatedAt": "2026-09-27T09:23:27.224Z",
+  "testedSha": "c132de37ae244e0610407d394195a9d7a5fb4514",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1054,16 +1054,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "toast-feedback-surface",
-      "toastFeedback": {
-        "background": "rgb(10, 17, 22)",
-        "radius": "12px",
-        "bottom": 842,
-        "navTop": 831
-      }
-    }
-  ]
+  "failures": []
 }
