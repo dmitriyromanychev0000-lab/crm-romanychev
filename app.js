@@ -1960,7 +1960,10 @@ function orderSourcesModal() {
     </div>`).join("") : `<div class="empty">Источников пока нет</div>`;
   };
 
-  const close = () => modal.remove();
+  const close = () => {
+    modal.remove();
+    syncModalScrollLock();
+  };
   modal.querySelector("[data-close-modal]").addEventListener("click", close);
   modal.addEventListener("click", async (event) => {
     if (event.target === modal) return close();
