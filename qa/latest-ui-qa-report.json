@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T22:04:06.367Z",
-  "testedSha": "2f4590bfdad784a0790299c6897f66c70d274107",
+  "generatedAt": "2026-09-27T22:06:45.431Z",
+  "testedSha": "a6e44b68dcfdff0bf74387c0900628658f257f13",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -965,30 +965,12 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": []
-    },
-    {
-      "label": "stock-transfer",
-      "width": 390,
-      "bodyScrollWidth": 390,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": true,
-      "tooSmall": []
-    },
-    {
-      "label": "stock-correction",
-      "width": 390,
-      "bodyScrollWidth": 390,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": true,
-      "tooSmall": []
     }
   ],
   "failures": [
     {
       "type": "fatal",
-      "message": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('.stock-correction-modal') to be detached\n    20 × locator resolved to visible <form role=\"dialog\" aria-modal=\"true\" class=\"modal stock-adjust-modal stock-correction-modal\">…</form>\n"
+      "message": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('.stock-adjust-modal') to be detached\n    20 × locator resolved to visible <form role=\"dialog\" aria-modal=\"true\" class=\"modal stock-adjust-modal\">…</form>\n"
     }
   ]
 }
