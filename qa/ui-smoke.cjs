@@ -100,7 +100,8 @@ function uiState(extra) {
     warehouseSearch: "", warehouseFilter: "active", warehouseSection: "list", warehouseMovementFilter: "all",
     clientSearch: "", priceSearch: "", priceTechFilter: "all", priceKindFilter: "all",
     analyticsPeriod: "30", analyticsOffset: 0, analyticsCustomStart: "", analyticsCustomEnd: "",
-    financePeriod: "all", moreSection: "menu", moreReturnSection: "menu", selectedActOrderId: "0060", scrollY: 0
+    financePeriod: "all", moreSection: "menu", moreReturnSection: "menu", selectedActOrderId: "0060",
+    calendarMonthOffset: 0, calendarSelectedDate: "2026-09-27", scrollY: 0
   }, extra || {});
 }
 
@@ -198,6 +199,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     ["shopping", uiState({ activePage: "warehouse", warehouseSection: "shopping" })],
     ["analytics", uiState({ activePage: "analytics" })],
     ["more", uiState({ activePage: "more", moreSection: "menu" })],
+    ["calendar", uiState({ activePage: "more", moreSection: "calendar", calendarMonthOffset: 0, calendarSelectedDate: "2026-09-27" })],
     ["finance", uiState({ activePage: "more", moreSection: "finance" })],
     ["clients", uiState({ activePage: "more", moreSection: "clients" })],
     ["prices", uiState({ activePage: "more", moreSection: "prices" })],
