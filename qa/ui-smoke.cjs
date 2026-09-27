@@ -1168,6 +1168,84 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "order-actions", false));
       await page.keyboard.press("Escape");
 
+      if (width === 390) {
+        await page.locator('[data-order-action="more"][data-id="0059"]').click();
+        const warrantyActionCount = await page.locator('[data-order-sheet-action="warranty"]').count();
+        if (warrantyActionCount !== 1) {
+          report.failures.push({ width, type: "warranty-appeal-action", count: warrantyActionCount });
+        } else {
+          await page.locator('[data-order-sheet-action="warranty"]').click();
+          await page.waitForTimeout(60);
+          const warrantyDraftState = await page.evaluate(() => ({
+            origin: document.querySelector(".warranty-appeal-origin")?.textContent || "",
+            services: document.querySelectorAll("#service-lines [data-service-row]").length,
+            materials: document.querySelectorAll("#material-lines [data-material-row]").length,
+            percent: Number(document.querySelector('.order-editor-modal [name="percent"]')?.value) || 0,
+            resultOptions: document.querySelectorAll('.order-editor-modal [name="warrantyResultId"] option').length,
+            sumLabel: document.querySelector('.order-editor-modal [name="sum"]')?.closest(".form-group")?.querySelector("label")?.textContent?.trim() || ""
+          }));
+          if (!warrantyDraftState.origin.includes("0059")
+            || warrantyDraftState.services !== 0
+            || warrantyDraftState.materials !== 0
+            || warrantyDraftState.percent !== 100
+            || warrantyDraftState.resultOptions < 4
+            || warrantyDraftState.sumLabel !== "Получено от клиента") {
+            report.failures.push({ width, type: "warranty-appeal-draft", warrantyDraftState });
+          }
+
+          await page.locator('.order-editor-modal [name="sourceId"]').selectOption("source-avito");
+          await page.locator('.order-editor-modal [name="warrantyResultId"]').selectOption("warranty-confirmed");
+          await page.locator('.order-editor-modal [name="status"]').selectOption({ label: "Закрыта" });
+          await page.locator('.order-editor-modal [name="sum"]').fill("0");
+          await page.locator('.order-editor-modal button[type="submit"]').click();
+          await page.locator("[data-confirm-primary]").click();
+          await page.waitForTimeout(80);
+
+          let warrantyData = await readStoredData(page);
+          let appeal = warrantyData.orders.find((item) => item.orderType === "warranty" && String(item.parentOrderId) === "0059");
+          if (!appeal
+            || appeal.status !== "Закрыта"
+            || Number(appeal.sum) !== 0
+            || Number(appeal.percent) !== 100
+            || appeal.warrantyResultId !== "warranty-confirmed"
+            || (appeal.services || []).length !== 0
+            || (appeal.materials || []).length !== 0) {
+            report.failures.push({ width, type: "warranty-appeal-zero-close", appeal });
+          }
+
+          if (appeal) {
+            await page.locator(`[data-order-action="edit"][data-id="${appeal.id}"]`).click();
+            await page.locator('.order-editor-modal [name="sum"]').fill("1000");
+            await page.locator('.order-editor-modal button[type="submit"]').click();
+            await page.waitForTimeout(80);
+            warrantyData = await readStoredData(page);
+            appeal = warrantyData.orders.find((item) => String(item.id) === String(appeal.id));
+            if (Number(appeal?.sum) !== 1000 || Number(appeal?.percent) !== 100) {
+              report.failures.push({ width, type: "warranty-appeal-voluntary-money", appeal });
+            }
+
+            await setState(page, uiState({ activePage: "analytics" }));
+            const warrantyAnalytics = await page.evaluate(() => {
+              const numberFrom = (value) => Number(String(value || "").replace(/[^0-9-]/g, "")) || 0;
+              const cards = [...document.querySelectorAll(".analytics-kpi")];
+              const values = Object.fromEntries(cards.map((card) => [
+                card.querySelector("span:not(.analytics-kpi-icon)")?.textContent?.trim() || "",
+                numberFrom(card.querySelector("strong")?.textContent)
+              ]));
+              return values;
+            });
+            if (warrantyAnalytics["Получено от клиентов"] !== 11400
+              || warrantyAnalytics["Заработал"] !== 6050
+              || warrantyAnalytics["Средний чек"] !== 8900) {
+              report.failures.push({ width, type: "warranty-appeal-analytics", warrantyAnalytics });
+            }
+          }
+
+          await writeSeed(page, seed);
+          await setState(page, uiState({ activePage: "orders" }));
+        }
+      }
+
       await setState(page, uiState({ activePage: "analytics" }));
       const analyticsPageSurfaces = await page.evaluate(() => ({
         panel: getComputedStyle(document.querySelector(".analytics-content .panel")).backgroundColor,
