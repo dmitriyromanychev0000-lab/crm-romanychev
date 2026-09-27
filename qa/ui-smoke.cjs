@@ -983,6 +983,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await writeSeed(page, photoSeed);
         await setState(page, uiState({ activePage: "orders" }));
         await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
+        const staticPhotoState = await page.evaluate(() => {
+          const block = document.querySelector(".order-photo-details");
+          const body = block?.querySelector(".order-extra-body");
+          return {
+            tag: block?.tagName || "",
+            summaries: block?.querySelectorAll("summary").length || 0,
+            bodyDisplay: body ? getComputedStyle(body).display : "missing",
+            addVisible: Boolean(block?.querySelector("#order-photo-input")),
+            cards: block?.querySelectorAll("[data-view-photo]").length || 0
+          };
+        });
+        if (staticPhotoState.tag !== "SECTION"
+          || staticPhotoState.summaries !== 0
+          || staticPhotoState.bodyDisplay === "none"
+          || !staticPhotoState.addVisible
+          || staticPhotoState.cards !== 1) {
+          report.failures.push({ width, type: "photos-always-open", staticPhotoState });
+        }
         await page.locator("#open-service-catalog").scrollIntoViewIfNeeded();
         report.results.push(await shot(page, width, "order-editor-restored", false));
         await page.locator("[data-view-photo]").click();
@@ -1017,6 +1035,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await setState(page, uiState({ activePage: "orders" }));
+      if (width === 390) {
+        const overdueState = await page.evaluate(() => ({
+          overdue: document.querySelectorAll(".legacy-next-visit.overdue").length,
+          text: document.querySelector(".legacy-next-visit.overdue")?.innerText || ""
+        }));
+        if (overdueState.overdue !== 1 || !overdueState.text.includes("Визит просрочен")) {
+          report.failures.push({ width, type: "overdue-visit-label", overdueState });
+        }
+      }
       await page.locator(".legacy-order-card").first().click();
       await page.waitForTimeout(80);
       const detailActions = await page.locator(".legacy-expanded-actions > button, .legacy-expanded-actions > a").count();
