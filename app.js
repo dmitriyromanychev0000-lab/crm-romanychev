@@ -32,6 +32,11 @@ const defaultData = () => ({
   ],
   client_profiles: [],
   warranty_options: [],
+  warranty_results: [
+    { id: "warranty-confirmed", name: "Гарантия подтверждена", archived: false },
+    { id: "warranty-not-confirmed", name: "Гарантия не подтверждена", archived: false },
+    { id: "warranty-no-fault", name: "Неисправность не выявлена", archived: false }
+  ],
   settings: {
     autoBackup: false,
     autoBackupDays: 1,
@@ -342,7 +347,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -466,6 +471,32 @@ function normalizeWarrantyTargets(order = {}) {
           tech: String(target?.tech || order.tech || "").trim()
         })
     .filter((target) => target.name);
+}
+
+function ensureWarrantyResultIds() {
+  let changed = false;
+  (Array.isArray(data.warranty_results) ? data.warranty_results : []).forEach((result) => {
+    if (String(result?.id || "").trim()) return;
+    result.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function activeWarrantyResults() {
+  return (Array.isArray(data.warranty_results) ? data.warranty_results : [])
+    .filter((result) => !result.archived && String(result.name || "").trim())
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
+function warrantyResultName(order = {}) {
+  const result = (Array.isArray(data.warranty_results) ? data.warranty_results : [])
+    .find((item) => String(item.id) === String(order.warrantyResultId || ""));
+  return result?.name || order.warrantyResultName || "";
+}
+
+function isWarrantyAppeal(order = {}) {
+  return String(order.orderType || "") === "warranty" || Boolean(order.parentOrderId);
 }
 
 function activeOrderSources() {
@@ -595,6 +626,7 @@ function ensureDataIds() {
   if (ensureOrderSourceIds()) changed = true;
   if (ensureClientProfileIds()) changed = true;
   if (ensureWarrantyOptionIds()) changed = true;
+  if (ensureWarrantyResultIds()) changed = true;
   return changed;
 }
 
@@ -2327,6 +2359,79 @@ function warrantyOptionsModal() {
   syncModalScrollLock();
 }
 
+function warrantyResultsModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop source-manager-backdrop warranty-result-manager-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal source-manager-modal warranty-result-manager-modal" role="dialog" aria-modal="true" aria-label="Результаты гарантийных обращений">
+    <div class="source-manager-head">
+      <div><small>НАСТРОЙКИ</small><h2>Результаты гарантии</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div id="warranty-result-manager-list" class="source-manager-list"></div>
+    <div class="source-manager-add">
+      <input class="field" id="new-warranty-result-name" placeholder="Новый результат" />
+      <button type="button" class="primary-button" id="add-warranty-result">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#warranty-result-manager-list");
+    const results = [...(data.warranty_results || [])]
+      .sort((a,b)=>Number(Boolean(a.archived))-Number(Boolean(b.archived)) || String(a.name||"").localeCompare(String(b.name||""),"ru"));
+    list.innerHTML = results.length ? results.map((result)=>`<div class="source-manager-row ${result.archived ? "archived" : ""}" data-warranty-result-id="${escapeHtml(result.id)}">
+      <input class="field" data-warranty-result-name value="${escapeHtml(result.name || "")}" aria-label="Название результата" />
+      <button type="button" data-warranty-result-archive aria-label="${result.archived ? "Вернуть результат" : "Архивировать результат"}">${icon(result.archived ? "restore" : "archive")}</button>
+    </div>`).join("") : `<div class="empty">Результатов пока нет</div>`;
+  };
+
+  const close = () => {
+    modal.remove();
+    syncModalScrollLock();
+  };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const archiveButton = event.target.closest("[data-warranty-result-archive]");
+    if (!archiveButton) return;
+    const row = archiveButton.closest("[data-warranty-result-id]");
+    const result = data.warranty_results.find((item)=>String(item.id)===String(row?.dataset.warrantyResultId||""));
+    if (!result) return;
+    result.archived = !result.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    const input = event.target.closest("[data-warranty-result-name]");
+    if (!input) return;
+    const row = input.closest("[data-warranty-result-id]");
+    const result = data.warranty_results.find((item)=>String(item.id)===String(row?.dataset.warrantyResultId||""));
+    if (!result) return;
+    const name = String(input.value || "").trim();
+    if (!name) {
+      input.value = result.name || "";
+      return toast("Название результата не может быть пустым");
+    }
+    result.name = name;
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-warranty-result").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-warranty-result-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши результат обращения");
+    if ((data.warranty_results || []).some((result)=>String(result.name||"").trim().toLowerCase()===name.toLowerCase() && !result.archived)) {
+      return toast("Такой результат уже есть");
+    }
+    data.warranty_results.push({ id: crypto.randomUUID(), name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
@@ -2366,6 +2471,7 @@ function settingsPage() {
       <div class="legacy-settings-links">
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-action="manage-warranty-results"><span class="settings-link-icon">${icon("check")}</span><span><strong>Результаты гарантийных обращений</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeWarrantyResults().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
@@ -4970,6 +5076,7 @@ app.addEventListener("click", async (event) => {
   if (action === "new-order") return newOrderModal();
   if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "manage-warranty-options") return warrantyOptionsModal();
+  if (action === "manage-warranty-results") return warrantyResultsModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
     orderVisitFilter = "all";
