@@ -1756,7 +1756,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           if (details) details.open = true;
         });
         await page.locator('[data-stock="out"][data-id="w1"]').click();
-        await page.locator('.stock-adjust-modal [name="amount"]').fill("4");
+        await page.locator('.stock-adjust-modal [name="amount"]').fill("3.5");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO");
         await page.locator('.stock-adjust-modal button[type="submit"]').click();
         await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
@@ -1766,15 +1766,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const fifoItem = afterFifo.warehouse.find((item) => item.id === "w1");
         const fifoMovement = [...afterFifo.warehouse_movements].reverse().find((item) => item.type === "manual_out" && item.warehouseId === "w1");
         const allocations = fifoMovement?.allocations || [];
-        if (Number(fifoItem?.quantity) !== 1
+        if (Number(fifoItem?.quantity) !== 1.5
           || Number(fifoItem?.batches?.[0]?.remainingQty) !== 0
-          || Number(fifoItem?.batches?.[1]?.remainingQty) !== 1
+          || Number(fifoItem?.batches?.[1]?.remainingQty) !== 1.5
           || allocations.length !== 2
           || Number(allocations[0]?.qty) !== 3
           || Number(allocations[0]?.unitCost) !== 3100
-          || Number(allocations[1]?.qty) !== 1
+          || Number(allocations[1]?.qty) !== 0.5
           || Number(allocations[1]?.unitCost) !== 5000
-          || Number(fifoMovement?.batchCost) !== 14300
+          || Number(fifoMovement?.batchCost) !== 11800
           || fifoMovement?.comment !== "Тест FIFO") {
           report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovement });
         }
