@@ -1224,7 +1224,7 @@ function ordersPage() {
     </div>
 
     ${nearestVisits.length ? `<section class="legacy-nearest-visit">
-      <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong><span>${nearestVisits.length}</span></div>
+      <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong><span>${nearestVisits.length}</span><button type="button" data-action="calendar-screen">Календарь</button></div>
       <div class="legacy-nearest-visits-list">${nearestVisits.map((visit) => `<button type="button" class="legacy-nearest-line" data-order-action="view" data-id="${escapeHtml(visit.id)}"><strong>${escapeHtml(formatOrderVisit(visit))}</strong><span>${escapeHtml(visit.name || "Клиент")} · ${escapeHtml(visit.address || visit.tech || "")}</span><em>№${escapeHtml(visit.id)}</em></button>`).join("")}</div>
     </section>` : ""}
 
@@ -3384,6 +3384,7 @@ function newOrderModal(existing = null, options = {}) {
     } else if (nextStatus === "declined" && (Number(next.prepay) || 0) > (Number(next.sum) || 0)) {
       if (!(await confirmDialog("Предоплата больше итоговой суммы. Сохранить отказ с такими данными?", { title: "Проверь сумму", confirmLabel: "Сохранить" }))) return;
     }
+    const visitOverlap = findVisitOverlap(next);
     const stockSync = syncOrderStock(previous, next);
     if (!stockSync.ok) return toast(stockSync.message);
     syncOrderCompletion(next, previous);
@@ -3392,7 +3393,9 @@ function newOrderModal(existing = null, options = {}) {
     await saveData();
     modal.remove();
     render();
-    toast("Заявка сохранена");
+    toast(visitOverlap
+      ? `Заявка сохранена · визит пересекается с №${visitOverlap.id}`
+      : "Заявка сохранена");
   });
 }
 
@@ -4490,6 +4493,32 @@ app.addEventListener("click", async (event) => {
     window.scrollTo(0, 0);
     return;
   }
+  const calendarShift = event.target.closest("[data-calendar-shift]");
+  if (calendarShift) {
+    calendarMonthOffset += Number(calendarShift.dataset.calendarShift) || 0;
+    const now = new Date();
+    const monthDate = new Date(now.getFullYear(), now.getMonth() + calendarMonthOffset, 1);
+    calendarSelectedDate = `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, "0")}-01`;
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  const calendarDate = event.target.closest("[data-calendar-date]");
+  if (calendarDate) {
+    calendarSelectedDate = calendarDate.dataset.calendarDate;
+    saveUiState();
+    await render();
+    document.querySelector(".calendar-day-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const calendarOrder = event.target.closest("[data-calendar-order]");
+  if (calendarOrder) {
+    const order = data.orders.find((item) => String(item.id) === String(calendarOrder.dataset.calendarOrder));
+    if (order) return orderDetailModal(order);
+    return;
+  }
+
   const analyticsFilter = event.target.closest("[data-analytics-period]");
   if (analyticsFilter) {
     const period = analyticsFilter.dataset.analyticsPeriod;
@@ -4602,6 +4631,17 @@ app.addEventListener("click", async (event) => {
     activePage = "analytics";
     moreSection = "menu";
     moreReturnSection = "menu";
+    saveUiState({ scrollY: 0 });
+    await render();
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (action === "calendar-screen") {
+    activePage = "more";
+    moreReturnSection = "menu";
+    moreSection = "calendar";
+    calendarMonthOffset = 0;
+    calendarSelectedDate = localDateInputValue();
     saveUiState({ scrollY: 0 });
     await render();
     window.scrollTo(0, 0);
