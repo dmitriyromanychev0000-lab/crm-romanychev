@@ -72,6 +72,8 @@ let orderVisitFilter = ["all", "today", "upcoming", "overdue"].includes(String(i
 let searchQuery = typeof initialUiState.searchQuery === "string" ? initialUiState.searchQuery : "";
 let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initialUiState.warehouseSearch : "";
 let warehouseFilter = ["active", "out", "reserved", "low", "archived", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
+let warehouseTechFilter = typeof initialUiState.warehouseTechFilter === "string" ? initialUiState.warehouseTechFilter : "all";
+let warehouseCategoryFilter = typeof initialUiState.warehouseCategoryFilter === "string" ? initialUiState.warehouseCategoryFilter : "all";
 let warehouseSection = ["list", "movements", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "list";
 let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiState.warehouseMovementFilter)) ? String(initialUiState.warehouseMovementFilter) : "all";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -101,6 +103,8 @@ function saveUiState(extra = {}) {
       searchQuery,
       warehouseSearch,
       warehouseFilter,
+      warehouseTechFilter,
+      warehouseCategoryFilter,
       warehouseSection,
       warehouseMovementFilter,
       clientSearch,
@@ -446,6 +450,28 @@ function applianceTypes() {
     ...(data.receipt_prices || []).map((item) => String(item.tech || "").trim()),
     ...(data.warranty_options || []).map((item) => String(item.tech || "").trim())
   ].filter(Boolean))];
+}
+
+const STOCK_TECH_ALIASES = new Map([
+  ["Холодильники", "Холодильник"],
+  ["Стиральные машины", "Стиральная машина"],
+  ["Посудомоечные машины", "Посудомоечная машина"],
+  ["Сушильные машины", "Сушильная машина"],
+  ["Плиты и духовки", "Плита / духовка"],
+  ["Кондиционеры", "Кондиционер"],
+  ["Мелкая бытовая техника", "Мелкая бытовая техника"]
+]);
+
+function normalizeStockTech(value) {
+  const raw = String(value || "").trim();
+  return STOCK_TECH_ALIASES.get(raw) || raw || "Общее";
+}
+
+function stockTechForItem(item = {}) {
+  if (String(item.stockTech || "").trim()) return normalizeStockTech(item.stockTech);
+  const compatibility = Array.isArray(item.compatibility) ? item.compatibility : String(item.compatibility || "").split(",");
+  const first = compatibility.map((value)=>String(value||"").trim()).find(Boolean);
+  return normalizeStockTech(first || "Общее");
 }
 
 function ensureWarrantyOptionIds() {
@@ -1498,6 +1524,7 @@ function ordersPage() {
   </main>`;
 }
 
+
 function warehousePage() {
   const query = warehouseSearch.trim().toLowerCase();
   const activeItems = [...data.warehouse].filter((item) => !item.archived);
@@ -1517,19 +1544,56 @@ function warehousePage() {
           : warehouseFilter === "all"
             ? [...data.warehouse]
             : inStockItems;
+
+  const techOptions = [...new Set(data.warehouse.map((item)=>stockTechForItem(item)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ru"));
+  const categoryOptions = [...new Set(data.warehouse.map((item)=>String(item.category||"Без категории").trim()||"Без категории"))].sort((a,b)=>a.localeCompare(b,"ru"));
+
   const items = sourceItems.filter((item) => {
     const compatibility = Array.isArray(item.compatibility) ? item.compatibility.join(" ") : item.compatibility || "";
-    const haystack = [item.name, item.category, item.unit, compatibility].join(" ").toLowerCase();
-    return !query || haystack.includes(query);
+    const tech = stockTechForItem(item);
+    const category = String(item.category || "Без категории").trim() || "Без категории";
+    const haystack = [item.name, category, tech, item.unit, compatibility].join(" ").toLowerCase();
+    const techMatch = warehouseTechFilter === "all" || tech === warehouseTechFilter;
+    const categoryMatch = warehouseCategoryFilter === "all" || category === warehouseCategoryFilter;
+    return techMatch && categoryMatch && (!query || haystack.includes(query));
   });
-  const groupedItems = [...items.reduce((map, item) => {
-    const category = String(item.category || "Нераспределённые").trim() || "Нераспределённые";
-    if (!map.has(category)) map.set(category, []);
-    map.get(category).push(item);
-    return map;
-  }, new Map()).entries()]
-    .map(([category, group]) => [category, [...group].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"))])
-    .sort(([a], [b]) => a.localeCompare(b, "ru"));
+
+  const techGroups = [...items.reduce((techMap,item)=>{
+    const tech=stockTechForItem(item);
+    const category=String(item.category||"Без категории").trim()||"Без категории";
+    if(!techMap.has(tech)) techMap.set(tech,new Map());
+    const categories=techMap.get(tech);
+    if(!categories.has(category)) categories.set(category,[]);
+    categories.get(category).push(item);
+    return techMap;
+  },new Map()).entries()]
+    .map(([tech,categories])=>[tech,[...categories.entries()]
+      .map(([category,group])=>[category,[...group].sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"ru"))])
+      .sort(([a],[b])=>a.localeCompare(b,"ru"))])
+    .sort(([a],[b])=>a.localeCompare(b,"ru"));
+
+  const renderStockCard=(item)=>{
+    const reserved=stockReservedQuantity(item.id);
+    const available=stockAvailableQuantity(item);
+    const isLow=!item.archived&&Number(item.min||0)>0&&available<=Number(item.min||0);
+    return `<article class="legacy-stock-card-v2 ${item.archived?"archived":""} ${isLow?"low":""}">
+      <button type="button" class="legacy-stock-main" data-stock-detail="${escapeHtml(item.id)}">
+        <span class="legacy-stock-icon">${icon("box")}</span>
+        <span class="legacy-stock-copy">
+          <strong>${escapeHtml(item.name||"Без названия")}</strong>
+          <small>${escapeHtml(stockTechForItem(item))} · ${escapeHtml(item.category||"Без категории")} · ${item.lastPurchasePrice?`${money(item.lastPurchasePrice)} / ${escapeHtml(normalizeStockUnit(item.unit||"шт"))}`:"себестоимость не задана"}</small>
+          <em>${item.archived?"в архиве":reserved>0?`доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(normalizeStockUnit(item.unit||"шт"))}`:isLow?`мало · минимум ${escapeHtml(item.min||0)} ${escapeHtml(normalizeStockUnit(item.unit||"шт"))}`:`доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit||"шт"))}`}</em>
+        </span>
+        <span class="legacy-stock-qty"><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit||"шт"))}</strong><small>${item.archived?"АРХИВ":reserved>0?"ЕСТЬ РЕЗЕРВ":isLow?"МАЛО":"ДОСТУПНО"}</small></span>
+      </button>
+      <div class="legacy-stock-actions-v2">
+        <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
+        <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("minus")}</span>Списать</button>
+        <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived?"restore":"archive")}<span>${item.archived?"Вернуть":"Архив"}</span></button>
+        <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
+      </div>
+    </article>`;
+  };
 
   return `<main class="content legacy-warehouse-page">
     <div class="legacy-warehouse-head">
@@ -1539,19 +1603,20 @@ function warehousePage() {
 
     <div class="legacy-warehouse-search search-row search-with-icon">
       ${icon("search")}
-      <input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название или категория" aria-label="Поиск по складу" />
+      <input class="search" id="warehouse-search" value="${escapeHtml(warehouseSearch)}" placeholder="Название, техника или категория" aria-label="Поиск по складу" />
     </div>
 
-    <div class="legacy-warehouse-filter">
-      <select class="field" id="warehouse-filter-select" aria-label="Фильтр склада">
-        <option value="active" ${warehouseFilter === "active" ? "selected" : ""}>В наличии</option>
-        <option value="out" ${warehouseFilter === "out" ? "selected" : ""}>Закончились</option>
-        <option value="reserved" ${warehouseFilter === "reserved" ? "selected" : ""}>В резерве</option>
-        <option value="low" ${warehouseFilter === "low" ? "selected" : ""}>Мало осталось</option>
-        <option value="archived" ${warehouseFilter === "archived" ? "selected" : ""}>Архивные</option>
-        <option value="all" ${warehouseFilter === "all" ? "selected" : ""}>Все позиции</option>
-      </select>
-      <span>${icon("chevron")}</span>
+    <div class="legacy-warehouse-filter warehouse-filter-grid">
+      <label class="warehouse-filter-control"><small>ОСТАТОК</small><span><select class="field" id="warehouse-filter-select" aria-label="Фильтр склада">
+        <option value="active" ${warehouseFilter==="active"?"selected":""}>В наличии</option>
+        <option value="out" ${warehouseFilter==="out"?"selected":""}>Закончились</option>
+        <option value="reserved" ${warehouseFilter==="reserved"?"selected":""}>В резерве</option>
+        <option value="low" ${warehouseFilter==="low"?"selected":""}>Мало осталось</option>
+        <option value="archived" ${warehouseFilter==="archived"?"selected":""}>Архивные</option>
+        <option value="all" ${warehouseFilter==="all"?"selected":""}>Все позиции</option>
+      </select>${icon("chevron")}</span></label>
+      <label class="warehouse-filter-control"><small>ТЕХНИКА</small><span><select class="field" id="warehouse-tech-filter" aria-label="Тип техники"><option value="all">Все типы</option>${techOptions.map((tech)=>`<option value="${escapeHtml(tech)}" ${warehouseTechFilter===tech?"selected":""}>${escapeHtml(tech)}</option>`).join("")}</select>${icon("chevron")}</span></label>
+      <label class="warehouse-filter-control"><small>КАТЕГОРИЯ</small><span><select class="field" id="warehouse-category-filter" aria-label="Категория"><option value="all">Все категории</option>${categoryOptions.map((category)=>`<option value="${escapeHtml(category)}" ${warehouseCategoryFilter===category?"selected":""}>${escapeHtml(category)}</option>`).join("")}</select>${icon("chevron")}</span></label>
     </div>
 
     <div class="legacy-warehouse-shortcuts">
@@ -1559,42 +1624,15 @@ function warehousePage() {
       <button type="button" data-action="open-shopping">${icon("shopping")}<span>Список покупок</span></button>
     </div>
 
-    <section class="legacy-warehouse-groups">
-      ${groupedItems.length ? groupedItems.map(([category, group], groupIndex) => {
-        const lowInGroup = group.filter((item) => !item.archived && Number(item.min || 0) > 0 && stockAvailableQuantity(item) <= Number(item.min || 0)).length;
-        return `<details class="legacy-warehouse-group" ${groupIndex === 0 ? "open" : ""}>
-          <summary>
-            <span class="legacy-folder-icon">${icon("document")}</span>
-            <span class="legacy-group-copy"><strong>${escapeHtml(category)}</strong><small>${group.length} поз.${lowInGroup ? ` · мало: ${lowInGroup}` : ""}</small></span>
-            <span class="legacy-group-chevron">${icon("chevron")}</span>
-          </summary>
-          <div class="legacy-stock-list">
-            ${group.map((item) => {
-              const reserved = stockReservedQuantity(item.id);
-              const available = stockAvailableQuantity(item);
-              const isLow = !item.archived && Number(item.min || 0) > 0 && available <= Number(item.min || 0);
-              const compatibility = Array.isArray(item.compatibility) ? item.compatibility[0] : "";
-              return `<article class="legacy-stock-card-v2 ${item.archived ? "archived" : ""} ${isLow ? "low" : ""}">
-                <button type="button" class="legacy-stock-main" data-stock-detail="${escapeHtml(item.id)}">
-                  <span class="legacy-stock-icon">${icon("box")}</span>
-                  <span class="legacy-stock-copy">
-                    <strong>${escapeHtml(item.name || "Без названия")}</strong>
-                    <small>${escapeHtml(compatibility || item.category || "Без категории")} · ${item.lastPurchasePrice ? `${money(item.lastPurchasePrice)} / ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : "себестоимость не задана"}</small>
-                    <em>${item.archived ? "в архиве" : reserved > 0 ? `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : isLow ? `мало · минимум ${escapeHtml(item.min || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}` : `доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}`}</em>
-                  </span>
-                  <span class="legacy-stock-qty"><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong><small>${item.archived ? "АРХИВ" : reserved > 0 ? "ЕСТЬ РЕЗЕРВ" : isLow ? "МАЛО" : "ДОСТУПНО"}</small></span>
-                </button>
-                <div class="legacy-stock-actions-v2">
-                  <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
-                  <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("minus")}</span>Списать</button>
-                  <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "Архив"}</span></button>
-                  <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
-                </div>
-              </article>`;
-            }).join("")}
-          </div>
+    <section class="legacy-warehouse-groups warehouse-tech-groups">
+      ${techGroups.length?techGroups.map(([tech,categories],techIndex)=>{
+        const count=categories.reduce((sum,[,group])=>sum+group.length,0);
+        const low=count?categories.reduce((sum,[,group])=>sum+group.filter((item)=>!item.archived&&Number(item.min||0)>0&&stockAvailableQuantity(item)<=Number(item.min||0)).length,0):0;
+        return `<details class="legacy-warehouse-group warehouse-tech-group" ${techIndex===0?"open":""}>
+          <summary><span class="legacy-folder-icon">${icon("warehouse")}</span><span class="legacy-group-copy"><strong>${escapeHtml(tech)}</strong><small>${count} поз.${low?` · мало: ${low}`:""}</small></span><span class="legacy-group-chevron">${icon("chevron")}</span></summary>
+          <div class="warehouse-category-list">${categories.map(([category,group])=>`<section class="warehouse-category-block"><div class="warehouse-category-title"><strong>${escapeHtml(category)}</strong><small>${group.length}</small></div><div class="legacy-stock-list">${group.map(renderStockCard).join("")}</div></section>`).join("")}</div>
         </details>`;
-      }).join("") : `<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Склад пуст</h2><p>${query ? "По этому запросу ничего не найдено." : "Добавь первую позицию."}</p></div>`}
+      }).join(""):`<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Ничего не найдено</h2><p>${query?"Измени поиск или фильтры.":"Добавь первую позицию."}</p></div>`}
     </section>
   </main>`;
 }
@@ -4469,7 +4507,7 @@ function stockDetailModal(item) {
   modal.innerHTML = `<section class="modal stock-detail-modal" aria-label="Позиция склада">
     <header class="stock-detail-head">
       <button type="button" class="stock-detail-back" data-close-modal aria-label="Назад">${icon("back")}</button>
-      <div><strong>Позиция склада</strong><small>${escapeHtml(item.category || "Без категории")}</small></div>
+      <div><strong>Позиция склада</strong><small>${escapeHtml(stockTechForItem(item))} · ${escapeHtml(item.category || "Без категории")}</small></div>
       <button type="button" class="stock-detail-edit" data-stock-detail-action="edit" aria-label="Редактировать">${icon("edit")}</button>
     </header>
     <main class="stock-detail-content">
@@ -4642,7 +4680,8 @@ function stockModal(existing = null) {
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("box")}</span><span>Основное</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" /></div>
+      <div class="form-group"><label>Тип техники</label><select class="field" name="stockTech">${["Общее",...applianceTypes()].filter((value,index,array)=>array.indexOf(value)===index).map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" required placeholder="Например, датчики" /></div>
       <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
@@ -4715,7 +4754,8 @@ function stockModal(existing = null) {
       ...item,
       id: item.id || crypto.randomUUID(),
       name: String(form.get("name") || "").trim(),
-      category: String(form.get("category") || "Запчасти").trim() || "Запчасти",
+      stockTech: normalizeStockTech(form.get("stockTech") || "Общее"),
+      category: String(form.get("category") || "").trim(),
       unit: normalizeStockUnit(form.get("unit") || "шт"),
       consumeUnit: normalizeStockUnit(form.get("consumeUnit") || form.get("unit") || "шт"),
       quantity: initialQuantity,
@@ -4731,6 +4771,7 @@ function stockModal(existing = null) {
       batches: existing ? stockBatchList(item) : []
     };
     if (!next.name) return toast("Укажи название позиции");
+    if (!next.category) return toast("Укажи категорию позиции");
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
     if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
     if (!existing && next.quantity > 0) {
@@ -5961,6 +6002,18 @@ app.addEventListener("change", async (event) => {
   }
   if (event.target.id === "warehouse-filter-select") {
     warehouseFilter = event.target.value;
+    saveUiState();
+    await render();
+    return;
+  }
+  if (event.target.id === "warehouse-tech-filter") {
+    warehouseTechFilter = event.target.value || "all";
+    saveUiState();
+    await render();
+    return;
+  }
+  if (event.target.id === "warehouse-category-filter") {
+    warehouseCategoryFilter = event.target.value || "all";
     saveUiState();
     await render();
     return;
