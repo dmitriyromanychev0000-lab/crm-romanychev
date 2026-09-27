@@ -9553,3 +9553,45 @@
   }
 }
 
+/* 1.0.14 · 320 px: длинные названия показываем полезно, а не режем на первом слове. */
+@media screen and (max-width: 340px) {
+  .legacy-expanded-title > strong,
+  .legacy-expanded-device-copy small,
+  .legacy-expanded-meta .address {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    line-height: 1.18 !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-expanded-title > strong {
+    font-size: 15px !important;
+  }
+
+  .legacy-expanded-device-copy small {
+    margin-top: 3px !important;
+  }
+
+  .legacy-expanded-meta .address {
+    align-items: start !important;
+  }
+
+  .legacy-stock-copy strong {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    line-height: 1.18 !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-stock-main {
+    min-height: 82px !important;
+    align-items: center !important;
+  }
+}
+

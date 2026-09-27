@@ -634,10 +634,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           const stressResult = await shot(page, width, stressLabel, true);
           report.results.push(stressResult);
           if (stressResult.overflow > 2) report.failures.push({ width, type: "stress-horizontal-overflow", label: stressLabel, overflow: stressResult.overflow });
+          if (stressLabel === "stress-warehouse") {
+            const stockTextState = await page.evaluate(() => ({
+              lineClamp: getComputedStyle(document.querySelector(".legacy-stock-copy strong")).webkitLineClamp,
+              whiteSpace: getComputedStyle(document.querySelector(".legacy-stock-copy strong")).whiteSpace
+            }));
+            if (stockTextState.lineClamp !== "2" || stockTextState.whiteSpace === "nowrap") {
+              report.failures.push({ width, type: "stress-warehouse-long-name", stockTextState });
+            }
+          }
         }
 
         await setState(page, uiState({ activePage: "orders" }));
         await page.locator(".legacy-order-card").first().click();
+        const stressDetailText = await page.evaluate(() => ({
+          nameClamp: getComputedStyle(document.querySelector(".legacy-expanded-title > strong")).webkitLineClamp,
+          modelClamp: getComputedStyle(document.querySelector(".legacy-expanded-device-copy small")).webkitLineClamp,
+          addressClamp: getComputedStyle(document.querySelector(".legacy-expanded-meta .address")).webkitLineClamp
+        }));
+        if (stressDetailText.nameClamp !== "2" || stressDetailText.modelClamp !== "2" || stressDetailText.addressClamp !== "2") {
+          report.failures.push({ width, type: "stress-order-detail-long-text", stressDetailText });
+        }
         const stressDetail = await shot(page, width, "stress-order-detail", false);
         report.results.push(stressDetail);
         if (stressDetail.overflow > 2) report.failures.push({ width, type: "stress-horizontal-overflow", label: "stress-order-detail", overflow: stressDetail.overflow });
