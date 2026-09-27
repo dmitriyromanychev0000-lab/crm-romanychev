@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T07:00:49.542Z",
-  "testedSha": "64b0cd860802db7ba6c1e342f7c75adbceaf6811",
+  "generatedAt": "2026-09-27T07:03:26.517Z",
+  "testedSha": "b20acfee73ea44e848781bac259b728eb6f770cd",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -973,26 +973,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "finance-editor-layout",
-      "financeEditorState": {
-        "modal": "rgb(17, 24, 29)",
-        "field": "rgb(9, 15, 20)",
-        "footerBottom": 890,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 390,
-      "type": "finance-editor-layout",
-      "financeEditorState": {
-        "modal": "rgb(17, 24, 29)",
-        "field": "rgb(9, 15, 20)",
-        "footerBottom": 890,
-        "viewportHeight": 900
-      }
-    }
-  ]
+  "failures": []
 }
