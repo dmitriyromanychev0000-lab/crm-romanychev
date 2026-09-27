@@ -2367,7 +2367,6 @@ function settingsPage() {
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
-        <button type="button" data-more="receipts"><span class="settings-link-icon">${icon("receipt")}</span><span><strong>Документы и чеки</strong><small>Квитанции и документы CRM</small></span><b>${data.receipts.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
     </section>
@@ -2779,14 +2778,11 @@ function calendarPage() {
 function moreMenu() {
   const primaryItems = [
     ["calendar", "calendar", "Календарь", "Визиты и расписание"],
-    ["finance", "finance", "Финансы", "Доходы, расходы и результат"],
-    ["shopping", "shoppingList", "Список покупок", "Что нужно докупить на склад"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
-    ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
-    ["act", "printer", "Акт", "Подготовка и печать документа"],
-    ["goods", "tag", "Товарник", "Товары из заявки или вручную"],
-    ["tools", "tools", "Инструменты", "Личный инструмент и оборудование"],
-    ["settings", "settings", "Настройки", "Реквизиты, данные и приложение"]
+    ["prices", "price", "Прайс-лист", "Каталог услуг и цены"],
+    ["goods", "tag", "Калькулятор", "Подгонка цен товаров под итог"],
+    ["act", "printer", "Акт", "Предпросмотр и сохранение картинкой"],
+    ["settings", "settings", "Настройки", "Справочники, система и данные"]
   ];
   const extraItems = [];
 
