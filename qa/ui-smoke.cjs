@@ -345,6 +345,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)") {
         report.failures.push({ width, type: "order-editor-deep-dark-surfaces", editorSurfaceState });
       }
+      if (width === 390) {
+        await page.locator("#material-lines [data-material-row]").scrollIntoViewIfNeeded();
+        report.results.push(await shot(page, width, "order-editor-material-row", false));
+      }
       await page.locator("#material-lines [data-remove-line]").first().click();
       if (await page.locator("#material-lines [data-material-row]").count() !== 0) {
         report.failures.push({ width, type: "material-row-remove" });
