@@ -1523,25 +1523,77 @@ function analyticsRangeModal() {
   });
 }
 
+function previousAnalyticsRange(range = analyticsRange()) {
+  if (!range || analyticsPeriod === "all") return null;
+  const length = range.end - range.start;
+  if (!Number.isFinite(length) || length <= 0) return null;
+  return { start: range.start - length, end: range.start };
+}
+
+function analyticsDelta(current, previous) {
+  const now = Number(current) || 0;
+  const before = Number(previous) || 0;
+  if (Math.abs(before) < 0.01) return Math.abs(now) < 0.01 ? "без изменений" : "новый период";
+  const percent = (now - before) / Math.abs(before) * 100;
+  const rounded = Math.round(percent);
+  return `${rounded > 0 ? "+" : ""}${rounded}%`;
+}
+
+function analyticsFinancialSummary(range) {
+  const finishedOrders = data.orders.filter((order) => {
+    if (order.archived) return false;
+    const status = normalizeStatus(order.status);
+    if (status !== "closed" && status !== "declined") return false;
+    return inAnalyticsRange(order.completed || orderDateValue(order), range);
+  });
+  const ordinaryClosed = finishedOrders.filter((order) => normalizeStatus(order.status) === "closed");
+  const declined = finishedOrders.filter((order) => normalizeStatus(order.status) === "declined");
+  const manualExpenses = data.expenses.filter((item) => inAnalyticsRange(item.date, range));
+  const manualIncomes = data.incomes.filter((item) => inAnalyticsRange(item.date, range));
+
+  const received = finishedOrders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
+  const whiteSpent = finishedOrders.reduce((sum, order) => sum + (Number(order.expense_white) || 0), 0);
+  const outsideSpent = manualExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const extraIncome = manualIncomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const earned = finishedOrders.reduce((sum, order) => sum + orderNetAmount(order), 0);
+  const spent = whiteSpent + outsideSpent;
+  const cashNet = earned + extraIncome - outsideSpent;
+  const average = ordinaryClosed.length
+    ? ordinaryClosed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0) / ordinaryClosed.length
+    : 0;
+
+  return {
+    finishedOrders,
+    ordinaryClosed,
+    declined,
+    manualExpenses,
+    manualIncomes,
+    received,
+    whiteSpent,
+    outsideSpent,
+    extraIncome,
+    earned,
+    spent,
+    cashNet,
+    average
+  };
+}
+
 function analyticsPage() {
   const range = analyticsRange();
-  const closed = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "closed" && inAnalyticsRange(order.completed || orderDateValue(order), range));
+  const previousRange = previousAnalyticsRange(range);
+  const finance = analyticsFinancialSummary(range);
+  const previous = previousRange ? analyticsFinancialSummary(previousRange) : null;
+  const createdOrders = data.orders.filter((order) => !order.archived && inAnalyticsRange(orderDateValue(order), range));
   const activeOrders = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "active");
-  const periodExpenses = data.expenses.filter((item) => inAnalyticsRange(item.date, range));
-  const periodIncomes = data.incomes.filter((item) => inAnalyticsRange(item.date, range));
-  const revenue = closed.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
-  const repairCosts = closed.reduce((sum, order) => sum + (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0), 0);
-  const repairResult = revenue - repairCosts;
-  const personalExpenses = periodExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-  const personalIncome = periodIncomes.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-  const personalResult = personalIncome - personalExpenses;
-  const totalSpent = repairCosts + personalExpenses;
-  const totalResult = repairResult + personalResult;
-  const average = closed.length ? revenue / closed.length : 0;
+  const convertedCreated = createdOrders.filter((order) => normalizeStatus(order.status) === "closed").length;
+  const conversion = createdOrders.length ? convertedCreated / createdOrders.length * 100 : 0;
 
   const now = Date.now();
-  const overdueVisits = activeOrders.filter((order) => order.nextVisit && new Date(order.nextVisit).getTime() < now).length;
-  const lowStock = data.warehouse.filter((item) => !item.archived && Number(item.quantity) <= Number(item.min || 0)).length;
+  const overdueVisits = activeOrders.filter(visitIsOverdue).length;
+  const lowStock = data.warehouse.filter((item) => !item.archived
+    && Number(item.min || 0) > 0
+    && stockAvailableQuantity(item) <= Number(item.min || 0)).length;
   const activeOrderAges = activeOrders
     .map((order) => orderCreatedTimestamp(order))
     .filter(Number.isFinite)
@@ -1549,19 +1601,46 @@ function analyticsPage() {
   const oldestActiveDays = activeOrderAges.length ? Math.max(...activeOrderAges) : 0;
   const activeSum = activeOrders.reduce((sum, order) => sum + (Number(order.sum) || 0), 0);
 
-  const bars = revenueBarsForOrders(closed);
+  const bars = revenueBarsForOrders(finance.finishedOrders);
   const max = Math.max(...bars.map(([, value]) => value), 1);
 
   const techMap = new Map();
-  closed.forEach((order) => {
+  finance.ordinaryClosed.forEach((order) => {
     const key = String(order.tech || "Другое").trim() || "Другое";
-    const current = techMap.get(key) || { name: key, count: 0, revenue: 0, costs: 0 };
+    const current = techMap.get(key) || { name: key, count: 0, received: 0, earned: 0 };
     current.count += 1;
-    current.revenue += Number(order.sum) || 0;
-    current.costs += (Number(order.expense_gray) || 0) + (Number(order.expense_white) || 0);
+    current.received += Number(order.sum) || 0;
+    current.earned += orderNetAmount(order);
     techMap.set(key, current);
   });
-  const techStats = [...techMap.values()].sort((a, b) => b.revenue - a.revenue);
+  const techStats = [...techMap.values()].sort((a, b) => b.received - a.received || b.count - a.count);
+
+  const sourceMap = new Map();
+  createdOrders.forEach((order) => {
+    const key = String(orderSourceName(order) || "Не указан").trim() || "Не указан";
+    const current = sourceMap.get(key) || { name: key, count: 0, received: 0, closed: 0, declined: 0 };
+    current.count += 1;
+    const status = normalizeStatus(order.status);
+    if (status === "closed") {
+      current.closed += 1;
+      current.received += Number(order.sum) || 0;
+    } else if (status === "declined") {
+      current.declined += 1;
+    }
+    sourceMap.set(key, current);
+  });
+  const sourceStats = [...sourceMap.values()].sort((a, b) => b.count - a.count || b.received - a.received);
+
+  const weekdayNames = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
+  const weekdayMap = new Map(weekdayNames.map((name) => [name, 0]));
+  createdOrders.forEach((order) => {
+    const date = new Date(orderDateValue(order) || 0);
+    if (!Number.isNaN(date.getTime())) {
+      const key = weekdayNames[date.getDay()];
+      weekdayMap.set(key, (weekdayMap.get(key) || 0) + 1);
+    }
+  });
+  const weekdayStats = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map((name) => ({ name, count: weekdayMap.get(name) || 0 }));
 
   const usageMap = new Map();
   data.warehouse_movements.filter((movement) => inAnalyticsRange(movement.date, range)).forEach((movement) => {
@@ -1571,7 +1650,7 @@ function analyticsPage() {
     if (!delta) return;
     const key = String(movement.warehouseId || movement.name || "unknown");
     const stockItem = data.warehouse.find((item) => String(item.id) === String(movement.warehouseId));
-    const current = usageMap.get(key) || { name: movement.name || stockItem?.name || "Материал", unit: stockItem?.unit || "шт.", qty: 0, operations: 0 };
+    const current = usageMap.get(key) || { name: movement.name || stockItem?.name || "Материал", unit: stockItem?.unit || "шт", qty: 0, operations: 0 };
     current.qty += delta;
     current.operations += 1;
     usageMap.set(key, current);
@@ -1579,7 +1658,7 @@ function analyticsPage() {
   const materialUsage = [...usageMap.values()].filter((item) => item.qty > 0).sort((a, b) => b.qty - a.qty).slice(0, 10);
 
   const serviceMap = new Map();
-  closed.forEach((order) => {
+  finance.ordinaryClosed.forEach((order) => {
     (Array.isArray(order.services) ? order.services : []).forEach((service) => {
       const name = String(service.name || "Услуга").trim() || "Услуга";
       const current = serviceMap.get(name) || { name, qty: 0, revenue: 0 };
@@ -1593,8 +1672,16 @@ function analyticsPage() {
   const warehouseActive = data.warehouse.filter((item) => !item.archived);
   const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
 
+  const comparison = previous ? `
+    <div class="analytics-comparison-strip">
+      <span><small>Получено к прошлому</small><b>${analyticsDelta(finance.received, previous.received)}</b></span>
+      <span><small>Потрачено к прошлому</small><b>${analyticsDelta(finance.spent, previous.spent)}</b></span>
+      <span><small>Заработал к прошлому</small><b>${analyticsDelta(finance.earned, previous.earned)}</b></span>
+      <span><small>Чистыми к прошлому</small><b>${analyticsDelta(finance.cashNet, previous.cashNet)}</b></span>
+    </div>` : "";
+
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Деньги, работа и контроль в одном экране</p></div></div>
+    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Деньги, заявки, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense">${icon("minus")}<span>Расход</span></button></div>
 
     <div class="analytics-period-grid">
       <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">День</button>
@@ -1614,55 +1701,65 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>${escapeHtml(analyticsPeriodTitle(range))}</small></span></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Выручка</span><strong>${money(revenue)}</strong><small>${closed.length} закрытых заявок</small></div></div>
-        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("chart")}</span><div><span>Итог</span><strong class="${totalResult >= 0 ? "green" : "red"}">${money(totalResult)}</strong><small>после всех расходов</small></div></div>
-        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>Расходы</span><strong class="red">${money(totalSpent)}</strong><small>ремонт и личные</small></div></div>
-        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>Средний чек</span><strong class="yellow">${money(average)}</strong><small>по закрытым заявкам</small></div></div>
+        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Получено от клиентов</span><strong>${money(finance.received)}</strong><small>${finance.ordinaryClosed.length} ремонтов · ${finance.declined.length} отказов</small></div></div>
+        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>Потрачено</span><strong class="red">${money(finance.spent)}</strong><small>белый расход + общие расходы</small></div></div>
+        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("chart")}</span><div><span>Заработал</span><strong class="${finance.earned >= 0 ? "green" : "red"}">${money(finance.earned)}</strong><small>по формуле заявок</small></div></div>
+        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>Средний чек</span><strong class="yellow">${money(finance.average)}</strong><small>только закрытые ремонты</small></div></div>
       </div>
-      <div class="analytics-summary-strip"><span><small>Чистыми с ремонта</small><b class="${repairResult >= 0 ? "green" : "red"}">${money(repairResult)}</b></span><span><small>Личные финансы</small><b class="${personalResult >= 0 ? "green" : "red"}">${money(personalResult)}</b></span></div>
+      <div class="analytics-summary-strip">
+        <span><small>Чистыми в кармане</small><b class="${finance.cashNet >= 0 ? "green" : "red"}">${money(finance.cashNet)}</b></span>
+        <span><small>Общие расходы вне заявок</small><b class="red">${money(finance.outsideSpent)}</b></span>
+        <span><small>Белые расходы заявок</small><b>${money(finance.whiteSpent)}</b></span>
+        <span><small>Прочие доходы</small><b class="green">${money(finance.extraIncome)}</b></span>
+      </div>
+      ${comparison}
+    </section>
+
+    <section class="panel analytics-work">
+      <div class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Заявки<small>создано и доведено до ремонта</small></span></div>
+      <div class="analytics-work-grid">
+        <div class="metric"><div class="metric-label">Создано</div><div class="metric-value">${createdOrders.length}</div></div>
+        <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value green">${convertedCreated}</div></div>
+        <div class="metric"><div class="metric-label">Конверсия</div><div class="metric-value blue">${Math.round(conversion)}%</div></div>
+      </div>
+      <div class="analytics-weekdays">${weekdayStats.map((item) => `<span><small>${item.name}</small><b>${item.count}</b></span>`).join("")}</div>
     </section>
 
     <section class="panel analytics-focus">
       <div class="panel-title"><span class="badge-icon">${icon("warning")}</span><span>Фокус внимания<small>что требует проверки сейчас</small></span></div>
       <div class="analytics-focus-list">
         <div class="analytics-focus-row"><span class="analytics-focus-icon red">${icon("calendar")}</span><span><b>Просроченные визиты</b><small>назначенная дата уже прошла</small></span><strong>${overdueVisits}</strong></div>
-        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("box")}</span><span><b>Заканчивается на складе</b><small>остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
+        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("box")}</span><span><b>Заканчивается на складе</b><small>доступный остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
         <div class="analytics-focus-row"><span class="analytics-focus-icon blue">${icon("history")}</span><span><b>Самая старая заявка</b><small>дней находится в работе</small></span><strong>${oldestActiveDays}</strong></div>
       </div>
-    </section>
-
-    <section class="panel analytics-work">
-      <div class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Работа сейчас<small>активные заявки</small></span></div>
-      <div class="analytics-work-grid">
-        <div class="metric"><span class="metric-icon green">${icon("check")}</span><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
-        <div class="metric"><span class="metric-icon blue">${icon("finance")}</span><div class="metric-label">Сумма</div><div class="metric-value blue">${money(activeSum)}</div></div>
-        <div class="metric"><span class="metric-icon yellow">${icon("calendar")}</span><div class="metric-label">Просрочено</div><div class="metric-value yellow">${overdueVisits}</div></div>
+      <div class="analytics-work-grid compact">
+        <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
+        <div class="metric"><div class="metric-label">Сумма в работе</div><div class="metric-value blue">${money(activeSum)}</div></div>
       </div>
     </section>
 
+    <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Деньги от клиентов<small>по датам завершения</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(6, value / max * 84)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
+
+    <details class="panel analytics-collapsible analytics-list-panel" open><summary><span class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Источники заявок<small>сколько заявок и денег принёс каждый источник</small></span></span>${icon("chevron")}</summary>${sourceStats.length ? `<div class="goods-list">${sourceStats.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · закрыто ${item.closed}${item.declined ? ` · отказов ${item.declined}` : ""}</small></span><b class="green">${money(item.received)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет заявок за период</div>`}</details>
+
+    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>По типам техники<small>закрытые ремонты без отказов</small></span></span>${icon("chevron")}</summary>${techStats.length ? `<div class="goods-list">${techStats.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} ремонтов · получено ${money(item.received)}</small></span><b class="${item.earned >= 0 ? "green" : "red"}">${money(item.earned)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет закрытых ремонтов за период</div>`}</details>
+
     <section class="panel analytics-ranking">
-      <div class="panel-title"><span class="badge-icon">${icon("price")}</span> Рейтинг услуг</div>
+      <div class="panel-title"><span class="badge-icon">${icon("price")}</span><span>Рейтинг услуг<small>по закрытым ремонтам</small></span></div>
       ${serviceRanking.length ? `<div class="analytics-ranking-list">${serviceRanking.map((item, index) => `<div class="analytics-ranking-row"><span class="ranking-place">${index + 1}</span><span><strong>${escapeHtml(item.name)}</strong><small>${item.qty} шт. за период</small></span><b>${money(item.revenue)}</b></div>`).join("")}</div>` : `<div class="small">Нет услуг в закрытых заявках за выбранный период.</div>`}
     </section>
 
     <details class="panel analytics-collapsible analytics-stock-summary">
-      <summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Склад<small>остатки и стоимость</small></span></span>${icon("chevron")}</summary>
+      <summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Склад<small>остатки и расход материалов</small></span></span>${icon("chevron")}</summary>
       <div class="analytics-work-grid">
         <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value">${warehouseActive.length}</div></div>
         <div class="metric"><div class="metric-label">Заканчивается</div><div class="metric-value yellow">${lowStock}</div></div>
         <div class="metric"><div class="metric-label">Стоимость остатков</div><div class="metric-value purple">${money(warehouseValue)}</div></div>
       </div>
+      ${materialUsage.length ? `<div class="goods-list analytics-material-usage">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : ""}
     </details>
-
-    <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Динамика выручки<small>закрытые заявки по календарю</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(6, value / max * 84)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
-    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>Доходность по технике<small>выручка минус расходы ремонта</small></span></span>${icon("chevron")}</summary>${techStats.length ? `<div class="goods-list">${techStats.map((item) => {
-      const result = item.revenue - item.costs;
-      return `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · выручка ${money(item.revenue)} · расходы ${money(item.costs)}</small></span><b class="${result >= 0 ? "green" : "red"}">${money(result)}</b><span></span></div>`;
-    }).join("")}</div>` : `<div class="empty">Нет закрытых заявок за период</div>`}</details>
-    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Расход материалов<small>что реально ушло со склада</small></span></span>${icon("chevron")}</summary>${materialUsage.length ? `<div class="goods-list">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет списаний материалов за период</div>`}</details>
   </main>`;
 }
-
 
 function availableServices() {
   const regular = data.receipt_prices
