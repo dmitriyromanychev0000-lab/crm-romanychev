@@ -11243,7 +11243,7 @@
   }
 
   .stock-detail-actions .stock-detail-archive {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1 !important;
     min-height: 46px !important;
     border-color: #223b52 !important;
     background-color: #081019 !important;
