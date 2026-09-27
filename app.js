@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.174";
+const APP_BUILD = "2026.09.27.175";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Складские категории стали настраиваемым справочником по типам техники с безопасным архивом и переименованием";
+const APP_RELEASE = "Места хранения стали реальными остатками: приход, списание, резерв и перенос синхронизированы по локациям";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -52,7 +52,7 @@ const defaultData = () => ({
     catalogApplyWithoutFit: false,
     stockReservationModel: 1,
     stockBatchModel: 1,
-    stockLocationModel: 1,
+    stockLocationModel: 2,
     searchMasterComment: false,
     companyName: "CRM by Romanychev",
     name: "",
@@ -896,21 +896,59 @@ function syncStockQuantityFromLocations(item) {
   return total;
 }
 
+function reconcileStockLocationBalances(item) {
+  if (!item) return false;
+  if (!Array.isArray(item.locationBalances)) item.locationBalances = [];
+  const target = Math.max(0, Number(item.quantity) || 0);
+  const tracked = stockLocationBalances(item).reduce((sum, entry) => sum + Math.max(0, Number(entry.qty) || 0), 0);
+  const delta = target - tracked;
+  if (Math.abs(delta) <= 1e-9) return false;
+  if (delta > 0) {
+    changeStockLocationQuantity(item, UNASSIGNED_LOCATION_ID, delta);
+    return true;
+  }
+  let remaining = Math.abs(delta);
+  const ids = [UNASSIGNED_LOCATION_ID, ...stockLocationBalances(item).map((entry) => String(entry.locationId || UNASSIGNED_LOCATION_ID))]
+    .filter((id,index,array)=>array.indexOf(id)===index);
+  for (const locationId of ids) {
+    if (remaining <= 1e-9) break;
+    const physical = stockLocationPhysicalQuantity(item, locationId);
+    const reserved = stockReservedQuantityAtLocation(item.id, locationId);
+    const take = Math.min(Math.max(0, physical - reserved), remaining);
+    if (take <= 0) continue;
+    changeStockLocationQuantity(item, locationId, -take);
+    remaining -= take;
+  }
+  if (remaining > 1e-7) syncStockQuantityFromLocations(item);
+  return true;
+}
+
 function migrateStockLocationModel() {
-  if (Number(data.settings?.stockLocationModel) >= 1) return false;
+  const version = Number(data.settings?.stockLocationModel) || 0;
+  if (version >= 2) return false;
   ensureStorageLocations();
-  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
-    item.locationBalances = [];
-    const quantity = Math.max(0, Number(item.quantity) || 0);
-    if (quantity > 0) item.locationBalances.push({ locationId: UNASSIGNED_LOCATION_ID, qty: quantity });
-  });
+  let changed = false;
+  if (version < 1) {
+    (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+      item.locationBalances = [];
+      const quantity = Math.max(0, Number(item.quantity) || 0);
+      if (quantity > 0) item.locationBalances.push({ locationId: UNASSIGNED_LOCATION_ID, qty: quantity });
+    });
+    changed = true;
+  }
   (Array.isArray(data.orders) ? data.orders : []).forEach((order) => {
     (Array.isArray(order.materials) ? order.materials : []).forEach((material) => {
       if (!material?.warehouseId || !material.writeOff || material.directExpense) return;
-      if (!String(material.locationId || "").trim()) material.locationId = UNASSIGNED_LOCATION_ID;
+      if (!String(material.locationId || "").trim()) {
+        material.locationId = UNASSIGNED_LOCATION_ID;
+        changed = true;
+      }
     });
   });
-  data.settings = { ...data.settings, stockLocationModel: 1 };
+  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+    if (reconcileStockLocationBalances(item)) changed = true;
+  });
+  data.settings = { ...data.settings, stockLocationModel: 2 };
   return true;
 }
 
@@ -1117,6 +1155,32 @@ function stockLocationsForItem(item, { includeZero = false } = {}) {
       reserved: stockReservedQuantityAtLocation(item.id, location.id)
     }))
     .filter((location) => includeZero || location.qty > 1e-9 || location.reserved > 1e-9);
+}
+
+function bestStockLocationId(item, { excludeOrderId = null } = {}) {
+  if (!item) return UNASSIGNED_LOCATION_ID;
+  const locations = activeStorageLocations()
+    .map((location) => ({ id:String(location.id), available:stockAvailableQuantityAtLocation(item, location.id, { excludeOrderId }) }))
+    .sort((a,b)=>b.available-a.available || Number(a.id===UNASSIGNED_LOCATION_ID)-Number(b.id===UNASSIGNED_LOCATION_ID));
+  return locations.find((entry)=>entry.available>1e-9)?.id
+    || locations.find((entry)=>entry.id===UNASSIGNED_LOCATION_ID)?.id
+    || locations[0]?.id || UNASSIGNED_LOCATION_ID;
+}
+
+function stockMaterialLocationTotals(materials = []) {
+  const result = new Map();
+  (Array.isArray(materials) ? materials : []).forEach((material) => {
+    if (!material?.warehouseId || !material.writeOff || material.directExpense) return;
+    const qty = materialStorageQuantity(material);
+    if (qty <= 0) return;
+    const warehouseId = String(material.warehouseId);
+    const locationId = materialStockLocationId(material);
+    const key = `${warehouseId}::${locationId}`;
+    const current = result.get(key) || { warehouseId, locationId, qty:0 };
+    current.qty += qty;
+    result.set(key,current);
+  });
+  return result;
 }
 
 function stockAvailableQuantity(item, { excludeOrderId = null } = {}) {
@@ -3668,19 +3732,23 @@ function warehouseMovementsPage() {
     correction_in: "Корректировка +",
     correction_out: "Корректировка −",
     order_out: "Списано в заявку",
-    order_return: "Возврат из заявки"
+    order_return: "Возврат из заявки",
+    transfer: "Перемещение",
+    order_location_move: "Смена места в заявке"
   };
   const incomingTypes = new Set(["initial", "in", "manual_in", "purchase_in", "correction_in", "order_return"]);
+  const neutralTypes = new Set(["transfer", "order_location_move"]);
   const source = [...data.warehouse_movements]
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   const movements = source.filter((movement) => {
     const incoming = incomingTypes.has(movement.type);
+    const neutral = neutralTypes.has(movement.type);
     return warehouseMovementFilter === "all"
       || (warehouseMovementFilter === "in" && incoming)
-      || (warehouseMovementFilter === "out" && !incoming);
+      || (warehouseMovementFilter === "out" && !incoming && !neutral);
   });
   const inCount = source.filter((movement) => incomingTypes.has(movement.type)).length;
-  const outCount = source.length - inCount;
+  const outCount = source.filter((movement)=>!incomingTypes.has(movement.type) && !neutralTypes.has(movement.type)).length;
 
   return `<main class="content warehouse-support-content">
     <div class="support-page-head">
@@ -3698,11 +3766,13 @@ function warehouseMovementsPage() {
       ${movements.length ? movements.map((movement) => {
         const item = data.warehouse.find((entry) => String(entry.id) === String(movement.warehouseId));
         const incoming = incomingTypes.has(movement.type);
-        const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}` : "Склад";
-        return `<article class="movement-card ${incoming ? "incoming" : "outgoing"}">
-          <span class="movement-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
+        const neutral = neutralTypes.has(movement.type);
+        const placeText = neutral ? `${storageLocationName(movement.fromLocationId)} → ${storageLocationName(movement.toLocationId)}` : movement.locationId ? storageLocationName(movement.locationId) : "";
+        const sourceText = movement.orderId ? `Заявка №${escapeHtml(movement.orderId)}${placeText?` · ${escapeHtml(placeText)}`:""}` : placeText || "Склад";
+        return `<article class="movement-card ${neutral ? "neutral" : incoming ? "incoming" : "outgoing"}">
+          <span class="movement-icon ${neutral ? "neutral" : incoming ? "incoming" : "outgoing"}">${icon(neutral ? "refresh" : incoming ? "plus" : "minus")}</span>
           <div class="movement-copy"><strong>${escapeHtml(movement.name || item?.name || "Позиция")}</strong><small>${movementLabels[movement.type] || "Движение"} · ${sourceText}${movement.totalCost ? ` · ${money(movement.totalCost)}` : ""}${movement.comment ? ` · ${escapeHtml(movement.comment)}` : ""}</small><time>${formatVisitDate(movement.date) || shortDate(movement.date)}</time></div>
-          <b class="${incoming ? "green" : "red"}">${incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
+          <b class="${neutral ? "blue" : incoming ? "green" : "red"}">${neutral ? "↔" : incoming ? "+" : "−"}${escapeHtml(movement.qty || 0)} ${escapeHtml(item?.unit || "шт.")}</b>
         </article>`;
       }).join("") : `<div class="panel empty warehouse-support-empty"><div class="empty-icon">${icon("history")}</div><h2>Движений нет</h2><p>Для выбранного фильтра записей пока нет.</p></div>`}
     </section>
@@ -3984,10 +4054,7 @@ const orderMaterialRow = (item = {}) => {
   const amount = Number(item.amount ?? (qty * (Number(item.unitCost) || 0))) || 0;
   if (directExpense) {
     return `<div class="line-item material-line legacy-material-card direct-expense-card" data-material-row data-direct-expense="true" data-warehouse-id="" data-write-off="false">
-      <div class="material-card-head">
-        <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Например, ремонт платы" /><small>Расход конкретной заявки · без склада</small></div>
-        <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
-      </div>
+      <div class="material-card-head"><div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Например, ремонт платы" /><small>Расход конкретной заявки · без склада</small></div><button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button></div>
       <div class="direct-expense-controls">
         <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
         <label><span>Сумма</span><input class="field compact" data-line="amount" type="number" min="0" step="1" value="${amount}" inputmode="decimal" /></label>
@@ -3995,97 +4062,84 @@ const orderMaterialRow = (item = {}) => {
       </div>
     </div>`;
   }
-  const warehouseItem = data.warehouse.find((entry) => String(entry.id) === String(item.warehouseId));
+  const warehouseItem = data.warehouse.find((entry)=>String(entry.id)===String(item.warehouseId));
   const storageUnit = normalizeStockUnit(item.storageUnit || warehouseItem?.unit || item.unit || "шт");
   const consumeUnit = normalizeStockUnit(item.unit || warehouseItem?.consumeUnit || storageUnit);
-  const storageNote = storageUnit !== consumeUnit ? ` · хранение: ${storageUnit}` : "";
+  const locationId = String(item.locationId || bestStockLocationId(warehouseItem));
+  const options = activeStorageLocations({includeArchived:true})
+    .filter((location)=>!location.archived || String(location.id)===locationId)
+    .map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===locationId?"selected":""}>${escapeHtml(location.name)}</option>`).join("");
   return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(consumeUnit)}" data-storage-unit="${escapeHtml(storageUnit)}" data-write-off="${item.writeOff ? "true" : "false"}">
-    <div class="material-card-head">
-      <div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада${escapeHtml(storageNote)}</small></div>
-      <button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button>
-    </div>
+    <div class="material-card-head"><div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада${storageUnit!==consumeUnit?` · хранение: ${escapeHtml(storageUnit)}`:""}</small></div><button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button></div>
     <div class="material-card-controls">
       <label><span>Кол-во</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
       <label><span>Ед.</span><div class="field readonly-field material-unit">${escapeHtml(consumeUnit)}</div></label>
-      <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost) || 0}" /></label>
+      <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost)||0}" /></label>
     </div>
+    <label class="material-location-control"><span>Место хранения</span><select class="field" data-line="location">${options}</select></label>
   </div>`;
 };
 
 function syncOrderStock(previousOrder = null, nextOrder = null) {
-  const previousTotals = stockMaterialTotals(previousOrder?.materials);
-  const nextTotals = stockMaterialTotals(nextOrder?.materials);
-  const previousConsumed = orderConsumesStock(previousOrder) ? previousTotals : new Map();
-  const nextConsumed = orderConsumesStock(nextOrder) ? nextTotals : new Map();
-  const orderId = nextOrder?.id ?? previousOrder?.id ?? null;
-  const ids = [...new Set([
-    ...previousTotals.keys(),
-    ...nextTotals.keys(),
-    ...previousConsumed.keys(),
-    ...nextConsumed.keys()
-  ])];
-  const changes = [];
+  const prevTotals=stockMaterialTotals(previousOrder?.materials), nextTotals=stockMaterialTotals(nextOrder?.materials);
+  const prevLoc=stockMaterialLocationTotals(previousOrder?.materials), nextLoc=stockMaterialLocationTotals(nextOrder?.materials);
+  const prevConsumed=orderConsumesStock(previousOrder)?prevTotals:new Map(), nextConsumed=orderConsumesStock(nextOrder)?nextTotals:new Map();
+  const prevConsumedLoc=orderConsumesStock(previousOrder)?prevLoc:new Map(), nextConsumedLoc=orderConsumesStock(nextOrder)?nextLoc:new Map();
+  const orderId=nextOrder?.id ?? previousOrder?.id ?? null;
+  const locationChanges=[];
 
-  for (const warehouseId of ids) {
-    const item = data.warehouse.find((entry) => String(entry.id) === String(warehouseId));
-    if (!item) return { ok: false, message: "Позиция склада больше не найдена" };
-
-    const previousConsumedQty = previousConsumed.get(warehouseId) || 0;
-    const nextConsumedQty = nextConsumed.get(warehouseId) || 0;
-    const consumptionDelta = nextConsumedQty - previousConsumedQty;
-    const physical = Number(item.quantity) || 0;
-    const otherReserved = stockReservedQuantity(warehouseId, { excludeOrderId: orderId });
-    const availableBefore = Math.max(0, physical - otherReserved);
-
-    if (consumptionDelta > availableBefore + 1e-9 || consumptionDelta > stockBatchRemaining(item) + 1e-9) {
-      return {
-        ok: false,
-        message: `Недостаточно доступного остатка: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableBefore)} ${normalizeStockUnit(item.unit || "шт")}`
-      };
+  for(const key of [...new Set([...prevLoc.keys(),...nextLoc.keys(),...prevConsumedLoc.keys(),...nextConsumedLoc.keys()])]){
+    const source=nextLoc.get(key)||prevLoc.get(key);
+    if(!source) continue;
+    const item=data.warehouse.find((entry)=>String(entry.id)===String(source.warehouseId));
+    if(!item) return {ok:false,message:"Позиция склада больше не найдена"};
+    const delta=(nextConsumedLoc.get(key)?.qty||0)-(prevConsumedLoc.get(key)?.qty||0);
+    const physical=stockLocationPhysicalQuantity(item,source.locationId);
+    const otherReserved=stockReservedQuantityAtLocation(item.id,source.locationId,{excludeOrderId:orderId});
+    const free=Math.max(0,physical-otherReserved);
+    if(delta>free+1e-9) return {ok:false,message:`Недостаточно в «${storageLocationName(source.locationId)}»: ${item.name||"позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(free)} ${normalizeStockUnit(item.unit||"шт")}`};
+    if(orderReservesStock(nextOrder)){
+      const wanted=nextLoc.get(key)?.qty||0;
+      const available=Math.max(0,physical-delta-otherReserved);
+      if(wanted>available+1e-9) return {ok:false,message:`Недостаточно для резерва в «${storageLocationName(source.locationId)}»: ${item.name||"позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${normalizeStockUnit(item.unit||"шт")}`};
     }
-
-    const projectedPhysical = physical - consumptionDelta;
-    if (orderReservesStock(nextOrder)) {
-      const wantedReserve = nextTotals.get(warehouseId) || 0;
-      const availableForOrder = Math.max(0, projectedPhysical - otherReserved);
-      if (wantedReserve > availableForOrder + 1e-9) {
-        return {
-          ok: false,
-          message: `Недостаточно для резерва: ${item.name || "позиция"} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(availableForOrder)} ${normalizeStockUnit(item.unit || "шт")}`
-        };
-      }
-    }
-
-    if (Math.abs(consumptionDelta) > 1e-9) changes.push({ item, consumptionDelta });
+    if(Math.abs(delta)>1e-9) locationChanges.push({item,locationId:source.locationId,delta});
   }
 
-  const date = new Date().toISOString();
-  changes.forEach(({ item, consumptionDelta }) => {
-    const movementId = crypto.randomUUID();
-    let allocations = [];
-    if (consumptionDelta > 0) {
-      const consumed = consumeStockBatches(item, consumptionDelta, orderId, movementId);
-      allocations = consumed.allocations;
-    } else {
-      const restored = restoreOrderStockBatches(item, Math.abs(consumptionDelta), orderId);
-      allocations = restored.allocations;
-    }
-    item.quantity = Math.max(0, (Number(item.quantity) || 0) - consumptionDelta);
-    const batchCost = allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
-    data.warehouse_movements.push({
-      id: movementId,
-      warehouseId: item.id,
-      orderId,
-      name: item.name,
-      qty: Math.abs(consumptionDelta),
-      type: consumptionDelta > 0 ? "order_out" : "order_return",
-      batchCost,
-      allocations,
-      date
-    });
-  });
+  const batchChanges=[];
+  for(const warehouseId of [...new Set([...prevTotals.keys(),...nextTotals.keys(),...prevConsumed.keys(),...nextConsumed.keys()])]){
+    const item=data.warehouse.find((entry)=>String(entry.id)===String(warehouseId));
+    if(!item) return {ok:false,message:"Позиция склада больше не найдена"};
+    const delta=(nextConsumed.get(warehouseId)||0)-(prevConsumed.get(warehouseId)||0);
+    if(delta>stockBatchRemaining(item)+1e-9) return {ok:false,message:`Недостаточно остатка по партиям: ${item.name||"позиция"}`};
+    if(Math.abs(delta)>1e-9) batchChanges.push({item,delta});
+  }
 
-  return { ok: true };
+  const date=new Date().toISOString(), changed=new Set();
+  locationChanges.forEach(({item,locationId,delta})=>{changeStockLocationQuantity(item,locationId,-delta);changed.add(item);});
+  batchChanges.forEach(({item,delta})=>{
+    const movementId=crypto.randomUUID();
+    const allocations=delta>0?consumeStockBatches(item,delta,orderId,movementId).allocations:restoreOrderStockBatches(item,Math.abs(delta),orderId).allocations;
+    const places=locationChanges.filter((change)=>String(change.item.id)===String(item.id));
+    data.warehouse_movements.push({
+      id:movementId,warehouseId:item.id,orderId,name:item.name,qty:Math.abs(delta),type:delta>0?"order_out":"order_return",
+      batchCost:allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0),allocations,
+      locationId:places.length===1?places[0].locationId:null,
+      locationChanges:places.map((p)=>({locationId:p.locationId,qty:Math.abs(p.delta),direction:p.delta>0?"out":"in"})),date
+    });
+    changed.add(item);
+  });
+  changed.forEach((item)=>syncStockQuantityFromLocations(item));
+
+  const globalIds=new Set(batchChanges.map((change)=>String(change.item.id))), localOnly=new Map();
+  locationChanges.forEach((change)=>{const id=String(change.item.id);if(globalIds.has(id))return;if(!localOnly.has(id))localOnly.set(id,[]);localOnly.get(id).push(change);});
+  localOnly.forEach((changes,warehouseId)=>{
+    const out=changes.filter((change)=>change.delta>0), incoming=changes.filter((change)=>change.delta<0);
+    if(!out.length||!incoming.length) return;
+    const item=changes[0].item;
+    data.warehouse_movements.push({id:crypto.randomUUID(),warehouseId,orderId,name:item.name,qty:out.reduce((sum,c)=>sum+c.delta,0),type:"order_location_move",fromLocationId:out[0].locationId,toLocationId:incoming[0].locationId,date});
+  });
+  return {ok:true};
 }
 
 function photoSource(photo) {
@@ -4362,25 +4416,22 @@ function openMaterialCatalog(orderModal) {
     if (!item) return;
     const existing = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
     const consumeUnit = consumeUnitForItem(item);
-    const available = availableForOrderInConsumeUnit(item);
+    const locationId = existing?.querySelector('[data-line="location"]')?.value || bestStockLocationId(item,{excludeOrderId:orderId});
+    const available = stockQtyFromStorage(stockAvailableQuantityAtLocation(item,locationId,{excludeOrderId:orderId}),item.unit,consumeUnit);
     if (existing) {
       const qty = existing.querySelector('[data-line="qty"]');
       const nextQty = (Number(qty.value) || 0) + 1;
-      if (nextQty > available + 1e-9) return toast(`Доступно для резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${consumeUnit}`);
+      if (nextQty > available + 1e-9) return toast(`В «${storageLocationName(locationId)}» доступно: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${consumeUnit}`);
       qty.value = nextQty;
       qty.dispatchEvent(new Event("input", { bubbles:true }));
       toast("Количество увеличено");
     } else {
       if (available <= 0) return toast("Свободного остатка нет");
       orderModal.querySelector("#material-lines").insertAdjacentHTML("beforeend", orderMaterialRow({
-        warehouseId:item.id,
-        name:item.name,
-        qty:Math.min(1, available),
-        unit:consumeUnit,
+        warehouseId:item.id,locationId,name:item.name,qty:Math.min(1,available),unit:consumeUnit,
         storageUnit:normalizeStockUnit(item.unit || consumeUnit),
         unitCost:(Number(item.lastPurchasePrice || item.price) || 0) * stockQtyToStorage(1, consumeUnit, item.unit || consumeUnit),
-        tracking:item.tracking,
-        writeOff:true
+        tracking:item.tracking,writeOff:true
       }));
       const added = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
       added?.querySelector('[data-line="qty"]')?.dispatchEvent(new Event("input", { bubbles:true }));
@@ -4782,6 +4833,7 @@ function newOrderModal(existing = null, options = {}) {
         const amount = directExpense ? Number(row.querySelector('[data-line="amount"]')?.value) || 0 : 0;
         return {
           warehouseId: directExpense ? null : (row.dataset.warehouseId || null),
+          locationId: directExpense ? undefined : String(row.querySelector('[data-line="location"]')?.value || UNASSIGNED_LOCATION_ID),
           name: row.querySelector('[data-line="name"]').value,
           qty,
           unitCost: directExpense ? (qty > 0 ? amount / qty : 0) : (Number(row.querySelector('[data-line="unit-cost"]')?.value) || 0),
@@ -5214,6 +5266,7 @@ function stockDetailModal(item) {
   const reserved = stockReservedQuantity(item.id);
   const available = stockAvailableQuantity(item);
   const isLow = !item.archived && Number(item.min || 0) > 0 && available <= Number(item.min || 0);
+  const locations = stockLocationsForItem(item, { includeZero:false });
   const movements = [...data.warehouse_movements]
     .filter((movement) => String(movement.warehouseId) === String(item.id))
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
@@ -5228,7 +5281,9 @@ function stockDetailModal(item) {
     correction_in: "Корректировка +",
     correction_out: "Корректировка −",
     order_out: "В заявку",
-    order_return: "Возврат"
+    order_return: "Возврат",
+    transfer: "Перемещение",
+    order_location_move: "Смена места в заявке"
   };
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-detail-backdrop";
@@ -5253,9 +5308,17 @@ function stockDetailModal(item) {
         <span><small>АКТИВНЫХ ПАРТИЙ</small><strong>${stockBatchList(item).filter((batch) => Number(batch.remainingQty) > 1e-9).length}</strong></span>
         <span><small>ОСТАТОК ПО СЕБЕСТОИМОСТИ</small><strong>${money(stockInventoryCost(item))}</strong></span>
       </section>
+      <section class="stock-detail-history stock-location-summary">
+        <h3>Места хранения</h3>
+        ${locations.length ? locations.map((location) => {
+          const free=Math.max(0,location.qty-location.reserved);
+          return `<div class="stock-detail-movement stock-location-row"><span class="blue">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(location.qty)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</span><p><strong>${escapeHtml(location.name)}</strong><small>доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)}${location.reserved>0?` · резерв ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(location.reserved)}`:""}</small></p></div>`;
+        }).join("") : `<p class="detail-empty">Остаток по местам не распределён</p>`}
+      </section>
       <div class="stock-detail-actions">
         <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
         <button type="button" class="outgoing" data-stock-detail-action="out"><span class="stock-action-icon">${icon("minus")}</span><span><b>Списать</b><small>Уменьшить остаток</small></span></button>
+        <button type="button" class="stock-detail-transfer" data-stock-detail-action="transfer">${icon("refresh")}<span><b>Переместить</b><small>Между местами хранения</small></span></button>
         <button type="button" class="stock-detail-correct" data-stock-detail-action="correct">${icon("edit")}<span><b>Корректировать остаток</b><small>Указать фактическое количество с причиной</small></span></button>
         <button type="button" class="stock-detail-archive" data-stock-detail-action="archive">${icon(item.archived ? "restore" : "archive")}<b>${item.archived ? "Вернуть из архива" : "Переместить в архив"}</b></button>
       </div>
@@ -5277,6 +5340,7 @@ function stockDetailModal(item) {
     close();
     if (action === "edit") return stockModal(item);
     if (action === "in" || action === "out") return adjustStock(item.id, action);
+    if (action === "transfer") return stockTransferModal(item.id);
     if (action === "correct") return correctStock(item.id);
     if (action === "archive") {
       item.archived = !item.archived;
@@ -5287,91 +5351,53 @@ function stockDetailModal(item) {
   }));
 }
 
-async function correctStock(id) {
-  const item = data.warehouse.find((entry) => String(entry.id) === String(id));
-  if (!item) return;
+function stockTransferModal(id) {
+  const item=data.warehouse.find((entry)=>String(entry.id)===String(id)); if(!item) return;
+  const locations=activeStorageLocations(); if(locations.length<2) return toast("Добавь второе место хранения в настройках");
+  const sources=locations.filter((location)=>stockAvailableQuantityAtLocation(item,location.id)>1e-9);
+  if(!sources.length) return toast("Нет свободного остатка для перемещения");
+  const unit=normalizeStockUnit(item.unit||"шт"),modal=document.createElement("div");
+  modal.className="modal-backdrop stock-transfer-backdrop";
+  modal.innerHTML=`<form class="modal stock-adjust-modal stock-transfer-modal">
+    <div class="stock-adjust-head"><span class="stock-adjust-icon correction">${icon("refresh")}</span><div><strong>Перемещение</strong><small>${escapeHtml(item.name||"Позиция склада")}</small></div><button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
+    <label class="stock-adjust-field"><span>ОТКУДА</span><select class="field" name="fromLocationId">${sources.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("")}</select></label>
+    <label class="stock-adjust-field"><span>КУДА</span><select class="field" name="toLocationId"></select></label>
+    <label class="stock-adjust-field"><span>КОЛИЧЕСТВО</span><input class="field" name="amount" type="number" min="0.001" step="0.001" value="1" required inputmode="decimal" /></label>
+    <label class="stock-adjust-field"><span>КОММЕНТАРИЙ</span><input class="field" name="comment" placeholder="Необязательно" /></label>
+    <div class="stock-adjust-preview"><span>ДОСТУПНО ДЛЯ ПЕРЕНОСА</span><strong id="stock-transfer-available">0 ${escapeHtml(unit)}</strong><small>Резерв активных заявок остаётся на своём месте.</small></div>
+    <div class="stock-adjust-actions"><button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="stock-adjust-confirm incoming">Переместить</button></div>
+  </form>`;
+  document.body.appendChild(modal);
+  const from=modal.querySelector('[name="fromLocationId"]'),to=modal.querySelector('[name="toLocationId"]'),amount=modal.querySelector('[name="amount"]'),available=modal.querySelector("#stock-transfer-available");
+  const update=()=>{const previous=to.value,destinations=locations.filter((location)=>String(location.id)!==String(from.value));to.innerHTML=destinations.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("");if(destinations.some((location)=>String(location.id)===String(previous)))to.value=previous;const free=stockAvailableQuantityAtLocation(item,from.value);available.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`;amount.max=String(free);};
+  from.addEventListener("change",update);
+  const close=()=>modal.remove(); modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",close)); modal.addEventListener("click",(event)=>{if(event.target===modal)close();});
+  modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const form=new FormData(event.currentTarget),fromId=String(form.get("fromLocationId")||""),toId=String(form.get("toLocationId")||""),qty=Math.max(0,Number(form.get("amount"))||0);if(!fromId||!toId||fromId===toId)return toast("Выбери два разных места");if(qty<=0)return toast("Укажи количество");const free=stockAvailableQuantityAtLocation(item,fromId);if(qty>free+1e-9)return toast(`Доступно для перемещения: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`);changeStockLocationQuantity(item,fromId,-qty);changeStockLocationQuantity(item,toId,qty);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:crypto.randomUUID(),warehouseId:item.id,name:item.name,qty,type:"transfer",fromLocationId:fromId,toLocationId:toId,comment:String(form.get("comment")||"").trim(),date:new Date().toISOString()});await saveData();close();await render();toast("Товар перемещён");});
+  update(); requestAnimationFrame(()=>amount.focus());
+}
 
-  const unit = normalizeStockUnit(item.unit || "шт");
-  const physicalBefore = Math.max(0, Number(item.quantity) || 0);
-  const reserved = stockReservedQuantity(item.id);
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop stock-correction-backdrop";
-  modal.innerHTML = `<form class="modal stock-adjust-modal stock-correction-modal" id="stock-correction-form">
-    <div class="stock-adjust-head">
-      <span class="stock-adjust-icon correction">${icon("edit")}</span>
-      <div><strong>Корректировка остатка</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
-      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
-    </div>
-    <div class="stock-correction-before">
-      <span><small>БЫЛО</small><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(physicalBefore)} ${escapeHtml(unit)}</strong></span>
-      <span><small>В РЕЗЕРВЕ</small><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reserved)} ${escapeHtml(unit)}</strong></span>
-    </div>
-    <label class="stock-adjust-field"><span>ФАКТИЧЕСКИЙ ОСТАТОК</span><input class="field" name="quantity" type="number" min="${reserved}" step="0.001" value="${physicalBefore}" required inputmode="decimal" autofocus /></label>
+async function correctStock(id) {
+  const item=data.warehouse.find((entry)=>String(entry.id)===String(id)); if(!item) return;
+  const unit=normalizeStockUnit(item.unit||"шт"),locations=activeStorageLocations({includeArchived:true}).filter((location)=>!location.archived||stockLocationPhysicalQuantity(item,location.id)>1e-9||stockReservedQuantityAtLocation(item.id,location.id)>1e-9);
+  const modal=document.createElement("div"); modal.className="modal-backdrop stock-correction-backdrop";
+  modal.innerHTML=`<form class="modal stock-adjust-modal stock-correction-modal">
+    <div class="stock-adjust-head"><span class="stock-adjust-icon correction">${icon("edit")}</span><div><strong>Корректировка остатка</strong><small>${escapeHtml(item.name||"Позиция склада")}</small></div><button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
+    <label class="stock-adjust-field"><span>МЕСТО ХРАНЕНИЯ</span><select class="field" name="locationId">${locations.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("")}</select></label>
+    <div class="stock-correction-before"><span><small>БЫЛО</small><strong id="stock-correction-before">0 ${escapeHtml(unit)}</strong></span><span><small>В РЕЗЕРВЕ</small><strong id="stock-correction-reserved">0 ${escapeHtml(unit)}</strong></span></div>
+    <label class="stock-adjust-field"><span>ФАКТИЧЕСКИЙ ОСТАТОК В МЕСТЕ</span><input class="field" name="quantity" type="number" min="0" step="0.001" value="0" required inputmode="decimal" autofocus /></label>
     <label class="stock-adjust-field"><span>ПРИЧИНА *</span><input class="field" name="comment" required placeholder="Например, пересчитал склад" /></label>
     <div class="stock-adjust-preview"><span>ИЗМЕНЕНИЕ</span><strong id="stock-correction-diff">0 ${escapeHtml(unit)}</strong><small>Резерв активных заявок уменьшать нельзя.</small></div>
     <div class="stock-adjust-actions"><button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="stock-adjust-confirm incoming">Сохранить корректировку</button></div>
   </form>`;
   document.body.appendChild(modal);
-
-  const quantityInput = modal.querySelector('[name="quantity"]');
-  const diffOutput = modal.querySelector("#stock-correction-diff");
-  const update = () => {
-    const next = Math.max(0, Number(quantityInput.value) || 0);
-    const diff = next - physicalBefore;
-    diffOutput.textContent = `${diff > 0 ? "+" : ""}${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(diff)} ${unit}`;
-    diffOutput.className = diff > 0 ? "green" : diff < 0 ? "red" : "";
-  };
-  quantityInput.addEventListener("input", update);
-  const close = () => modal.remove();
-  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", close));
-  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
-  modal.querySelector("form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const next = Math.max(0, Number(form.get("quantity")) || 0);
-    const comment = String(form.get("comment") || "").trim();
-    if (!comment) return toast("Напиши причину корректировки");
-    if (next + 1e-9 < reserved) return toast(`Нельзя поставить меньше резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reserved)} ${unit}`);
-    const delta = next - physicalBefore;
-    if (Math.abs(delta) <= 1e-9) return toast("Остаток не изменился");
-
-    const movementId = crypto.randomUUID();
-    const date = new Date().toISOString();
-    let allocations = [];
-    let batchCost = 0;
-    if (delta > 0) {
-      const unitCost = Math.max(0, Number(item.lastPurchasePrice) || 0);
-      const batch = createStockBatch(item, delta, delta * unitCost, { acquiredAt: date, unitCost, totalCost: delta * unitCost, source: "correction" });
-      allocations = batch ? [{ batchId: batch.id, qty: delta, unitCost: Number(batch.unitCost) || 0 }] : [];
-      batchCost = delta * unitCost;
-    } else {
-      const consumed = consumeStockBatches(item, Math.abs(delta), null, movementId);
-      if (!consumed.ok) return toast("Не удалось распределить корректировку по партиям");
-      allocations = consumed.allocations;
-      batchCost = allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
-    }
-    item.quantity = next;
-    data.warehouse_movements.push({
-      id: movementId,
-      warehouseId: item.id,
-      name: item.name,
-      qty: Math.abs(delta),
-      type: delta > 0 ? "correction_in" : "correction_out",
-      before: physicalBefore,
-      after: next,
-      difference: delta,
-      batchCost,
-      allocations,
-      comment,
-      date
-    });
-    await saveData();
-    close();
-    await render();
-    toast("Остаток скорректирован");
-  });
-  update();
-  requestAnimationFrame(() => quantityInput.focus());
+  const place=modal.querySelector('[name="locationId"]'),quantity=modal.querySelector('[name="quantity"]'),beforeOut=modal.querySelector("#stock-correction-before"),reservedOut=modal.querySelector("#stock-correction-reserved"),diffOut=modal.querySelector("#stock-correction-diff");
+  let before=0,reserved=0;
+  const update=()=>{const next=Math.max(0,Number(quantity.value)||0),diff=next-before;diffOut.textContent=`${diff>0?"+":""}${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(diff)} ${unit}`;diffOut.className=diff>0?"green":diff<0?"red":"";};
+  const updatePlace=()=>{before=stockLocationPhysicalQuantity(item,place.value);reserved=stockReservedQuantityAtLocation(item.id,place.value);quantity.min=String(reserved);quantity.value=String(before);beforeOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(before)} ${unit}`;reservedOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reserved)} ${unit}`;update();};
+  place.addEventListener("change",updatePlace);quantity.addEventListener("input",update);
+  const close=()=>modal.remove();modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",close));modal.addEventListener("click",(event)=>{if(event.target===modal)close();});
+  modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const form=new FormData(event.currentTarget),locationId=String(form.get("locationId")||UNASSIGNED_LOCATION_ID),next=Math.max(0,Number(form.get("quantity"))||0),comment=String(form.get("comment")||"").trim(),current=stockLocationPhysicalQuantity(item,locationId),reservedNow=stockReservedQuantityAtLocation(item.id,locationId);if(!comment)return toast("Напиши причину корректировки");if(next+1e-9<reservedNow)return toast(`Нельзя поставить меньше резерва: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(reservedNow)} ${unit}`);const delta=next-current;if(Math.abs(delta)<=1e-9)return toast("Остаток не изменился");const movementId=crypto.randomUUID(),date=new Date().toISOString();let allocations=[],batchCost=0;if(delta>0){const unitCost=Math.max(0,Number(item.lastPurchasePrice)||0),batch=createStockBatch(item,delta,delta*unitCost,{acquiredAt:date,unitCost,totalCost:delta*unitCost,source:"correction"});allocations=batch?[{batchId:batch.id,qty:delta,unitCost:Number(batch.unitCost)||0}]:[];batchCost=delta*unitCost;}else{const consumed=consumeStockBatches(item,Math.abs(delta),null,movementId);if(!consumed.ok)return toast("Не удалось распределить корректировку по партиям");allocations=consumed.allocations;batchCost=allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0);}setStockLocationQuantity(item,locationId,next);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty:Math.abs(delta),type:delta>0?"correction_in":"correction_out",before:current,after:next,difference:delta,locationId,batchCost,allocations,comment,date});await saveData();close();await render();toast("Остаток скорректирован");});
+  updatePlace();requestAnimationFrame(()=>quantity.focus());
 }
 
 function stockModal(existing = null) {
@@ -5396,6 +5422,7 @@ function stockModal(existing = null) {
   const stockTechOptions = ["Общее", ...applianceTypes(), stockTechForItem(item)].filter((value, index, array) => value && array.indexOf(value) === index);
   const initialStockTech = stockTechForItem(item);
   const initialStockCategory = String(item.category || "").trim();
+  const initialLocationId = stockLocationsForItem(item).find((location)=>location.qty>1e-9)?.id || UNASSIGNED_LOCATION_ID;
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
@@ -5416,6 +5443,7 @@ function stockModal(existing = null) {
       <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
+      ${existing ? `<div class="form-group"><label>Места хранения</label><div class="field readonly-field">${stockLocationsForItem(item).length || 0} мест · через карточку склада</div></div>` : `<div class="form-group"><label>Начальное место</label><select class="field" name="initialLocationId">${activeStorageLocations().map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===String(initialLocationId)?"selected":""}>${escapeHtml(location.name)}</option>`).join("")}</select></div>`}
       <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
     </div>
     </section>
@@ -5514,7 +5542,8 @@ function stockModal(existing = null) {
       archived: existing ? Boolean(item.archived) : false,
       hiddenFromOrders: form.get("hiddenFromOrders") === "on",
       tracking: String(form.get("tracking") || "exact"),
-      batches: existing ? stockBatchList(item) : []
+      batches: existing ? stockBatchList(item) : [],
+      locationBalances: existing ? stockLocationBalances(item) : (initialQuantity > 0 ? [{ locationId:String(form.get("initialLocationId") || UNASSIGNED_LOCATION_ID), qty:initialQuantity }] : [])
     };
     if (!next.name) return toast("Укажи название позиции");
     if (!next.category) return toast("Укажи категорию позиции");
@@ -5538,6 +5567,7 @@ function stockModal(existing = null) {
         totalCost: initialPurchaseTotal,
         unitCost: Number(batch?.unitCost) || 0,
         batchId: batch?.id || null,
+        locationId: String(form.get("initialLocationId") || UNASSIGNED_LOCATION_ID),
         date
       });
       if (initialPurchaseTotal > 0) {
@@ -6081,133 +6111,27 @@ async function handleOrderAction(action, id) {
 }
 
 async function adjustStock(id, direction) {
-  const item = data.warehouse.find((entry) => String(entry.id) === String(id));
-  if (!item) return;
-
-  const incoming = direction === "in";
-  const physicalBefore = Number(item.quantity) || 0;
-  const before = stockAvailableQuantity(item);
-  const unit = normalizeStockUnit(item.unit || "шт");
-  const modal = document.createElement("div");
-  modal.className = "modal-backdrop stock-adjust-backdrop";
-  modal.innerHTML = `<form class="modal stock-adjust-modal" id="stock-adjust-form">
-    <div class="stock-adjust-head">
-      <span class="stock-adjust-icon ${incoming ? "incoming" : "outgoing"}">${icon(incoming ? "plus" : "minus")}</span>
-      <div><strong>${incoming ? "Новая закупка" : "Ручное списание"}</strong><small>${escapeHtml(item.name || "Позиция склада")}</small></div>
-      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
-    </div>
-    <div class="stock-adjust-balance">
-      <span>ДОСТУПНО СЕЙЧАС</span>
-      <strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(before)} ${escapeHtml(unit)}</strong>
-    </div>
-    <label class="stock-adjust-field">
-      <span>КОЛИЧЕСТВО</span>
-      <input class="field" name="amount" type="number" min="0.001" step="0.001" value="1" inputmode="decimal" required autofocus />
-    </label>
-    ${incoming ? `<label class="stock-adjust-field">
-      <span>ОБЩАЯ СУММА ЗАКУПКИ</span>
-      <input class="field" name="totalCost" type="number" min="0" step="1" value="${Math.max(0, Number(item.lastPurchasePrice) || 0)}" inputmode="decimal" />
-    </label>` : ""}
-    <label class="stock-adjust-field">
-      <span>${incoming ? "КОММЕНТАРИЙ" : "ПРИЧИНА СПИСАНИЯ *"}</span>
-      <input class="field" name="comment" ${incoming ? "" : "required"} placeholder="${incoming ? "Необязательно" : "Например, повреждено или использовано вне заявки"}" />
-    </label>
-    <div class="stock-adjust-preview">
-      <span>ОСТАТОК ПОСЛЕ ОПЕРАЦИИ</span>
-      <strong id="stock-adjust-result">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming ? before + 1 : Math.max(0,before - 1))} ${escapeHtml(unit)}</strong>
-      ${incoming ? `<small id="stock-adjust-unit-cost">Себестоимость партии: ${money(Number(item.lastPurchasePrice) || 0)} / ${escapeHtml(unit)}</small>` : ""}
-    </div>
-    <div class="stock-adjust-actions">
-      <button type="button" class="legacy-dark-button" data-close-modal>Отмена</button>
-      <button type="submit" class="${incoming ? "stock-adjust-confirm incoming" : "stock-adjust-confirm outgoing"}">${incoming ? "Сохранить закупку" : "Списать"}</button>
-    </div>
+  const item=data.warehouse.find((entry)=>String(entry.id)===String(id));if(!item)return;
+  const incoming=direction==="in",unit=normalizeStockUnit(item.unit||"шт");
+  const locations=incoming?activeStorageLocations():activeStorageLocations({includeArchived:true}).filter((location)=>stockAvailableQuantityAtLocation(item,location.id)>1e-9);
+  if(!locations.length)return toast(incoming?"Добавь место хранения":"Нет свободного остатка для списания");
+  const modal=document.createElement("div");modal.className="modal-backdrop stock-adjust-backdrop";
+  modal.innerHTML=`<form class="modal stock-adjust-modal">
+    <div class="stock-adjust-head"><span class="stock-adjust-icon ${incoming?"incoming":"outgoing"}">${icon(incoming?"plus":"minus")}</span><div><strong>${incoming?"Новая закупка":"Ручное списание"}</strong><small>${escapeHtml(item.name||"Позиция склада")}</small></div><button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
+    <label class="stock-adjust-field"><span>МЕСТО ХРАНЕНИЯ</span><select class="field" name="locationId">${locations.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("")}</select></label>
+    <div class="stock-adjust-balance"><span>ДОСТУПНО В МЕСТЕ</span><strong id="stock-adjust-before">0 ${escapeHtml(unit)}</strong></div>
+    <label class="stock-adjust-field"><span>КОЛИЧЕСТВО</span><input class="field" name="amount" type="number" min="0.001" step="0.001" value="1" required inputmode="decimal" autofocus /></label>
+    ${incoming?`<label class="stock-adjust-field"><span>ОБЩАЯ СУММА ЗАКУПКИ</span><input class="field" name="totalCost" type="number" min="0" step="1" value="${Math.max(0,Number(item.lastPurchasePrice)||0)}" inputmode="decimal" /></label>`:""}
+    <label class="stock-adjust-field"><span>${incoming?"КОММЕНТАРИЙ":"ПРИЧИНА СПИСАНИЯ *"}</span><input class="field" name="comment" ${incoming?"":"required"} placeholder="${incoming?"Необязательно":"Например, повреждено или использовано вне заявки"}" /></label>
+    <div class="stock-adjust-preview"><span>ОСТАТОК В МЕСТЕ ПОСЛЕ</span><strong id="stock-adjust-result">0 ${escapeHtml(unit)}</strong>${incoming?`<small id="stock-adjust-unit-cost">Себестоимость партии: ${money(Number(item.lastPurchasePrice)||0)} / ${escapeHtml(unit)}</small>`:""}</div>
+    <div class="stock-adjust-actions"><button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="${incoming?"stock-adjust-confirm incoming":"stock-adjust-confirm outgoing"}">${incoming?"Сохранить закупку":"Списать"}</button></div>
   </form>`;
   document.body.appendChild(modal);
-
-  const input = modal.querySelector('[name="amount"]');
-  const totalCostInput = modal.querySelector('[name="totalCost"]');
-  const result = modal.querySelector("#stock-adjust-result");
-  const unitCostPreview = modal.querySelector("#stock-adjust-unit-cost");
-  const updatePreview = () => {
-    const amount = Math.max(0, Number(input.value) || 0);
-    const next = incoming ? before + amount : Math.max(0, before - amount);
-    result.textContent = `${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(next)} ${unit}`;
-    result.className = !incoming && amount > before ? "red" : "";
-    if (unitCostPreview) {
-      const total = Math.max(0, Number(totalCostInput?.value) || 0);
-      unitCostPreview.textContent = `Себестоимость партии: ${money(amount > 0 ? total / amount : 0)} / ${unit}`;
-    }
-  };
-  input.addEventListener("input", updatePreview);
-  totalCostInput?.addEventListener("input", updatePreview);
-  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
-  modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
-  modal.querySelector("form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const amount = Number(form.get("amount"));
-    const comment = String(form.get("comment") || "").trim();
-    if (!Number.isFinite(amount) || amount <= 0) return toast("Укажи количество");
-    if (!incoming && amount > before) return toast(`Недостаточно на складе: доступно ${before} ${unit}`);
-    if (!incoming && !comment) return toast("Напиши причину ручного списания");
-
-    const date = new Date().toISOString();
-    const movementId = crypto.randomUUID();
-
-    if (incoming) {
-      const totalCost = Math.max(0, Number(form.get("totalCost")) || 0);
-      const batch = createStockBatch(item, amount, totalCost, { acquiredAt: date, source: "purchase" });
-      item.quantity = physicalBefore + amount;
-      if (Number(batch?.unitCost) > 0) item.lastPurchasePrice = Number(batch.unitCost);
-      data.warehouse_movements.push({
-        id: movementId,
-        warehouseId: item.id,
-        name: item.name,
-        qty: amount,
-        type: "purchase_in",
-        totalCost,
-        unitCost: Number(batch?.unitCost) || 0,
-        batchId: batch?.id || null,
-        comment,
-        date
-      });
-      if (totalCost > 0) {
-        data.expenses.push({
-          id: crypto.randomUUID(),
-          amount: totalCost,
-          category: "Закупка на склад",
-          description: comment ? `${item.name} · ${comment}` : item.name,
-          date,
-          source: "stock_purchase",
-          warehouseId: item.id,
-          movementId
-        });
-      }
-    } else {
-      const consumed = consumeStockBatches(item, amount, null, movementId);
-      if (!consumed.ok) return toast("Не удалось распределить списание по партиям");
-      const batchCost = consumed.allocations.reduce((sum, allocation) => sum + (Number(allocation.qty) || 0) * (Number(allocation.unitCost) || 0), 0);
-      item.quantity = physicalBefore - amount;
-      data.warehouse_movements.push({
-        id: movementId,
-        warehouseId: item.id,
-        name: item.name,
-        qty: amount,
-        type: "manual_out",
-        batchCost,
-        allocations: consumed.allocations,
-        comment,
-        date
-      });
-    }
-
-    await saveData();
-    modal.remove();
-    await render();
-    toast(incoming ? "Закупка сохранена" : "Списание сохранено");
-  });
-  updatePreview();
-  requestAnimationFrame(() => input.focus());
+  const place=modal.querySelector('[name="locationId"]'),amount=modal.querySelector('[name="amount"]'),cost=modal.querySelector('[name="totalCost"]'),beforeOut=modal.querySelector("#stock-adjust-before"),result=modal.querySelector("#stock-adjust-result"),unitCost=modal.querySelector("#stock-adjust-unit-cost");
+  const update=()=>{const physical=stockLocationPhysicalQuantity(item,place.value),free=stockAvailableQuantityAtLocation(item,place.value),qty=Math.max(0,Number(amount.value)||0);beforeOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`;result.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming?physical+qty:Math.max(0,physical-qty))} ${unit}`;result.className=!incoming&&qty>free?"red":"";if(!incoming)amount.max=String(free);if(unitCost){const total=Math.max(0,Number(cost?.value)||0);unitCost.textContent=`Себестоимость партии: ${money(qty>0?total/qty:0)} / ${unit}`;}};
+  place.addEventListener("change",update);amount.addEventListener("input",update);cost?.addEventListener("input",update);modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",()=>modal.remove()));modal.addEventListener("click",(event)=>{if(event.target===modal)modal.remove();});
+  modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const form=new FormData(event.currentTarget),locationId=String(form.get("locationId")||UNASSIGNED_LOCATION_ID),qty=Number(form.get("amount")),comment=String(form.get("comment")||"").trim(),free=stockAvailableQuantityAtLocation(item,locationId);if(!Number.isFinite(qty)||qty<=0)return toast("Укажи количество");if(!incoming&&qty>free+1e-9)return toast(`В «${storageLocationName(locationId)}» доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`);if(!incoming&&!comment)return toast("Напиши причину ручного списания");const date=new Date().toISOString(),movementId=crypto.randomUUID();if(incoming){const totalCost=Math.max(0,Number(form.get("totalCost"))||0),batch=createStockBatch(item,qty,totalCost,{acquiredAt:date,source:"purchase"});changeStockLocationQuantity(item,locationId,qty);syncStockQuantityFromLocations(item);if(Number(batch?.unitCost)>0)item.lastPurchasePrice=Number(batch.unitCost);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"purchase_in",totalCost,unitCost:Number(batch?.unitCost)||0,batchId:batch?.id||null,locationId,comment,date});if(totalCost>0)data.expenses.push({id:crypto.randomUUID(),amount:totalCost,category:"Закупка на склад",description:comment?`${item.name} · ${comment}`:item.name,date,source:"stock_purchase",warehouseId:item.id,movementId});}else{const consumed=consumeStockBatches(item,qty,null,movementId);if(!consumed.ok)return toast("Не удалось распределить списание по партиям");const batchCost=consumed.allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0);changeStockLocationQuantity(item,locationId,-qty);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"manual_out",batchCost,allocations:consumed.allocations,locationId,comment,date});}await saveData();modal.remove();await render();toast(incoming?"Закупка сохранена":"Списание сохранено");});
+  update();requestAnimationFrame(()=>amount.focus());
 }
 
 function closeTopModalFromKeyboard() {

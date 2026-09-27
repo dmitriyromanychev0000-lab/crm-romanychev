@@ -238,7 +238,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const migratedW1 = migratedStock.warehouse.find((item) => item.id === "w1");
       if (Number(migratedStock.settings?.stockReservationModel) !== 1
         || Number(migratedStock.settings?.stockBatchModel) !== 1
+        || Number(migratedStock.settings?.stockLocationModel) !== 2
         || Number(migratedW1?.quantity) !== 3
+        || Number(migratedW1?.locationBalances?.find((entry) => entry.locationId === "location-unassigned")?.qty) !== 3
+        || migratedStock.orders.find((item) => item.id === "0060")?.materials?.[0]?.locationId !== "location-unassigned"
         || migratedW1?.batches?.length !== 1
         || Number(migratedW1?.batches?.[0]?.remainingQty) !== 3
         || Number(migratedW1?.batches?.[0]?.unitCost) !== 3100) {
@@ -292,7 +295,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const closedOrder = afterClose.orders.find((item) => item.id === "0060");
       const closeMovement = [...afterClose.warehouse_movements].reverse().find((item) => item.orderId === "0060" && item.type === "order_out");
       if (Number(closedW1?.quantity) !== 1
+        || Number(closedW1?.locationBalances?.find((entry) => entry.locationId === "location-unassigned")?.qty) !== 1
         || closedOrder?.status !== "Закрыта"
+        || closeMovement?.locationId !== "location-unassigned"
         || Number(closeMovement?.qty) !== 2) {
         report.failures.push({
           width,
@@ -308,7 +313,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const afterReopen = await readStoredData(page);
       const reopenedW1 = afterReopen.warehouse.find((item) => item.id === "w1");
       const reopenedOrder = afterReopen.orders.find((item) => item.id === "0060");
-      if (Number(reopenedW1?.quantity) !== 3 || reopenedOrder?.status !== "В работе") {
+      if (Number(reopenedW1?.quantity) !== 3
+        || Number(reopenedW1?.locationBalances?.find((entry) => entry.locationId === "location-unassigned")?.qty) !== 3
+        || reopenedOrder?.status !== "В работе") {
         report.failures.push({
           width,
           type: "stock-reopen-restores-to-reserve",
@@ -1753,6 +1760,31 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || Number(fifoMovement?.batchCost) !== 14300
           || fifoMovement?.comment !== "Тест FIFO") {
           report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovement });
+        }
+
+        await writeSeed(page, seed);
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+
+        const locationSeed = await readStoredData(page);
+        locationSeed.storage_locations.push({ id: "location-car", name: "Машина", archived: false, system: false });
+        await writeSeed(page, locationSeed);
+        await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+        await page.locator('[data-stock-detail="w1"]').click();
+        await page.locator('[data-stock-detail-action="transfer"]').click();
+        await page.locator('.stock-transfer-modal [name="toLocationId"]').selectOption("location-car");
+        await page.locator('.stock-transfer-modal [name="amount"]').fill("1");
+        report.results.push(await shot(page, width, "stock-transfer", false));
+        await page.locator('.stock-transfer-modal button[type="submit"]').click();
+        await page.locator(".stock-transfer-modal").waitFor({ state: "detached" });
+        const afterTransfer = await readStoredData(page);
+        const transferredItem = afterTransfer.warehouse.find((item) => item.id === "w1");
+        const transferMovement = [...afterTransfer.warehouse_movements].reverse().find((item) => item.type === "transfer" && item.warehouseId === "w1");
+        if (Number(transferredItem?.quantity) !== 3
+          || Number(transferredItem?.locationBalances?.find((entry) => entry.locationId === "location-unassigned")?.qty) !== 2
+          || Number(transferredItem?.locationBalances?.find((entry) => entry.locationId === "location-car")?.qty) !== 1
+          || transferMovement?.fromLocationId !== "location-unassigned"
+          || transferMovement?.toLocationId !== "location-car") {
+          report.failures.push({ width, type: "stock-location-transfer", transferredItem, transferMovement });
         }
 
         await writeSeed(page, seed);
