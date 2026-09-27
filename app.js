@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.100";
+const APP_BUILD = "2026.09.27.101";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Основные вкладки Заявки, Склад и Аналитика получили ту же глубокую тёмную иерархию карточек, вложенных блоков и действий без серо-синей заливки";
+const APP_RELEASE = "Просмотр заявки и блоки услуг/материалов доведены: убраны служебные артефакты, подписи больше не режутся, строки получили ясную визуальную иерархию";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -2465,7 +2465,7 @@ function newOrderModal(existing = null, options = {}) {
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("tools")}</span><span>Работы и услуги</span></div>
     <button type="button" class="legacy-catalog-button legacy-service-catalog-open" id="open-service-catalog">${icon("shoppingList")}<span>Выбрать услуги из каталога</span></button>
     <div id="service-lines" class="line-list legacy-service-list">${services.map(orderServiceRow).join("")}</div>
-    <div class="legacy-service-total"><strong>Итого услуг: <span id="legacy-service-total">0 ₽</span></strong><span id="legacy-service-match">| —</span></div>
+    <div class="legacy-service-total"><span>Итого услуг</span><strong id="legacy-service-total">0 ₽</strong></div>
     </section>
 
     <section class="order-editor-section">
@@ -2593,14 +2593,7 @@ function newOrderModal(existing = null, options = {}) {
     modal.querySelector("#material-total").textContent = money(materialTotal);
     modal.querySelector("#calculated-total").textContent = money(total);
     const legacyServiceTotal = modal.querySelector("#legacy-service-total");
-    const legacyMatch = modal.querySelector("#legacy-service-match");
     if (legacyServiceTotal) legacyServiceTotal.textContent = money(serviceTotal);
-    if (legacyMatch) {
-      const orderSum = Number(formElement.elements.sum?.value) || 0;
-      const matches = serviceTotal === orderSum;
-      legacyMatch.textContent = orderSum ? (matches ? "| Совпадает" : `| Разница ${money(orderSum - serviceTotal)}`) : "| —";
-      legacyMatch.className = matches && orderSum ? "green" : "";
-    }
     return total;
   };
   modal.querySelector("#open-service-catalog").addEventListener("click", () => openServiceCatalog(modal, serviceCatalog));
@@ -3462,14 +3455,14 @@ function orderDetailModal(order) {
         </div>
       </article>
 
-      <section class="legacy-detail-section">
+      <section class="legacy-detail-section legacy-detail-services">
         <div class="legacy-detail-section-head"><span>${icon("tools")}</span><h3>Работы и услуги</h3><b>${money(serviceTotal)}</b></div>
-        ${services.length ? `<div class="legacy-detail-lines">${services.map(item=>`<div><span><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт.</small></span><b>${money((Number(item.qty)||1)*(Number(item.price)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Работы пока не добавлены.</p>`}
+        ${services.length ? `<div class="legacy-detail-lines">${services.map(item=>`<div class="legacy-detail-line"><span><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.qty || 1)} шт. · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||1)*(Number(item.price)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Работы пока не добавлены.</p>`}
       </section>
 
-      <section class="legacy-detail-section">
+      <section class="legacy-detail-section legacy-detail-materials">
         <div class="legacy-detail-section-head"><span>${icon("warehouse")}</span><h3>Запчасти и материалы</h3><b>${money(materialTotal)}</b></div>
-        ${materials.length ? `<div class="legacy-detail-lines">${materials.map(item=>`<div><span><strong>${escapeHtml(item.name || "Материал")}</strong><small>${escapeHtml(item.qty || 1)} ${escapeHtml(item.unit || "шт.")}</small></span><b>${money((Number(item.qty)||1)*(Number(item.unitCost)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Материалы пока не добавлены.</p>`}
+        ${materials.length ? `<div class="legacy-detail-lines">${materials.map(item=>`<div class="legacy-detail-line"><span><strong>${escapeHtml(item.name || "Материал")}</strong><small>${escapeHtml(item.qty || 1)} ${escapeHtml(item.unit || "шт.")} · себестоимость ${money(item.unitCost || 0)}</small></span><b>${money((Number(item.qty)||1)*(Number(item.unitCost)||0))}</b></div>`).join("")}</div>` : `<p class="legacy-detail-empty">Материалы пока не добавлены.</p>`}
       </section>
 
       ${order.issue || order.diagnosis || order.defects || order.comment ? `<section class="legacy-detail-section legacy-detail-notes">

@@ -9363,3 +9363,157 @@
   }
 }
 
+/* 1.0.11 · Заявка: чистые итоги и отдельная визуальная иерархия работ/материалов. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .legacy-service-total {
+    display: flex !important;
+    min-height: 38px !important;
+    margin-top: 5px !important;
+    padding: 8px 2px 0 !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border: 0 !important;
+    color: #8f9aa1 !important;
+  }
+
+  .order-editor-modal .legacy-service-total > span {
+    font-size: 11px !important;
+    font-weight: 650 !important;
+  }
+
+  .order-editor-modal .legacy-service-total > strong {
+    color: #f2f5f6 !important;
+    font-size: 14px !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: minmax(68px,.8fr) minmax(70px,.8fr) minmax(120px,1.4fr) !important;
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .material-card-controls label {
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    display: block !important;
+    min-height: 0 !important;
+    margin-bottom: 5px !important;
+    overflow: visible !important;
+    color: #8e989f !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-detail-services,
+  .legacy-detail-materials {
+    padding: 12px !important;
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-detail-services .legacy-detail-section-head > span {
+    border: 1px solid rgba(255,104,74,.24) !important;
+    background: rgba(255,104,74,.09) !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-detail-materials .legacy-detail-section-head > span {
+    border: 1px solid rgba(92,169,255,.22) !important;
+    background: rgba(92,169,255,.08) !important;
+    color: #72b6ff !important;
+  }
+
+  .legacy-detail-services .legacy-detail-section-head > b {
+    color: #ff765c !important;
+  }
+
+  .legacy-detail-materials .legacy-detail-section-head > b {
+    color: #ff8b72 !important;
+  }
+
+  .legacy-detail-services .legacy-detail-lines,
+  .legacy-detail-materials .legacy-detail-lines {
+    display: grid !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line,
+  .legacy-detail-materials .legacy-detail-line {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 10px !important;
+    min-height: 56px !important;
+    padding: 9px 10px !important;
+    align-items: center !important;
+    border: 1px solid #182229 !important;
+    border-radius: 11px !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line > span,
+  .legacy-detail-materials .legacy-detail-line > span {
+    min-width: 0 !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line strong,
+  .legacy-detail-materials .legacy-detail-line strong {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    color: #f2f5f6 !important;
+    font-size: 11px !important;
+    line-height: 1.22 !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-detail-services .legacy-detail-line small,
+  .legacy-detail-materials .legacy-detail-line small {
+    display: block !important;
+    margin-top: 4px !important;
+    color: #7f8a92 !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line > b,
+  .legacy-detail-materials .legacy-detail-line > b {
+    align-self: center !important;
+    font-size: 11px !important;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line > b {
+    color: #f1f4f5 !important;
+  }
+
+  .legacy-detail-materials .legacy-detail-line > b {
+    color: #ff8b72 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: minmax(62px,.75fr) minmax(64px,.75fr) minmax(106px,1.35fr) !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    font-size: 9px !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line,
+  .legacy-detail-materials .legacy-detail-line {
+    gap: 7px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+}
+

@@ -345,15 +345,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (materialRowState.rows !== 1 || materialRowState.removeWidth < 44 || materialRowState.removeHeight < 44) {
         report.failures.push({ width, type: "material-row-actions", materialRowState });
       }
-      const editorSurfaceState = await page.evaluate(() => ({
-        material: getComputedStyle(document.querySelector("#material-lines [data-material-row]")).backgroundColor,
-        materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
-        secondaryAction: getComputedStyle(document.querySelector(".order-editor-modal .modal-actions .secondary-button")).backgroundColor
-      }));
+      const editorSurfaceState = await page.evaluate(() => {
+        const labels = [...document.querySelectorAll("#material-lines .material-card-controls label > span")];
+        return {
+          material: getComputedStyle(document.querySelector("#material-lines [data-material-row]")).backgroundColor,
+          materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
+          secondaryAction: getComputedStyle(document.querySelector(".order-editor-modal .modal-actions .secondary-button")).backgroundColor,
+          serviceMatchCount: document.querySelectorAll("#legacy-service-match").length,
+          clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent)
+        };
+      });
       if (editorSurfaceState.material !== "rgb(7, 12, 16)"
         || editorSurfaceState.materialField !== "rgb(9, 15, 20)"
-        || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)") {
-        report.failures.push({ width, type: "order-editor-deep-dark-surfaces", editorSurfaceState });
+        || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)"
+        || editorSurfaceState.serviceMatchCount !== 0
+        || editorSurfaceState.clippedMaterialLabels.length) {
+        report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
       if (width === 390) {
         await page.locator("#material-lines [data-material-row]").scrollIntoViewIfNeeded();
@@ -417,6 +424,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.waitForTimeout(80);
       const detailActions = await page.locator(".legacy-expanded-actions > button, .legacy-expanded-actions > a").count();
       if (detailActions !== 4) report.failures.push({ width, type: "order-detail-actions", count: detailActions });
+      const detailWorkState = await page.evaluate(() => ({
+        serviceSection: getComputedStyle(document.querySelector(".legacy-detail-services")).backgroundColor,
+        materialSection: getComputedStyle(document.querySelector(".legacy-detail-materials")).backgroundColor,
+        serviceRows: document.querySelectorAll(".legacy-detail-services .legacy-detail-line").length,
+        materialRows: document.querySelectorAll(".legacy-detail-materials .legacy-detail-line").length
+      }));
+      if (detailWorkState.serviceSection !== "rgb(6, 11, 15)"
+        || detailWorkState.materialSection !== "rgb(6, 11, 15)"
+        || detailWorkState.serviceRows < 1
+        || detailWorkState.materialRows < 1) {
+        report.failures.push({ width, type: "order-detail-work-materials", detailWorkState });
+      }
       report.results.push(await shot(page, width, "order-detail", false));
       await page.locator('.legacy-expanded-actions [data-detail-action="more"]').click();
       await page.waitForTimeout(80);
