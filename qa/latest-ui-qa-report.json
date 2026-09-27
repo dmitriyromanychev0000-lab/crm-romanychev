@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T20:40:09.305Z",
-  "testedSha": "03eb8cbc1e39e308689370b96e4a9b2e3121a307",
+  "generatedAt": "2026-09-27T20:49:57.075Z",
+  "testedSha": "50906569134e074ecf299e01a202f705910e1743",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -599,6 +599,24 @@
     },
     {
       "label": "source-manager",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "appliance-type-manager",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "price-category-manager",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
@@ -1366,5 +1384,33 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 430,
+      "type": "goods-position-surface",
+      "goodsRowSurface": {
+        "background": "missing",
+        "radius": "missing",
+        "height": 0,
+        "priceRight": 0,
+        "rowRight": 0
+      }
+    },
+    {
+      "width": 430,
+      "type": "shopping-card-single-row",
+      "shoppingCardLayout": {
+        "cardHeight": 0,
+        "iconCenterY": 0,
+        "copyCenterY": 0,
+        "needCenterY": 0,
+        "copyLeft": 0,
+        "iconRight": 0,
+        "needLeft": 0,
+        "copyRight": 0,
+        "needRight": 0,
+        "cardRight": 0
+      }
+    }
+  ]
 }
