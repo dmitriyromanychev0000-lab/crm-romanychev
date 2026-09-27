@@ -420,12 +420,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (!Array.isArray(migratedDirectories.appliance_types)
         || migratedDirectories.appliance_types.length < 10
         || !Array.isArray(migratedDirectories.price_categories)
-        || migratedDirectories.price_categories.length < 3) {
+        || migratedDirectories.price_categories.length < 3
+        || !Array.isArray(migratedDirectories.stock_categories)
+        || migratedDirectories.stock_categories.length < 4) {
         report.failures.push({
           width,
           type: "price-directory-migration",
           applianceTypes: migratedDirectories.appliance_types?.length,
-          priceCategories: migratedDirectories.price_categories?.length
+          priceCategories: migratedDirectories.price_categories?.length,
+          stockCategories: migratedDirectories.stock_categories?.length
         });
       }
 
@@ -479,6 +482,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (!categoryNames.includes("Электрика")) report.failures.push({ width, type: "price-category-add", categoryNames });
       report.results.push(await shot(page, width, "price-category-manager", false));
       await page.locator(".price-categories-modal [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
+      await page.locator('[data-action="manage-stock-categories"]').click();
+      await page.waitForTimeout(30);
+      await page.locator("#stock-category-tech").selectOption({ label: "Холодильник" });
+      await page.waitForTimeout(20);
+      const stockCategoryNamesInitial = await page.locator("[data-stock-category-name]").evaluateAll((nodes) => nodes.map((node) => node.value));
+      if (!stockCategoryNamesInitial.includes("Запчасти") || !stockCategoryNamesInitial.includes("Расходники")) {
+        report.failures.push({ width, type: "stock-category-migration-visible", stockCategoryNamesInitial });
+      }
+      await page.locator("#new-stock-category-name").fill("Компрессоры");
+      await page.locator("#add-stock-category").click();
+      await page.waitForTimeout(30);
+      const addedStockCategory = page.locator("[data-stock-category-id]").filter({ hasText: "Компрессоры" }).first();
+      if (await addedStockCategory.count() !== 1) {
+        report.failures.push({ width, type: "stock-category-add" });
+      } else {
+        const addedInput = addedStockCategory.locator("[data-stock-category-name]");
+        await addedInput.fill("Компрессорные узлы");
+        await addedInput.press("Tab");
+        await page.waitForTimeout(30);
+        await addedStockCategory.locator("[data-stock-category-archive]").click();
+        await page.waitForTimeout(30);
+        const stockDirectoryData = await readStoredData(page);
+        const addedCategory = stockDirectoryData.stock_categories.find((entry) => entry.name === "Компрессорные узлы");
+        if (!addedCategory?.archived) report.failures.push({ width, type: "stock-category-edit-archive", addedCategory });
+      }
+      const partsCategory = page.locator("[data-stock-category-id]").filter({ hasText: "Запчасти" }).first();
+      if (await partsCategory.count() === 1) {
+        const partsInput = partsCategory.locator("[data-stock-category-name]");
+        await partsInput.fill("Комплектующие");
+        await partsInput.press("Tab");
+        await page.waitForTimeout(30);
+        const renamedStockData = await readStoredData(page);
+        const w1AfterCategoryRename = renamedStockData.warehouse.find((item) => item.id === "w1");
+        if (w1AfterCategoryRename?.category !== "Комплектующие") {
+          report.failures.push({ width, type: "stock-category-rename-cascade", category: w1AfterCategoryRename?.category });
+        }
+      }
+      report.results.push(await shot(page, width, "stock-category-manager", false));
+      await page.locator(".stock-categories-modal [data-close-modal]").click();
       await page.waitForTimeout(20);
 
       const techCatalogSeed = structuredClone(seed);

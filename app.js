@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.173";
+const APP_BUILD = "2026.09.27.174";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Типы техники и категории прайса стали настраиваемыми, а каталог услуг теперь зависит от выбранной техники";
+const APP_RELEASE = "Складские категории стали настраиваемым справочником по типам техники с безопасным архивом и переименованием";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -33,6 +33,7 @@ const defaultData = () => ({
   client_profiles: [],
   appliance_types: [],
   price_categories: [],
+  stock_categories: [],
   warranty_options: [],
   warranty_results: [
     { id: "warranty-confirmed", name: "Гарантия подтверждена", archived: false },
@@ -362,7 +363,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "appliance_types", "price_categories", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides", "storage_locations"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "appliance_types", "price_categories", "stock_categories", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides", "storage_locations"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -913,6 +914,55 @@ function migrateStockLocationModel() {
   return true;
 }
 
+function ensureStockCategories() {
+  let changed = false;
+  if (!Array.isArray(data.stock_categories)) {
+    data.stock_categories = [];
+    changed = true;
+  }
+  const normalized = [];
+  const seen = new Set();
+  for (const entry of data.stock_categories) {
+    if (!entry || typeof entry !== "object") { changed = true; continue; }
+    const name = String(entry.name || "").trim();
+    const tech = normalizeStockTech(entry.tech || "Общее");
+    if (!name) { changed = true; continue; }
+    const key = `${tech.toLowerCase()}::${name.toLowerCase()}`;
+    if (seen.has(key)) { changed = true; continue; }
+    seen.add(key);
+    const next = {
+      ...entry,
+      id: String(entry.id || "").trim() || crypto.randomUUID(),
+      tech,
+      name,
+      archived: Boolean(entry.archived)
+    };
+    if (!entry.id || entry.name !== name || entry.tech !== tech || Boolean(entry.archived) !== entry.archived) changed = true;
+    normalized.push(next);
+  }
+  data.stock_categories = normalized;
+  for (const item of data.warehouse || []) {
+    const name = String(item.category || "").trim();
+    if (!name) continue;
+    const tech = stockTechForItem(item);
+    const key = `${tech.toLowerCase()}::${name.toLowerCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    data.stock_categories.push({ id: crypto.randomUUID(), tech, name, archived: false });
+    changed = true;
+  }
+  return changed;
+}
+
+function stockCategoriesForTech(tech, { includeArchived = false } = {}) {
+  const currentTech = normalizeStockTech(tech || "Общее");
+  return (Array.isArray(data.stock_categories) ? data.stock_categories : [])
+    .filter((item) => normalizeStockTech(item.tech || "Общее") === currentTech)
+    .filter((item) => includeArchived || !item.archived)
+    .sort((a, b) => Number(Boolean(a.archived)) - Number(Boolean(b.archived))
+      || String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
 function ensureDataIds() {
   let changed = false;
   if (ensureOrderIds()) changed = true;
@@ -923,6 +973,7 @@ function ensureDataIds() {
   if (ensureClientProfileIds()) changed = true;
   if (ensureApplianceTypes()) changed = true;
   if (ensurePriceCategories()) changed = true;
+  if (ensureStockCategories()) changed = true;
   if (ensureWarrantyOptionIds()) changed = true;
   if (ensureWarrantyResultIds()) changed = true;
   if (ensureShoppingManualIds()) changed = true;
@@ -1332,7 +1383,7 @@ async function runBackupSelfTest() {
     const payload = backupPayload();
     const parsed = JSON.parse(payload);
     const restored = validateBackup(structuredClone(parsed));
-    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "appliance_types", "price_categories", "settings"];
+    const sections = ["orders", "warehouse", "warehouse_movements", "expenses", "incomes", "service_custom", "receipts", "receipt_prices", "tools", "goods_sheets", "draft", "appliance_types", "price_categories", "stock_categories", "settings"];
     const compare = (left, right) => sections.filter((key) => JSON.stringify(left[key] ?? defaultData()[key]) !== JSON.stringify(right[key] ?? defaultData()[key]));
 
     const memoryMismatches = compare(parsed, restored);
@@ -3135,6 +3186,95 @@ function warrantyResultsModal() {
 }
 
 
+function stockCategoriesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop warranty-manager-backdrop stock-categories-backdrop";
+  const types = ["Общее", ...applianceTypes({ includeArchived: true })].filter((value, index, array) => array.indexOf(value) === index);
+  let selectedTech = types[0] || "Общее";
+
+  modal.innerHTML = `<section class="modal compact-modal warranty-manager-modal stock-categories-modal" role="dialog" aria-modal="true" aria-label="Категории склада">
+    <div class="warranty-manager-head">
+      <div><small>СКЛАД</small><h2>Категории склада</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="warranty-manager-tech">
+      <label><span>Тип техники</span><select class="field" id="stock-category-tech">${types.map((tech) => `<option>${escapeHtml(tech)}</option>`).join("")}</select></label>
+    </div>
+    <p class="manager-help">Переименование обновляет позиции этого типа. Архив скрывает категорию из подсказок для новых позиций, но не удаляет товары и историю.</p>
+    <div id="stock-category-list" class="warranty-manager-list"></div>
+    <div class="warranty-manager-add">
+      <input class="field" id="new-stock-category-name" placeholder="Новая категория" />
+      <button type="button" class="primary-button" id="add-stock-category">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const renderList = () => {
+    const list = modal.querySelector("#stock-category-list");
+    const categories = stockCategoriesForTech(selectedTech, { includeArchived: true });
+    list.innerHTML = categories.length ? categories.map((item) => `<div class="warranty-manager-row ${item.archived ? "archived" : ""}" data-stock-category-id="${escapeHtml(item.id)}">
+      <input class="field" data-stock-category-name value="${escapeHtml(item.name)}" aria-label="Название складской категории" />
+      <button type="button" data-stock-category-archive aria-label="${item.archived ? "Вернуть категорию" : "Архивировать категорию"}">${icon(item.archived ? "restore" : "archive")}</button>
+    </div>`).join("") : `<div class="warranty-manager-empty">Для этого типа категорий пока нет.</div>`;
+  };
+
+  const close = () => { modal.remove(); syncModalScrollLock(); };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const button = event.target.closest("[data-stock-category-archive]");
+    if (!button) return;
+    const row = button.closest("[data-stock-category-id]");
+    const category = data.stock_categories.find((entry) => String(entry.id) === String(row?.dataset.stockCategoryId || ""));
+    if (!category) return;
+    category.archived = !category.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    if (event.target.id === "stock-category-tech") {
+      selectedTech = event.target.value;
+      renderList();
+      return;
+    }
+    const input = event.target.closest("[data-stock-category-name]");
+    if (!input) return;
+    const row = input.closest("[data-stock-category-id]");
+    const category = data.stock_categories.find((entry) => String(entry.id) === String(row?.dataset.stockCategoryId || ""));
+    if (!category) return;
+    const name = String(input.value || "").trim();
+    if (!name) { input.value = category.name || ""; return toast("Название категории не может быть пустым"); }
+    const duplicate = data.stock_categories.some((entry) => String(entry.id) !== String(category.id)
+      && normalizeStockTech(entry.tech || "Общее") === normalizeStockTech(category.tech || "Общее")
+      && String(entry.name || "").trim().toLowerCase() === name.toLowerCase());
+    if (duplicate) { input.value = category.name || ""; return toast("Такая категория уже есть"); }
+    const oldName = category.name;
+    category.name = name;
+    (data.warehouse || []).forEach((item) => {
+      if (stockTechForItem(item) === normalizeStockTech(category.tech || "Общее")
+        && String(item.category || "").trim() === String(oldName || "").trim()) item.category = name;
+    });
+    if (warehouseCategoryFilter === oldName) warehouseCategoryFilter = name;
+    await saveData();
+    saveUiState();
+    renderList();
+  });
+  modal.querySelector("#add-stock-category").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-stock-category-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши название категории");
+    if (stockCategoriesForTech(selectedTech, { includeArchived: true }).some((entry) => String(entry.name || "").trim().toLowerCase() === name.toLowerCase())) {
+      return toast("Такая категория уже есть");
+    }
+    data.stock_categories.push({ id: crypto.randomUUID(), tech: normalizeStockTech(selectedTech), name, archived: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function storageLocationsModal() {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop storage-locations-backdrop";
@@ -3252,6 +3392,7 @@ function settingsPage() {
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-results"><span class="settings-link-icon">${icon("check")}</span><span><strong>Результаты гарантийных обращений</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeWarrantyResults().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-action="manage-stock-categories"><span class="settings-link-icon">${icon("box")}</span><span><strong>Категории склада</strong><small>Категории товаров для каждого типа техники</small></span><b>${(data.stock_categories || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-storage-locations"><span class="settings-link-icon">${icon("warehouse")}</span><span><strong>Места хранения</strong><small>Мастерская, машина, дом и другие места</small></span><b>${activeStorageLocations().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -5253,6 +5394,8 @@ function stockModal(existing = null) {
   const currentCompatibility = Array.isArray(item.compatibility) ? item.compatibility.map(String) : [];
   const customCompatibility = currentCompatibility.filter((value) => !commonCompatibility.includes(value)).join(", ");
   const stockTechOptions = ["Общее", ...applianceTypes(), stockTechForItem(item)].filter((value, index, array) => value && array.indexOf(value) === index);
+  const initialStockTech = stockTechForItem(item);
+  const initialStockCategory = String(item.category || "").trim();
   const modal = document.createElement("div");
   modal.className = "modal-backdrop stock-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal stock-editor-modal" id="stock-form">
@@ -5269,7 +5412,7 @@ function stockModal(existing = null) {
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
       <div class="form-group"><label>Тип техники</label><select class="field" name="stockTech">${stockTechOptions.map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
-      <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || "Запчасти")}" required placeholder="Например, датчики" /></div>
+      <div class="form-group"><label>Категория</label><input class="field" id="stock-category-input" name="category" list="stock-category-options" value="${escapeHtml(initialStockCategory || "Запчасти")}" required placeholder="Например, датчики" /><datalist id="stock-category-options">${[...new Set([...stockCategoriesForTech(initialStockTech).map((entry) => entry.name), initialStockCategory].filter(Boolean))].map((value) => `<option value="${escapeHtml(value)}"></option>`).join("")}</datalist></div>
       <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
@@ -5316,6 +5459,21 @@ function stockModal(existing = null) {
     consumeUnitSelect.value = allowed.includes(previous) ? previous : allowed[0];
   };
   storageUnitSelect?.addEventListener("change", syncConsumeUnits);
+  const stockTechSelect = modal.querySelector('[name="stockTech"]');
+  const stockCategoryInput = modal.querySelector("#stock-category-input");
+  const stockCategoryOptions = modal.querySelector("#stock-category-options");
+  const refreshStockCategoryOptions = () => {
+    if (!stockCategoryOptions) return;
+    const current = String(stockCategoryInput?.value || "").trim();
+    const names = [...new Set([
+      ...stockCategoriesForTech(stockTechSelect?.value || "Общее").map((entry) => entry.name),
+      current
+    ].filter(Boolean))];
+    stockCategoryOptions.innerHTML = names.map((value) => `<option value="${escapeHtml(value)}"></option>`).join("");
+  };
+  stockTechSelect?.addEventListener("change", refreshStockCategoryOptions);
+  refreshStockCategoryOptions();
+
   const initialQuantityInput = modal.querySelector('[name="quantity"]');
   const initialPurchaseTotalInput = modal.querySelector('[name="initialPurchaseTotal"]');
   const initialUnitCostPreview = modal.querySelector("#stock-initial-unit-cost");
@@ -5360,6 +5518,11 @@ function stockModal(existing = null) {
     };
     if (!next.name) return toast("Укажи название позиции");
     if (!next.category) return toast("Укажи категорию позиции");
+    if (!Array.isArray(data.stock_categories)) data.stock_categories = [];
+    const categoryExists = data.stock_categories.some((entry) =>
+      normalizeStockTech(entry.tech || "Общее") === next.stockTech
+      && String(entry.name || "").trim().toLowerCase() === next.category.toLowerCase());
+    if (!categoryExists) data.stock_categories.push({ id: crypto.randomUUID(), tech: next.stockTech, name: next.category, archived: false });
     const index = data.warehouse.findIndex((entry) => String(entry.id) === String(next.id));
     if (index >= 0) data.warehouse[index] = next; else data.warehouse.push(next);
     if (!existing && next.quantity > 0) {
@@ -6262,6 +6425,7 @@ app.addEventListener("click", async (event) => {
   if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "manage-warranty-options") return warrantyOptionsModal();
   if (action === "manage-warranty-results") return warrantyResultsModal();
+  if (action === "manage-stock-categories") return stockCategoriesModal();
   if (action === "manage-storage-locations") return storageLocationsModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
