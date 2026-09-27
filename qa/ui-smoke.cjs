@@ -77,7 +77,16 @@ const seed = {
     createdAt: "2026-09-24T18:10:00.000Z", updatedAt: "2026-09-24T18:10:00.000Z",
     items: [{ name: "Насос сливной LG", qty: 1, unit: "шт.", price: 3900 }, { name: "Комплект крепежа", qty: 1, unit: "компл.", price: 3700 }]
   }],
-  draft: [],
+  draft: [{
+    id: "draft-1",
+    name: "Екатерина Соколова",
+    phone: "+79991112233",
+    tech: "Посудомоечная машина",
+    brand: "Bosch Serie 4",
+    sum: 6400,
+    issue: "Не сливает воду",
+    updatedAt: "2026-09-26T18:30:00.000Z"
+  }],
   settings: {
     autoBackup: false, autoBackupDays: 1, lastBackupAt: null, catalogApplyWithoutFit: false,
     companyName: "CRM by Romanychev", name: "Дмитрий Романычев", phone: "+79990000000",
@@ -179,6 +188,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     ["goods", uiState({ activePage: "more", moreSection: "goods" })],
     ["tools", uiState({ activePage: "more", moreSection: "tools" })],
     ["receipts", uiState({ activePage: "more", moreSection: "receipts" })],
+    ["drafts", uiState({ activePage: "more", moreSection: "drafts" })],
     ["settings", uiState({ activePage: "more", moreSection: "settings" })],
     ["backup", uiState({ activePage: "more", moreSection: "backup" })],
     ["act", uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" })]
@@ -1188,6 +1198,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "more", moreSection: "drafts" }));
+      const draftSurface = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-draft-card");
+        const note = document.querySelector(".legacy-drafts-page .legacy-service-note");
+        const next = document.querySelector('.legacy-draft-actions [data-action="continue-draft"]');
+        const remove = document.querySelector('.legacy-draft-actions [data-action="delete-draft"]');
+        const nextRect = next?.getBoundingClientRect();
+        const removeRect = remove?.getBoundingClientRect();
+        return {
+          card: card ? getComputedStyle(card).backgroundColor : "missing",
+          note: note ? getComputedStyle(note).backgroundColor : "missing",
+          next: next ? getComputedStyle(next).backgroundColor : "missing",
+          remove: remove ? getComputedStyle(remove).backgroundColor : "missing",
+          nextHeight: nextRect ? Math.round(nextRect.height) : 0,
+          removeHeight: removeRect ? Math.round(removeRect.height) : 0
+        };
+      });
+      if (draftSurface.card !== "rgb(16, 11, 23)"
+        || draftSurface.note !== "rgb(16, 11, 23)"
+        || draftSurface.next !== "rgb(33, 22, 47)"
+        || draftSurface.remove !== "rgb(18, 9, 11)"
+        || draftSurface.nextHeight < 44
+        || draftSurface.removeHeight < 44) {
+        report.failures.push({ width, type: "drafts-workflow-hierarchy", draftSurface });
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       const settingsSurface = await page.evaluate(() => ({

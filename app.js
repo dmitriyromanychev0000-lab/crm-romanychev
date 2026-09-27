@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.168";
+const APP_BUILD = "2026.09.27.169";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы различают привязанные к заявкам и отдельные записи, а экран акта показывает выбранную заявку отдельным компактным блоком и яснее разделяет действия";
+const APP_RELEASE = "Черновики получили отдельную рабочую иерархию: заметный статус, компактную карточку, сумму и ясные действия продолжения или удаления";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1743,9 +1743,10 @@ function draftsPage() {
       const view = draftSummary(record.value);
       const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
       return `<article class="legacy-draft-card">
-        <div><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || "Старый формат черновика")}</small></div>
+        <span class="legacy-draft-icon">${icon("drafts")}</span>
+        <div class="legacy-draft-copy"><em>ЧЕРНОВИК</em><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || "Старый формат черновика")}</small></div>
         ${view.sum ? `<b>${money(view.sum)}</b>` : ""}
-        <div class="legacy-draft-actions"><button type="button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">Продолжить</button><button type="button" class="danger" data-action="delete-draft" data-key="${escapeHtml(record.key)}">Удалить</button></div>
+        <div class="legacy-draft-actions"><button type="button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">${icon("edit")}<span>Продолжить</span></button><button type="button" class="danger" data-action="delete-draft" data-key="${escapeHtml(record.key)}">${icon("trash")}<span>Удалить</span></button></div>
       </article>`;
     }).join("")}</div>` : `<div class="legacy-service-empty">Черновиков пока нет.</div>`}
   </main>`;

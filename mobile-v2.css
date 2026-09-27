@@ -12041,3 +12041,137 @@
     background-color: #05090c !important;
   }
 }
+
+
+/* 1.0.44 · Черновики: рабочий статус, компактная карточка и ясные действия. */
+@media screen and (max-width: 520px) {
+  .legacy-drafts-page .legacy-service-note {
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(168,138,240,.065), transparent 108px) !important;
+    color: #c9bed8 !important;
+  }
+
+  .legacy-draft-card {
+    display: grid !important;
+    grid-template-columns: 38px minmax(0,1fr) auto !important;
+    gap: 9px !important;
+    align-items: center !important;
+    padding: 10px !important;
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: radial-gradient(circle at 0 0, rgba(168,138,240,.055), transparent 110px) !important;
+  }
+
+  .legacy-draft-icon {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 1px solid rgba(168,138,240,.24);
+    border-radius: 10px;
+    background: rgba(168,138,240,.10);
+    color: #b8a0ef;
+  }
+
+  .legacy-draft-icon .ui-icon {
+    width: 19px;
+    height: 19px;
+  }
+
+  .legacy-draft-copy {
+    min-width: 0;
+  }
+
+  .legacy-draft-copy em,
+  .legacy-draft-copy strong,
+  .legacy-draft-copy small {
+    display: block;
+  }
+
+  .legacy-draft-copy em {
+    margin-bottom: 2px;
+    color: #927cbb;
+    font-size: 8px;
+    font-style: normal;
+    font-weight: 780;
+    letter-spacing: .08em;
+  }
+
+  .legacy-draft-copy strong {
+    display: -webkit-box !important;
+    overflow: hidden;
+    color: #f0ebf8;
+    font-size: 12px !important;
+    line-height: 1.18 !important;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-draft-copy small {
+    overflow: hidden;
+    margin-top: 4px;
+    color: #9a8eaa;
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legacy-draft-card > b {
+    color: #e7b450 !important;
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .legacy-draft-actions {
+    grid-column: 1 / -1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1.25fr) minmax(0,.85fr) !important;
+    gap: 7px !important;
+    margin-top: 1px !important;
+  }
+
+  .legacy-draft-actions button {
+    display: inline-flex !important;
+    min-height: 44px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    border: 1px solid #4b3864 !important;
+    border-radius: 10px !important;
+    background: #21162f !important;
+    color: #e1d7f8 !important;
+    font-size: 10.5px !important;
+    font-weight: 720 !important;
+  }
+
+  .legacy-draft-actions button .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .legacy-draft-actions button.danger {
+    border-color: #48242a !important;
+    background: #12090b !important;
+    color: #ffb8bd !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-draft-card {
+    grid-template-columns: 36px minmax(0,1fr) !important;
+  }
+
+  .legacy-draft-card > b {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    margin-top: -2px;
+  }
+
+  .legacy-draft-actions {
+    grid-column: 1 / -1 !important;
+  }
+}
