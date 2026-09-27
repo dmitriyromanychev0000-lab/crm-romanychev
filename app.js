@@ -76,6 +76,10 @@ let financePeriod = ["all", "30", "90", "365"].includes(String(initialUiState.fi
 let moreSection = typeof initialUiState.moreSection === "string" ? initialUiState.moreSection : "menu";
 let moreReturnSection = typeof initialUiState.moreReturnSection === "string" ? initialUiState.moreReturnSection : "menu";
 let selectedActOrderId = initialUiState.selectedActOrderId || null;
+let calendarMonthOffset = Number.isInteger(Number(initialUiState.calendarMonthOffset)) ? Number(initialUiState.calendarMonthOffset) : 0;
+let calendarSelectedDate = typeof initialUiState.calendarSelectedDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(initialUiState.calendarSelectedDate)
+  ? initialUiState.calendarSelectedDate
+  : localDateInputValue();
 let restoreScrollY = Number(initialUiState.scrollY) || 0;
 
 function saveUiState(extra = {}) {
@@ -101,6 +105,8 @@ function saveUiState(extra = {}) {
       moreSection,
       moreReturnSection,
       selectedActOrderId,
+      calendarMonthOffset,
+      calendarSelectedDate,
       scrollY: window.scrollY,
       ...extra
     }));
@@ -491,6 +497,38 @@ function formatOrderVisit(order = {}) {
 function yandexMapsUrl(address) {
   const value = String(address || "").trim();
   return value ? `https://yandex.ru/maps/?text=${encodeURIComponent(value)}` : "";
+}
+
+function visitInterval(order = {}) {
+  const { date, time, duration } = visitDateParts(order);
+  if (!date || !time) return null;
+  const start = new Date(`${date}T${time}:00`).getTime();
+  if (!Number.isFinite(start)) return null;
+  return { start, end: start + Math.max(15, Number(duration) || 60) * 60000 };
+}
+
+function findVisitOverlap(order = {}) {
+  if (normalizeStatus(order.status) !== "active") return null;
+  const interval = visitInterval(order);
+  if (!interval) return null;
+  return (data.orders || []).find((other) => {
+    if (other.archived || String(other.id) === String(order.id)) return false;
+    if (normalizeStatus(other.status) !== "active") return false;
+    const otherInterval = visitInterval(other);
+    if (!otherInterval) return false;
+    return interval.start < otherInterval.end && interval.end > otherInterval.start;
+  }) || null;
+}
+
+function visitTimeRange(order = {}) {
+  const { time, duration } = visitDateParts(order);
+  if (!time) return "Без времени";
+  const [hours, minutes] = time.split(":").map(Number);
+  const startMinutes = hours * 60 + minutes;
+  const endMinutes = startMinutes + Math.max(15, Number(duration) || 60);
+  const endH = String(Math.floor(endMinutes / 60) % 24).padStart(2, "0");
+  const endM = String(endMinutes % 60).padStart(2, "0");
+  return `${time}–${endH}:${endM}`;
 }
 
 function ensureDataIds() {
