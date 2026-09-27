@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T19:31:57.212Z",
-  "testedSha": "bbc60a4ba80dc64a3562dbd8d580c64c51a65889",
+  "generatedAt": "2026-09-27T19:34:53.046Z",
+  "testedSha": "a775795c8cf6bafe1fcab40a04efa507e01d08f3",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1192,12 +1192,161 @@
         "locked": true,
         "bodyFixed": true
       }
+    },
+    {
+      "label": "keyboard-stock-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 454,
+        "bottom": 500,
+        "width": 131,
+        "height": 46,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-finance-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 132,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-price-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 464,
+        "bottom": 512,
+        "width": 300,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-goods-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 464,
+        "bottom": 512,
+        "width": 300,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-tool-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 463,
+        "bottom": 511,
+        "width": 134,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "keyboard-receipt-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 463,
+        "bottom": 511,
+        "width": 134,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true
+      }
+    },
+    {
+      "label": "backup-roundtrip",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "backupRoundtripOk": true,
+      "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "type": "fatal",
-      "message": "locator.scrollIntoViewIfNeeded: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('.stock-editor-modal [name=\"lastPurchasePrice\"]')\n"
-    }
-  ]
+  "failures": []
 }
