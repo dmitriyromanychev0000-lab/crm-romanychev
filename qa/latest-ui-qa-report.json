@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T10:44:26.792Z",
-  "testedSha": "7237d9b96d53a2429ea05a4bd45a1fcbe814959a",
+  "generatedAt": "2026-09-27T10:46:13.201Z",
+  "testedSha": "7a70a3e28c445c986bcee6629f387b15492febd7",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1222,28 +1222,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "warehouse-shopping-hierarchy",
-      "shoppingSurface": {
-        "summary": "rgb(16, 13, 6)",
-        "card": "rgb(22, 9, 12)",
-        "critical": true,
-        "needBackground": "rgba(255, 102, 112, 0.067)",
-        "needWidth": 86
-      }
-    },
-    {
-      "width": 390,
-      "type": "warehouse-shopping-hierarchy",
-      "shoppingSurface": {
-        "summary": "rgb(16, 13, 6)",
-        "card": "rgb(22, 9, 12)",
-        "critical": true,
-        "needBackground": "rgba(255, 102, 112, 0.067)",
-        "needWidth": 86
-      }
-    }
-  ]
+  "failures": []
 }
