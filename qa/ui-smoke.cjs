@@ -107,6 +107,7 @@ function uiState(extra) {
 
 async function writeSeed(page, payload = seed) {
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
+  await page.locator("#app > *").first().waitFor({ state: "attached" });
   await page.evaluate(async (payloadValue) => {
     await new Promise((resolve, reject) => {
       const request = indexedDB.open("crm-romanychev", 1);
@@ -160,7 +161,8 @@ async function readIdbKey(page, key) {
 async function setState(page, state) {
   await page.evaluate((stateValue) => sessionStorage.setItem("__crm_qa_next_state", JSON.stringify(stateValue)), state);
   await page.reload({ waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(100);
+  await page.locator("#app > *").first().waitFor({ state: "attached" });
+  await page.waitForTimeout(20);
 }
 
 async function inspect(page, label, width) {
