@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T11:10:52.494Z",
-  "testedSha": "4b156f3b584b79449e24b9bc1abe06ccafb3e849",
+  "generatedAt": "2026-09-27T11:13:12.912Z",
+  "testedSha": "362b6be9f557c9853e26dd363a99b13b42a9b461",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -104,6 +104,15 @@
     },
     {
       "label": "receipts",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "drafts",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -535,6 +544,15 @@
       "tooSmall": []
     },
     {
+      "label": "drafts",
+      "width": 360,
+      "bodyScrollWidth": 360,
+      "viewportWidth": 360,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
       "label": "settings",
       "width": 360,
       "bodyScrollWidth": 360,
@@ -662,6 +680,15 @@
     },
     {
       "label": "receipts",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "drafts",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
@@ -1013,6 +1040,15 @@
     },
     {
       "label": "receipts",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": []
+    },
+    {
+      "label": "drafts",
       "width": 430,
       "bodyScrollWidth": 430,
       "viewportWidth": 430,
