@@ -208,6 +208,31 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (result.overflow > 2) report.failures.push({ width, type: "horizontal-overflow", label, overflow: result.overflow });
     }
 
+    if (width >= 360) {
+      await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
+      const financeRowLayout = await page.evaluate(() => {
+        const row = document.querySelector(".legacy-finance-row");
+        const icon = row?.querySelector(".legacy-finance-kind")?.getBoundingClientRect();
+        const amount = row?.querySelector(":scope > b")?.getBoundingClientRect();
+        const remove = row?.querySelector(":scope > button")?.getBoundingClientRect();
+        const rect = row?.getBoundingClientRect();
+        return {
+          rowHeight: rect ? Math.round(rect.height) : 0,
+          iconCenter: icon ? Math.round(icon.top + icon.height / 2) : 0,
+          amountCenter: amount ? Math.round(amount.top + amount.height / 2) : 0,
+          removeCenter: remove ? Math.round(remove.top + remove.height / 2) : 0,
+          removeLeft: remove ? Math.round(remove.left) : 0,
+          amountRight: amount ? Math.round(amount.right) : 0
+        };
+      });
+      if (financeRowLayout.rowHeight > 76
+        || Math.abs(financeRowLayout.iconCenter - financeRowLayout.removeCenter) > 12
+        || Math.abs(financeRowLayout.amountCenter - financeRowLayout.removeCenter) > 12
+        || financeRowLayout.removeLeft < financeRowLayout.amountRight) {
+        report.failures.push({ width, type: "finance-row-single-line", financeRowLayout });
+      }
+    }
+
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
       const actPreviewState = await page.evaluate(() => {

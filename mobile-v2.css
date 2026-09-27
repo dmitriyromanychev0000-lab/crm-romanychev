@@ -10173,3 +10173,40 @@
   }
 }
 
+/* 1.0.20 · Финансы 360–430 px: удаление остаётся в строке операции, а не падает вниз. */
+@media screen and (min-width: 341px) and (max-width: 520px) {
+  .legacy-finance-row {
+    grid-template-columns: 38px minmax(0,1fr) auto 44px !important;
+    gap: 8px !important;
+    min-height: 64px !important;
+    align-items: center !important;
+  }
+
+  .legacy-finance-row > .legacy-finance-kind {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+  }
+
+  .legacy-finance-row > .legacy-finance-copy {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+  }
+
+  .legacy-finance-row > b {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: end !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-finance-row > button {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+}
+
