@@ -39,6 +39,9 @@ const defaultData = () => ({
   ],
   shopping_manual: [],
   shopping_overrides: [],
+  storage_locations: [
+    { id: "location-unassigned", name: "Нераспределено", archived: false, system: true }
+  ],
   settings: {
     autoBackup: false,
     autoBackupDays: 1,
@@ -46,6 +49,7 @@ const defaultData = () => ({
     catalogApplyWithoutFit: false,
     stockReservationModel: 1,
     stockBatchModel: 1,
+    stockLocationModel: 1,
     searchMasterComment: false,
     companyName: "CRM by Romanychev",
     name: "",
@@ -354,7 +358,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles", "warranty_options", "warranty_results", "shopping_manual", "shopping_overrides", "storage_locations"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -365,6 +369,9 @@ function validateBackup(candidate) {
   }
   if (!Object.prototype.hasOwnProperty.call(candidate.settings, "stockBatchModel")) {
     migratedSettings.stockBatchModel = 0;
+  }
+  if (!Object.prototype.hasOwnProperty.call(candidate.settings, "stockLocationModel")) {
+    migratedSettings.stockLocationModel = 0;
   }
   if (!Object.prototype.hasOwnProperty.call(candidate.settings, "catalogApplyWithoutFit")
       && Object.prototype.hasOwnProperty.call(candidate.settings, "autoPriceAdjust")) {
@@ -659,6 +666,114 @@ function visitTimeRange(order = {}) {
   return `${time}–${endH}:${endM}`;
 }
 
+
+const UNASSIGNED_LOCATION_ID = "location-unassigned";
+
+function ensureStorageLocations() {
+  let changed = false;
+  if (!Array.isArray(data.storage_locations)) {
+    data.storage_locations = [];
+    changed = true;
+  }
+  let unassigned = data.storage_locations.find((location) => String(location.id) === UNASSIGNED_LOCATION_ID);
+  if (!unassigned) {
+    unassigned = { id: UNASSIGNED_LOCATION_ID, name: "Нераспределено", archived: false, system: true };
+    data.storage_locations.unshift(unassigned);
+    changed = true;
+  } else {
+    if (unassigned.name !== "Нераспределено") { unassigned.name = "Нераспределено"; changed = true; }
+    if (unassigned.archived) { unassigned.archived = false; changed = true; }
+    if (!unassigned.system) { unassigned.system = true; changed = true; }
+  }
+  const used = new Set([UNASSIGNED_LOCATION_ID]);
+  data.storage_locations.forEach((location) => {
+    if (String(location.id) === UNASSIGNED_LOCATION_ID) return;
+    let id = String(location.id || "").trim();
+    if (!id || used.has(id)) {
+      id = crypto.randomUUID();
+      location.id = id;
+      changed = true;
+    }
+    used.add(id);
+    if (typeof location.archived !== "boolean") {
+      location.archived = false;
+      changed = true;
+    }
+  });
+  return changed;
+}
+
+function storageLocationById(id) {
+  return (Array.isArray(data.storage_locations) ? data.storage_locations : [])
+    .find((location) => String(location.id) === String(id || ""));
+}
+
+function storageLocationName(id) {
+  return storageLocationById(id)?.name || (String(id || "") === UNASSIGNED_LOCATION_ID ? "Нераспределено" : "Неизвестное место");
+}
+
+function activeStorageLocations({ includeArchived = false } = {}) {
+  return (Array.isArray(data.storage_locations) ? data.storage_locations : [])
+    .filter((location) => includeArchived || !location.archived)
+    .sort((a, b) => Number(Boolean(b.system)) - Number(Boolean(a.system))
+      || String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
+function stockLocationBalances(item = {}) {
+  return Array.isArray(item.locationBalances) ? item.locationBalances : [];
+}
+
+function stockLocationPhysicalQuantity(item, locationId) {
+  const id = String(locationId || UNASSIGNED_LOCATION_ID);
+  return stockLocationBalances(item)
+    .filter((entry) => String(entry.locationId || UNASSIGNED_LOCATION_ID) === id)
+    .reduce((sum, entry) => sum + Math.max(0, Number(entry.qty) || 0), 0);
+}
+
+function setStockLocationQuantity(item, locationId, qty) {
+  const id = String(locationId || UNASSIGNED_LOCATION_ID);
+  const value = Math.max(0, Number(qty) || 0);
+  if (!Array.isArray(item.locationBalances)) item.locationBalances = [];
+  const index = item.locationBalances.findIndex((entry) => String(entry.locationId || UNASSIGNED_LOCATION_ID) === id);
+  if (value <= 1e-9) {
+    if (index >= 0) item.locationBalances.splice(index, 1);
+  } else if (index >= 0) {
+    item.locationBalances[index] = { ...item.locationBalances[index], locationId: id, qty: value };
+  } else {
+    item.locationBalances.push({ locationId: id, qty: value });
+  }
+  return value;
+}
+
+function changeStockLocationQuantity(item, locationId, delta) {
+  const current = stockLocationPhysicalQuantity(item, locationId);
+  return setStockLocationQuantity(item, locationId, current + (Number(delta) || 0));
+}
+
+function syncStockQuantityFromLocations(item) {
+  const total = stockLocationBalances(item).reduce((sum, entry) => sum + Math.max(0, Number(entry.qty) || 0), 0);
+  item.quantity = total;
+  return total;
+}
+
+function migrateStockLocationModel() {
+  if (Number(data.settings?.stockLocationModel) >= 1) return false;
+  ensureStorageLocations();
+  (Array.isArray(data.warehouse) ? data.warehouse : []).forEach((item) => {
+    item.locationBalances = [];
+    const quantity = Math.max(0, Number(item.quantity) || 0);
+    if (quantity > 0) item.locationBalances.push({ locationId: UNASSIGNED_LOCATION_ID, qty: quantity });
+  });
+  (Array.isArray(data.orders) ? data.orders : []).forEach((order) => {
+    (Array.isArray(order.materials) ? order.materials : []).forEach((material) => {
+      if (!material?.warehouseId || !material.writeOff || material.directExpense) return;
+      if (!String(material.locationId || "").trim()) material.locationId = UNASSIGNED_LOCATION_ID;
+    });
+  });
+  data.settings = { ...data.settings, stockLocationModel: 1 };
+  return true;
+}
+
 function ensureDataIds() {
   let changed = false;
   if (ensureOrderIds()) changed = true;
@@ -670,6 +785,7 @@ function ensureDataIds() {
   if (ensureWarrantyOptionIds()) changed = true;
   if (ensureWarrantyResultIds()) changed = true;
   if (ensureShoppingManualIds()) changed = true;
+  if (ensureStorageLocations()) changed = true;
   return changed;
 }
 
@@ -5678,6 +5794,7 @@ app.addEventListener("click", async (event) => {
     ensureDataIds();
     migrateStockReservationModel();
     migrateStockBatchModel();
+    migrateStockLocationModel();
     await saveData();
     await dbSet(PRE_IMPORT_KEY, current);
     activePage = "orders";
@@ -6048,6 +6165,7 @@ fileInput.addEventListener("change", async () => {
     ensureDataIds();
     migrateStockReservationModel();
     migrateStockBatchModel();
+    migrateStockLocationModel();
     await saveData();
     activePage = "orders";
     moreSection = "menu";
@@ -6070,6 +6188,7 @@ async function start() {
       let migrated = ensureDataIds();
       if (migrateStockReservationModel()) migrated = true;
       if (migrateStockBatchModel()) migrated = true;
+      if (migrateStockLocationModel()) migrated = true;
       if (migrated) await saveData();
     }
   } catch (error) {
