@@ -13512,3 +13512,30 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* 1.0.42 · Ещё: спокойная единая палитра без радуги по пунктам. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-item,
+  .legacy-more-list .menu-calendar,
+  .legacy-more-list .menu-clients,
+  .legacy-more-list .menu-prices,
+  .legacy-more-list .menu-goods,
+  .legacy-more-list .menu-act,
+  .legacy-more-list .menu-settings {
+    border-left-color: #26333b !important;
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-more-list .menu-icon,
+  .legacy-more-list [class*="menu-icon-"] {
+    border-color: #26333b !important;
+    background: #0a1116 !important;
+    color: #aeb8be !important;
+  }
+
+  .legacy-more-list .menu-item:active .menu-icon {
+    color: #ff765c !important;
+  }
+}
