@@ -13840,3 +13840,123 @@
     grid-template-columns: minmax(52px,64px) auto !important;
   }
 }
+
+
+/* 1.0.46 · Склад: иерархия техника → категория и компактные фильтры. */
+@media screen and (max-width: 520px) {
+  .warehouse-filter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+    margin-bottom: 9px !important;
+  }
+
+  .warehouse-filter-control {
+    display: grid !important;
+    min-width: 0 !important;
+    gap: 4px !important;
+  }
+
+  .warehouse-filter-control:first-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  .warehouse-filter-control > small {
+    padding-left: 3px !important;
+    color: #77838b !important;
+    font-size: 8px !important;
+    font-weight: 740 !important;
+    letter-spacing: .05em !important;
+  }
+
+  .warehouse-filter-control > span {
+    position: relative !important;
+    display: block !important;
+    min-width: 0 !important;
+  }
+
+  .warehouse-filter-control .field {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-right: 31px !important;
+    appearance: none !important;
+  }
+
+  .warehouse-filter-control > span > .ui-icon {
+    position: absolute !important;
+    top: 50% !important;
+    right: 9px !important;
+    width: 15px !important;
+    height: 15px !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    color: #7f8a92 !important;
+  }
+
+  .warehouse-category-list {
+    display: grid !important;
+    gap: 10px !important;
+    padding: 0 9px 10px !important;
+  }
+
+  .warehouse-category-block {
+    overflow: hidden !important;
+    border: 1px solid #172128 !important;
+    border-radius: 12px !important;
+    background: #060b0f !important;
+  }
+
+  .warehouse-category-title {
+    display: flex !important;
+    min-height: 38px !important;
+    padding: 0 10px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    border-bottom: 1px solid #151f25 !important;
+    background: #080e12 !important;
+  }
+
+  .warehouse-category-title strong {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    color: #dce3e6 !important;
+    font-size: 10.5px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .warehouse-category-title small {
+    display: grid !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    padding: 0 6px !important;
+    place-items: center !important;
+    border-radius: 999px !important;
+    background: #10181d !important;
+    color: #87939a !important;
+    font-size: 8.5px !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .warehouse-category-block .legacy-stock-list {
+    padding: 8px !important;
+  }
+
+  .warehouse-tech-group > summary .legacy-folder-icon {
+    border: 1px solid rgba(92,169,255,.22) !important;
+    background: rgba(92,169,255,.08) !important;
+    color: #72b6ff !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .warehouse-filter-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .warehouse-filter-control:first-child {
+    grid-column: auto !important;
+  }
+}
