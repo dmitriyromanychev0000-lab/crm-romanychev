@@ -9517,3 +9517,26 @@
   }
 }
 
+/* 1.0.12 · Материалы: поля реально заполняют колонки, а не схлопываются до intrinsic-width. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .material-card-controls .field {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .order-editor-modal .material-card-controls input[data-line="qty"] {
+    text-align: center !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .order-editor-modal .material-card-controls .material-unit {
+    justify-content: center !important;
+    font-weight: 700 !important;
+  }
+
+  .order-editor-modal .material-card-controls input[data-line="unit-cost"] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+

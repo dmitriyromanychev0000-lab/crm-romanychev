@@ -352,14 +352,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
           secondaryAction: getComputedStyle(document.querySelector(".order-editor-modal .modal-actions .secondary-button")).backgroundColor,
           serviceMatchCount: document.querySelectorAll("#legacy-service-match").length,
-          clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent)
+          clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent),
+          qtyWidth: Math.round(document.querySelector('#material-lines [data-line="qty"]')?.getBoundingClientRect().width || 0),
+          costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0)
         };
       });
       if (editorSurfaceState.material !== "rgb(7, 12, 16)"
         || editorSurfaceState.materialField !== "rgb(9, 15, 20)"
         || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)"
         || editorSurfaceState.serviceMatchCount !== 0
-        || editorSurfaceState.clippedMaterialLabels.length) {
+        || editorSurfaceState.clippedMaterialLabels.length
+        || editorSurfaceState.qtyWidth < 60
+        || editorSurfaceState.costWidth < 100) {
         report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
       if (width === 390) {
