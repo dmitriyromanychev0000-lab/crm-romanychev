@@ -87,3 +87,18 @@ final result: automated release QA passed
 - Version 0.99.14 extends backup self-test equality checks to `settings`, so company/user details and backup preferences are covered by the JSON → validate → IndexedDB → validate round-trip.
 
 - Version 1.0.0 is the first release build after a 99-state zero-failure mobile regression pass covering long/empty/archive data, nested modals, keyboard-height reachability, backup round-trip including settings, PWA offline reload and one-page A4 PDF output.
+
+## Release 1.0.1 — deep dark order editor surfaces
+
+- Source reference: user screenshot `1000101014.jpg`, focused on the selected material card.
+- Rendered evidence: `390-order-editor-material-row.png` from Mobile UI QA run `36300994284`.
+- Viewport: 390 × 900 px.
+- Compared state: order editor with one selected warehouse material and the fixed bottom action bar.
+- Material card background: `rgb(7, 12, 16)`.
+- Material input background: `rgb(9, 15, 20)`.
+- Secondary action background: `rgb(10, 17, 22)`.
+- Visual result: the gray-blue fill is removed; the editor, material card, fields, photo/calculation surfaces and footer actions use the deeper near-black hierarchy while coral remains the primary accent.
+- Automated result: 106 states checked, 0 failures; 320 / 360 / 390 / 430 px, overflow and touch-target checks passed.
+- Published result: GitHub Pages deployment for commit `107dadee4c8b7b1feabc0f02503ddbe721de92df` passed.
+
+final result: passed
