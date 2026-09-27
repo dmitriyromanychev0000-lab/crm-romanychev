@@ -1226,6 +1226,98 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
   });
   await utilityPage.keyboard.press("Escape");
 
+  const keyboardEditorCases = [
+    {
+      label: "stock-editor",
+      state: uiState({ activePage: "warehouse", warehouseSection: "list" }),
+      open: '[data-action="new-stock"]',
+      field: '.stock-editor-modal [name="lastPurchasePrice"]',
+      action: '.stock-editor-modal .modal-actions .primary-button'
+    },
+    {
+      label: "finance-editor",
+      state: uiState({ activePage: "more", moreSection: "finance" }),
+      open: '[data-action="add-finance"][data-type="income"]',
+      field: '.finance-entry-modal [name="description"]',
+      action: '.finance-entry-modal .modal-actions .primary-button'
+    },
+    {
+      label: "price-editor",
+      state: uiState({ activePage: "more", moreSection: "prices" }),
+      open: '[data-action="new-price"]',
+      field: '.legacy-price-editor [name="price"]',
+      action: '.legacy-price-editor-actions .legacy-editor-save'
+    },
+    {
+      label: "goods-editor",
+      state: uiState({ activePage: "more", moreSection: "goods" }),
+      open: '[data-action="new-goods-sheet"]',
+      field: '.legacy-goods-editor [name="target"]',
+      action: '.legacy-goods-savebar .legacy-save-goods'
+    },
+    {
+      label: "tool-editor",
+      state: uiState({ activePage: "more", moreSection: "tools" }),
+      open: '[data-action="new-tool"]',
+      field: '.tool-editor-modal [name="note"]',
+      action: '.tool-editor-modal .modal-actions .primary-button'
+    },
+    {
+      label: "receipt-editor",
+      state: uiState({ activePage: "more", moreSection: "receipts" }),
+      open: '[data-action="new-receipt"]',
+      field: '.receipt-editor-modal [name="note"]',
+      action: '.receipt-editor-modal .modal-actions .primary-button'
+    }
+  ];
+
+  for (const editorCase of keyboardEditorCases) {
+    await setState(utilityPage, editorCase.state);
+    await utilityPage.locator(editorCase.open).first().click();
+    await utilityPage.waitForTimeout(60);
+    const editorField = utilityPage.locator(editorCase.field);
+    await editorField.scrollIntoViewIfNeeded();
+    await editorField.focus();
+    const editorAction = utilityPage.locator(editorCase.action);
+    await editorAction.scrollIntoViewIfNeeded();
+    const metrics = await editorAction.evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      const backdrop = node.closest(".modal-backdrop");
+      return {
+        top: Math.round(rect.top),
+        bottom: Math.round(rect.bottom),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        viewportHeight: window.innerHeight,
+        backdropCount: document.querySelectorAll(".modal-backdrop").length,
+        backdropOverflow: backdrop ? getComputedStyle(backdrop).overflowY : "missing",
+        locked: document.body.classList.contains("modal-open"),
+        bodyFixed: getComputedStyle(document.body).position === "fixed"
+      };
+    });
+    const reachable = metrics.height >= 44
+      && metrics.top >= 0
+      && metrics.bottom <= metrics.viewportHeight + 1
+      && metrics.backdropCount === 1
+      && metrics.locked
+      && metrics.bodyFixed;
+    if (!reachable) report.failures.push({ type: "keyboard-height-editor", label: editorCase.label, metrics });
+    await utilityPage.screenshot({ path: outDir + "/320-keyboard-" + editorCase.label + ".png", fullPage: false });
+    report.results.push({
+      label: "keyboard-" + editorCase.label,
+      width: 320,
+      viewportHeight: 520,
+      bodyScrollWidth: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)),
+      viewportWidth: 320,
+      overflow: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth),
+      modalOpen: metrics.locked,
+      tooSmall: [],
+      keyboardReachable: reachable,
+      keyboardMetrics: metrics
+    });
+    await utilityPage.keyboard.press("Escape");
+  }
+
   await writeSeed(utilityPage, seed);
   await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
   await utilityPage.locator('[data-action="backup-self-test"]').click();
