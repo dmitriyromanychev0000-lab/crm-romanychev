@@ -594,6 +594,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
       }
 
+      await page.locator('[data-analytics-period="custom"]').click();
+      await page.waitForTimeout(60);
+      const analyticsRangeSurface = await page.evaluate(() => {
+        const modal = document.querySelector(".legacy-analytics-range-modal");
+        const field = modal?.querySelector(".field");
+        const cancel = modal?.querySelector(".legacy-dark-button");
+        const close = modal?.querySelector(".legacy-range-head > button");
+        const closeRect = close?.getBoundingClientRect();
+        return {
+          modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          field: field ? getComputedStyle(field).backgroundColor : "missing",
+          cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
+          closeWidth: closeRect ? Math.round(closeRect.width) : 0,
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0
+        };
+      });
+      if (analyticsRangeSurface.modal !== "rgb(6, 11, 15)"
+        || analyticsRangeSurface.field !== "rgb(9, 15, 20)"
+        || analyticsRangeSurface.cancel !== "rgb(10, 17, 22)"
+        || analyticsRangeSurface.closeWidth < 44
+        || analyticsRangeSurface.closeHeight < 44) {
+        report.failures.push({ width, type: "analytics-range-deep-dark", analyticsRangeSurface });
+      }
+      report.results.push(await shot(page, width, "analytics-range", false));
+      await page.locator(".legacy-analytics-range-modal [data-close-modal]").last().click();
+
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
       const warehousePageSurfaces = await page.evaluate(() => ({
         group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
@@ -637,6 +663,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       report.results.push(await shot(page, width, "stock-editor", false));
       await page.keyboard.press("Escape");
+
+      await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+      await page.locator('[data-stock="in"]').first().click();
+      await page.waitForTimeout(60);
+      const stockAdjustSurface = await page.evaluate(() => {
+        const modal = document.querySelector(".stock-adjust-modal");
+        const balance = modal?.querySelector(".stock-adjust-balance");
+        const field = modal?.querySelector(".stock-adjust-field .field");
+        const cancel = modal?.querySelector(".stock-adjust-actions .legacy-dark-button");
+        const close = modal?.querySelector(".stock-adjust-head > button");
+        const closeRect = close?.getBoundingClientRect();
+        return {
+          modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          balance: balance ? getComputedStyle(balance).backgroundColor : "missing",
+          field: field ? getComputedStyle(field).backgroundColor : "missing",
+          cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
+          closeWidth: closeRect ? Math.round(closeRect.width) : 0,
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0
+        };
+      });
+      if (stockAdjustSurface.modal !== "rgb(6, 11, 15)"
+        || stockAdjustSurface.balance !== "rgb(9, 15, 20)"
+        || stockAdjustSurface.field !== "rgb(9, 15, 20)"
+        || stockAdjustSurface.cancel !== "rgb(10, 17, 22)"
+        || stockAdjustSurface.closeWidth < 44
+        || stockAdjustSurface.closeHeight < 44) {
+        report.failures.push({ width, type: "stock-adjust-deep-dark", stockAdjustSurface });
+      }
+      report.results.push(await shot(page, width, "stock-adjust", false));
+      await page.locator(".stock-adjust-actions [data-close-modal]").click();
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "movements" }));
       const movementSurface = await page.evaluate(() => ({
