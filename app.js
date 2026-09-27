@@ -78,6 +78,7 @@ let warehouseSearch = typeof initialUiState.warehouseSearch === "string" ? initi
 let warehouseFilter = ["active", "out", "reserved", "low", "archived", "all"].includes(String(initialUiState.warehouseFilter)) ? String(initialUiState.warehouseFilter) : "active";
 let warehouseTechFilter = typeof initialUiState.warehouseTechFilter === "string" ? initialUiState.warehouseTechFilter : "all";
 let warehouseCategoryFilter = typeof initialUiState.warehouseCategoryFilter === "string" ? initialUiState.warehouseCategoryFilter : "all";
+let warehouseLocationFilter = typeof initialUiState.warehouseLocationFilter === "string" ? initialUiState.warehouseLocationFilter : "all";
 let warehouseSection = ["list", "movements", "shopping"].includes(String(initialUiState.warehouseSection)) ? String(initialUiState.warehouseSection) : "list";
 let warehouseMovementFilter = ["all", "in", "out"].includes(String(initialUiState.warehouseMovementFilter)) ? String(initialUiState.warehouseMovementFilter) : "all";
 let clientSearch = typeof initialUiState.clientSearch === "string" ? initialUiState.clientSearch : "";
@@ -109,6 +110,7 @@ function saveUiState(extra = {}) {
       warehouseFilter,
       warehouseTechFilter,
       warehouseCategoryFilter,
+      warehouseLocationFilter,
       warehouseSection,
       warehouseMovementFilter,
       clientSearch,
@@ -888,6 +890,43 @@ function stockReservedQuantity(warehouseId, { excludeOrderId = null } = {}) {
     if (excludeOrderId !== null && String(order.id) === String(excludeOrderId)) return sum;
     return sum + (stockMaterialTotals(order.materials).get(id) || 0);
   }, 0);
+}
+
+function materialStockLocationId(material = {}) {
+  return String(material.locationId || UNASSIGNED_LOCATION_ID);
+}
+
+function stockReservedQuantityAtLocation(warehouseId, locationId, { excludeOrderId = null } = {}) {
+  const stockId = String(warehouseId || "");
+  const placeId = String(locationId || UNASSIGNED_LOCATION_ID);
+  if (!stockId) return 0;
+  return (Array.isArray(data.orders) ? data.orders : []).reduce((sum, order) => {
+    if (!orderReservesStock(order)) return sum;
+    if (excludeOrderId !== null && String(order.id) === String(excludeOrderId)) return sum;
+    const qty = (Array.isArray(order.materials) ? order.materials : []).reduce((orderSum, material) => {
+      if (!material?.warehouseId || !material.writeOff || material.directExpense) return orderSum;
+      if (String(material.warehouseId) !== stockId) return orderSum;
+      if (materialStockLocationId(material) !== placeId) return orderSum;
+      return orderSum + materialStorageQuantity(material);
+    }, 0);
+    return sum + qty;
+  }, 0);
+}
+
+function stockAvailableQuantityAtLocation(item, locationId, { excludeOrderId = null } = {}) {
+  if (!item) return 0;
+  const physical = stockLocationPhysicalQuantity(item, locationId);
+  return Math.max(0, physical - stockReservedQuantityAtLocation(item.id, locationId, { excludeOrderId }));
+}
+
+function stockLocationsForItem(item, { includeZero = false } = {}) {
+  return activeStorageLocations({ includeArchived: true })
+    .map((location) => ({
+      ...location,
+      qty: stockLocationPhysicalQuantity(item, location.id),
+      reserved: stockReservedQuantityAtLocation(item.id, location.id)
+    }))
+    .filter((location) => includeZero || location.qty > 1e-9 || location.reserved > 1e-9);
 }
 
 function stockAvailableQuantity(item, { excludeOrderId = null } = {}) {
@@ -1671,7 +1710,8 @@ function warehousePage() {
     const haystack = [item.name, category, tech, item.unit, compatibility].join(" ").toLowerCase();
     const techMatch = warehouseTechFilter === "all" || tech === warehouseTechFilter;
     const categoryMatch = warehouseCategoryFilter === "all" || category === warehouseCategoryFilter;
-    return techMatch && categoryMatch && (!query || haystack.includes(query));
+    const locationMatch = warehouseLocationFilter === "all" || stockLocationPhysicalQuantity(item, warehouseLocationFilter) > 1e-9;
+    return techMatch && categoryMatch && locationMatch && (!query || haystack.includes(query));
   });
 
   const techGroups = [...items.reduce((techMap,item)=>{
@@ -1733,6 +1773,7 @@ function warehousePage() {
       </select>${icon("chevron")}</span></label>
       <label class="warehouse-filter-control"><small>ТЕХНИКА</small><span><select class="field" id="warehouse-tech-filter" aria-label="Тип техники"><option value="all">Все типы</option>${techOptions.map((tech)=>`<option value="${escapeHtml(tech)}" ${warehouseTechFilter===tech?"selected":""}>${escapeHtml(tech)}</option>`).join("")}</select>${icon("chevron")}</span></label>
       <label class="warehouse-filter-control"><small>КАТЕГОРИЯ</small><span><select class="field" id="warehouse-category-filter" aria-label="Категория"><option value="all">Все категории</option>${categoryOptions.map((category)=>`<option value="${escapeHtml(category)}" ${warehouseCategoryFilter===category?"selected":""}>${escapeHtml(category)}</option>`).join("")}</select>${icon("chevron")}</span></label>
+      <label class="warehouse-filter-control"><small>МЕСТО</small><span><select class="field" id="warehouse-location-filter" aria-label="Место хранения"><option value="all">Все места</option>${activeStorageLocations().map((location)=>`<option value="${escapeHtml(location.id)}" ${warehouseLocationFilter===String(location.id)?"selected":""}>${escapeHtml(location.name)}</option>`).join("")}</select>${icon("chevron")}</span></label>
     </div>
 
     <div class="legacy-warehouse-shortcuts">
@@ -2749,6 +2790,82 @@ function warrantyResultsModal() {
   syncModalScrollLock();
 }
 
+
+function storageLocationsModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop storage-locations-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal storage-locations-modal" role="dialog" aria-modal="true" aria-label="Места хранения">
+    <div class="warranty-manager-head">
+      <div><small>СКЛАД</small><h2>Места хранения</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <p class="manager-help">Например: мастерская, машина, дом, рюкзак. «Нераспределено» — системное место для новых и старых остатков.</p>
+    <div id="storage-location-list" class="storage-location-list"></div>
+    <div class="warranty-manager-add storage-location-add">
+      <input class="field" id="new-storage-location-name" placeholder="Новое место хранения" />
+      <button type="button" class="primary-button" id="add-storage-location">${icon("plus")}<span>Добавить</span></button>
+    </div>
+  </section>`;
+  document.body.appendChild(modal);
+
+  const usedQuantity = (locationId) => data.warehouse.reduce((sum, item) => sum + stockLocationPhysicalQuantity(item, locationId), 0);
+  const renderList = () => {
+    const list = modal.querySelector("#storage-location-list");
+    list.innerHTML = activeStorageLocations({ includeArchived: true }).map((location) => {
+      const qty = usedQuantity(location.id);
+      return `<div class="storage-location-row ${location.archived ? "archived" : ""}" data-storage-location-id="${escapeHtml(location.id)}">
+        <span class="storage-location-icon">${icon(location.system ? "warehouse" : "box")}</span>
+        <div><input class="field" data-storage-location-name value="${escapeHtml(location.name || "")}" ${location.system ? "readonly" : ""} aria-label="Название места" /><small>${location.system ? "Системное место" : location.archived ? "Архив" : qty > 0 ? `Есть остаток: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(qty)}` : "Активно"}</small></div>
+        ${location.system ? '<span class="storage-location-system">СИСТЕМА</span>' : `<button type="button" data-storage-location-archive aria-label="${location.archived ? "Вернуть место" : "Архивировать место"}">${icon(location.archived ? "restore" : "archive")}</button>`}
+      </div>`;
+    }).join("");
+  };
+
+  const close = () => { modal.remove(); syncModalScrollLock(); };
+  modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  modal.addEventListener("click", async (event) => {
+    if (event.target === modal) return close();
+    const archiveButton = event.target.closest("[data-storage-location-archive]");
+    if (!archiveButton) return;
+    const row = archiveButton.closest("[data-storage-location-id]");
+    const location = storageLocationById(row?.dataset.storageLocationId);
+    if (!location || location.system) return;
+    if (!location.archived) {
+      const qty = usedQuantity(location.id);
+      if (qty > 1e-9) return toast("Сначала перемести остатки из этого места");
+    }
+    location.archived = !location.archived;
+    await saveData();
+    renderList();
+  });
+  modal.addEventListener("change", async (event) => {
+    const input = event.target.closest("[data-storage-location-name]");
+    if (!input) return;
+    const row = input.closest("[data-storage-location-id]");
+    const location = storageLocationById(row?.dataset.storageLocationId);
+    if (!location || location.system) return;
+    const name = String(input.value || "").trim();
+    if (!name) { input.value = location.name || ""; return toast("Название не может быть пустым"); }
+    const duplicate = data.storage_locations.some((entry) => String(entry.id) !== String(location.id) && String(entry.name || "").trim().toLowerCase() === name.toLowerCase() && !entry.archived);
+    if (duplicate) { input.value = location.name || ""; return toast("Такое место уже есть"); }
+    location.name = name;
+    await saveData();
+    renderList();
+  });
+  modal.querySelector("#add-storage-location").addEventListener("click", async () => {
+    const input = modal.querySelector("#new-storage-location-name");
+    const name = String(input.value || "").trim();
+    if (!name) return toast("Напиши название места");
+    if (data.storage_locations.some((entry) => String(entry.name || "").trim().toLowerCase() === name.toLowerCase() && !entry.archived)) return toast("Такое место уже есть");
+    data.storage_locations.push({ id: crypto.randomUUID(), name, archived: false, system: false });
+    input.value = "";
+    await saveData();
+    renderList();
+  });
+  renderList();
+  syncModalScrollLock();
+}
+
 function settingsPage() {
   const settings = data.settings || {};
   return `<main class="content legacy-settings-page">
@@ -2789,6 +2906,7 @@ function settingsPage() {
         <button type="button" data-action="manage-order-sources"><span class="settings-link-icon">${icon("orders")}</span><span><strong>Источники заявок</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeOrderSources().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-options"><span class="settings-link-icon">${icon("shield")}</span><span><strong>Гарантии по технике</strong><small>Списки пунктов для каждого типа</small></span><b>${(data.warranty_options || []).filter((item) => !item.archived).length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-action="manage-warranty-results"><span class="settings-link-icon">${icon("check")}</span><span><strong>Результаты гарантийных обращений</strong><small>Добавить, переименовать или архивировать</small></span><b>${activeWarrantyResults().length}</b><span class="chevron">${icon("chevron")}</span></button>
+        <button type="button" data-action="manage-storage-locations"><span class="settings-link-icon">${icon("warehouse")}</span><span><strong>Места хранения</strong><small>Мастерская, машина, дом и другие места</small></span><b>${activeStorageLocations().length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
         <button type="button" data-more="backup"><span class="settings-link-icon">${icon("backup")}</span><span><strong>Бэкапы</strong><small>Импорт, экспорт и защита данных</small></span><b>${data.orders.length + data.warehouse.length}</b><span class="chevron">${icon("chevron")}</span></button>
       </div>
@@ -5770,6 +5888,7 @@ app.addEventListener("click", async (event) => {
   if (action === "manage-order-sources") return orderSourcesModal();
   if (action === "manage-warranty-options") return warrantyOptionsModal();
   if (action === "manage-warranty-results") return warrantyResultsModal();
+  if (action === "manage-storage-locations") return storageLocationsModal();
   if (action === "reset-order-filters") {
     orderFilter = "all";
     orderVisitFilter = "all";
@@ -6131,6 +6250,12 @@ app.addEventListener("change", async (event) => {
   }
   if (event.target.id === "warehouse-category-filter") {
     warehouseCategoryFilter = event.target.value || "all";
+    saveUiState();
+    await render();
+    return;
+  }
+  if (event.target.id === "warehouse-location-filter") {
+    warehouseLocationFilter = event.target.value || "all";
     saveUiState();
     await render();
     return;
