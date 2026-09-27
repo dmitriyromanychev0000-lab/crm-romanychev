@@ -327,6 +327,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         return { count: layers.length, firstInert: Boolean(layers[0] && layers[0].inert), firstHidden: layers[0] && layers[0].getAttribute("aria-hidden") };
       });
       if (nested.count !== 2 || !nested.firstInert || nested.firstHidden !== "true") report.failures.push({ width, type: "nested-modal", nested });
+      const serviceCatalogSurface = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".catalog-modal")).backgroundColor,
+        option: getComputedStyle(document.querySelector(".catalog-service-option")).backgroundColor,
+        summary: getComputedStyle(document.querySelector(".catalog-fit-summary")).backgroundColor
+      }));
+      if (serviceCatalogSurface.modal !== "rgb(3, 7, 10)"
+        || serviceCatalogSurface.option !== "rgb(9, 15, 20)"
+        || serviceCatalogSurface.summary !== "rgb(6, 11, 15)") {
+        report.failures.push({ width, type: "service-catalog-deep-dark", serviceCatalogSurface });
+      }
       report.results.push(await shot(page, width, "service-catalog", false));
 
       await page.locator(".catalog-service-option").first().click();
@@ -400,6 +410,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (materialNested.count !== 2 || !materialNested.firstInert || materialNested.firstHidden !== "true" || materialNested.role !== "dialog" || materialNested.ariaModal !== "true") {
         report.failures.push({ width, type: "material-nested-modal", materialNested });
+      }
+      const materialCatalogSurface = await page.evaluate(() => ({
+        modal: getComputedStyle(document.querySelector(".material-catalog-modal")).backgroundColor,
+        row: getComputedStyle(document.querySelector(".material-catalog-row")).backgroundColor,
+        search: getComputedStyle(document.querySelector(".material-catalog-search .search")).backgroundColor
+      }));
+      if (materialCatalogSurface.modal !== "rgb(3, 7, 10)"
+        || materialCatalogSurface.row !== "rgb(9, 15, 20)"
+        || materialCatalogSurface.search !== "rgb(9, 15, 20)") {
+        report.failures.push({ width, type: "material-catalog-deep-dark", materialCatalogSurface });
       }
       report.results.push(await shot(page, width, "material-catalog", false));
 

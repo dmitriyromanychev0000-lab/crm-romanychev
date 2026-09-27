@@ -10509,3 +10509,96 @@
   }
 }
 
+/* 1.0.26 · Каталоги заявки: услуги и материалы без серых карточек. */
+@media screen and (max-width: 520px) {
+  .catalog-modal-backdrop,
+  .catalog-modal-backdrop > .catalog-modal,
+  .catalog-modal .catalog-modal-head,
+  .catalog-modal .catalog-search-row,
+  .catalog-modal .catalog-modal-actions {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .catalog-modal .catalog-modal-head,
+  .catalog-modal .catalog-modal-actions {
+    border-color: #151f25 !important;
+  }
+
+  .catalog-modal .catalog-close {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+  }
+
+  .catalog-modal .catalog-search-row .search {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .catalog-modal .catalog-service-option {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .catalog-modal .catalog-service-option.selected {
+    border-color: rgba(255,104,74,.58) !important;
+    background:
+      linear-gradient(rgba(255,104,74,.055),rgba(255,104,74,.055)),
+      #090f14 !important;
+  }
+
+  .catalog-modal .catalog-fit-summary {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .catalog-modal .catalog-fit-summary > div {
+    border-left-color: #151f25 !important;
+  }
+
+  .catalog-modal .catalog-modal-actions .secondary-button {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+    color: #eef2f4 !important;
+  }
+
+  .material-catalog-backdrop,
+  .material-catalog-backdrop > .material-catalog-modal,
+  .material-catalog-head,
+  .material-catalog-search,
+  .material-catalog-close {
+    background-color: #03070a !important;
+    background-image: none !important;
+  }
+
+  .material-catalog-head,
+  .material-catalog-close {
+    border-color: #151f25 !important;
+  }
+
+  .material-catalog-head-close {
+    border-color: #202d35 !important;
+    background: #0a1116 !important;
+  }
+
+  .material-catalog-search .search {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+  }
+
+  .material-catalog-row {
+    border-color: #202d35 !important;
+    background: #090f14 !important;
+    box-shadow: none !important;
+  }
+
+  .material-catalog-row.selected {
+    border-color: rgba(255,104,74,.58) !important;
+    background:
+      linear-gradient(rgba(255,104,74,.055),rgba(255,104,74,.055)),
+      #090f14 !important;
+  }
+}
+
