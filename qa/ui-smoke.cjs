@@ -622,18 +622,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         control: getComputedStyle(document.querySelector(".legacy-act-control")).backgroundColor,
         field: getComputedStyle(document.querySelector(".legacy-act-control .field")).backgroundColor,
         selected: getComputedStyle(document.querySelector(".legacy-act-selected")).backgroundColor,
-        secondary: getComputedStyle(document.querySelector(".legacy-act-control-actions .legacy-dark-button")).backgroundColor,
         primary: getComputedStyle(document.querySelector(".legacy-act-control-actions .legacy-orange-button")).backgroundColor,
         preview: getComputedStyle(document.querySelector(".legacy-act-preview")).backgroundColor,
-        sheet: getComputedStyle(document.querySelector(".legacy-act-preview .act-sheet")).backgroundColor
+        sheet: getComputedStyle(document.querySelector(".legacy-act-preview .act-sheet")).backgroundColor,
+        headers: [...document.querySelectorAll(".act-work-table th")].map((node) => node.textContent.trim()),
+        contract: document.querySelector(".act-contract-line")?.textContent || "",
+        saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || ""
       }));
       if (actScreenSurface.control !== "rgb(16, 11, 8)"
         || actScreenSurface.field !== "rgb(9, 15, 20)"
         || actScreenSurface.selected !== "rgb(8, 16, 25)"
-        || actScreenSurface.secondary !== "rgb(8, 16, 25)"
         || actScreenSurface.primary !== "rgb(38, 18, 13)"
         || actScreenSurface.preview !== "rgb(5, 9, 12)"
-        || actScreenSurface.sheet !== "rgb(255, 255, 255)") {
+        || actScreenSurface.sheet !== "rgb(255, 255, 255)"
+        || actScreenSurface.headers.length !== 5
+        || actScreenSurface.headers.includes("Гарантия")
+        || !actScreenSurface.contract.includes("№0060")
+        || !actScreenSurface.saveButton.includes("Сохранить картинку")) {
         report.failures.push({ width, type: "act-semantic-hierarchy", actScreenSurface });
       }
       const actPreviewState = await page.evaluate(() => {
@@ -1893,30 +1898,37 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       if (width === 390) {
-        const printSeed = structuredClone(seed);
-        printSeed.orders[0].services = Array.from({ length: 22 }, (_, index) => ({
-          name: `Тестовая работа №${index + 1} с расширенным наименованием для проверки печати`,
+        const actSeed = structuredClone(seed);
+        actSeed.orders[0].services = Array.from({ length: 12 }, (_, index) => ({
+          name: `Тестовая работа №${index + 1} с расширенным наименованием`,
           qty: 1,
           price: 1000 + index * 125
         }));
-        printSeed.orders[0].materials = Array.from({ length: 8 }, (_, index) => ({
-          name: `Материал №${index + 1} для проверки одностраничного акта`,
-          qty: 1,
-          unit: "шт.",
-          unitCost: 500 + index * 50
-        }));
-        await writeSeed(page, printSeed);
+        actSeed.orders[0].guarantee = 6;
+        actSeed.orders[0].guaranteeTargets = ["Компрессор", "Контур охлаждения"];
+        actSeed.orders[0].guaranteeNote = "Дополнительные условия гарантии";
+        await writeSeed(page, actSeed);
         await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
-        await page.evaluate(() => {
-          window.print = () => {};
-          document.querySelector('[data-action="print-act"]')?.click();
-        });
-        await page.waitForTimeout(60);
-        const printZoom = await page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue("--act-print-zoom")) || 1);
-        if (printZoom >= 1) report.failures.push({ width, type: "act-print-zoom", zoom: printZoom });
-        await page.emulateMedia({ media: "print" });
-        await page.pdf({ path: outDir + "/act-a4.pdf", format: "A4", printBackground: true, preferCSSPageSize: true });
-        await page.emulateMedia({ media: "screen" });
+        const warrantyBlock = await page.evaluate(() => ({
+          count: document.querySelectorAll(".act-guarantee").length,
+          text: document.querySelector(".act-guarantee")?.textContent || ""
+        }));
+        if (warrantyBlock.count !== 1
+          || !warrantyBlock.text.includes("6 мес")
+          || !warrantyBlock.text.includes("Компрессор")
+          || !warrantyBlock.text.includes("Дополнительные условия")) {
+          report.failures.push({ width, type: "act-warranty-block", warrantyBlock });
+        }
+
+        const downloadPromise = page.waitForEvent("download");
+        await page.locator('[data-action="save-act-image"]').click();
+        const download = await downloadPromise;
+        const filename = download.suggestedFilename();
+        const path = await download.path();
+        const size = path ? fs.statSync(path).size : 0;
+        if (filename !== "Акт_0060.png" || size < 5000) {
+          report.failures.push({ width, type: "act-png-export", filename, size });
+        }
       }
     }
 
