@@ -26,6 +26,11 @@ const defaultData = () => ({
   tools: [],
   goods_sheets: [],
   draft: [],
+  order_sources: [
+    { id: "source-avito", name: "Авито", archived: false },
+    { id: "source-word-of-mouth", name: "Сарафанное радио", archived: false }
+  ],
+  client_profiles: [],
   settings: {
     autoBackup: false,
     autoBackupDays: 1,
@@ -329,7 +334,7 @@ function validateBackup(candidate) {
   for (const key of required) {
     if (!Array.isArray(candidate[key])) throw new Error(`В бэкапе отсутствует или повреждён раздел ${key}`);
   }
-  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets"];
+  const optionalArrays = ["incomes", "service_custom", "receipts", "tools", "goods_sheets", "order_sources", "client_profiles"];
   for (const key of optionalArrays) {
     if (key in candidate && !Array.isArray(candidate[key])) throw new Error(`Раздел ${key} имеет неверный формат`);
   }
@@ -382,12 +387,115 @@ function ensureGoodsSheetIds() {
   return changed;
 }
 
+function ensureOrderSourceIds() {
+  let changed = false;
+  (Array.isArray(data.order_sources) ? data.order_sources : []).forEach((source) => {
+    if (String(source?.id || "").trim()) return;
+    source.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function ensureClientProfileIds() {
+  let changed = false;
+  (Array.isArray(data.client_profiles) ? data.client_profiles : []).forEach((profile) => {
+    if (String(profile?.id || "").trim()) return;
+    profile.id = crypto.randomUUID();
+    changed = true;
+  });
+  return changed;
+}
+
+function activeOrderSources() {
+  return (Array.isArray(data.order_sources) ? data.order_sources : [])
+    .filter((source) => !source.archived && String(source.name || "").trim())
+    .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ru"));
+}
+
+function orderSourceName(order = {}) {
+  const source = (Array.isArray(data.order_sources) ? data.order_sources : [])
+    .find((item) => String(item.id) === String(order.sourceId || ""));
+  return source?.name || order.sourceName || "";
+}
+
+function clientProfileByPhone(phone) {
+  const normalized = normalizeRussianPhone(phone || "");
+  if (!normalized) return null;
+  return (Array.isArray(data.client_profiles) ? data.client_profiles : [])
+    .find((profile) => normalizeRussianPhone(profile.phone || "") === normalized) || null;
+}
+
+function latestOrderByPhone(phone, { excludeOrderId = null } = {}) {
+  const normalized = normalizeRussianPhone(phone || "");
+  if (!normalized) return null;
+  return [...(Array.isArray(data.orders) ? data.orders : [])]
+    .filter((order) => !order.archived
+      && normalizeRussianPhone(order.phone || "") === normalized
+      && (excludeOrderId === null || String(order.id) !== String(excludeOrderId)))
+    .sort((a, b) => (orderCreatedTimestamp(b) || 0) - (orderCreatedTimestamp(a) || 0))[0] || null;
+}
+
+function syncClientProfileFromOrder(order) {
+  const phone = normalizeRussianPhone(order?.phone || "");
+  if (!phone) return null;
+  let profile = clientProfileByPhone(phone);
+  if (!profile) {
+    profile = { id: crypto.randomUUID(), phone, name: "", note: "", lastAddress: "", updatedAt: null };
+    data.client_profiles.push(profile);
+  }
+  if (String(order.name || "").trim()) profile.name = String(order.name).trim();
+  if (String(order.address || "").trim()) profile.lastAddress = String(order.address).trim();
+  profile.phone = phone;
+  profile.updatedAt = new Date().toISOString();
+  return profile;
+}
+
+function visitDateParts(order = {}) {
+  let date = String(order.nextVisitDate || "").slice(0, 10);
+  let time = String(order.nextVisitTime || "").slice(0, 5);
+  if (!date && order.nextVisit) {
+    const raw = String(order.nextVisit);
+    if (/^\d{4}-\d{2}-\d{2}/.test(raw)) date = raw.slice(0, 10);
+    if (!time && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(raw) && order.nextVisitTime !== "") {
+      time = raw.slice(11, 16);
+    }
+  }
+  return { date, time, duration: Math.max(15, Number(order.nextVisitDuration) || 60) };
+}
+
+function visitSortTimestamp(order = {}) {
+  const { date, time } = visitDateParts(order);
+  if (!date) return NaN;
+  const value = new Date(`${date}T${time || "12:00"}:00`).getTime();
+  return Number.isFinite(value) ? value : NaN;
+}
+
+function visitIsOverdue(order = {}) {
+  const { date, time } = visitDateParts(order);
+  if (!date || normalizeStatus(order.status) !== "active") return false;
+  const today = localDateInputValue();
+  if (date < today) return true;
+  if (date > today || !time) return false;
+  return new Date(`${date}T${time}:00`).getTime() < Date.now();
+}
+
+function formatOrderVisit(order = {}) {
+  const { date, time, duration } = visitDateParts(order);
+  if (!date) return "";
+  const dateText = new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" })
+    .format(new Date(`${date}T12:00:00`));
+  return time ? `${dateText} · ${time} · ${duration} мин.` : `${dateText} · без времени`;
+}
+
 function ensureDataIds() {
   let changed = false;
   if (ensureOrderIds()) changed = true;
   if (ensureWarehouseIds()) changed = true;
   if (normalizeWarehouseUnitSettings()) changed = true;
   if (ensureGoodsSheetIds()) changed = true;
+  if (ensureOrderSourceIds()) changed = true;
+  if (ensureClientProfileIds()) changed = true;
   return changed;
 }
 
@@ -1541,7 +1649,7 @@ function priceList() {
 function clientKeyForOrder(order) {
   const phone = normalizeRussianPhone(order.phone || "");
   if (phone) return phone;
-  return String(order.name || order.id || "").trim().toLowerCase();
+  return `order:${String(order.id || "").trim()}`;
 }
 
 function clientsPage() {
