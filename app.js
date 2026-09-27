@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.163";
+const APP_BUILD = "2026.09.27.164";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "История склада различает приход и расход даже для старых записей in/out; движение и список покупок получили более ясную цветовую иерархию и акцент на критических остатках";
+const APP_RELEASE = "Финансы и клиенты получили смысловую визуальную иерархию: доходы, расходы, активные и закрытые состояния теперь считываются без одинаковых серых плиток";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1490,7 +1490,7 @@ function financePage() {
     </div>
 
     <section class="legacy-finance-summary">
-      <div class="result finance-result-hero"><span>РЕЗУЛЬТАТ ПЕРИОДА</span><strong class="${result >= 0 ? "green" : "red"}">${money(result)}</strong><small>${rows.length} операций</small></div>
+      <div class="result finance-result-hero ${result >= 0 ? "positive" : "negative"}"><span>РЕЗУЛЬТАТ ПЕРИОДА</span><strong class="${result >= 0 ? "green" : "red"}">${money(result)}</strong><small>${rows.length} операций</small></div>
       <div class="income"><span>ДОХОДЫ</span><strong>+${money(incomes)}</strong><small>${incomeRows.length} поступлений</small></div>
       <div class="expense"><span>РАСХОДЫ</span><strong>−${money(expenses)}</strong><small>${expenseRows.length} списаний</small></div>
     </section>

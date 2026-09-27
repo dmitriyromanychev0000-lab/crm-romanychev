@@ -864,11 +864,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
       const financePageSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".finance-result-hero")).backgroundColor,
+        result: getComputedStyle(document.querySelector(".finance-result-hero")).backgroundColor,
+        income: getComputedStyle(document.querySelector(".legacy-finance-summary > .income")).backgroundColor,
+        expense: getComputedStyle(document.querySelector(".legacy-finance-summary > .expense")).backgroundColor,
+        incomeRow: getComputedStyle(document.querySelector(".legacy-finance-row.income")).backgroundColor,
+        expenseRow: getComputedStyle(document.querySelector(".legacy-finance-row.expense")).backgroundColor,
+        incomeAction: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).backgroundColor,
+        expenseAction: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).backgroundColor,
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
-      if (financePageSurface.background !== "rgb(7, 12, 16)" || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
-        report.failures.push({ width, type: "finance-deep-dark-page", financePageSurface });
+      if (financePageSurface.result !== "rgb(7, 19, 13)"
+        || financePageSurface.income !== "rgb(7, 17, 12)"
+        || financePageSurface.expense !== "rgb(20, 9, 11)"
+        || financePageSurface.incomeRow !== "rgb(7, 16, 11)"
+        || financePageSurface.expenseRow !== "rgb(18, 9, 11)"
+        || financePageSurface.incomeAction !== "rgb(10, 33, 20)"
+        || financePageSurface.expenseAction !== "rgb(38, 13, 17)"
+        || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
+        report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }
       await page.locator('[data-action="add-finance"][data-type="income"]').click();
       const financeEditorState = await page.evaluate(() => {
@@ -977,21 +990,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await setState(page, uiState({ activePage: "more", moreSection: "clients" }));
       const clientPageSurface = await page.evaluate(() => ({
         background: getComputedStyle(document.querySelector(".legacy-client-card")).backgroundColor,
+        primaryStat: getComputedStyle(document.querySelector(".legacy-clients-stats > .clients-stat-primary")).backgroundColor,
+        activeStat: getComputedStyle(document.querySelector(".legacy-clients-stats > div:nth-child(2)")).backgroundColor,
+        closedStat: getComputedStyle(document.querySelector(".legacy-clients-stats > div:nth-child(3)")).backgroundColor,
         titleFont: getComputedStyle(document.querySelector(".legacy-client-copy strong")).fontSize
       }));
-      if (clientPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(clientPageSurface.titleFont) < 11.5) {
-        report.failures.push({ width, type: "clients-deep-dark-page", clientPageSurface });
+      if (clientPageSurface.background !== "rgb(7, 12, 16)"
+        || clientPageSurface.primaryStat !== "rgb(16, 11, 8)"
+        || clientPageSurface.activeStat !== "rgb(8, 16, 25)"
+        || clientPageSurface.closedStat !== "rgb(7, 17, 12)"
+        || parseFloat(clientPageSurface.titleFont) < 11.5) {
+        report.failures.push({ width, type: "clients-semantic-hierarchy", clientPageSurface });
       }
       await page.locator('[data-action="open-client"]').first().click();
       const clientProfileState = await page.evaluate(() => ({
         modal: getComputedStyle(document.querySelector(".client-profile-modal")).backgroundColor,
         hero: getComputedStyle(document.querySelector(".client-profile-hero")).backgroundColor,
-        kpi: getComputedStyle(document.querySelector(".client-profile-kpis > div")).backgroundColor
+        totalKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(4)")).backgroundColor,
+        closedKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(2)")).backgroundColor,
+        activeKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(3)")).backgroundColor
       }));
       if (clientProfileState.modal !== "rgb(3, 7, 10)"
-        || clientProfileState.hero !== "rgb(7, 12, 16)"
-        || clientProfileState.kpi !== "rgb(7, 12, 16)") {
-        report.failures.push({ width, type: "client-profile-deep-dark", clientProfileState });
+        || clientProfileState.hero !== "rgb(8, 16, 25)"
+        || clientProfileState.totalKpi !== "rgb(19, 16, 6)"
+        || clientProfileState.closedKpi !== "rgb(7, 17, 12)"
+        || clientProfileState.activeKpi !== "rgb(8, 16, 25)") {
+        report.failures.push({ width, type: "client-profile-semantic-hierarchy", clientProfileState });
       }
       report.results.push(await shot(page, width, "client-profile", false));
       await page.keyboard.press("Escape");

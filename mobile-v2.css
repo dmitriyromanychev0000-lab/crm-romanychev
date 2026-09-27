@@ -11391,3 +11391,177 @@
     color: #ff8991 !important;
   }
 }
+
+
+/* 1.0.39 · Финансы и клиенты: смысловая иерархия вместо одинаковых тёмных плиток. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-summary .finance-result-hero.positive {
+    border-color: #214734 !important;
+    background-color: #07130d !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(89,216,137,.10), transparent 118px) !important;
+  }
+
+  .legacy-finance-summary .finance-result-hero.negative {
+    border-color: #52242b !important;
+    background-color: #16090c !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,102,112,.09), transparent 118px) !important;
+  }
+
+  .legacy-finance-summary > .income {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+    background-image: none !important;
+  }
+
+  .legacy-finance-summary > .income strong {
+    color: #72dda0 !important;
+  }
+
+  .legacy-finance-summary > .expense {
+    border-color: #48242a !important;
+    background-color: #14090b !important;
+    background-image: none !important;
+  }
+
+  .legacy-finance-summary > .expense strong {
+    color: #ff7f88 !important;
+  }
+
+  .legacy-finance-actions .legacy-orange-button[data-type="income"] {
+    border: 1px solid #24563a !important;
+    background: #0a2114 !important;
+    color: #d5f6df !important;
+    box-shadow: 0 7px 18px rgba(89,216,137,.10) !important;
+  }
+
+  .legacy-finance-actions .legacy-orange-button[data-type="income"] .ui-icon {
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] {
+    border-color: #5a2329 !important;
+    background: #260d11 !important;
+    color: #ffd5d8 !important;
+  }
+
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] .ui-icon {
+    color: var(--crm-red) !important;
+  }
+
+  .legacy-finance-row.income {
+    border-color: #173426 !important;
+    background-color: #07100b !important;
+    background-image: linear-gradient(90deg, rgba(89,216,137,.04), transparent 44%) !important;
+  }
+
+  .legacy-finance-row.expense {
+    border-color: #3d2025 !important;
+    background-color: #12090b !important;
+    background-image: linear-gradient(90deg, rgba(255,102,112,.04), transparent 44%) !important;
+  }
+
+  .legacy-finance-row.income .legacy-finance-kind {
+    border: 1px solid rgba(89,216,137,.22);
+    background: rgba(89,216,137,.10) !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-finance-row.expense .legacy-finance-kind {
+    border: 1px solid rgba(255,102,112,.22);
+    background: rgba(255,102,112,.09) !important;
+    color: var(--crm-red) !important;
+  }
+
+  .legacy-clients-stats > .clients-stat-primary {
+    border-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.09), transparent 110px) !important;
+  }
+
+  .legacy-clients-stats > div:nth-child(2) {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: none !important;
+  }
+
+  .legacy-clients-stats > div:nth-child(3) {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+    background-image: none !important;
+  }
+
+  .legacy-client-card {
+    border-color: #1c2931 !important;
+    background-color: #070c10 !important;
+    background-image: radial-gradient(circle at 0 0, rgba(92,169,255,.035), transparent 118px) !important;
+  }
+
+  .legacy-client-avatar {
+    border: 1px solid rgba(92,169,255,.22);
+    background: rgba(92,169,255,.09) !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .legacy-client-side > b {
+    color: #e7b450 !important;
+  }
+
+  .legacy-client-meta > span {
+    border-radius: 8px;
+  }
+
+  .legacy-client-actions > a:first-child {
+    border-color: #1d3b2b !important;
+    background: #07110c !important;
+    color: #c8f3d5 !important;
+  }
+
+  .legacy-client-actions > button:last-child {
+    border-color: #223b52 !important;
+    background: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-hero {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: radial-gradient(circle at 0 0, rgba(92,169,255,.08), transparent 118px) !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-avatar {
+    border: 1px solid rgba(92,169,255,.24);
+    background: rgba(92,169,255,.10) !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(1) {
+    background-color: #090f14 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(2) {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(3) {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(4) {
+    border-color: #4a3b1c !important;
+    background-color: #131006 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-actions > a:first-child {
+    border-color: #1d3b2b !important;
+    background: #07110c !important;
+    color: #c8f3d5 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-actions > button:last-child {
+    border-color: #4a2c23 !important;
+    background: #17100d !important;
+    color: #ffd2c7 !important;
+  }
+}
