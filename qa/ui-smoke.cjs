@@ -1830,14 +1830,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
         const beforeCorrection = await readStoredData(page);
         const expenseCountBeforeCorrection = beforeCorrection.expenses.length;
-        const physicalBeforeCorrection = Number(beforeCorrection.warehouse.find((item) => item.id === "w1")?.quantity) || 0;
         await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
           const details = node.closest("details");
           if (details) details.open = true;
         });
         await page.locator('[data-stock-detail="w1"]').click();
         await page.locator('[data-stock-detail-action="correct"]').click();
-        await page.locator('.stock-correction-modal [name="quantity"]').fill(String(physicalBeforeCorrection + 1));
+        const correctionQuantity = page.locator('.stock-correction-modal [name="quantity"]');
+        const physicalBeforeCorrection = Number(await correctionQuantity.inputValue()) || 0;
+        await correctionQuantity.fill(String(physicalBeforeCorrection + 1));
         await page.locator('.stock-correction-modal [name="comment"]').fill("Контрольный пересчёт");
         report.results.push(await shot(page, width, "stock-correction", false));
         await page.locator('.stock-correction-modal button[type="submit"]').click();
