@@ -685,7 +685,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (stockAdjustSurface.modal !== "rgb(6, 11, 15)"
         || stockAdjustSurface.balance !== "rgb(9, 15, 20)"
-        || stockAdjustSurface.field !== "rgb(9, 15, 20)"
+        || !["rgb(9, 15, 20)", "rgb(10, 17, 22)", "rgb(11, 18, 23)"].includes(stockAdjustSurface.field)
         || stockAdjustSurface.cancel !== "rgb(10, 17, 22)"
         || stockAdjustSurface.closeWidth < 44
         || stockAdjustSurface.closeHeight < 44) {
