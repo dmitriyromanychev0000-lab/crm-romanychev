@@ -921,19 +921,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const search = document.querySelector("#price-search");
         const searchStyle = getComputedStyle(search);
         return {
-          background: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
+          group: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
+          service: getComputedStyle(document.querySelector(".legacy-price-row.service")).backgroundColor,
+          material: getComputedStyle(document.querySelector(".legacy-price-row.material")).backgroundColor,
+          custom: getComputedStyle(document.querySelector(".legacy-price-row.custom")).backgroundColor,
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-price-row strong")).fontSize,
           searchBackground: searchStyle.backgroundColor,
           searchBorder: searchStyle.borderTopColor,
           searchShadow: searchStyle.boxShadow
         };
       });
-      if (pricePageSurface.background !== "rgb(7, 12, 16)"
+      if (pricePageSurface.group !== "rgb(7, 12, 16)"
+        || pricePageSurface.service !== "rgb(8, 16, 25)"
+        || pricePageSurface.material !== "rgb(19, 16, 6)"
+        || pricePageSurface.custom !== "rgb(16, 11, 23)"
         || parseFloat(pricePageSurface.rowTitleFont) < 11.5
         || pricePageSurface.searchBackground !== "rgb(9, 15, 20)"
         || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
         || pricePageSurface.searchShadow !== "none") {
-        report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
+        report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
       }
       await page.waitForTimeout(80);
       await page.locator("#price-search").click();
@@ -1031,11 +1037,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
       const goodsPageSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".legacy-goods-panel")).backgroundColor,
+        create: getComputedStyle(document.querySelector(".legacy-goods-new")).backgroundColor,
+        current: getComputedStyle(document.querySelector(".legacy-goods-current")).backgroundColor,
+        currentSummary: getComputedStyle(document.querySelector(".legacy-goods-current-summary")).backgroundColor,
+        productPrice: getComputedStyle(document.querySelector(".legacy-product-price")).backgroundColor,
         itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize
       }));
-      if (goodsPageSurface.background !== "rgb(7, 12, 16)" || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
-        report.failures.push({ width, type: "goods-deep-dark-page", goodsPageSurface });
+      if (goodsPageSurface.create !== "rgb(16, 11, 23)"
+        || goodsPageSurface.current !== "rgb(6, 11, 15)"
+        || goodsPageSurface.currentSummary !== "rgb(16, 11, 23)"
+        || goodsPageSurface.productPrice !== "rgb(19, 16, 6)"
+        || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
+        report.failures.push({ width, type: "goods-semantic-hierarchy", goodsPageSurface });
       }
       await page.locator('[data-action="new-goods-sheet"]').click();
       const goodsEditorState = await page.evaluate(() => {

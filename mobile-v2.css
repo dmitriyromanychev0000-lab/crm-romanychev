@@ -11565,3 +11565,113 @@
     color: #ffd2c7 !important;
   }
 }
+
+
+/* 1.0.40 · Прайс и товарник: разные роли для услуг, материалов и расчётов. */
+@media screen and (max-width: 520px) {
+  .legacy-price-row.service {
+    border-top-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: linear-gradient(90deg, rgba(92,169,255,.045), transparent 46%) !important;
+  }
+
+  .legacy-price-row.service > b {
+    color: #71b3f2 !important;
+  }
+
+  .legacy-price-row.material {
+    border-top-color: #4a3b1c !important;
+    background-color: #131006 !important;
+    background-image: linear-gradient(90deg, rgba(231,180,80,.045), transparent 46%) !important;
+  }
+
+  .legacy-price-row.material > b {
+    color: #e7b450 !important;
+  }
+
+  .legacy-price-row.custom {
+    border-top-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: linear-gradient(90deg, rgba(168,138,240,.05), transparent 46%) !important;
+  }
+
+  .legacy-price-row.custom > b {
+    color: #b8a0ef !important;
+  }
+
+  .legacy-custom-price-head {
+    border-bottom-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(168,138,240,.07), transparent 96px) !important;
+  }
+
+  .legacy-custom-price-head button {
+    border-color: #4b3864 !important;
+    background: rgba(168,138,240,.10) !important;
+    color: #d8c9f8 !important;
+  }
+
+  .legacy-goods-panel.legacy-goods-new {
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(168,138,240,.075), transparent 120px) !important;
+  }
+
+  .legacy-goods-new .legacy-section-icon {
+    border: 1px solid rgba(168,138,240,.24);
+    background: rgba(168,138,240,.10) !important;
+    color: #b8a0ef !important;
+  }
+
+  .legacy-goods-new .legacy-purple-button {
+    border: 1px solid #4b3864 !important;
+    background: #21162f !important;
+    color: #e1d7f8 !important;
+    box-shadow: 0 7px 18px rgba(168,138,240,.09) !important;
+  }
+
+  .legacy-goods-new .legacy-dark-button {
+    border-color: #223b52 !important;
+    background: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .legacy-goods-panel.legacy-goods-current {
+    border-color: #202d35 !important;
+    background-color: #060b0f !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.045), transparent 118px) !important;
+  }
+
+  .legacy-goods-current .legacy-goods-current-summary {
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+    background-image: none !important;
+  }
+
+  .legacy-goods-current .legacy-open-editor {
+    border-color: #4a2c23 !important;
+    background: #17100d !important;
+    color: #ffd2c7 !important;
+  }
+
+  .legacy-goods-panel.legacy-product-price {
+    border-color: #4a3b1c !important;
+    background-color: #131006 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(231,180,80,.065), transparent 112px) !important;
+  }
+
+  .legacy-product-price .legacy-section-icon {
+    border: 1px solid rgba(231,180,80,.24);
+    background: rgba(231,180,80,.10) !important;
+    color: #e7b450 !important;
+  }
+
+  .legacy-product-price-list > div {
+    border-color: #3c321c !important;
+    background-color: #0d0c07 !important;
+  }
+
+  .legacy-product-price-list > div > b {
+    color: #e7b450 !important;
+  }
+}

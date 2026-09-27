@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.164";
+const APP_BUILD = "2026.09.27.165";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансы и клиенты получили смысловую визуальную иерархию: доходы, расходы, активные и закрытые состояния теперь считываются без одинаковых серых плиток";
+const APP_RELEASE = "Прайс и товарник получили отдельные визуальные роли: услуги, материалы и свои услуги различаются, а создание, текущий товарник и товарный прайс больше не сливаются в одинаковые панели";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1346,7 +1346,7 @@ function priceList() {
         <div class="legacy-price-list">${items.map((item) => {
           const index = data.receipt_prices.indexOf(item);
           const meta = [item.unit, item.tech].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга");
-          return `<button type="button" class="legacy-price-row" data-action="edit-price" data-index="${index}">
+          return `<button type="button" class="legacy-price-row ${item.kind === "material" ? "material" : "service"}" data-action="edit-price" data-index="${index}">
             <span><strong>${escapeHtml(item.name || "Без названия")}</strong><small>${escapeHtml(meta)}</small></span>
             <b>${money(item.price || 0)}</b>
           </button>`;
