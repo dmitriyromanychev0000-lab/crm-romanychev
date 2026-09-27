@@ -670,6 +670,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         }
         report.results.push(await shot(page, width, "photo-viewer", false));
         await page.locator(".photo-viewer-delete").click();
+        await page.locator("[data-confirm-primary]").click();
         const photoDeleted = await page.evaluate(() => ({
           viewers: document.querySelectorAll(".photo-viewer-modal").length,
           cards: document.querySelectorAll("[data-view-photo]").length,
