@@ -1175,16 +1175,45 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       const settingsSurface = await page.evaluate(() => ({
-        card: getComputedStyle(document.querySelector(".legacy-settings-card")).backgroundColor,
+        profile: getComputedStyle(document.querySelector(".settings-profile-card")).backgroundColor,
+        app: getComputedStyle(document.querySelector(".settings-app-card")).backgroundColor,
+        data: getComputedStyle(document.querySelector(".settings-data-card")).backgroundColor,
         field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor,
+        toolsLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="tools"]')).backgroundColor,
+        backupLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="backup"]')).backgroundColor,
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize
       }));
-      if (settingsSurface.card !== "rgb(7, 12, 16)"
+      if (settingsSurface.profile !== "rgb(16, 11, 8)"
+        || settingsSurface.app !== "rgb(8, 16, 25)"
+        || settingsSurface.data !== "rgb(6, 11, 15)"
         || settingsSurface.field !== "rgb(9, 15, 20)"
+        || settingsSurface.toolsLink !== "rgb(8, 16, 25)"
+        || settingsSurface.backupLink !== "rgb(7, 17, 12)"
         || parseFloat(settingsSurface.rowTitleFont) < 11.5) {
-        report.failures.push({ width, type: "settings-deep-dark", settingsSurface });
+        report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
 
+      await setState(page, uiState({ activePage: "more", moreSection: "backup" }));
+      const backupSurface = await page.evaluate(() => ({
+        primary: getComputedStyle(document.querySelector(".backup-primary-card")).backgroundColor,
+        auto: getComputedStyle(document.querySelector(".backup-auto-card")).backgroundColor,
+        orders: getComputedStyle(document.querySelector(".legacy-service-stats.backup > div:nth-child(1)")).backgroundColor,
+        warehouse: getComputedStyle(document.querySelector(".legacy-service-stats.backup > div:nth-child(2)")).backgroundColor,
+        price: getComputedStyle(document.querySelector(".legacy-service-stats.backup > div:nth-child(3)")).backgroundColor,
+        download: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="download-backup"]')).backgroundColor,
+        importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor
+      }));
+      if (backupSurface.primary !== "rgb(7, 17, 12)"
+        || backupSurface.auto !== "rgb(8, 16, 25)"
+        || backupSurface.orders !== "rgb(16, 11, 8)"
+        || backupSurface.warehouse !== "rgb(8, 16, 25)"
+        || backupSurface.price !== "rgb(16, 11, 23)"
+        || backupSurface.download !== "rgb(10, 33, 20)"
+        || backupSurface.importButton !== "rgb(8, 16, 25)") {
+        report.failures.push({ width, type: "backup-semantic-hierarchy", backupSurface });
+      }
+
+      await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       await page.locator('[data-action="run-diagnostics"]').click();
       await page.waitForTimeout(120);
       const diagnosticsSurface = await page.evaluate(() => {

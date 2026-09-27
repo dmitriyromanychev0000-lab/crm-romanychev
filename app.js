@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.166";
+const APP_BUILD = "2026.09.27.167";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Экран «Ещё» получил спокойные цветовые акценты по разделам, а инструменты теперь визуально различают доступные, занятые и списанные позиции";
+const APP_RELEASE = "Настройки и бэкапы разделены по назначению: реквизиты, приложение, рабочие данные, сохранение и автоматический бэкап теперь визуально различаются и быстрее считываются";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1653,7 +1653,7 @@ function settingsPage() {
       <div><h1>Настройки</h1><p>Реквизиты и приложение</p></div>
     </div>
 
-    <form class="legacy-settings-card" id="settings-form">
+    <form class="legacy-settings-card settings-profile-card" id="settings-form">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("settings")}</span><h2>Реквизиты исполнителя</h2></div>
       <div class="legacy-settings-grid">
         <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
@@ -1670,7 +1670,7 @@ function settingsPage() {
       <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>
 
-    <section class="legacy-settings-card">
+    <section class="legacy-settings-card settings-app-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("document")}</span><h2>Приложение</h2></div>
       <div class="legacy-settings-list">
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>CRM by Romanychev ${APP_VERSION}</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Обновить</button></div>
@@ -1679,7 +1679,7 @@ function settingsPage() {
       </div>
     </section>
 
-    <section class="legacy-settings-card">
+    <section class="legacy-settings-card settings-data-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("more")}</span><h2>Рабочие данные</h2></div>
       <div class="legacy-settings-links">
         <button type="button" data-more="tools"><span class="settings-link-icon">${icon("tools")}</span><span><strong>Инструменты</strong><small>Рабочее оснащение</small></span><b>${data.tools.length}</b><span class="chevron">${icon("chevron")}</span></button>
@@ -1851,7 +1851,7 @@ async function backupSettings() {
       <div><h1>Бэкапы</h1><p>Резервные копии и восстановление</p></div>
     </div>
 
-    <section class="legacy-settings-card">
+    <section class="legacy-settings-card backup-primary-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("backup")}</span><h2>Сохранение и восстановление</h2></div>
       <div class="legacy-backup-main-actions">
         <button type="button" class="legacy-orange-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
@@ -1866,7 +1866,7 @@ async function backupSettings() {
       </div>
     </section>
 
-    <section class="legacy-settings-card">
+    <section class="legacy-settings-card backup-auto-card">
       <div class="legacy-settings-list">
         <div class="legacy-settings-row plain"><span><strong>Папка</strong><small>${directory ? escapeHtml(directory.name) : "Не выбрана"}</small></span></div>
         <div class="legacy-settings-row plain"><span><strong>Автоматический бэкап</strong><small>Проверяется при открытии приложения</small></span><button type="button" class="toggle ${data.settings.autoBackup ? "on" : ""}" data-action="toggle-auto" role="switch" aria-checked="${Boolean(data.settings.autoBackup)}" aria-label="Автоматический бэкап"></button></div>

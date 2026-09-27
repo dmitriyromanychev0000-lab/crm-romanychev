@@ -11770,3 +11770,101 @@
     color: var(--crm-red) !important;
   }
 }
+
+
+/* 1.0.42 · Настройки и бэкапы: отдельные визуальные роли по назначению. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-page .settings-profile-card {
+    border-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.065), transparent 120px) !important;
+  }
+
+  .legacy-settings-page .settings-profile-card .legacy-section-icon {
+    border: 1px solid rgba(255,113,83,.22);
+    background: rgba(255,113,83,.09) !important;
+    color: var(--crm-accent) !important;
+  }
+
+  .legacy-settings-page .settings-app-card {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(92,169,255,.055), transparent 120px) !important;
+  }
+
+  .legacy-settings-page .settings-data-card {
+    border-color: #202d35 !important;
+    background-color: #060b0f !important;
+    background-image: none !important;
+  }
+
+  .legacy-settings-page .settings-app-card .legacy-settings-row {
+    border-color: #1b2a33 !important;
+  }
+
+  .legacy-settings-page .settings-links > button[data-more="tools"] {
+    border-color: #223b52 !important;
+    background: #081019 !important;
+  }
+
+  .legacy-settings-page .settings-links > button[data-more="receipts"] {
+    border-color: #4a3b1c !important;
+    background: #131006 !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button[data-more="drafts"] {
+    border-color: #3d2c52 !important;
+    background: #100b17 !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button[data-more="backup"] {
+    border-color: #1d3b2b !important;
+    background: #07110c !important;
+  }
+
+  .legacy-backup-page .backup-primary-card {
+    border-color: #1d3b2b !important;
+    background-color: #07110c !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(89,216,137,.07), transparent 120px) !important;
+  }
+
+  .legacy-backup-page .backup-primary-card .legacy-section-icon {
+    border: 1px solid rgba(89,216,137,.24);
+    background: rgba(89,216,137,.10) !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-backup-page .legacy-backup-main-actions .legacy-orange-button {
+    border: 1px solid #24563a !important;
+    background: #0a2114 !important;
+    color: #d5f6df !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-backup-page .legacy-backup-main-actions .legacy-dark-button {
+    border-color: #223b52 !important;
+    background: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .legacy-backup-page .backup-auto-card {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(92,169,255,.055), transparent 120px) !important;
+  }
+
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(1) {
+    border-color: #4a2c23 !important;
+    background-color: #100b08 !important;
+  }
+
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(2) {
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+  }
+
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(3) {
+    border-color: #3d2c52 !important;
+    background-color: #100b17 !important;
+  }
+}
