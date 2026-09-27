@@ -1988,7 +1988,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         if (await commentToggle.count() !== 1 || await commentToggle.isChecked()) {
           report.failures.push({ width, type: "master-comment-search-setting-default" });
         } else {
-          await commentToggle.check();
+          await page.locator("label.settings-search-toggle").click();
           await page.waitForTimeout(70);
         }
         await setState(page, uiState({ activePage: "orders", searchQuery: "" }));
