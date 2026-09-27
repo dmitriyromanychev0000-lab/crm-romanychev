@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T18:12:10.062Z",
-  "testedSha": "10c6f9fb41baac86784fd3992a9a25df3e028243",
+  "generatedAt": "2026-09-27T18:15:46.585Z",
+  "testedSha": "1aaa37529201ca3966038be070abbd5b079b2a05",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1275,8 +1275,8 @@
         "modal": "rgb(3, 7, 10)",
         "hero": "rgb(6, 11, 15)",
         "primaryKpi": "rgb(7, 17, 12)",
+        "reservedKpi": "rgb(8, 16, 25)",
         "minimumKpi": "rgb(8, 16, 25)",
-        "costKpi": "rgb(8, 16, 25)",
         "incoming": "rgb(7, 19, 13)",
         "outgoing": "rgb(22, 9, 12)",
         "archive": "rgb(8, 16, 25)",
@@ -1291,8 +1291,8 @@
         "modal": "rgb(3, 7, 10)",
         "hero": "rgb(6, 11, 15)",
         "primaryKpi": "rgb(7, 17, 12)",
+        "reservedKpi": "rgb(8, 16, 25)",
         "minimumKpi": "rgb(8, 16, 25)",
-        "costKpi": "rgb(8, 16, 25)",
         "incoming": "rgb(7, 19, 13)",
         "outgoing": "rgb(22, 9, 12)",
         "archive": "rgb(8, 16, 25)",
