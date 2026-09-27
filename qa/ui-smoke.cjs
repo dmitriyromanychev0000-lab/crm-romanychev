@@ -470,7 +470,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "warranty-none-hides-targets", noWarrantyDisplay });
       }
       await page.locator('.order-editor-modal [name="guarantee"]').selectOption("6");
-      await page.locator('[data-warranty-target][data-name="Компрессор"]').check();
+      await page.locator('.warranty-target-option:has([data-warranty-target][data-name="Компрессор"])').click();
       await page.locator('.order-editor-modal [name="guaranteeNote"]').fill("Герметичность контура");
       report.results.push(await shot(page, width, "order-editor-warranty", false));
       await page.locator('.order-editor-modal button[type="submit"]').click();
