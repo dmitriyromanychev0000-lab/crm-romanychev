@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T19:34:53.046Z",
-  "testedSha": "a775795c8cf6bafe1fcab40a04efa507e01d08f3",
+  "generatedAt": "2026-09-27T19:42:13.502Z",
+  "testedSha": "b0118a96f558a10255f966c9b663de5a4b2f1ecf",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1348,5 +1348,70 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "shopping-card-single-row",
+      "shoppingCardLayout": {
+        "cardHeight": 119,
+        "iconCenterY": 454,
+        "copyCenterY": 454,
+        "needCenterY": 454,
+        "copyLeft": 67,
+        "iconRight": 58,
+        "needLeft": 74,
+        "copyRight": 67,
+        "needRight": 298,
+        "cardRight": 308
+      }
+    },
+    {
+      "width": 360,
+      "type": "shopping-card-single-row",
+      "shoppingCardLayout": {
+        "cardHeight": 119,
+        "iconCenterY": 395,
+        "copyCenterY": 395,
+        "needCenterY": 395,
+        "copyLeft": 76,
+        "iconRight": 60,
+        "needLeft": 99,
+        "copyRight": 89,
+        "needRight": 336,
+        "cardRight": 348
+      }
+    },
+    {
+      "width": 390,
+      "type": "shopping-card-single-row",
+      "shoppingCardLayout": {
+        "cardHeight": 119,
+        "iconCenterY": 397,
+        "copyCenterY": 397,
+        "needCenterY": 397,
+        "copyLeft": 76,
+        "iconRight": 64,
+        "needLeft": 129,
+        "copyRight": 119,
+        "needRight": 366,
+        "cardRight": 378
+      }
+    },
+    {
+      "width": 430,
+      "type": "shopping-card-single-row",
+      "shoppingCardLayout": {
+        "cardHeight": 119,
+        "iconCenterY": 397,
+        "copyCenterY": 397,
+        "needCenterY": 397,
+        "copyLeft": 76,
+        "iconRight": 64,
+        "needLeft": 169,
+        "copyRight": 159,
+        "needRight": 406,
+        "cardRight": 418
+      }
+    }
+  ]
 }
