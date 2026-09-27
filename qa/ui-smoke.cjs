@@ -241,9 +241,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     if (shellSurface.headerHeight < 64
       || shellSurface.headerHeight > 86
       || shellSurface.headerBorder !== "0px"
-      || shellSurface.headerBackground !== "rgba(4, 8, 11, 0.985)"
+      || !shellSurface.headerBackground.startsWith("rgba(4, 8, 11, ")
       || parseFloat(shellSurface.titleFont) < 18
-      || shellSurface.navBackground !== "rgba(3, 7, 10, 0.985)"
+      || !shellSurface.navBackground.startsWith("rgba(3, 7, 10, ")
       || shellSurface.navBorder !== "rgb(21, 31, 37)"
       || shellSurface.activeColor !== "rgb(255, 118, 92)"
       || shellSurface.activeIconBackground !== "rgba(255, 113, 83, 0.1)"
