@@ -10916,3 +10916,42 @@
   }
 }
 
+/* 1.0.31 · Прайс: нейтральный поиск в покое, коралловый акцент только при взаимодействии. */
+@media screen and (max-width: 520px) {
+  .legacy-price-search .search {
+    border-color: #202d35 !important;
+    background-color: #090f14 !important;
+    background-image: none !important;
+    color: #f2f5f6 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-price-search .search::placeholder {
+    color: #66727a !important;
+    opacity: 1 !important;
+  }
+
+  .legacy-price-search > .ui-icon {
+    color: #7f8a92 !important;
+    transition: color .16s ease;
+  }
+
+  .legacy-price-search:focus-within > .ui-icon {
+    color: #ff765c !important;
+  }
+
+  .legacy-price-search .search:focus,
+  .legacy-price-search .search:focus-visible,
+  .legacy-price-filters .field:focus,
+  .legacy-price-filters .field:focus-visible {
+    outline: 0 !important;
+    border-color: rgba(255,104,74,.72) !important;
+    background-color: #0b1217 !important;
+    box-shadow: 0 0 0 3px rgba(255,104,74,.08) !important;
+  }
+
+  .legacy-price-filters .field {
+    color-scheme: dark;
+  }
+}
+

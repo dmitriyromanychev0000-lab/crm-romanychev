@@ -754,13 +754,43 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
-      const pricePageSurface = await page.evaluate(() => ({
-        background: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-price-row strong")).fontSize
-      }));
-      if (pricePageSurface.background !== "rgb(7, 12, 16)" || parseFloat(pricePageSurface.rowTitleFont) < 11.5) {
+      const pricePageSurface = await page.evaluate(() => {
+        const search = document.querySelector("#price-search");
+        const searchStyle = getComputedStyle(search);
+        return {
+          background: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
+          rowTitleFont: getComputedStyle(document.querySelector(".legacy-price-row strong")).fontSize,
+          searchBackground: searchStyle.backgroundColor,
+          searchBorder: searchStyle.borderTopColor,
+          searchShadow: searchStyle.boxShadow
+        };
+      });
+      if (pricePageSurface.background !== "rgb(7, 12, 16)"
+        || parseFloat(pricePageSurface.rowTitleFont) < 11.5
+        || pricePageSurface.searchBackground !== "rgb(9, 15, 20)"
+        || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
+        || pricePageSurface.searchShadow !== "none") {
         report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
       }
+      await page.locator("#price-search").focus();
+      const priceSearchFocus = await page.evaluate(() => {
+        const search = document.querySelector("#price-search");
+        const icon = document.querySelector(".legacy-price-search > .ui-icon");
+        const style = getComputedStyle(search);
+        return {
+          border: style.borderTopColor,
+          background: style.backgroundColor,
+          shadow: style.boxShadow,
+          icon: icon ? getComputedStyle(icon).color : "missing"
+        };
+      });
+      if (!priceSearchFocus.border.includes("255, 104, 74")
+        || priceSearchFocus.background !== "rgb(11, 18, 23)"
+        || priceSearchFocus.shadow === "none"
+        || priceSearchFocus.icon !== "rgb(255, 118, 92)") {
+        report.failures.push({ width, type: "price-search-focus", priceSearchFocus });
+      }
+      await page.locator("#price-search").evaluate((node) => node.blur());
       await page.locator('[data-action="new-price"]').click();
       const priceEditorState = await page.evaluate(() => {
         const back = document.querySelector(".legacy-price-editor .legacy-back-button");
