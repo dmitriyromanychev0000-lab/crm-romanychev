@@ -409,6 +409,87 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "source-manager-close", sourceManagerClosed });
       }
 
+      await page.locator('[data-action="manage-warranty-options"]').click();
+      await page.waitForTimeout(30);
+      await page.locator("#new-warranty-name").fill("Компрессор");
+      await page.locator("#add-warranty-option").click();
+      await page.locator("#new-warranty-name").fill("Плата управления");
+      await page.locator("#add-warranty-option").click();
+      await page.waitForTimeout(30);
+      const warrantyManagerState = await page.evaluate(() => ({
+        modal: document.querySelectorAll(".warranty-manager-modal").length,
+        rows: document.querySelectorAll(".warranty-manager-row").length,
+        names: [...document.querySelectorAll("[data-warranty-option-name]")].map((input) => input.value),
+        locked: document.body.classList.contains("modal-open")
+      }));
+      if (warrantyManagerState.modal !== 1
+        || warrantyManagerState.rows !== 2
+        || !warrantyManagerState.names.includes("Компрессор")
+        || !warrantyManagerState.names.includes("Плата управления")
+        || !warrantyManagerState.locked) {
+        report.failures.push({ width, type: "warranty-manager-add", warrantyManagerState });
+      }
+      report.results.push(await shot(page, width, "warranty-manager", false));
+      await page.locator(".warranty-manager-head [data-close-modal]").click();
+      await page.waitForTimeout(20);
+
+      await setState(page, uiState({ activePage: "orders" }));
+      await page.locator('.legacy-order-card [data-order-action="edit"]').first().click();
+      await page.waitForTimeout(30);
+      const warrantyEditorInitial = await page.evaluate(() => {
+        const grid = document.querySelector("#warranty-target-grid");
+        const style = grid ? getComputedStyle(grid) : null;
+        return {
+          options: document.querySelectorAll("[data-warranty-target]").length,
+          names: [...document.querySelectorAll("[data-warranty-target]")].map((input) => input.dataset.name),
+          columns: style?.gridTemplateColumns || "",
+          empty: document.querySelector(".warranty-target-empty")?.innerText || ""
+        };
+      });
+      if (warrantyEditorInitial.options !== 2
+        || !warrantyEditorInitial.names.includes("Компрессор")
+        || !warrantyEditorInitial.names.includes("Плата управления")
+        || warrantyEditorInitial.columns.split(" ").filter(Boolean).length !== 2) {
+        report.failures.push({ width, type: "warranty-editor-grid", warrantyEditorInitial });
+      }
+
+      await page.locator('.order-editor-modal [name="tech"]').selectOption({ label: "Стиральная машина" });
+      await page.waitForTimeout(20);
+      const washerWarranty = await page.evaluate(() => ({
+        options: document.querySelectorAll("[data-warranty-target]").length,
+        empty: document.querySelector(".warranty-target-empty")?.innerText || ""
+      }));
+      if (washerWarranty.options !== 0 || !washerWarranty.empty.includes("не настроены")) {
+        report.failures.push({ width, type: "warranty-by-appliance", washerWarranty });
+      }
+
+      await page.locator('.order-editor-modal [name="tech"]').selectOption({ label: "Холодильник" });
+      await page.locator('.order-editor-modal [name="guarantee"]').selectOption("0");
+      const noWarrantyDisplay = await page.evaluate(() => getComputedStyle(document.querySelector("#warranty-target-wrap")).display);
+      if (noWarrantyDisplay !== "none") {
+        report.failures.push({ width, type: "warranty-none-hides-targets", noWarrantyDisplay });
+      }
+      await page.locator('.order-editor-modal [name="guarantee"]').selectOption("6");
+      await page.locator('[data-warranty-target][data-name="Компрессор"]').check();
+      await page.locator('.order-editor-modal [name="guaranteeNote"]').fill("Герметичность контура");
+      report.results.push(await shot(page, width, "order-editor-warranty", false));
+      await page.locator('.order-editor-modal button[type="submit"]').click();
+      await page.waitForTimeout(60);
+      const savedWarrantyData = await readStoredData(page);
+      const warrantyOrder = savedWarrantyData.orders.find((item) => item.id === "0060");
+      if (Number(warrantyOrder?.guarantee) !== 6
+        || warrantyOrder?.guaranteeTargets?.length !== 1
+        || warrantyOrder?.guaranteeTargets?.[0]?.name !== "Компрессор"
+        || warrantyOrder?.guaranteeNote !== "Герметичность контура") {
+        report.failures.push({
+          width,
+          type: "warranty-order-persist",
+          guarantee: warrantyOrder?.guarantee,
+          targets: warrantyOrder?.guaranteeTargets,
+          note: warrantyOrder?.guaranteeNote
+        });
+      }
+
       await writeSeed(page);
       await setState(page, uiState({
         activePage: "more",
