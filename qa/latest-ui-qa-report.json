@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T11:18:02.040Z",
-  "testedSha": "041db470ef7d787162212f18ab08e27487414312",
+  "generatedAt": "2026-09-27T11:20:38.501Z",
+  "testedSha": "aa9a12394acf8a6f65daffe8ceb1c7e6996f4af5",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1258,74 +1258,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 68,
-        "headerBorder": "0px",
-        "headerBackground": "rgba(4, 8, 11, 0.984)",
-        "titleFont": "18px",
-        "navBackground": "rgba(3, 7, 10, 0.984)",
-        "navBorder": "rgb(21, 31, 37)",
-        "activeColor": "rgb(255, 118, 92)",
-        "activeIconBackground": "rgba(255, 113, 83, 0.1)",
-        "activeIconWidth": 30,
-        "activeIconHeight": 30,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 360,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 68,
-        "headerBorder": "0px",
-        "headerBackground": "rgba(4, 8, 11, 0.984)",
-        "titleFont": "19px",
-        "navBackground": "rgba(3, 7, 10, 0.984)",
-        "navBorder": "rgb(21, 31, 37)",
-        "activeColor": "rgb(255, 118, 92)",
-        "activeIconBackground": "rgba(255, 113, 83, 0.1)",
-        "activeIconWidth": 32,
-        "activeIconHeight": 30,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 390,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 68,
-        "headerBorder": "0px",
-        "headerBackground": "rgba(4, 8, 11, 0.984)",
-        "titleFont": "19px",
-        "navBackground": "rgba(3, 7, 10, 0.984)",
-        "navBorder": "rgb(21, 31, 37)",
-        "activeColor": "rgb(255, 118, 92)",
-        "activeIconBackground": "rgba(255, 113, 83, 0.1)",
-        "activeIconWidth": 32,
-        "activeIconHeight": 30,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 430,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 68,
-        "headerBorder": "0px",
-        "headerBackground": "rgba(4, 8, 11, 0.984)",
-        "titleFont": "19px",
-        "navBackground": "rgba(3, 7, 10, 0.984)",
-        "navBorder": "rgb(21, 31, 37)",
-        "activeColor": "rgb(255, 118, 92)",
-        "activeIconBackground": "rgba(255, 113, 83, 0.1)",
-        "activeIconWidth": 32,
-        "activeIconHeight": 30,
-        "labelSpread": 0
-      }
-    }
-  ]
+  "failures": []
 }
