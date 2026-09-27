@@ -495,7 +495,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator("#new-stock-category-name").fill("Компрессоры");
       await page.locator("#add-stock-category").click();
       await page.waitForTimeout(30);
-      const addedStockCategory = page.locator("[data-stock-category-id]").filter({ hasText: "Компрессоры" }).first();
+      const addedStockCategory = page.locator('[data-stock-category-id]:has([data-stock-category-name][value="Компрессоры"])').first();
       if (await addedStockCategory.count() !== 1) {
         report.failures.push({ width, type: "stock-category-add" });
       } else {
@@ -509,7 +509,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const addedCategory = stockDirectoryData.stock_categories.find((entry) => entry.name === "Компрессорные узлы");
         if (!addedCategory?.archived) report.failures.push({ width, type: "stock-category-edit-archive", addedCategory });
       }
-      const partsCategory = page.locator("[data-stock-category-id]").filter({ hasText: "Запчасти" }).first();
+      const partsCategory = page.locator('[data-stock-category-id]:has([data-stock-category-name][value="Запчасти"])').first();
       if (await partsCategory.count() === 1) {
         const partsInput = partsCategory.locator("[data-stock-category-name]");
         await partsInput.fill("Комплектующие");
@@ -1733,7 +1733,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('.stock-adjust-modal [name="amount"]').fill("4");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO");
         await page.locator('.stock-adjust-modal button[type="submit"]').click();
-        await page.waitForTimeout(80);
+        await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
+        await page.waitForTimeout(30);
 
         const afterFifo = await readStoredData(page);
         const fifoItem = afterFifo.warehouse.find((item) => item.id === "w1");
