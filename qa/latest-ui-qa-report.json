@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T09:26:03.584Z",
-  "testedSha": "aa0854a22193e7a454aea6a15bf13eec52c65d3f",
+  "generatedAt": "2026-09-27T09:48:38.366Z",
+  "testedSha": "da9371fa29df6cd202a4f0e64dac935b324f153a",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1186,5 +1186,26 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "price-search-focus",
+      "priceSearchFocus": {
+        "border": "rgb(32, 45, 53)",
+        "background": "rgb(9, 15, 20)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "icon": "rgb(127, 138, 146)"
+      }
+    },
+    {
+      "width": 390,
+      "type": "price-search-focus",
+      "priceSearchFocus": {
+        "border": "rgb(32, 45, 53)",
+        "background": "rgb(9, 15, 20)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "icon": "rgb(127, 138, 146)"
+      }
+    }
+  ]
 }
