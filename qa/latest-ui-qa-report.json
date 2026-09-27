@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T20:49:57.075Z",
-  "testedSha": "50906569134e074ecf299e01a202f705910e1743",
+  "generatedAt": "2026-09-27T20:56:12.332Z",
+  "testedSha": "83e90690aa66e856eb4599a1b3dfd30651ca5058",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1384,33 +1384,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 430,
-      "type": "goods-position-surface",
-      "goodsRowSurface": {
-        "background": "missing",
-        "radius": "missing",
-        "height": 0,
-        "priceRight": 0,
-        "rowRight": 0
-      }
-    },
-    {
-      "width": 430,
-      "type": "shopping-card-single-row",
-      "shoppingCardLayout": {
-        "cardHeight": 0,
-        "iconCenterY": 0,
-        "copyCenterY": 0,
-        "needCenterY": 0,
-        "copyLeft": 0,
-        "iconRight": 0,
-        "needLeft": 0,
-        "copyRight": 0,
-        "needRight": 0,
-        "cardRight": 0
-      }
-    }
-  ]
+  "failures": []
 }
