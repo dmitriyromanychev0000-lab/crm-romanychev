@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T21:33:34.020Z",
-  "testedSha": "4c34d76f157c3391bb2bc08d6e2bdce27b1ab457",
+  "generatedAt": "2026-09-27T21:38:23.607Z",
+  "testedSha": "fb097157f6411841a89b35a1c5fc6e9e3de27a25",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1389,6 +1389,16 @@
       "tooSmall": [],
       "backupRoundtripOk": true,
       "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "backup-local-fallback",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "fallbackCreatedAt": "2026-09-27T21:39:07.064Z"
     },
     {
       "label": "pwa-offline",
