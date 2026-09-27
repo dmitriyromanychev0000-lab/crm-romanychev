@@ -1834,7 +1834,16 @@ function analyticsPage() {
   });
   const serviceRanking = [...serviceMap.values()].sort((a, b) => b.revenue - a.revenue || b.qty - a.qty).slice(0, 5);
   const warehouseActive = data.warehouse.filter((item) => !item.archived);
-  const warehouseValue = warehouseActive.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.lastPurchasePrice) || 0), 0);
+  const warehouseValue = warehouseActive.reduce((sum, item) => sum + stockInventoryCost(item), 0);
+  const stockMovementsInRange = data.warehouse_movements.filter((movement) => inAnalyticsRange(movement.date, range));
+  const stockPurchased = stockMovementsInRange
+    .filter((movement) => movement.type === "purchase_in")
+    .reduce((sum, movement) => sum + (Number(movement.totalCost) || 0), 0);
+  const stockWrittenOffCost = stockMovementsInRange.reduce((sum, movement) => {
+    if (movement.type === "order_out" || movement.type === "manual_out") return sum + (Number(movement.batchCost) || 0);
+    if (movement.type === "order_return") return sum - (Number(movement.batchCost) || 0);
+    return sum;
+  }, 0);
 
   const comparison = previous ? `
     <div class="analytics-comparison-strip">
@@ -1915,10 +1924,11 @@ function analyticsPage() {
 
     <details class="panel analytics-collapsible analytics-stock-summary">
       <summary><span class="panel-title"><span class="badge-icon">${icon("box")}</span><span>Склад<small>остатки и расход материалов</small></span></span>${icon("chevron")}</summary>
-      <div class="analytics-work-grid">
-        <div class="metric"><div class="metric-label">Позиций</div><div class="metric-value">${warehouseActive.length}</div></div>
-        <div class="metric"><div class="metric-label">Заканчивается</div><div class="metric-value yellow">${lowStock}</div></div>
+      <div class="analytics-stock-grid">
+        <div class="metric"><div class="metric-label">Закуплено</div><div class="metric-value red">${money(stockPurchased)}</div></div>
+        <div class="metric"><div class="metric-label">Списано по себестоимости</div><div class="metric-value yellow">${money(Math.max(0, stockWrittenOffCost))}</div></div>
         <div class="metric"><div class="metric-label">Стоимость остатков</div><div class="metric-value purple">${money(warehouseValue)}</div></div>
+        <div class="metric"><div class="metric-label">Позиций / мало</div><div class="metric-value">${warehouseActive.length} / ${lowStock}</div></div>
       </div>
       ${materialUsage.length ? `<div class="goods-list analytics-material-usage">${materialUsage.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.operations} движ. за период</small></span><b class="yellow">${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(item.qty)} ${escapeHtml(item.unit)}</b><span></span></div>`).join("")}</div>` : ""}
     </details>
@@ -4374,6 +4384,10 @@ function stockDetailModal(item) {
         <div class="primary"><span>Доступно</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong><small>всего: ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.quantity) || 0)}</small></div>
         <div class="reserved"><span>В резерве</span><strong>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(reserved)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div>
         <div class="minimum"><span>Минимум</span><strong>${escapeHtml(item.min || 0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</strong></div>
+      </section>
+      <section class="stock-batch-summary">
+        <span><small>АКТИВНЫХ ПАРТИЙ</small><strong>${stockBatchList(item).filter((batch) => Number(batch.remainingQty) > 1e-9).length}</strong></span>
+        <span><small>ОСТАТОК ПО СЕБЕСТОИМОСТИ</small><strong>${money(stockInventoryCost(item))}</strong></span>
       </section>
       <div class="stock-detail-actions">
         <button type="button" class="incoming" data-stock-detail-action="in"><span class="stock-action-icon">${icon("plus")}</span><span><b>Приход</b><small>Добавить на склад</small></span></button>
