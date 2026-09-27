@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T18:15:46.585Z",
-  "testedSha": "1aaa37529201ca3966038be070abbd5b079b2a05",
+  "generatedAt": "2026-09-27T18:17:53.674Z",
+  "testedSha": "9031e74279453e17727e2703258c25f3af43f5e2",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1267,38 +1267,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "stock-detail-hierarchy",
-      "stockDetailSurface": {
-        "modal": "rgb(3, 7, 10)",
-        "hero": "rgb(6, 11, 15)",
-        "primaryKpi": "rgb(7, 17, 12)",
-        "reservedKpi": "rgb(8, 16, 25)",
-        "minimumKpi": "rgb(8, 16, 25)",
-        "incoming": "rgb(7, 19, 13)",
-        "outgoing": "rgb(22, 9, 12)",
-        "archive": "rgb(8, 16, 25)",
-        "incomingWidth": 147,
-        "archiveWidth": 300
-      }
-    },
-    {
-      "width": 390,
-      "type": "stock-detail-hierarchy",
-      "stockDetailSurface": {
-        "modal": "rgb(3, 7, 10)",
-        "hero": "rgb(6, 11, 15)",
-        "primaryKpi": "rgb(7, 17, 12)",
-        "reservedKpi": "rgb(8, 16, 25)",
-        "minimumKpi": "rgb(8, 16, 25)",
-        "incoming": "rgb(7, 19, 13)",
-        "outgoing": "rgb(22, 9, 12)",
-        "archive": "rgb(8, 16, 25)",
-        "incomingWidth": 179,
-        "archiveWidth": 364
-      }
-    }
-  ]
+  "failures": []
 }
