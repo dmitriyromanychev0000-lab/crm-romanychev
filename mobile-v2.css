@@ -13971,3 +13971,24 @@
   .movement-card.neutral .movement-icon{border:1px solid rgba(78,161,255,.25);background:rgba(78,161,255,.10)!important}
   .movement-card.neutral>b{border:1px solid rgba(78,161,255,.24);background:rgba(78,161,255,.08)}
 }
+
+/* 1.0.38 · Материалы: место хранения в той же строке без сжатия себестоимости. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: minmax(68px,.72fr) minmax(104px,1.08fr) minmax(86px,1fr) !important;
+    gap: 5px !important;
+  }
+  .order-editor-modal .material-card-controls label > span {
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+@media screen and (max-width: 340px) {
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: minmax(60px,.65fr) minmax(100px,1.08fr) minmax(84px,.95fr) !important;
+    gap: 4px !important;
+  }
+  .order-editor-modal .material-card-controls label > span {
+    font-size: 9px !important;
+  }
+}
