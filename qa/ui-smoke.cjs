@@ -772,19 +772,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.searchShadow !== "none") {
         report.failures.push({ width, type: "price-deep-dark-page", pricePageSurface });
       }
-      await page.locator("#price-search").focus();
+      await page.waitForTimeout(80);
+      await page.locator("#price-search").click();
+      await page.waitForTimeout(40);
       const priceSearchFocus = await page.evaluate(() => {
         const search = document.querySelector("#price-search");
         const icon = document.querySelector(".legacy-price-search > .ui-icon");
         const style = getComputedStyle(search);
         return {
+          focused: document.activeElement === search,
           border: style.borderTopColor,
           background: style.backgroundColor,
           shadow: style.boxShadow,
           icon: icon ? getComputedStyle(icon).color : "missing"
         };
       });
-      if (!priceSearchFocus.border.includes("255, 104, 74")
+      if (!priceSearchFocus.focused
+        || !priceSearchFocus.border.includes("255, 104, 74")
         || priceSearchFocus.background !== "rgb(11, 18, 23)"
         || priceSearchFocus.shadow === "none"
         || priceSearchFocus.icon !== "rgb(255, 118, 92)") {
