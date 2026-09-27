@@ -9850,12 +9850,12 @@
 
 /* 1.0.17 · Вторичные разделы: читаемая типографика вместо старых 8–9 px. */
 @media screen and (max-width: 520px) {
-  .legacy-more-list .menu-item strong {
+  .legacy-more-list .menu-name {
     font-size: 12.5px !important;
     line-height: 1.15 !important;
   }
 
-  .legacy-more-list .menu-item small {
+  .legacy-more-list .menu-description {
     margin-top: 3px !important;
     font-size: 10px !important;
     line-height: 1.2 !important;
@@ -10010,7 +10010,7 @@
 }
 
 @media screen and (max-width: 340px) {
-  .legacy-more-list .menu-item strong,
+  .legacy-more-list .menu-name,
   .legacy-client-copy strong,
   .legacy-price-row strong,
   .legacy-document-row strong,
@@ -10020,7 +10020,7 @@
     font-size: 11.5px !important;
   }
 
-  .legacy-more-list .menu-item small,
+  .legacy-more-list .menu-description,
   .legacy-client-copy small,
   .legacy-price-row small,
   .legacy-document-row small,

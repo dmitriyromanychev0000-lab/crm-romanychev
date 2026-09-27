@@ -609,7 +609,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
       const moreMenuSurface = await page.evaluate(() => ({
         background: getComputedStyle(document.querySelector(".legacy-more-list .menu-item")).backgroundColor,
-        titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-item strong")).fontSize
+        titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
       }));
       if (moreMenuSurface.background !== "rgb(7, 12, 16)" || parseFloat(moreMenuSurface.titleFont) < 11.5) {
         report.failures.push({ width, type: "more-menu-deep-dark", moreMenuSurface });
