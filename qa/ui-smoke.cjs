@@ -1773,27 +1773,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           if (details) details.open = true;
         });
         await page.locator('[data-stock="out"][data-id="w1"]').click();
-        await page.locator('.stock-adjust-modal [name="amount"]').fill("3.5");
-        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO");
+        await page.locator('.stock-adjust-modal [name="amount"]').fill("3");
+        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · первая партия");
+        await page.locator('.stock-adjust-modal button[type="submit"]').click();
+        await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
+        await page.waitForTimeout(20);
+
+        await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+          const details = node.closest("details");
+          if (details) details.open = true;
+        });
+        await page.locator('[data-stock="out"][data-id="w1"]').click();
+        await page.locator('.stock-adjust-modal [name="amount"]').fill("0.5");
+        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · вторая партия");
         await page.locator('.stock-adjust-modal button[type="submit"]').click();
         await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
         await page.waitForTimeout(30);
 
         const afterFifo = await readStoredData(page);
         const fifoItem = afterFifo.warehouse.find((item) => item.id === "w1");
-        const fifoMovement = [...afterFifo.warehouse_movements].reverse().find((item) => item.type === "manual_out" && item.warehouseId === "w1");
-        const allocations = fifoMovement?.allocations || [];
+        const fifoMovements = [...afterFifo.warehouse_movements]
+          .filter((item) => item.type === "manual_out" && item.warehouseId === "w1")
+          .slice(-2);
+        const firstFifo = fifoMovements[0];
+        const secondFifo = fifoMovements[1];
+        const firstAllocations = firstFifo?.allocations || [];
+        const secondAllocations = secondFifo?.allocations || [];
         if (Number(fifoItem?.quantity) !== 1.5
           || Number(fifoItem?.batches?.[0]?.remainingQty) !== 0
           || Number(fifoItem?.batches?.[1]?.remainingQty) !== 1.5
-          || allocations.length !== 2
-          || Number(allocations[0]?.qty) !== 3
-          || Number(allocations[0]?.unitCost) !== 3100
-          || Number(allocations[1]?.qty) !== 0.5
-          || Number(allocations[1]?.unitCost) !== 5000
-          || Number(fifoMovement?.batchCost) !== 11800
-          || fifoMovement?.comment !== "Тест FIFO") {
-          report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovement });
+          || fifoMovements.length !== 2
+          || firstAllocations.length !== 1
+          || Number(firstAllocations[0]?.qty) !== 3
+          || Number(firstAllocations[0]?.unitCost) !== 3100
+          || Number(firstFifo?.batchCost) !== 9300
+          || firstFifo?.comment !== "Тест FIFO · первая партия"
+          || secondAllocations.length !== 1
+          || Number(secondAllocations[0]?.qty) !== 0.5
+          || Number(secondAllocations[0]?.unitCost) !== 5000
+          || Number(secondFifo?.batchCost) !== 2500
+          || secondFifo?.comment !== "Тест FIFO · вторая партия") {
+          report.failures.push({ width, type: "stock-fifo-writeoff", item: fifoItem, fifoMovements });
         }
 
         await writeSeed(page, seed);
