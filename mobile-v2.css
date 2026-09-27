@@ -10127,3 +10127,49 @@
   }
 }
 
+/* 1.0.19 · Touch targets: закрываем остатки строгого 44px-аудита. */
+@media screen and (max-width: 520px) {
+  .legacy-back-button,
+  .legacy-detail-back,
+  .order-actions-close,
+  .stock-detail-back {
+    display: grid !important;
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+  }
+
+  .legacy-back-button .ui-icon,
+  .legacy-detail-back .ui-icon,
+  .order-actions-close .ui-icon,
+  .stock-detail-back .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+  }
+
+  .legacy-finance-actions > button,
+  .empty-actions > button,
+  .empty-actions > a {
+    min-height: 44px !important;
+  }
+
+  .analytics-period-grid .chip {
+    min-width: 44px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .analytics-period-grid {
+    grid-template-columns: repeat(3,minmax(44px,1fr)) !important;
+  }
+
+  .analytics-period-grid .chip {
+    min-width: 44px !important;
+  }
+}
+
