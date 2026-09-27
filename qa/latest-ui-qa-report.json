@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T17:48:12.479Z",
-  "testedSha": "7f99dcf774885aa0e7abc2e82f8cbdeb853906ad",
+  "generatedAt": "2026-09-27T17:51:43.134Z",
+  "testedSha": "d352e7b3be22d71143f7be80a588b57a848bc459",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1258,15 +1258,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 390,
-      "type": "photo-delete",
-      "photoDeleted": {
-        "viewers": 1,
-        "cards": 1,
-        "locked": true
-      }
-    }
-  ]
+  "failures": []
 }
