@@ -1360,7 +1360,6 @@
     font-size: 9px !important;
   }
 
-  .manual-material-details,
   .order-extra-details {
     overflow: hidden;
     border: 1px solid var(--crm-line);
@@ -1368,15 +1367,10 @@
     background: #10171d;
   }
 
-  .manual-material-details {
-    margin-top: 8px;
-  }
-
   .order-extra-details {
     margin: 0;
   }
 
-  .manual-material-details > summary,
   .order-extra-details > summary {
     min-height: 46px;
     padding: 0 12px;
@@ -1385,13 +1379,6 @@
     font-weight: 700;
     line-height: 46px;
     cursor: pointer;
-  }
-
-  .manual-material-details > .secondary-button {
-    margin: 0 10px 10px;
-    width: calc(100% - 20px);
-    min-height: 42px;
-    font-size: 9px;
   }
 
   .order-extra-body {
@@ -1454,12 +1441,6 @@
 
   .order-editor-payment-section .legacy-payment-grid {
     margin-top: 0;
-  }
-
-  .order-editor-modal .legacy-guarantee-card {
-    padding: 10px !important;
-    border-radius: 11px;
-    background: #151d23;
   }
 
   .order-editor-modal .modal-actions {
@@ -4278,7 +4259,6 @@
     font-size: 14px !important;
   }
 
-  .manual-material-details > summary,
   .order-extra-details > summary {
     font-size: 12px !important;
   }
@@ -6230,35 +6210,6 @@
     padding: 9px !important;
   }
 
-  .analytics-work .metric-icon {
-    display: grid;
-    width: 29px;
-    height: 29px;
-    margin-bottom: 7px;
-    place-items: center;
-    border-radius: 9px;
-  }
-
-  .analytics-work .metric-icon .ui-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .analytics-work .metric-icon.green {
-    background: rgba(89,216,137,.14);
-    color: var(--crm-green);
-  }
-
-  .analytics-work .metric-icon.blue {
-    background: rgba(92,169,255,.14);
-    color: var(--crm-blue);
-  }
-
-  .analytics-work .metric-icon.yellow {
-    background: rgba(231,180,80,.14);
-    color: var(--crm-yellow);
-  }
-
   .analytics-work .metric-label {
     font-size: 10px !important;
   }
@@ -6638,7 +6589,6 @@
   .tool-editor-close,
   .finance-entry-close,
   .order-actions-close,
-  .photo-remove,
   .stock-adjust-head [data-close-modal] {
     display: grid !important;
     place-items: center !important;
@@ -6653,7 +6603,6 @@
   .tool-editor-close .ui-icon,
   .finance-entry-close .ui-icon,
   .order-actions-close .ui-icon,
-  .photo-remove .ui-icon,
   .stock-adjust-head [data-close-modal] .ui-icon {
     width: 18px !important;
     height: 18px !important;
@@ -6755,7 +6704,6 @@
 
   .legacy-special-filter button,
   .legacy-custom-price-head button,
-  .manual-material-details > .secondary-button,
   .legacy-goods-add-line button,
   .legacy-manual-add,
   .empty-actions .primary-button[data-action="new-order"] {
@@ -6773,7 +6721,6 @@
 
   .legacy-special-filter button .ui-icon,
   .legacy-custom-price-head button .ui-icon,
-  .manual-material-details > .secondary-button .ui-icon,
   .legacy-goods-add-line button .ui-icon,
   .legacy-manual-add .ui-icon,
   .empty-actions .primary-button[data-action="new-order"] .ui-icon {
@@ -8368,7 +8315,6 @@
     font-size: 13px !important;
   }
 
-  .order-editor-modal .manual-material-details,
   .order-editor-modal .order-extra-details {
     margin: 10px 0 20px !important;
     border: 1px solid #26333b !important;
@@ -8376,12 +8322,7 @@
     background: #060b0f !important;
   }
 
-  .order-editor-modal .manual-material-details {
-    margin-bottom: 0 !important;
-  }
-
-  .order-editor-modal .order-extra-details > summary,
-  .order-editor-modal .manual-material-details > summary {
+  .order-editor-modal .order-extra-details > summary {
     min-height: 48px !important;
     padding: 0 12px !important;
     color: #dce2e5 !important;
@@ -8412,21 +8353,9 @@
     color: #ff684a !important;
   }
 
-  .order-extra-summary-icon .ui-icon,
-  .order-extra-chevron .ui-icon {
+  .order-extra-summary-icon .ui-icon {
     width: 16px !important;
     height: 16px !important;
-  }
-
-  .order-extra-chevron {
-    display: grid !important;
-    place-items: center !important;
-    color: #7f8990 !important;
-    transition: transform .18s ease;
-  }
-
-  .order-extra-details[open] .order-extra-chevron {
-    transform: rotate(90deg) !important;
   }
 
   .order-editor-modal .order-extra-body {
@@ -8620,33 +8549,6 @@
     background: #090f14 !important;
   }
 
-  .order-editor-modal .legacy-guarantee-card {
-    margin: 0 !important;
-    padding: 12px !important;
-    border: 1px solid rgba(255,104,74,.34) !important;
-    border-radius: 14px !important;
-    background: linear-gradient(145deg,rgba(255,104,74,.055),rgba(6,11,15,.96)) !important;
-  }
-
-  .order-editor-modal .legacy-guarantee-head {
-    grid-template-columns: 26px minmax(0,1fr) auto !important;
-    gap: 8px !important;
-    align-items: center !important;
-    margin-bottom: 12px !important;
-  }
-
-  .order-editor-modal .legacy-guarantee-head strong {
-    font-size: 14px !important;
-  }
-
-  .order-editor-modal .guarantee-date {
-    grid-column: auto !important;
-    justify-self: end !important;
-    padding: 5px 8px !important;
-    font-size: 9.5px !important;
-  }
-
-  .order-editor-modal .legacy-guarantee-card .textarea,
   .order-editor-modal .order-comment .textarea {
     min-height: 88px !important;
     border-color: #2c3942 !important;
@@ -10034,7 +9936,6 @@
   .legacy-backup-grid button,
   .legacy-draft-actions button,
   .stock-detail-actions .stock-detail-archive,
-  .manual-material-details > .secondary-button,
   .order-calculation-summary > button {
     min-height: 44px !important;
   }
