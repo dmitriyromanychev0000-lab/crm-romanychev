@@ -10031,3 +10031,47 @@ body.modal-open {
     page-break-inside: avoid !important;
   }
 }
+
+
+/* 1.0.40 · Акт по утверждённому образцу: 5 колонок, гарантия отдельным блоком. */
+.act-work-table th:nth-child(1),
+.act-work-table td:nth-child(1) { width: 6%; }
+.act-work-table th:nth-child(2),
+.act-work-table td:nth-child(2) { width: 51%; }
+.act-work-table th:nth-child(3),
+.act-work-table td:nth-child(3) { width: 16%; }
+.act-work-table th:nth-child(4),
+.act-work-table td:nth-child(4) { width: 10%; }
+.act-work-table th:nth-child(5),
+.act-work-table td:nth-child(5) { width: 17%; }
+
+.act-guarantee {
+  display: grid;
+  gap: 3px;
+  margin-top: 9px;
+  padding: 7px 9px;
+  border: 1px solid #111;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.act-guarantee b { font-size: 12px; }
+.act-guarantee span { font-size: 11px; }
+
+.legacy-act-control-actions.single {
+  grid-template-columns: minmax(0,1fr);
+}
+.legacy-act-control-actions.single > button {
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .act-guarantee {
+    margin-top: 6px;
+    padding: 5px 6px;
+    font-size: 8.5px;
+  }
+  .act-guarantee b,
+  .act-guarantee span {
+    font-size: 8.5px;
+  }
+}
