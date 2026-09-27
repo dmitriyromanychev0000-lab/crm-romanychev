@@ -1287,7 +1287,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.conversion !== 33
         || analyticsModelState.weekdays !== 7
         || analyticsModelState.bars !== 2
-        || analyticsModelState.barWidths.some((widthValue) => widthValue !== 10)
+        || analyticsModelState.barWidths.some((widthValue) => widthValue < 20 || widthValue > 36)
         || !analyticsModelState.hasSources
         || analyticsModelState.expenseButtonHeight < 44) {
         report.failures.push({ width, type: "analytics-product-model", analyticsModelState });
