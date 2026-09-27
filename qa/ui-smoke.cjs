@@ -992,8 +992,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           modal: getComputedStyle(document.querySelector(".stock-detail-modal")).backgroundColor,
           hero: getComputedStyle(document.querySelector(".stock-detail-hero")).backgroundColor,
           primaryKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .primary")).backgroundColor,
+          reservedKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .reserved")).backgroundColor,
           minimumKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .minimum")).backgroundColor,
-          costKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > div:last-child")).backgroundColor,
           incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
           outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
           archive: archive ? getComputedStyle(archive).backgroundColor : "missing",
@@ -1004,8 +1004,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
         || stockDetailSurface.hero !== "rgb(6, 11, 15)"
         || stockDetailSurface.primaryKpi !== "rgb(7, 17, 12)"
+        || stockDetailSurface.reservedKpi !== "rgb(8, 16, 25)"
         || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
-        || stockDetailSurface.costKpi !== "rgb(8, 16, 25)"
         || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
         || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
         || stockDetailSurface.archive !== "rgb(8, 16, 25)"
