@@ -345,6 +345,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)") {
         report.failures.push({ width, type: "order-editor-deep-dark-surfaces", editorSurfaceState });
       }
+      const materialLayoutState = await page.evaluate(() => {
+        const row = document.querySelector("#material-lines [data-material-row]");
+        const copy = row?.querySelector(".material-card-head > div");
+        const controls = row?.querySelector(".material-card-controls");
+        const remove = row?.querySelector("[data-remove-line]");
+        const rowRect = row?.getBoundingClientRect();
+        const copyRect = copy?.getBoundingClientRect();
+        const controlsRect = controls?.getBoundingClientRect();
+        const removeRect = remove?.getBoundingClientRect();
+        return {
+          rowHeight: rowRect ? Math.round(rowRect.height) : 0,
+          controlGap: copyRect && controlsRect ? Math.round(controlsRect.top - copyRect.bottom) : 999,
+          removeOffset: rowRect && removeRect ? Math.round(removeRect.top - rowRect.top) : 999
+        };
+      });
+      if (materialLayoutState.rowHeight > 180 || materialLayoutState.controlGap > 12 || materialLayoutState.removeOffset > 14) {
+        report.failures.push({ width, type: "material-card-compact-layout", materialLayoutState });
+      }
       if (width === 390) {
         await page.locator("#material-lines [data-material-row]").scrollIntoViewIfNeeded();
         report.results.push(await shot(page, width, "order-editor-material-row", false));
