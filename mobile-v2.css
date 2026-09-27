@@ -11156,3 +11156,19 @@
     margin-top: 0 !important;
   }
 }
+
+/* 1.0.36 · Последние старые серые поверхности: деталка заявки и фокус аналитики. */
+@media screen and (max-width: 520px) {
+  .legacy-expanded-order-card {
+    border-color: #202d35 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-focus-list {
+    border-color: #151f25 !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+}
+

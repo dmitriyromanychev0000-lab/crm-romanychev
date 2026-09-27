@@ -617,13 +617,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const detailActions = await page.locator(".legacy-expanded-actions > button, .legacy-expanded-actions > a").count();
       if (detailActions !== 4) report.failures.push({ width, type: "order-detail-actions", count: detailActions });
       const detailWorkState = await page.evaluate(() => ({
+        card: getComputedStyle(document.querySelector(".legacy-expanded-order-card")).backgroundColor,
         serviceSection: getComputedStyle(document.querySelector(".legacy-detail-services")).backgroundColor,
         materialSection: getComputedStyle(document.querySelector(".legacy-detail-materials")).backgroundColor,
         notesSection: getComputedStyle(document.querySelector(".legacy-detail-notes")).backgroundColor,
         serviceRows: document.querySelectorAll(".legacy-detail-services .legacy-detail-line").length,
         materialRows: document.querySelectorAll(".legacy-detail-materials .legacy-detail-line").length
       }));
-      if (detailWorkState.serviceSection !== "rgb(6, 11, 15)"
+      if (detailWorkState.card !== "rgb(6, 11, 15)"
+        || detailWorkState.serviceSection !== "rgb(6, 11, 15)"
         || detailWorkState.materialSection !== "rgb(6, 11, 15)"
         || detailWorkState.notesSection !== "rgb(6, 11, 15)"
         || detailWorkState.serviceRows < 1
@@ -652,10 +654,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const analyticsPageSurfaces = await page.evaluate(() => ({
         panel: getComputedStyle(document.querySelector(".analytics-content .panel")).backgroundColor,
         kpi: getComputedStyle(document.querySelector(".analytics-kpi")).backgroundColor,
+        focusList: getComputedStyle(document.querySelector(".analytics-focus-list")).backgroundColor,
         focus: getComputedStyle(document.querySelector(".analytics-focus-row")).backgroundColor
       }));
       if (analyticsPageSurfaces.panel !== "rgb(7, 12, 16)"
         || analyticsPageSurfaces.kpi !== "rgb(9, 15, 20)"
+        || analyticsPageSurfaces.focusList !== "rgb(6, 11, 15)"
         || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
         report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
       }
