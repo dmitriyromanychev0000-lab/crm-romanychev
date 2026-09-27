@@ -1584,8 +1584,9 @@ function analyticsFinancialSummary(range) {
     if (status !== "closed" && status !== "declined") return false;
     return inAnalyticsRange(order.completed || orderDateValue(order), range);
   });
-  const ordinaryClosed = finishedOrders.filter((order) => normalizeStatus(order.status) === "closed");
-  const declined = finishedOrders.filter((order) => normalizeStatus(order.status) === "declined");
+  const ordinaryClosed = finishedOrders.filter((order) => normalizeStatus(order.status) === "closed" && !isWarrantyAppeal(order));
+  const warrantyFinished = finishedOrders.filter((order) => isWarrantyAppeal(order));
+  const declined = finishedOrders.filter((order) => normalizeStatus(order.status) === "declined" && !isWarrantyAppeal(order));
   const manualExpenses = data.expenses.filter((item) => inAnalyticsRange(item.date, range));
   const manualIncomes = data.incomes.filter((item) => inAnalyticsRange(item.date, range));
 
@@ -1603,6 +1604,7 @@ function analyticsFinancialSummary(range) {
   return {
     finishedOrders,
     ordinaryClosed,
+    warrantyFinished,
     declined,
     manualExpenses,
     manualIncomes,
@@ -1623,9 +1625,10 @@ function analyticsPage() {
   const finance = analyticsFinancialSummary(range);
   const previous = previousRange ? analyticsFinancialSummary(previousRange) : null;
   const createdOrders = data.orders.filter((order) => !order.archived && inAnalyticsRange(orderDateValue(order), range));
+  const leadOrders = createdOrders.filter((order) => !isWarrantyAppeal(order));
   const activeOrders = data.orders.filter((order) => !order.archived && normalizeStatus(order.status) === "active");
-  const convertedCreated = createdOrders.filter((order) => normalizeStatus(order.status) === "closed").length;
-  const conversion = createdOrders.length ? convertedCreated / createdOrders.length * 100 : 0;
+  const convertedCreated = leadOrders.filter((order) => normalizeStatus(order.status) === "closed").length;
+  const conversion = leadOrders.length ? convertedCreated / leadOrders.length * 100 : 0;
 
   const now = Date.now();
   const overdueVisits = activeOrders.filter(visitIsOverdue).length;
@@ -1654,7 +1657,7 @@ function analyticsPage() {
   const techStats = [...techMap.values()].sort((a, b) => b.received - a.received || b.count - a.count);
 
   const sourceMap = new Map();
-  createdOrders.forEach((order) => {
+  leadOrders.forEach((order) => {
     const key = String(orderSourceName(order) || "Не указан").trim() || "Не указан";
     const current = sourceMap.get(key) || { name: key, count: 0, received: 0, closed: 0, declined: 0 };
     current.count += 1;
@@ -1739,7 +1742,7 @@ function analyticsPage() {
     <section class="panel analytics-kpi-panel">
       <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>${escapeHtml(analyticsPeriodTitle(range))}</small></span></div>
       <div class="analytics-kpis">
-        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Получено от клиентов</span><strong>${money(finance.received)}</strong><small>${finance.ordinaryClosed.length} ремонтов · ${finance.declined.length} отказов</small></div></div>
+        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Получено от клиентов</span><strong>${money(finance.received)}</strong><small>${finance.ordinaryClosed.length} ремонтов · ${finance.declined.length} отказов${finance.warrantyFinished.length ? ` · ${finance.warrantyFinished.length} гарантийных` : ""}</small></div></div>
         <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>Потрачено</span><strong class="red">${money(finance.spent)}</strong><small>белый расход + общие расходы</small></div></div>
         <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("chart")}</span><div><span>Заработал</span><strong class="${finance.earned >= 0 ? "green" : "red"}">${money(finance.earned)}</strong><small>по формуле заявок</small></div></div>
         <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>Средний чек</span><strong class="yellow">${money(finance.average)}</strong><small>только закрытые ремонты</small></div></div>
@@ -1756,7 +1759,7 @@ function analyticsPage() {
     <section class="panel analytics-work">
       <div class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Заявки<small>создано и доведено до ремонта</small></span></div>
       <div class="analytics-work-grid">
-        <div class="metric"><div class="metric-label">Создано</div><div class="metric-value">${createdOrders.length}</div></div>
+        <div class="metric"><div class="metric-label">Создано</div><div class="metric-value">${leadOrders.length}</div></div>
         <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value green">${convertedCreated}</div></div>
         <div class="metric"><div class="metric-label">Конверсия</div><div class="metric-value blue">${Math.round(conversion)}%</div></div>
       </div>
