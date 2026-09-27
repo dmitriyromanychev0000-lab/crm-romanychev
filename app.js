@@ -7,9 +7,9 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.161";
+const APP_BUILD = "2026.09.27.162";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Шапка CRM очищена от декоративного эмодзи — бренд выглядит строже и единообразно на основных и детальных экранах";
+const APP_RELEASE = "Деталка склада получила явную визуальную иерархию: остаток, минимум и себестоимость различаются, а Приход / Списать / Архив больше не выглядят одинаковыми серыми кнопками";
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({

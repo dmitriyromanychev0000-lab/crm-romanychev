@@ -726,19 +726,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       await page.locator("[data-stock-detail]").first().click();
-      const stockDetailSurface = await page.evaluate(() => ({
-        modal: getComputedStyle(document.querySelector(".stock-detail-modal")).backgroundColor,
-        hero: getComputedStyle(document.querySelector(".stock-detail-hero")).backgroundColor,
-        kpi: getComputedStyle(document.querySelector(".stock-detail-kpis > div")).backgroundColor,
-        action: getComputedStyle(document.querySelector(".stock-detail-actions button")).backgroundColor,
-        history: getComputedStyle(document.querySelector(".stock-detail-history")).backgroundColor
-      }));
+      const stockDetailSurface = await page.evaluate(() => {
+        const incoming = document.querySelector(".stock-detail-actions .incoming");
+        const outgoing = document.querySelector(".stock-detail-actions .outgoing");
+        const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
+        const incomingRect = incoming?.getBoundingClientRect();
+        const archiveRect = archive?.getBoundingClientRect();
+        return {
+          modal: getComputedStyle(document.querySelector(".stock-detail-modal")).backgroundColor,
+          hero: getComputedStyle(document.querySelector(".stock-detail-hero")).backgroundColor,
+          primaryKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .primary")).backgroundColor,
+          minimumKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .minimum")).backgroundColor,
+          costKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > div:last-child")).backgroundColor,
+          incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
+          outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
+          archive: archive ? getComputedStyle(archive).backgroundColor : "missing",
+          incomingWidth: incomingRect ? Math.round(incomingRect.width) : 0,
+          archiveWidth: archiveRect ? Math.round(archiveRect.width) : 0
+        };
+      });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
         || stockDetailSurface.hero !== "rgb(6, 11, 15)"
-        || stockDetailSurface.kpi !== "rgb(9, 15, 20)"
-        || stockDetailSurface.action !== "rgb(9, 15, 20)"
-        || stockDetailSurface.history !== "rgb(6, 11, 15)") {
-        report.failures.push({ width, type: "stock-detail-deep-dark", stockDetailSurface });
+        || stockDetailSurface.primaryKpi !== "rgb(7, 17, 12)"
+        || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
+        || stockDetailSurface.costKpi !== "rgb(8, 16, 25)"
+        || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
+        || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
+        || stockDetailSurface.archive !== "rgb(8, 16, 25)"
+        || stockDetailSurface.incomingWidth < 100
+        || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8) {
+        report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");

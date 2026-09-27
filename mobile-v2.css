@@ -11172,3 +11172,99 @@
   }
 }
 
+
+
+/* 1.0.37 · Склад: визуальная иерархия деталки без монотонных плиток. */
+@media screen and (max-width: 520px) {
+  .stock-detail-hero {
+    border-color: rgba(92,169,255,.26) !important;
+    background-color: #060b0f !important;
+    background-image: radial-gradient(circle at 0 0, rgba(92,169,255,.09), transparent 118px) !important;
+  }
+
+  .stock-detail-icon {
+    border: 1px solid rgba(92,169,255,.26) !important;
+    background: rgba(92,169,255,.10) !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .stock-detail-kpis > div {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .stock-detail-kpis > .primary {
+    border-color: rgba(89,216,137,.28) !important;
+    background-color: #07110c !important;
+  }
+
+  .stock-detail-kpis > .minimum {
+    border-color: rgba(231,180,80,.28) !important;
+    background-color: #131006 !important;
+  }
+
+  .stock-detail-kpis > div:last-child {
+    grid-column: 1 / -1;
+    border-color: rgba(92,169,255,.20) !important;
+    background-color: #081019 !important;
+  }
+
+  .stock-detail-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .stock-detail-actions button {
+    min-height: 58px !important;
+    padding: 8px 9px !important;
+    background-image: none !important;
+  }
+
+  .stock-detail-actions .incoming {
+    border-color: #1f4a32 !important;
+    background-color: #07130d !important;
+    color: #c8f3d5 !important;
+  }
+
+  .stock-detail-actions .incoming .stock-action-icon,
+  .stock-detail-actions .incoming .ui-icon {
+    color: var(--crm-green) !important;
+  }
+
+  .stock-detail-actions .outgoing {
+    border-color: #5a2329 !important;
+    background-color: #16090c !important;
+    color: #ffd2d5 !important;
+  }
+
+  .stock-detail-actions .outgoing .stock-action-icon,
+  .stock-detail-actions .outgoing .ui-icon {
+    color: var(--crm-red) !important;
+  }
+
+  .stock-detail-actions .stock-detail-archive {
+    grid-column: 1 / -1;
+    min-height: 46px !important;
+    border-color: #223b52 !important;
+    background-color: #081019 !important;
+    color: #d4e8fb !important;
+  }
+
+  .stock-detail-actions button b {
+    font-size: 10.5px !important;
+    line-height: 1.15;
+  }
+
+  .stock-detail-actions button small {
+    margin-top: 3px;
+    color: #8e9aa3 !important;
+    font-size: 8px !important;
+    line-height: 1.2;
+  }
+
+  .stock-detail-history {
+    border-color: #1b2a33 !important;
+    background-color: #060b0f !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(255,113,83,.055), transparent 120px) !important;
+  }
+}
