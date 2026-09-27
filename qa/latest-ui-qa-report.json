@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-27T19:23:07.672Z",
-  "testedSha": "d78f2ea364ef27886ebb72ea7f5a3004961acadb",
+  "generatedAt": "2026-09-27T19:25:56.300Z",
+  "testedSha": "a9aedb28bd98ced78b954f1e2debf4ced361b70e",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -608,6 +608,15 @@
     },
     {
       "label": "warranty-manager",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "warranty-result-manager",
       "width": 390,
       "bodyScrollWidth": 390,
       "viewportWidth": 390,
@@ -1339,48 +1348,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "analytics-product-model",
-      "analyticsModelState": {
-        "values": {
-          "Получено от клиентов": 10400,
-          "Потрачено": 4100,
-          "Заработал": 5050,
-          "Средний чек": 8900
-        },
-        "conversion": 33,
-        "weekdays": 7,
-        "bars": 2,
-        "barWidths": [
-          28,
-          28
-        ],
-        "hasSources": true,
-        "expenseButtonHeight": 44
-      }
-    },
-    {
-      "width": 390,
-      "type": "analytics-product-model",
-      "analyticsModelState": {
-        "values": {
-          "Получено от клиентов": 10400,
-          "Потрачено": 4100,
-          "Заработал": 5050,
-          "Средний чек": 8900
-        },
-        "conversion": 33,
-        "weekdays": 7,
-        "bars": 2,
-        "barWidths": [
-          28,
-          28
-        ],
-        "hasSources": true,
-        "expenseButtonHeight": 44
-      }
-    }
-  ]
+  "failures": []
 }
