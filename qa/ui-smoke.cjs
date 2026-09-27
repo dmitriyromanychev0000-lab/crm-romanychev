@@ -233,6 +233,26 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
     }
 
+    await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
+    const goodsRowSurface = await page.evaluate(() => {
+      const row = document.querySelector(".legacy-goods-position");
+      const rect = row?.getBoundingClientRect();
+      const price = row?.querySelector(":scope > b")?.getBoundingClientRect();
+      return {
+        background: row ? getComputedStyle(row).backgroundColor : "missing",
+        radius: row ? getComputedStyle(row).borderRadius : "missing",
+        height: rect ? Math.round(rect.height) : 0,
+        priceRight: price ? Math.round(price.right) : 0,
+        rowRight: rect ? Math.round(rect.right) : 0
+      };
+    });
+    if (goodsRowSurface.background !== "rgb(9, 15, 20)"
+      || goodsRowSurface.radius !== "11px"
+      || goodsRowSurface.height < 58
+      || goodsRowSurface.priceRight > goodsRowSurface.rowRight + 1) {
+      report.failures.push({ width, type: "goods-position-surface", goodsRowSurface });
+    }
+
     if (width === 320 || width === 390) {
       await setState(page, uiState({ activePage: "more", moreSection: "act", selectedActOrderId: "0060" }));
       const actPreviewState = await page.evaluate(() => {

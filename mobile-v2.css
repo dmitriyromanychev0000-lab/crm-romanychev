@@ -10210,3 +10210,79 @@
   }
 }
 
+/* 1.0.21 · Товарник: позиции как отдельные глубокие строки вместо серой общей плашки. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-position-list,
+  .legacy-product-price-list {
+    display: grid !important;
+    gap: 6px !important;
+  }
+
+  .legacy-goods-position,
+  .legacy-product-price-list > div {
+    box-sizing: border-box !important;
+    min-height: 58px !important;
+    padding: 9px 10px !important;
+    border: 1px solid #182229 !important;
+    border-radius: 11px !important;
+    background: #090f14 !important;
+  }
+
+  .legacy-goods-position:first-child,
+  .legacy-product-price-list > div:first-child {
+    border-top: 1px solid #182229 !important;
+  }
+
+  .legacy-goods-position strong,
+  .legacy-product-price-list strong {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-goods-position small,
+  .legacy-product-price-list small {
+    display: block !important;
+    margin-top: 4px !important;
+    color: #7f8a92 !important;
+  }
+
+  .legacy-goods-position > b,
+  .legacy-product-price-list > div > b {
+    color: #ff7359 !important;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (min-width: 341px) and (max-width: 520px) {
+  .legacy-goods-position,
+  .legacy-product-price-list > div {
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .legacy-goods-position > b,
+  .legacy-product-price-list > div > b {
+    justify-self: end !important;
+    align-self: center !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-goods-position,
+  .legacy-product-price-list > div {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 5px !important;
+  }
+
+  .legacy-goods-position > b,
+  .legacy-product-price-list > div > b {
+    justify-self: start !important;
+  }
+}
+
