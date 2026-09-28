@@ -13952,3 +13952,370 @@
     font-size: 12px !important;
   }
 }
+
+/* 1.1.0 · Финальная система мобильных размеров, спокойная палитра и версия в интерфейсе. */
+@media screen and (max-width: 520px) {
+  html,
+  body {
+    background: var(--crm-bg) !important;
+  }
+
+  .content {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .content .field,
+  .content .search,
+  .modal .field,
+  .modal .search {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    border-color: #27323a !important;
+    border-radius: 12px !important;
+    background: #0e151a !important;
+  }
+
+  .form-grid,
+  .legacy-settings-grid,
+  .warehouse-filter-grid,
+  .legacy-payment-grid {
+    width: 100% !important;
+  }
+
+  .form-grid > *,
+  .legacy-settings-grid > *,
+  .warehouse-filter-grid > *,
+  .legacy-payment-grid > * {
+    min-width: 0 !important;
+  }
+
+  .legacy-settings-grid .full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-settings-save,
+  .legacy-stock-button,
+  .direct-expense-add,
+  .legacy-open-editor,
+  .order-photo-add,
+  .shopping-page-actions-primary [data-action="new-shopping-item"] {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+
+  .direct-expense-add,
+  .legacy-stock-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-align: center !important;
+  }
+
+  .legacy-warehouse-shortcuts > button,
+  .legacy-stock-actions-v2 > button,
+  .legacy-finance-actions > button,
+  .legacy-range-actions > button,
+  .modal-actions > button {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+  }
+
+  .order-editor-section,
+  .analytics-content .panel,
+  .legacy-settings-card,
+  .legacy-finance-history,
+  .legacy-goods-panel {
+    border-color: #202a31 !important;
+    background: #0a1014 !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .field,
+  .order-editor-modal .material-card-controls .field {
+    min-height: 48px !important;
+    background: #0b1115 !important;
+  }
+
+  .order-editor-modal .material-catalog-open,
+  .order-editor-modal .direct-expense-add {
+    margin-top: 8px !important;
+    border-color: #28343c !important;
+    background: #0d1419 !important;
+  }
+
+  .analytics-kpi {
+    border-color: #202a31 !important;
+    background: #0e151a !important;
+  }
+
+  .legacy-more-list {
+    gap: 8px !important;
+  }
+
+  .legacy-more-list .menu-item {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0,1fr) 20px !important;
+    gap: 11px !important;
+    width: 100% !important;
+    min-height: 74px !important;
+    padding: 11px 12px !important;
+    border: 1px solid #263139 !important;
+    border-radius: 14px !important;
+    background: #0d1419 !important;
+    color: var(--crm-text) !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-more-list .menu-item:active {
+    border-color: rgba(255,113,83,.55) !important;
+    background: #11181d !important;
+    transform: scale(.99) !important;
+  }
+
+  .legacy-more-list .menu-icon,
+  .legacy-more-list .menu-icon-finance,
+  .legacy-more-list .menu-icon-shopping,
+  .legacy-more-list .menu-icon-clients,
+  .legacy-more-list .menu-icon-prices,
+  .legacy-more-list .menu-icon-act,
+  .legacy-more-list .menu-icon-goods,
+  .legacy-more-list .menu-icon-calendar,
+  .legacy-more-list .menu-icon-tools,
+  .legacy-more-list .menu-icon-settings {
+    width: 42px !important;
+    height: 42px !important;
+    border: 1px solid #29343c !important;
+    border-radius: 12px !important;
+    background: #11191e !important;
+    color: #b6c0c6 !important;
+  }
+
+  .legacy-more-list .menu-name {
+    color: #eef2f4 !important;
+    font-size: 14px !important;
+    font-weight: 720 !important;
+  }
+
+  .legacy-more-list .menu-description {
+    margin-top: 3px !important;
+    color: #87929a !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+  }
+
+  .legacy-more-list .chevron {
+    color: #68747c !important;
+  }
+
+  .app-version-strip {
+    display: flex;
+    min-height: 58px;
+    margin: 10px 0 4px;
+    padding: 9px 10px 9px 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px solid #202a31;
+    color: #8d989f;
+  }
+
+  .app-version-strip > span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .app-version-strip b {
+    color: #cfd6da;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .app-version-strip small {
+    font-size: 9px;
+  }
+
+  .app-version-strip button {
+    min-height: 44px;
+    padding: 0 13px;
+    border: 1px solid #2b363e;
+    border-radius: 11px;
+    background: #10171c;
+    color: #dce2e5;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .legacy-settings-row {
+    min-width: 0 !important;
+  }
+
+  .legacy-settings-row > span:nth-child(2) {
+    min-width: 0 !important;
+  }
+
+  .legacy-settings-row > button {
+    min-height: 44px !important;
+  }
+
+  .app-version-row small {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal !important;
+  }
+
+  .release-notes-backdrop {
+    top: 0 !important;
+    bottom: 0 !important;
+    padding: max(18px, env(safe-area-inset-top)) 12px max(18px, env(safe-area-inset-bottom)) !important;
+    align-items: center !important;
+    background: rgba(3,7,10,.82) !important;
+  }
+
+  .release-notes-modal {
+    width: min(100%, 430px) !important;
+    max-height: min(760px, calc(100dvh - 36px)) !important;
+    overflow: auto !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    border: 1px solid #27323a !important;
+    border-radius: 18px !important;
+    background: #090f13 !important;
+  }
+
+  .release-notes-head {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 44px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .release-notes-head small {
+    color: #748087;
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: .08em;
+  }
+
+  .release-notes-head h2 {
+    margin: 3px 0 0 !important;
+    font-size: 22px !important;
+  }
+
+  .release-notes-head > button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid #27323a;
+    border-radius: 12px;
+    background: #10171c;
+    color: #cbd3d7;
+  }
+
+  .release-current {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3px 12px;
+    margin: 14px 0 10px;
+    padding: 12px;
+    border: 1px solid rgba(255,113,83,.25);
+    border-radius: 13px;
+    background: rgba(255,113,83,.06);
+  }
+
+  .release-current span,
+  .release-current small {
+    color: #8f999f;
+    font-size: 9px;
+  }
+
+  .release-current strong {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    align-self: center;
+    color: #ff8066;
+    font-size: 20px;
+  }
+
+  .release-notes-list {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .release-note {
+    padding: 12px;
+    border: 1px solid #202a31;
+    border-radius: 13px;
+    background: #0c1317;
+  }
+
+  .release-note > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .release-note > div strong {
+    font-size: 12px;
+  }
+
+  .release-note time {
+    color: #748087;
+    font-size: 9px;
+  }
+
+  .release-note h3 {
+    margin: 6px 0 7px;
+    color: #dce3e6;
+    font-size: 11px;
+  }
+
+  .release-note ul {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding-left: 17px;
+    color: #9ca6ac;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .release-note.current {
+    border-color: #2d383f;
+    background: #0f161b;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .content {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .legacy-settings-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .legacy-settings-grid > * {
+    grid-column: auto !important;
+  }
+
+  .legacy-more-list .menu-item {
+    grid-template-columns: 42px minmax(0,1fr) 18px !important;
+    padding-right: 10px !important;
+  }
+}
+

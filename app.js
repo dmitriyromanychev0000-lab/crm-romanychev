@@ -7,10 +7,34 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.0.0";
-const APP_BUILD = "2026.09.27.177";
+const APP_VERSION = "1.1.0";
+const APP_BUILD = "2026.09.28.178";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Бэкапы проверяются после записи, а при недоступной папке создаётся локальная страховочная копия";
+const APP_RELEASE = "Единая мобильная сетка, спокойное меню и понятная история версий";
+const APP_CHANGELOG = [
+  {
+    version: "1.1.0",
+    date: "28.09.2026",
+    title: "Визуальная доводка",
+    items: [
+      "Выровнены размеры мобильных полей и кнопок; одиночные действия занимают доступную ширину.",
+      "Меню «Ещё» стало спокойным: без радужной раскраски каждого пункта, с единым графитовым стилем.",
+      "Версия и краткая история изменений теперь доступны прямо из «Ещё» и Настроек."
+    ]
+  },
+  {
+    version: "1.0.1",
+    date: "27.09.2026",
+    title: "Редактор заявки",
+    items: ["Углублена тёмная тема редактора заявки и материалов, убран лишний серо-синий визуальный шум."]
+  },
+  {
+    version: "1.0.0",
+    date: "27.09.2026",
+    title: "Первый стабильный релиз",
+    items: ["Зафиксирован мобильный релиз после полной регрессии основных сценариев на ширинах 320–430 px."]
+  }
+];
 const BACKUP_FORMAT_VERSION = 18;
 
 const defaultData = () => ({
@@ -1681,6 +1705,29 @@ async function runAppDiagnostics() {
       toast("Диагностический отчёт скопирован");
     }
   });
+}
+
+function releaseNotesModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal-backdrop release-notes-backdrop";
+  modal.innerHTML = `<section class="modal compact-modal release-notes-modal" role="dialog" aria-modal="true" aria-labelledby="release-notes-title">
+    <div class="release-notes-head">
+      <div><small>CRM BY ROMANYCHEV</small><h2 id="release-notes-title">Что нового</h2></div>
+      <button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button>
+    </div>
+    <div class="release-current"><span>Текущая версия</span><strong>${APP_VERSION}</strong><small>сборка ${APP_BUILD}</small></div>
+    <div class="release-notes-list">${APP_CHANGELOG.map((release, index) => `<article class="release-note ${index === 0 ? "current" : ""}"><div><strong>${escapeHtml(release.version)}</strong><time>${escapeHtml(release.date)}</time></div><h3>${escapeHtml(release.title)}</h3><ul>${release.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></article>`).join("")}</div>
+    <button type="button" class="primary-button wide" data-close-modal>Понятно</button>
+  </section>`;
+  const close = () => {
+    if (!modal.isConnected) return;
+    modal.remove();
+    syncModalScrollLock();
+  };
+  modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", close));
+  modal.addEventListener("click", (event) => { if (event.target === modal) close(); });
+  document.body.appendChild(modal);
+  syncModalScrollLock();
 }
 
 async function checkForAppUpdate() {
@@ -3560,7 +3607,7 @@ function settingsPage() {
         <label><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
         <label><span>ТЕЛЕФОН</span><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></label>
         <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
-        <label><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
+        <label class="full"><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
       </div>
       <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>
@@ -3568,7 +3615,8 @@ function settingsPage() {
     <section class="legacy-settings-card settings-app-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("document")}</span><h2>Приложение</h2></div>
       <div class="legacy-settings-list">
-        <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>CRM by Romanychev ${APP_VERSION}</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Обновить</button></div>
+        <div class="legacy-settings-row app-version-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>CRM by Romanychev · ${APP_VERSION}</strong><small>${APP_RELEASE}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
+        <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("refresh")}</span><span><strong>Проверка обновления</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("analytics")}</span><span><strong>Диагностика</strong><small>Кэш, база и хранилище</small></span><button type="button" data-action="run-diagnostics">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("backup")}</span><span><strong>Локальные данные</strong><small>${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</small></span><button type="button" data-action="protect-storage">Защитить</button></div>
       </div>
@@ -4094,27 +4142,26 @@ function calendarPage() {
 
 function moreMenu() {
   const primaryItems = [
-    ["calendar", "calendar", "Календарь", "Визиты и расписание"],
+    ["finance", "finance", "Финансы", "Доходы и рабочие расходы"],
+    ["shopping", "shopping", "Список покупок", "Что нужно докупить по складу"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
     ["prices", "price", "Прайс-лист", "Каталог услуг и цены"],
-    ["goods", "tag", "Калькулятор", "Подгонка цен товаров под итог"],
+    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"],
     ["act", "printer", "Акт", "Предпросмотр и сохранение картинкой"],
-    ["settings", "settings", "Настройки", "Справочники, система и данные"]
+    ["calendar", "calendar", "Календарь", "Визиты и расписание"],
+    ["settings", "settings", "Настройки", "Справочники, данные и приложение"]
   ];
-  const extraItems = [];
 
-  const card = ([id, iconName, name, description]) => {
-    const attrs = id === "report" ? 'data-action="analytics-screen"' : `data-more="${id}"`;
-    return `<button type="button" class="menu-item menu-${id}" ${attrs}>
+  const card = ([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}">
       <span class="menu-icon menu-icon-${id}">${icon(iconName)}</span>
       <span class="menu-copy"><span class="menu-name">${name}</span><span class="menu-description">${description}</span></span>
       <span class="chevron">${icon("chevron")}</span>
     </button>`;
-  };
 
   return `<main class="content more-content legacy-more-page">
     <div class="legacy-more-head"><h1>Ещё</h1><p>Рабочие разделы и настройки</p></div>
     <div class="menu-list legacy-more-list">${primaryItems.map(card).join("")}</div>
+    <div class="app-version-strip"><span><b>CRM ${APP_VERSION}</b><small>сборка ${APP_BUILD}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
   </main>`;
 }
 
@@ -6569,6 +6616,7 @@ app.addEventListener("click", async (event) => {
     return;
   }
   if (action === "add-finance") return financeModal(event.target.closest("[data-action]").dataset.type);
+  if (action === "release-notes") return releaseNotesModal();
   if (action === "check-update") return checkForAppUpdate();
   if (action === "run-diagnostics") return runAppDiagnostics();
   if (action === "protect-storage") return requestPersistentStorage();
