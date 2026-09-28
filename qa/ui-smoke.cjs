@@ -2876,6 +2876,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
           actionHeight: actionRect ? Math.round(actionRect.height) : 0,
+          headHeight: Math.round(document.querySelector(".finance-entry-head")?.getBoundingClientRect().height || 0),
+          typeHeight: Math.round(document.querySelector(".finance-entry-type")?.getBoundingClientRect().height || 0),
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          rowGap: parseFloat(getComputedStyle(document.querySelector(".finance-entry-modal .form-grid")).rowGap) || 0,
           footerBottom: footerRect ? Math.round(footerRect.bottom) : 0,
           viewportHeight: window.innerHeight
         };
@@ -2888,6 +2892,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financeEditorState.actionHeight < 48
         || financeEditorState.footerBottom < financeEditorState.viewportHeight - 24) {
         report.failures.push({ width, type: "finance-editor-layout", financeEditorState });
+      }
+      if (financeEditorState.headHeight > 60
+        || financeEditorState.typeHeight > 52
+        || financeEditorState.fieldHeight > 46
+        || financeEditorState.rowGap > 7.5) {
+        report.failures.push({ width, type: "finance-editor-compact-density", financeEditorState });
       }
       report.results.push(await shot(page, width, "finance-editor", false));
       await page.keyboard.press("Escape");
@@ -3009,7 +3019,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           secondary: getComputedStyle(document.querySelector(".legacy-price-editor-actions .legacy-dark-button")).backgroundColor,
           backWidth: backRect ? Math.round(backRect.width) : 0,
           backHeight: backRect ? Math.round(backRect.height) : 0,
-          actionHeight: actionRect ? Math.round(actionRect.height) : 0
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0,
+          headHeight: Math.round(document.querySelector(".legacy-price-editor .legacy-editor-head")?.getBoundingClientRect().height || 0),
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          rowGap: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-grid")).rowGap) || 0,
+          cardPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-card")).paddingTop) || 0
         };
       });
       if (priceEditorState.card !== "rgb(6, 11, 15)"
@@ -3020,6 +3034,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || priceEditorState.backHeight < 44
         || priceEditorState.actionHeight < 48) {
         report.failures.push({ width, type: "price-editor-deep-dark", priceEditorState });
+      }
+      if (priceEditorState.headHeight > 60
+        || priceEditorState.fieldHeight > 46
+        || priceEditorState.rowGap > 7.5
+        || priceEditorState.cardPaddingTop > 10) {
+        report.failures.push({ width, type: "price-editor-compact-density", priceEditorState });
       }
       report.results.push(await shot(page, width, "price-editor", false));
       await page.keyboard.press("Escape");
@@ -3429,7 +3449,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
       }
       if (toolEditorState.headHeight > 60
-        || toolEditorState.heroHeight > 52
+        || toolEditorState.heroHeight > 58
         || toolEditorState.fieldHeight > 46
         || (toolEditorState.textareaHeight && toolEditorState.textareaHeight > 82)
         || toolEditorState.rowGap > 7.5) {

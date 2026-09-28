@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.32";
-const APP_BUILD = "2026.09.28.250";
+const APP_VERSION = "1.7.33";
+const APP_BUILD = "2026.09.28.251";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редакторы документов и инструмента стали плотнее: компактнее шапка, служебный блок и поля, действия остаются крупными"
+const APP_RELEASE = "Редакторы финансов и прайса стали плотнее: меньше пустых зон в шапках, карточках и формах, рабочие поля и действия остаются крупными"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.33",
+    date: "28.09.2026",
+    title: "Плотные редакторы финансов и прайса",
+    items: [
+      "Шапки редакторов дохода/расхода и прайса стали ниже и собраннее, кнопки закрытия и возврата сохранены 44×44.",
+      "Карточки, интервалы формы и поля уплотнены без уменьшения рабочего текста; обычные поля остаются не меньше 44 px.",
+      "Нижние действия остаются полноширинными и не меньше 48 px; мобильный QA теперь отдельно контролирует плотность обоих редакторов."
+    ]
+  },
   {
     version: "1.7.32",
     date: "28.09.2026",

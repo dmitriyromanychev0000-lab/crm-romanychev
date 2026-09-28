@@ -17956,3 +17956,121 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.33 · Финансы и прайс: плотные редакторы без уменьшения рабочих контролов. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-entry-backdrop .finance-entry-head {
+    box-sizing: border-box !important;
+    grid-template-columns: 36px minmax(0,1fr) 44px !important;
+    gap: 8px !important;
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    margin-bottom: 7px !important;
+    padding-top: calc(7px + env(safe-area-inset-top)) !important;
+    padding-bottom: 7px !important;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-head-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-head-icon .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-head h2 {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-head small {
+    line-height: 1.1 !important;
+  }
+
+  .legacy-finance-entry-backdrop .finance-entry-type {
+    box-sizing: border-box !important;
+    min-height: 50px !important;
+    margin: 7px 0 !important;
+    padding: 7px 9px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-finance-entry-backdrop .form-grid {
+    gap: 7px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .legacy-finance-entry-backdrop .form-group label {
+    margin-bottom: 4px !important;
+  }
+
+  .legacy-finance-entry-backdrop .field {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-finance-entry-backdrop .modal-actions {
+    gap: 6px !important;
+    padding: 7px 12px calc(7px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-finance-entry-backdrop .modal-actions > * {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-price-editor .legacy-editor-head {
+    box-sizing: border-box !important;
+    grid-template-columns: 44px minmax(0,1fr) !important;
+    gap: 8px !important;
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    margin-bottom: 7px !important;
+    padding-top: calc(7px + env(safe-area-inset-top)) !important;
+    padding-bottom: 7px !important;
+  }
+
+  .legacy-price-editor .legacy-editor-head h1 {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .legacy-price-editor .legacy-editor-head p {
+    margin-top: 2px !important;
+    line-height: 1.1 !important;
+  }
+
+  .legacy-price-editor-card {
+    padding: 9px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-price-editor-card .legacy-section-title {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-price-editor-grid {
+    gap: 7px 6px !important;
+  }
+
+  .legacy-price-editor-grid label > span {
+    margin-bottom: 4px !important;
+  }
+
+  .legacy-price-editor .field {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-price-editor-actions {
+    gap: 6px !important;
+    padding: 7px 12px calc(7px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-price-editor-actions > * {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+}
