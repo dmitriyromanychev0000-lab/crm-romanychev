@@ -3067,12 +3067,40 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
         await setState(page, uiState({ activePage: "orders" }));
         await page.locator(".legacy-order-card").first().click();
-        const stressDetailText = await page.evaluate(() => ({
-          nameClamp: getComputedStyle(document.querySelector(".legacy-expanded-title > strong")).webkitLineClamp,
-          modelClamp: getComputedStyle(document.querySelector(".legacy-expanded-device-copy small")).webkitLineClamp,
-          addressClamp: getComputedStyle(document.querySelector(".legacy-expanded-meta .address")).webkitLineClamp
-        }));
-        if (stressDetailText.nameClamp !== "2" || stressDetailText.modelClamp !== "2" || stressDetailText.addressClamp !== "2") {
+        const stressDetailText = await page.evaluate(() => {
+          const name = document.querySelector(".legacy-expanded-title > strong");
+          const model = document.querySelector(".legacy-expanded-device-copy small");
+          const address = document.querySelector(".legacy-expanded-meta .address");
+          const ns = getComputedStyle(name);
+          const ms = getComputedStyle(model);
+          const as = getComputedStyle(address);
+          return {
+            nameClamp: ns.webkitLineClamp,
+            modelClamp: ms.webkitLineClamp,
+            addressClamp: as.webkitLineClamp,
+            nameWhiteSpace: ns.whiteSpace,
+            modelWhiteSpace: ms.whiteSpace,
+            addressWhiteSpace: as.whiteSpace,
+            nameTextOverflow: ns.textOverflow,
+            modelTextOverflow: ms.textOverflow,
+            addressTextOverflow: as.textOverflow,
+            nameOverflow: Math.max(0, name.scrollWidth - name.clientWidth),
+            modelOverflow: Math.max(0, model.scrollWidth - model.clientWidth),
+            addressOverflow: Math.max(0, address.scrollWidth - address.clientWidth)
+          };
+        });
+        if (stressDetailText.nameClamp === "2"
+          || stressDetailText.modelClamp === "2"
+          || stressDetailText.addressClamp === "2"
+          || stressDetailText.nameWhiteSpace === "nowrap"
+          || stressDetailText.modelWhiteSpace === "nowrap"
+          || stressDetailText.addressWhiteSpace === "nowrap"
+          || stressDetailText.nameTextOverflow === "ellipsis"
+          || stressDetailText.modelTextOverflow === "ellipsis"
+          || stressDetailText.addressTextOverflow === "ellipsis"
+          || stressDetailText.nameOverflow > 1
+          || stressDetailText.modelOverflow > 1
+          || stressDetailText.addressOverflow > 1) {
           report.failures.push({ width, type: "stress-order-detail-long-text", stressDetailText });
         }
         const stressDetail = await shot(page, width, "stress-order-detail", false);

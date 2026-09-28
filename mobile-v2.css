@@ -15755,3 +15755,36 @@
     align-items: flex-start !important;
   }
 }
+
+
+/* 1.6.9 · Деталка заявки: рабочие данные показываются полностью. */
+@media screen and (max-width: 520px) {
+  .legacy-expanded-title > strong,
+  .legacy-expanded-device-copy small {
+    display: block !important;
+    overflow: visible !important;
+    max-height: none !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.22 !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .legacy-expanded-meta .address {
+    display: flex !important;
+    overflow: visible !important;
+    max-height: none !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    align-items: flex-start !important;
+    -webkit-line-clamp: unset !important;
+  }
+
+  .legacy-expanded-meta .address > b {
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.3 !important;
+  }
+}
