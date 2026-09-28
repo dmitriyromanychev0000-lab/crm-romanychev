@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.31";
-const APP_BUILD = "2026.09.28.249";
+const APP_VERSION = "1.7.32";
+const APP_BUILD = "2026.09.28.250";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Доведена компактная геометрия акта и черновиков на 320 px без уменьшения кнопок ниже 44 px"
+const APP_RELEASE = "Редакторы документов и инструмента стали плотнее: компактнее шапка, служебный блок и поля, действия остаются крупными"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.32",
+    date: "28.09.2026",
+    title: "Плотные редакторы документов и инструмента",
+    items: [
+      "Шапки редакторов документов и инструмента стали ниже, при этом закрытие осталось полноценной кнопкой 44×44.",
+      "Служебный блок, интервалы формы и поля уплотнены; рабочий текст сохранён 13.5–14 px, обычные поля остаются 44 px.",
+      "Многострочные поля занимают меньше лишней высоты, а нижние действия по-прежнему не меньше 48 px и закреплены у низа."
+    ]
+  },
   {
     version: "1.7.31",
     date: "28.09.2026",

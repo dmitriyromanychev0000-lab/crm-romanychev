@@ -17880,3 +17880,79 @@
     padding: 7px !important;
   }
 }
+
+
+/* 1.7.32 · Документы и инструмент: плотные полноэкранные редакторы. */
+@media screen and (max-width: 520px) {
+  .legacy-service-editor-backdrop .receipt-editor-head,
+  .legacy-service-editor-backdrop .tool-editor-head {
+    box-sizing: border-box !important;
+    grid-template-columns: 36px minmax(0,1fr) 44px !important;
+    gap: 8px !important;
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    padding-top: calc(7px + env(safe-area-inset-top)) !important;
+    padding-bottom: 7px !important;
+  }
+
+  .legacy-service-editor-backdrop .service-editor-head-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-service-editor-backdrop .service-editor-head-icon .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-head h2,
+  .legacy-service-editor-backdrop .tool-editor-head h2 {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-head small,
+  .legacy-service-editor-backdrop .tool-editor-head small {
+    line-height: 1.1 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-type,
+  .legacy-service-editor-backdrop .tool-editor-hero {
+    box-sizing: border-box !important;
+    min-height: 50px !important;
+    margin: 7px 0 !important;
+    padding: 7px 9px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-service-editor-backdrop .form-grid {
+    gap: 7px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .legacy-service-editor-backdrop .form-group label {
+    margin-bottom: 4px !important;
+  }
+
+  .legacy-service-editor-backdrop .field {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-service-editor-backdrop textarea.field,
+  .legacy-service-editor-backdrop .textarea {
+    min-height: 80px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .legacy-service-editor-backdrop .modal-actions {
+    gap: 6px !important;
+    padding: 7px 12px calc(7px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-service-editor-backdrop .modal-actions > * {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+}

@@ -3399,10 +3399,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const closeRect = close?.getBoundingClientRect();
         const action = footer?.querySelector("button");
         const actionRect = action?.getBoundingClientRect();
+        const head = document.querySelector(".tool-editor-head")?.getBoundingClientRect();
+        const hero = document.querySelector(".tool-editor-hero")?.getBoundingClientRect();
+        const textarea = document.querySelector(".tool-editor-modal textarea")?.getBoundingClientRect();
+        const gridStyle = getComputedStyle(document.querySelector(".tool-editor-modal .form-grid"));
         return {
           modal: getComputedStyle(document.querySelector(".tool-editor-modal")).backgroundColor,
           field: getComputedStyle(field).backgroundColor,
           fieldFont: getComputedStyle(field).fontSize,
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          headHeight: Math.round(head?.height || 0),
+          heroHeight: Math.round(hero?.height || 0),
+          textareaHeight: Math.round(textarea?.height || 0),
+          rowGap: parseFloat(gridStyle.rowGap) || 0,
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
           actionHeight: actionRect ? Math.round(actionRect.height) : 0,
@@ -3418,6 +3427,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolEditorState.actionHeight < 48
         || toolEditorState.footerBottom < toolEditorState.viewportHeight - 2) {
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
+      }
+      if (toolEditorState.headHeight > 60
+        || toolEditorState.heroHeight > 52
+        || toolEditorState.fieldHeight > 46
+        || (toolEditorState.textareaHeight && toolEditorState.textareaHeight > 82)
+        || toolEditorState.rowGap > 7.5) {
+        report.failures.push({ width, type: "tool-editor-compact-density", toolEditorState });
       }
       report.results.push(await shot(page, width, "tool-editor", false));
       await page.keyboard.press("Escape");
@@ -3488,10 +3504,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const closeRect = close?.getBoundingClientRect();
         const action = footer?.querySelector("button");
         const actionRect = action?.getBoundingClientRect();
+        const head = document.querySelector(".receipt-editor-head")?.getBoundingClientRect();
+        const hero = document.querySelector(".receipt-editor-type")?.getBoundingClientRect();
+        const textarea = document.querySelector(".receipt-editor-modal textarea")?.getBoundingClientRect();
+        const gridStyle = getComputedStyle(document.querySelector(".receipt-editor-modal .form-grid"));
         return {
           modal: getComputedStyle(document.querySelector(".receipt-editor-modal")).backgroundColor,
           field: getComputedStyle(field).backgroundColor,
           fieldFont: getComputedStyle(field).fontSize,
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          headHeight: Math.round(head?.height || 0),
+          heroHeight: Math.round(hero?.height || 0),
+          textareaHeight: Math.round(textarea?.height || 0),
+          rowGap: parseFloat(gridStyle.rowGap) || 0,
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
           actionHeight: actionRect ? Math.round(actionRect.height) : 0,
@@ -3507,6 +3532,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptEditorState.actionHeight < 48
         || receiptEditorState.footerBottom < receiptEditorState.viewportHeight - 2) {
         report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
+      }
+      if (receiptEditorState.headHeight > 60
+        || receiptEditorState.heroHeight > 52
+        || receiptEditorState.fieldHeight > 46
+        || (receiptEditorState.textareaHeight && receiptEditorState.textareaHeight > 82)
+        || receiptEditorState.rowGap > 7.5) {
+        report.failures.push({ width, type: "receipt-editor-compact-density", receiptEditorState });
       }
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
