@@ -2856,6 +2856,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const add = document.querySelector(".legacy-tools-page .legacy-service-add-wide");
         const addRect = add?.getBoundingClientRect();
         const pageRect = document.querySelector(".legacy-tools-page")?.getBoundingClientRect();
+        const row = document.querySelector(".legacy-document-row.tool");
+        const copyRect = row?.querySelector(":scope > span:nth-child(2)")?.getBoundingClientRect();
+        const amountRect = row?.querySelector(":scope > b")?.getBoundingClientRect();
+        const chevronRect = row?.querySelector(":scope > .chevron")?.getBoundingClientRect();
+        const rowRect = row?.getBoundingClientRect();
         return {
           totalStat: getComputedStyle(document.querySelector(".tools-stats > .service-stat-primary")).backgroundColor,
           activeStat: getComputedStyle(document.querySelector(".tools-stats > div:nth-child(2)")).backgroundColor,
@@ -2864,7 +2869,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.tool strong")).fontSize,
           addWidth: Math.round(addRect?.width || 0),
           pageWidth: Math.round(pageRect?.width || 0),
-          addHeight: Math.round(addRect?.height || 0)
+          addHeight: Math.round(addRect?.height || 0),
+          rowHeight: Math.round(rowRect?.height || 0),
+          copyRight: Math.round(copyRect?.right || 0),
+          amountLeft: Math.round(amountRect?.left || 0),
+          amountRight: Math.round(amountRect?.right || 0),
+          amountCenter: amountRect ? Math.round(amountRect.top + amountRect.height / 2) : 0,
+          rowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
+          chevronLeft: Math.round(chevronRect?.left || 0)
         };
       });
       if (toolsPageSurface.totalStat !== "rgb(7, 12, 16)"
@@ -2873,7 +2885,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolsPageSurface.busy !== "rgb(9, 15, 20)"
         || toolsPageSurface.addWidth < toolsPageSurface.pageWidth - 34
         || toolsPageSurface.addHeight < 48
-        || parseFloat(toolsPageSurface.rowTitleFont) < 11.5) {
+        || parseFloat(toolsPageSurface.rowTitleFont) < 11.5
+        || (width <= 340 && (
+          toolsPageSurface.rowHeight > 72
+          || toolsPageSurface.amountLeft < toolsPageSurface.copyRight - 2
+          || toolsPageSurface.chevronLeft < toolsPageSurface.amountRight
+          || Math.abs(toolsPageSurface.amountCenter - toolsPageSurface.rowCenter) > 10
+        ))) {
         report.failures.push({ width, type: "tools-status-hierarchy", toolsPageSurface });
       }
       await page.locator('[data-action="new-tool"]').click();
@@ -2913,6 +2931,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const add = document.querySelector(".legacy-receipts-page .legacy-service-add-wide");
         const addRect = add?.getBoundingClientRect();
         const pageRect = document.querySelector(".legacy-receipts-page")?.getBoundingClientRect();
+        const row = document.querySelector(".legacy-document-row.receipt");
+        const copyRect = row?.querySelector(":scope > span:nth-child(2)")?.getBoundingClientRect();
+        const amountRect = row?.querySelector(":scope > b")?.getBoundingClientRect();
+        const chevronRect = row?.querySelector(":scope > .chevron")?.getBoundingClientRect();
+        const rowRect = row?.getBoundingClientRect();
         return {
           total: getComputedStyle(document.querySelector(".receipts-stats > .service-stat-primary")).backgroundColor,
           amount: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(2)")).backgroundColor,
@@ -2922,7 +2945,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize,
           addWidth: Math.round(addRect?.width || 0),
           pageWidth: Math.round(pageRect?.width || 0),
-          addHeight: Math.round(addRect?.height || 0)
+          addHeight: Math.round(addRect?.height || 0),
+          rowHeight: Math.round(rowRect?.height || 0),
+          copyRight: Math.round(copyRect?.right || 0),
+          amountLeft: Math.round(amountRect?.left || 0),
+          amountRight: Math.round(amountRect?.right || 0),
+          amountCenter: amountRect ? Math.round(amountRect.top + amountRect.height / 2) : 0,
+          rowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
+          chevronLeft: Math.round(chevronRect?.left || 0)
         };
       });
       if (receiptsPageSurface.total !== "rgb(7, 12, 16)"
@@ -2932,7 +2962,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptsPageSurface.standaloneRow !== "rgb(9, 15, 20)"
         || receiptsPageSurface.addWidth < receiptsPageSurface.pageWidth - 34
         || receiptsPageSurface.addHeight < 48
-        || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5) {
+        || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5
+        || (width <= 340 && (
+          receiptsPageSurface.rowHeight > 72
+          || receiptsPageSurface.amountLeft < receiptsPageSurface.copyRight - 2
+          || receiptsPageSurface.chevronLeft < receiptsPageSurface.amountRight
+          || Math.abs(receiptsPageSurface.amountCenter - receiptsPageSurface.rowCenter) > 10
+        ))) {
         report.failures.push({ width, type: "receipts-semantic-hierarchy", receiptsPageSurface });
       }
       await page.locator('[data-action="new-receipt"]').click();

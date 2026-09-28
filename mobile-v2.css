@@ -16106,3 +16106,41 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+
+/* 1.7.9 · 320 px: документы и инструменты сохраняют правую колонку суммы. */
+@media screen and (max-width: 340px) {
+  .legacy-document-row.receipt,
+  .legacy-document-row.tool {
+    grid-template-columns: 38px minmax(0,1fr) auto 24px !important;
+    grid-template-rows: auto !important;
+    gap: 7px !important;
+    min-height: 66px !important;
+    align-items: center !important;
+  }
+
+  .legacy-document-row.receipt > span:nth-child(2),
+  .legacy-document-row.tool > span:nth-child(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .legacy-document-row.receipt > b,
+  .legacy-document-row.tool > b {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: end !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-document-row.receipt > .chevron,
+  .legacy-document-row.tool > .chevron {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+}

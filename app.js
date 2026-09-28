@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.8";
-const APP_BUILD = "2026.09.28.226";
+const APP_VERSION = "1.7.9";
+const APP_BUILD = "2026.09.28.227";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад получил правильные направления стрелок, а группы прайса — компактные счётчики позиций";
+const APP_RELEASE = "Инструменты и документы на 320 px снова показывают сумму справа в одной строке";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.9",
+    date: "28.09.2026",
+    title: "Компактные строки инструментов и документов",
+    items: [
+      "Стоимость инструмента на 320 px остаётся справа, а не падает отдельной строкой под описанием.",
+      "Сумма документа использует ту же компактную правую колонку.",
+      "Стрелка перехода отделена от суммы и больше не съедает полезную ширину текста."
+    ]
+  },
   {
     version: "1.7.8",
     date: "28.09.2026",
