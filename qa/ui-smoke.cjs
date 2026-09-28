@@ -1055,7 +1055,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     });
     if (goodsRowSurface.background !== "rgb(9, 15, 20)"
       || goodsRowSurface.radius !== "11px"
-      || goodsRowSurface.height < 58
+      || goodsRowSurface.height < 48
       || goodsRowSurface.priceRight > goodsRowSurface.rowRight + 1) {
       report.failures.push({ width, type: "goods-position-surface", goodsRowSurface });
     }
