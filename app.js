@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.34";
-const APP_BUILD = "2026.09.28.252";
+const APP_VERSION = "1.7.35";
+const APP_BUILD = "2026.09.28.253";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Профиль клиента стал плотнее: компактнее шапка, карточка клиента, адрес, KPI, заметка и история ремонтов без уменьшения основных действий"
+const APP_RELEASE = "Профиль клиента на 320 px больше не растягивается: адрес и строка ремонта собраны в компактную читаемую компоновку"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.35",
+    date: "28.09.2026",
+    title: "Точная геометрия профиля клиента",
+    items: [
+      "На 320 px служебная подпись адреса остаётся в одну строку, а сам адрес сохраняет до двух читаемых строк.",
+      "Сумма и статус ремонта больше не падают отдельной строкой под описанием — на узком экране они снова собраны справа.",
+      "Плотность исправлена компоновкой, без уменьшения touch-зон и без ослабления мобильного QA."
+    ]
+  },
   {
     version: "1.7.34",
     date: "28.09.2026",
