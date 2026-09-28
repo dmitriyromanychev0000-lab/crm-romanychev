@@ -3564,6 +3564,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "clients-semantic-hierarchy", clientPageSurface });
       }
       const clientDensity = await page.evaluate(() => {
+        const stats = document.querySelector(".legacy-clients-stats");
+        const statRects = [...document.querySelectorAll(".legacy-clients-stats > div")].map((node) => node.getBoundingClientRect());
         const primary = document.querySelector(".legacy-clients-stats > .clients-stat-primary");
         const secondary = document.querySelector(".legacy-clients-stats > div:nth-child(2)");
         const main = document.querySelector(".legacy-client-main");
@@ -3572,7 +3574,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           primaryHeight: Math.round(primary?.getBoundingClientRect().height || 0),
           secondaryHeight: Math.round(secondary?.getBoundingClientRect().height || 0),
           mainHeight: Math.round(main?.getBoundingClientRect().height || 0),
-          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          columns: stats ? getComputedStyle(stats).gridTemplateColumns : "",
+          statWidths: statRects.map((rect) => Math.round(rect.width)),
+          statHeights: statRects.map((rect) => Math.round(rect.height)),
+          statTops: statRects.map((rect) => Math.round(rect.top))
         };
       });
       const clientDensityLimits = width <= 340
@@ -3580,6 +3586,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         : { primary: 86, secondary: 76, main: 78 };
       if (clientDensity.primaryHeight > clientDensityLimits.primary
         || clientDensity.secondaryHeight > clientDensityLimits.secondary
+        || clientDensity.columns.split(" ").filter(Boolean).length !== 3
+        || clientDensity.statWidths.length !== 3
+        || clientDensity.statWidths.some((value) => value < 80)
+        || Math.max(...clientDensity.statWidths) - Math.min(...clientDensity.statWidths) > 2
+        || clientDensity.statHeights.some((value) => value < 70 || value > 82)
+        || Math.max(...clientDensity.statTops) - Math.min(...clientDensity.statTops) > 2
         || clientDensity.mainHeight > clientDensityLimits.main
         || clientDensity.actionHeight < 44) {
         report.failures.push({ width, type: "clients-compact-density", clientDensity, clientDensityLimits });

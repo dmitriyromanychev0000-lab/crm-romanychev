@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.67";
-const APP_BUILD = "2026.09.28.288";
+const APP_VERSION = "1.7.68";
+const APP_BUILD = "2026.09.28.289";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх склада стал заметно плотнее: создание, поиск, фильтры и быстрые переходы занимают меньше высоты без уменьшения touch-зон"
+const APP_RELEASE = "Клиентская сводка стала компактнее: клиенты, активные и закрытые заявки собраны в одну трёхколоночную строку"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.68",
+    date: "28.09.2026",
+    title: "Клиентская сводка в одну строку",
+    items: [
+      "Три верхних показателя клиентов теперь стоят одной строкой вместо двух уровней карточек.",
+      "Все значения, подписи и короткие пояснения сохранены; карточки остаются читаемыми на 320–430 px.",
+      "Первая карточка клиента начинается заметно выше."
+    ]
+  },
   {
     version: "1.7.67",
     date: "28.09.2026",

@@ -19494,3 +19494,48 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.68 · Клиенты: три KPI одной компактной строкой. */
+@media screen and (max-width: 520px) {
+  .legacy-clients-stats {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 5px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    grid-column: auto !important;
+    min-width: 0 !important;
+    min-height: 74px !important;
+    height: auto !important;
+    padding: 7px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-clients-stats span {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-clients-stats strong,
+  .legacy-clients-stats .clients-stat-primary strong {
+    margin-top: 3px !important;
+    font-size: 19px !important;
+    line-height: 1 !important;
+  }
+
+  .legacy-clients-stats small {
+    display: -webkit-box !important;
+    margin-top: 4px !important;
+    overflow: hidden !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
