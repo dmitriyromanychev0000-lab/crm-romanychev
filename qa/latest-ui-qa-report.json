@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T10:55:14.452Z",
-  "testedSha": "9bb324a3056ca92f0d7ff6529586f42a6f7e85f1",
+  "generatedAt": "2026-09-28T11:03:05.987Z",
+  "testedSha": "f6fb23586fba8b2d465ed0bf15315b72910ccbb1",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T10:55:49.817Z"
+      "fallbackCreatedAt": "2026-09-28T11:03:42.120Z"
     },
     {
       "label": "pwa-offline",
@@ -1490,5 +1490,19 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stress-warehouse-long-name",
+      "stockTextState": {
+        "lineClamp": "2",
+        "whiteSpace": "normal",
+        "textOverflow": "clip",
+        "copyEmDisplay": "none",
+        "qtyDisplay": "grid",
+        "copyBottom": 832,
+        "qtyTop": 791
+      }
+    }
+  ]
 }
