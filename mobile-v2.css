@@ -14479,3 +14479,44 @@
   }
 }
 
+/* 1.1.2 · Убираем лишнюю высоту и возвращаем компактную профессиональную плотность. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .material-card-controls,
+  .order-editor-modal .material-card-controls:nth-child(n) {
+    grid-template-columns: minmax(56px,.62fr) minmax(100px,1fr) minmax(96px,.95fr) !important;
+    gap: 5px !important;
+  }
+
+  .order-editor-modal .material-card-controls > label:nth-child(3) {
+    grid-column: auto !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    min-height: 12px !important;
+    font-size: 9.5px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-stock-card-v2 {
+    background: #060b0f !important;
+  }
+
+  .legacy-price-search .search,
+  #price-search {
+    border-color: #202d35 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal .material-card-controls,
+  .order-editor-modal .material-card-controls:nth-child(n) {
+    grid-template-columns: minmax(54px,.58fr) minmax(100px,1fr) minmax(92px,.92fr) !important;
+    gap: 4px !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    font-size: 9px !important;
+  }
+}
+

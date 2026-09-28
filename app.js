@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.1.1";
-const APP_BUILD = "2026.09.28.179";
+const APP_VERSION = "1.1.2";
+const APP_BUILD = "2026.09.28.180";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Доведены мобильные формы, склад и аналитика; интерфейс стал темнее и ровнее";
+const APP_RELEASE = "Уплотнены материалы и склад, выровнены тёмные поверхности и фильтры";
 const APP_CHANGELOG = [
+  {
+    version: "1.1.2",
+    date: "28.09.2026",
+    title: "Компактность без тесноты",
+    items: [
+      "Карточка материала снова компактная: количество, себестоимость и место хранения помещаются в одну ровную строку.",
+      "Складские карточки стали глубже и спокойнее, без лишнего серо-синего слоя.",
+      "Поиск прайса приведён к общей тёмной системе полей."
+    ]
+  },
   {
     version: "1.1.1",
     date: "28.09.2026",
@@ -4274,7 +4284,7 @@ const orderMaterialRow = (item = {}) => {
     <div class="material-card-controls">
       <label><span>Кол-во · ${escapeHtml(consumeUnit)}</span><input class="field compact" data-line="qty" type="number" min="0.01" step="0.01" value="${qty}" /></label>
       <label><span>Себестоимость</span><input class="field compact" data-line="unit-cost" type="number" min="0" step="1" value="${Number(item.unitCost)||0}" /></label>
-      <label><span>Место хранения</span><select class="field" data-line="location">${options}</select></label>
+      <label><span>Место</span><select class="field" data-line="location">${options}</select></label>
     </div>
   </div>`;
 };
