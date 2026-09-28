@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T18:44:09.535Z",
-  "testedSha": "bbfa5840265e88da8285a58f0599c6b2afe50117",
+  "generatedAt": "2026-09-28T18:50:43.337Z",
+  "testedSha": "438f757d3678e65f43a2b802836a61c374da89f7",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -329,6 +329,64 @@
     },
     {
       "label": "receipt-editor",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "price-editor-existing",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "custom-price-editor-existing",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "goods-editor-existing",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "label": "tool-editor-existing",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "receipt-editor-existing",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -1075,6 +1133,64 @@
       "tooSmall": []
     },
     {
+      "label": "price-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "custom-price-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "goods-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "label": "tool-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "receipt-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
       "label": "diagnostics-modal",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -1510,7 +1626,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T18:44:46.838Z"
+      "fallbackCreatedAt": "2026-09-28T18:51:16.056Z"
     },
     {
       "label": "pwa-offline",
@@ -1524,5 +1640,208 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "small-touch-target",
+      "label": "goods-editor-existing",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "type": "tool-existing-actions-compact",
+      "state": {
+        "footerHeight": 117,
+        "contentLeft": 22,
+        "innerWidth": 252,
+        "buttons": [
+          {
+            "left": 22,
+            "top": 791,
+            "width": 123,
+            "height": 48,
+            "aria": "Удалить инструмент",
+            "hasIcon": true,
+            "labelDisplay": "none"
+          },
+          {
+            "left": 151,
+            "top": 791,
+            "width": 123,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          },
+          {
+            "left": 22,
+            "top": 845,
+            "width": 252,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          }
+        ]
+      },
+      "gap1": 6,
+      "gap2": -252,
+      "usedWidth": 252
+    },
+    {
+      "width": 320,
+      "type": "receipt-existing-actions-compact",
+      "state": {
+        "footerHeight": 117,
+        "contentLeft": 22,
+        "innerWidth": 252,
+        "buttons": [
+          {
+            "left": 22,
+            "top": 791,
+            "width": 123,
+            "height": 48,
+            "aria": "Удалить документ",
+            "hasIcon": true,
+            "labelDisplay": "none"
+          },
+          {
+            "left": 151,
+            "top": 791,
+            "width": 123,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          },
+          {
+            "left": 22,
+            "top": 845,
+            "width": 252,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          }
+        ]
+      },
+      "gap1": 6,
+      "gap2": -252,
+      "usedWidth": 252
+    },
+    {
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "goods-editor-existing",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 34,
+          "h": 34
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "type": "tool-existing-actions-compact",
+      "state": {
+        "footerHeight": 117,
+        "contentLeft": 22,
+        "innerWidth": 322,
+        "buttons": [
+          {
+            "left": 22,
+            "top": 791,
+            "width": 44,
+            "height": 48,
+            "aria": "Удалить инструмент",
+            "hasIcon": true,
+            "labelDisplay": "none"
+          },
+          {
+            "left": 72,
+            "top": 791,
+            "width": 109,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          },
+          {
+            "left": 22,
+            "top": 845,
+            "width": 322,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          }
+        ]
+      },
+      "gap1": 6,
+      "gap2": -159,
+      "usedWidth": 322
+    },
+    {
+      "width": 390,
+      "type": "receipt-existing-actions-compact",
+      "state": {
+        "footerHeight": 117,
+        "contentLeft": 22,
+        "innerWidth": 322,
+        "buttons": [
+          {
+            "left": 22,
+            "top": 791,
+            "width": 44,
+            "height": 48,
+            "aria": "Удалить документ",
+            "hasIcon": true,
+            "labelDisplay": "none"
+          },
+          {
+            "left": 72,
+            "top": 791,
+            "width": 109,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          },
+          {
+            "left": 22,
+            "top": 845,
+            "width": 322,
+            "height": 48,
+            "aria": "",
+            "hasIcon": false,
+            "labelDisplay": "missing"
+          }
+        ]
+      },
+      "gap1": 6,
+      "gap2": -159,
+      "usedWidth": 322
+    }
+  ]
 }
