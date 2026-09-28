@@ -18919,3 +18919,34 @@
     height: 52px !important;
   }
 }
+
+
+/* 1.7.49 · Склад: четыре фильтра в компактной сетке 2×2. */
+@media screen and (max-width: 520px) {
+  .warehouse-filter-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px 8px !important;
+    align-items: end !important;
+  }
+
+  .warehouse-filter-control,
+  .warehouse-filter-control:first-child,
+  .warehouse-filter-control:last-child {
+    width: auto !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .warehouse-filter-control .field {
+    min-height: 46px !important;
+    height: 46px !important;
+    padding-left: 11px !important;
+    padding-right: 29px !important;
+    border-radius: 11px !important;
+    font-size: 12.5px !important;
+  }
+
+  .warehouse-filter-control > small {
+    padding-left: 2px !important;
+  }
+}

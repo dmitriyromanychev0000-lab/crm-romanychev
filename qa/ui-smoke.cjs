@@ -2425,6 +2425,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || "",
           filterGridWidth: Math.round(filterGridRect?.width || 0),
           filterWidths: filterRects.map((rect) => Math.round(rect.width)),
+          filterHeights: filterRects.map((rect) => Math.round(rect.height)),
+          filterLefts: filterRects.map((rect) => Math.round(rect.left)),
           filterTops: filterRects.map((rect) => Math.round(rect.top)),
           stockMainHeight: Math.round(stockMainRect?.height || 0),
           stockCopyRight: Math.round(stockCopyRect?.right || 0),
@@ -2454,8 +2456,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 34
         || warehousePageSurfaces.addHeight < 48
         || !warehousePageSurfaces.addText.includes("Новая позиция")
-        || warehousePageSurfaces.filterWidths.some((value) => value < warehousePageSurfaces.filterGridWidth - 2)
-        || warehousePageSurfaces.filterTops.some((top, index, list) => index > 0 && top <= list[index - 1])
+        || warehousePageSurfaces.filterWidths.length !== 4
+        || warehousePageSurfaces.filterWidths.some((value) => value < 120)
+        || Math.max(...warehousePageSurfaces.filterWidths) - Math.min(...warehousePageSurfaces.filterWidths) > 3
+        || warehousePageSurfaces.filterHeights.some((value) => value < 58 || value > 64)
+        || Math.abs(warehousePageSurfaces.filterTops[0] - warehousePageSurfaces.filterTops[1]) > 2
+        || Math.abs(warehousePageSurfaces.filterTops[2] - warehousePageSurfaces.filterTops[3]) > 2
+        || warehousePageSurfaces.filterTops[2] <= warehousePageSurfaces.filterTops[0]
+        || warehousePageSurfaces.filterLefts[1] <= warehousePageSurfaces.filterLefts[0]
+        || warehousePageSurfaces.filterLefts[3] <= warehousePageSurfaces.filterLefts[2]
         || warehousePageSurfaces.filterIconTransforms.length !== 4
         || warehousePageSurfaces.filterIconTransforms.some((value) => value === "none")
         || warehousePageSurfaces.groupChevronTransforms.length < 2

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.48";
-const APP_BUILD = "2026.09.28.266";
+const APP_VERSION = "1.7.49";
+const APP_BUILD = "2026.09.28.267";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх формы заявки стал плотнее: неисправность, диагностика и внешние дефекты занимают меньше стартовой высоты без уменьшения текста"
+const APP_RELEASE = "Фильтры склада стали компактнее: четыре рабочих фильтра собраны в сетку 2×2, поиск остаётся полноширинным"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.49",
+    date: "28.09.2026",
+    title: "Компактные фильтры склада",
+    items: [
+      "Остаток, техника, категория и место хранения теперь собраны в сетку 2×2 вместо четырёх длинных строк.",
+      "Поиск склада остаётся полноширинным и отделён от фильтров.",
+      "На 320–430 px фильтры сохраняют полноценную высоту и проверяются отдельной геометрической регрессией."
+    ]
+  },
   {
     version: "1.7.48",
     date: "28.09.2026",
