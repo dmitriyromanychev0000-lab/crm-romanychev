@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T08:29:58.943Z",
-  "testedSha": "5e342f0adf5dffc6992e63d23452de0b93eca8a0",
+  "generatedAt": "2026-09-28T08:38:53.675Z",
+  "testedSha": "aacaa619841a0e564a8dda58df3ebbbaf4d34d60",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,19 +1398,37 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T08:30:35.745Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-28T08:39:24.380Z"
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "drafts-workflow-hierarchy",
+      "draftSurface": {
+        "card": "rgb(7, 12, 16)",
+        "note": "rgb(13, 20, 25)",
+        "next": "rgb(13, 20, 25)",
+        "remove": "rgb(18, 9, 11)",
+        "nextHeight": 44,
+        "removeHeight": 44
+      }
+    },
+    {
+      "width": 390,
+      "type": "drafts-workflow-hierarchy",
+      "draftSurface": {
+        "card": "rgb(7, 12, 16)",
+        "note": "rgb(13, 20, 25)",
+        "next": "rgb(13, 20, 25)",
+        "remove": "rgb(18, 9, 11)",
+        "nextHeight": 44,
+        "removeHeight": 44
+      }
+    },
+    {
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
+    }
+  ]
 }
