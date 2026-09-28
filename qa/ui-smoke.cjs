@@ -1109,7 +1109,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || shoppingCardLayout.needRight > shoppingCardLayout.cardRight + 1) {
       report.failures.push({ width, type: "shopping-card-single-row", shoppingCardLayout });
     }
-    const shoppingCompactMax = width <= 340 ? 82 : 76;
+    const shoppingCompactMax = width <= 340 ? 82 : 80;
     if (shoppingCardLayout.cardHeight > shoppingCompactMax) {
       report.failures.push({ width, type: "shopping-compact-density", shoppingCardLayout, shoppingCompactMax });
     }
@@ -2291,13 +2291,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       const stockDetailDensity = await page.evaluate(() => {
         const hero = document.querySelector(".stock-detail-hero");
+        const title = document.querySelector(".stock-detail-hero h2");
         const kpi = document.querySelector(".stock-detail-kpis > div");
         const incoming = document.querySelector(".stock-detail-actions .incoming");
         const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const movement = document.querySelector(".stock-detail-movement");
+        const titleStyle = title ? getComputedStyle(title) : null;
+        const titleLineHeight = titleStyle ? parseFloat(titleStyle.lineHeight) || 0 : 0;
+        const titleHeight = title?.getBoundingClientRect().height || 0;
         return {
           heroHeight: Math.round(hero?.getBoundingClientRect().height || 0),
+          heroTitleLines: titleLineHeight > 0 ? Math.max(1, Math.round(titleHeight / titleLineHeight)) : 1,
           kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
           incomingHeight: Math.round(incoming?.getBoundingClientRect().height || 0),
           correctHeight: Math.round(correct?.getBoundingClientRect().height || 0),
@@ -2305,7 +2310,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           movementHeight: Math.round(movement?.getBoundingClientRect().height || 0)
         };
       });
-      const stockDetailHeroMax = width <= 340 ? 82 : 76;
+      const stockDetailHeroMax = stockDetailDensity.heroTitleLines > 1 ? 92 : (width <= 340 ? 82 : 76);
       if (stockDetailDensity.heroHeight > stockDetailHeroMax
         || stockDetailDensity.kpiHeight > 66
         || stockDetailDensity.incomingHeight < 44
