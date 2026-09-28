@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.41";
-const APP_BUILD = "2026.09.28.259";
+const APP_VERSION = "1.7.42";
+const APP_BUILD = "2026.09.28.260";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Диагностика теперь действительно использует компактную геометрию: старые общие стили больше не перебивают её собственные размеры"
+const APP_RELEASE = "История версий стала плотнее и удобнее: карточки занимают меньше места, а шапка с закрытием остаётся доступной при прокрутке"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.42",
+    date: "28.09.2026",
+    title: "Компактная история версий",
+    items: [
+      "Окно «Что нового» использует больше полезной ширины и меньше пустых полей вокруг истории изменений.",
+      "Карточки версий и промежутки между ними стали плотнее без уменьшения основного текста.",
+      "Шапка с кнопкой закрытия закреплена при прокрутке длинного списка; геометрия и доступность закрытия проверяются QA."
+    ]
+  },
   {
     version: "1.7.41",
     date: "28.09.2026",

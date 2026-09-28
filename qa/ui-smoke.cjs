@@ -3366,6 +3366,75 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "more-menu-compact-density", moreMenuDensity, moreItemLimit });
       }
 
+      await page.locator('.more-version-button[data-action="release-notes"]').click();
+      await page.waitForTimeout(50);
+      const releaseNotesDensity = await page.evaluate(() => {
+        const backdrop = document.querySelector(".release-notes-backdrop");
+        const modal = document.querySelector(".release-notes-modal");
+        const head = modal?.querySelector(".release-notes-head");
+        const close = head?.querySelector("[data-close-modal]");
+        const current = modal?.querySelector(".release-current");
+        const list = modal?.querySelector(".release-notes-list");
+        const note = modal?.querySelector(".release-note");
+        const noteTitle = note?.querySelector("h3");
+        const done = modal?.querySelector(":scope > .primary-button.wide");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        const modalStyle = modal ? getComputedStyle(modal) : null;
+        const headStyle = head ? getComputedStyle(head) : null;
+        const currentStyle = current ? getComputedStyle(current) : null;
+        const listStyle = list ? getComputedStyle(list) : null;
+        const noteStyle = note ? getComputedStyle(note) : null;
+        const closeRect = close?.getBoundingClientRect();
+        return {
+          backdropPaddingLeft: backdrop ? px(getComputedStyle(backdrop).paddingLeft) : 999,
+          modalPaddingTop: modalStyle ? px(modalStyle.paddingTop) : 999,
+          headPosition: headStyle?.position || "missing",
+          headTop: headStyle ? px(headStyle.top) : 999,
+          closeWidth: Math.round(closeRect?.width || 0),
+          closeHeight: Math.round(closeRect?.height || 0),
+          currentMarginTop: currentStyle ? px(currentStyle.marginTop) : 999,
+          currentPaddingTop: currentStyle ? px(currentStyle.paddingTop) : 999,
+          listGap: listStyle ? px(listStyle.rowGap || listStyle.gap) : 999,
+          notePaddingTop: noteStyle ? px(noteStyle.paddingTop) : 999,
+          noteTitleFont: noteTitle ? px(getComputedStyle(noteTitle).fontSize) : 0,
+          doneHeight: Math.round(done?.getBoundingClientRect().height || 0),
+          scrollable: Boolean(modal && modal.scrollHeight > modal.clientHeight + 20)
+        };
+      });
+      if (releaseNotesDensity.backdropPaddingLeft > 8
+        || releaseNotesDensity.modalPaddingTop > 10
+        || releaseNotesDensity.headPosition !== "sticky"
+        || Math.abs(releaseNotesDensity.headTop) > 0.5
+        || releaseNotesDensity.closeWidth < 44
+        || releaseNotesDensity.closeHeight < 44
+        || releaseNotesDensity.currentMarginTop > 8
+        || releaseNotesDensity.currentPaddingTop > 9
+        || releaseNotesDensity.listGap > 6.5
+        || releaseNotesDensity.notePaddingTop > 9
+        || releaseNotesDensity.noteTitleFont < 11
+        || releaseNotesDensity.doneHeight < 48
+        || !releaseNotesDensity.scrollable) {
+        report.failures.push({ width, type: "release-notes-compact-density", releaseNotesDensity });
+      }
+      const releaseNotesSticky = await page.evaluate(() => {
+        const modal = document.querySelector(".release-notes-modal");
+        const head = modal?.querySelector(".release-notes-head");
+        const close = head?.querySelector("[data-close-modal]");
+        if (!modal || !head || !close) return { scrollTop: 0, closeVisible: false };
+        modal.scrollTop = Math.min(360, Math.max(0, modal.scrollHeight - modal.clientHeight));
+        const modalRect = modal.getBoundingClientRect();
+        const closeRect = close.getBoundingClientRect();
+        return {
+          scrollTop: Math.round(modal.scrollTop),
+          closeVisible: closeRect.top >= modalRect.top - 1 && closeRect.bottom <= modalRect.bottom + 1
+        };
+      });
+      if (releaseNotesSticky.scrollTop > 0 && !releaseNotesSticky.closeVisible) {
+        report.failures.push({ width, type: "release-notes-sticky-close", releaseNotesSticky });
+      }
+      report.results.push(await shot(page, width, "release-notes", false));
+      await page.locator(".release-notes-head [data-close-modal]").click();
+
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
       const goodsPageSurface = await page.evaluate(() => ({
         create: getComputedStyle(document.querySelector(".legacy-goods-new")).backgroundColor,
