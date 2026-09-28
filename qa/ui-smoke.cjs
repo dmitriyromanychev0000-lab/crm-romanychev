@@ -2288,6 +2288,35 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8) {
         report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
+
+      const stockDetailDensity = await page.evaluate(() => {
+        const hero = document.querySelector(".stock-detail-hero");
+        const kpi = document.querySelector(".stock-detail-kpis > div");
+        const incoming = document.querySelector(".stock-detail-actions .incoming");
+        const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
+        const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
+        const movement = document.querySelector(".stock-detail-movement");
+        return {
+          heroHeight: Math.round(hero?.getBoundingClientRect().height || 0),
+          kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
+          incomingHeight: Math.round(incoming?.getBoundingClientRect().height || 0),
+          correctHeight: Math.round(correct?.getBoundingClientRect().height || 0),
+          archiveHeight: Math.round(archive?.getBoundingClientRect().height || 0),
+          movementHeight: Math.round(movement?.getBoundingClientRect().height || 0)
+        };
+      });
+      const stockDetailHeroMax = width <= 340 ? 82 : 76;
+      if (stockDetailDensity.heroHeight > stockDetailHeroMax
+        || stockDetailDensity.kpiHeight > 66
+        || stockDetailDensity.incomingHeight < 44
+        || stockDetailDensity.incomingHeight > 54
+        || stockDetailDensity.correctHeight < 44
+        || stockDetailDensity.correctHeight > 52
+        || stockDetailDensity.archiveHeight < 44
+        || stockDetailDensity.archiveHeight > 48
+        || stockDetailDensity.movementHeight > 50) {
+        report.failures.push({ width, type: "stock-detail-compact-density", stockDetailDensity, stockDetailHeroMax });
+      }
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
@@ -2319,6 +2348,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorSurface.stockTechWidth < stockEditorSurface.gridWidth * 0.92
         || stockEditorSurface.categoryWidth < stockEditorSurface.gridWidth * 0.92) {
         report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
+      }
+
+      const stockEditorDensity = await page.evaluate(() => {
+        const head = document.querySelector(".stock-editor-head");
+        const body = document.querySelector(".stock-editor-body");
+        const section = document.querySelector(".stock-editor-section");
+        const field = document.querySelector(".stock-editor-modal .field");
+        const compat = document.querySelector(".stock-editor-compat-details > summary");
+        const bodyStyle = body ? getComputedStyle(body) : null;
+        const sectionStyle = section ? getComputedStyle(section) : null;
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          headHeight: Math.round(head?.getBoundingClientRect().height || 0),
+          bodyGap: bodyStyle ? px(bodyStyle.gap) : 999,
+          sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          compatHeight: Math.round(compat?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (stockEditorDensity.headHeight > 66
+        || stockEditorDensity.bodyGap > 8
+        || stockEditorDensity.sectionPaddingTop > 9
+        || stockEditorDensity.fieldHeight < 44
+        || stockEditorDensity.fieldHeight > 48
+        || stockEditorDensity.compatHeight < 44
+        || stockEditorDensity.compatHeight > 48) {
+        report.failures.push({ width, type: "stock-editor-compact-density", stockEditorDensity });
       }
       report.results.push(await shot(page, width, "stock-editor", false));
       if (width === 390) {
