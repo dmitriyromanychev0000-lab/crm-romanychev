@@ -415,8 +415,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !pairAligned(sourceVisitFields.tech, sourceVisitFields.brand)
         || !pairAligned(sourceVisitFields.createdDate, sourceVisitFields.visitDate)
         || !pairAligned(sourceVisitFields.visitTime, sourceVisitFields.visitDuration)
-        || !fullWidthField(sourceVisitFields.source)
-        || !fullWidthField(sourceVisitFields.status)
+        || !pairAligned(sourceVisitFields.source, sourceVisitFields.status)
         || !fullWidthField(sourceVisitFields.issue)) {
         report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
       }

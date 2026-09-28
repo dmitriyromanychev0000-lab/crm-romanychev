@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.49";
-const APP_BUILD = "2026.09.28.267";
+const APP_VERSION = "1.7.50";
+const APP_BUILD = "2026.09.28.268";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Фильтры склада стали компактнее: четыре рабочих фильтра собраны в сетку 2×2, поиск остаётся полноширинным"
+const APP_RELEASE = "Источник заявки и статус теперь стоят рядом: форма стала короче ещё на одну строку без сжатия длинных полей"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.50",
+    date: "28.09.2026",
+    title: "Источник и статус в одной строке",
+    items: [
+      "Источник заявки и статус собраны в одну двухколоночную строку вместо двух полноширинных рядов.",
+      "Оба селекта сохраняют удобную высоту и остаются читаемыми на 320–430 px.",
+      "Адрес, неисправность, диагностика и дефекты остаются полноширинными."
+    ]
+  },
   {
     version: "1.7.49",
     date: "28.09.2026",
@@ -5628,7 +5638,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
       <div class="client-match-slot full" id="client-match-slot"></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
-      <div class="form-group full"><label>Источник заявки *</label><select class="field" name="sourceId"><option value="">Выбери источник</option>${sourceOptions}${archivedSourceOption}</select></div>
+      <div class="form-group order-source"><label>Источник заявки *</label><select class="field" name="sourceId"><option value="">Выбери источник</option>${sourceOptions}${archivedSourceOption}</select></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>
       <div class="form-group full"><label>Внешние дефекты</label><textarea class="field textarea compact-textarea" name="defects">${escapeHtml(order.defects || "")}</textarea></div>
@@ -5636,7 +5646,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Дата визита</label><input class="field" name="nextVisitDate" type="date" value="${escapeHtml(visitParts.date)}" /></div>
       <div class="form-group"><label>Время визита</label><input class="field" name="nextVisitTime" type="time" value="${escapeHtml(visitParts.time)}" /></div>
       <div class="form-group"><label>Длительность</label><select class="field" name="nextVisitDuration">${[30,45,60,90,120,180].map((minutes) => `<option value="${minutes}" ${visitParts.duration === minutes ? "selected" : ""}>${minutes < 60 ? `${minutes} мин.` : minutes === 60 ? "1 час" : minutes === 90 ? "1 ч 30 мин." : `${minutes / 60} ч.`}</option>`).join("")}</select></div>
-      <div class="form-group full"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
+      <div class="form-group order-status"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       ${warrantyAppeal ? `<div class="form-group full warranty-result-field"><label>Результат гарантийного обращения</label><select class="field" name="warrantyResultId"><option value="">Пока не определён</option>${warrantyResultOptions}${archivedWarrantyResult}</select></div>` : ""}
       </div>
     </section>
