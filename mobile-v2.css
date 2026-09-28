@@ -16595,3 +16595,159 @@
     font-size: clamp(12px,3.8vw,15px) !important;
   }
 }
+
+
+/* 1.7.15 · Аналитика: высокая информационная плотность без мелкого текста. */
+@media screen and (max-width: 520px) {
+  .analytics-content {
+    padding-top: 11px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .analytics-content .page-head {
+    margin-bottom: 8px !important;
+  }
+
+  .analytics-period-grid {
+    gap: 4px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .analytics-period-grid .chip {
+    min-height: 42px !important;
+  }
+
+  .analytics-range-nav {
+    margin-bottom: 7px !important;
+  }
+
+  .analytics-content .panel {
+    margin-bottom: 7px !important;
+    padding: 10px !important;
+    border-radius: 13px !important;
+  }
+
+  .analytics-content .panel-title {
+    margin-bottom: 8px !important;
+  }
+
+  .analytics-kpi-panel {
+    padding: 9px !important;
+  }
+
+  .analytics-kpis {
+    gap: 6px !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    grid-template-columns: 30px minmax(0,1fr) !important;
+    gap: 7px !important;
+    min-height: 80px !important;
+    padding: 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .analytics-kpi-icon {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 9px !important;
+  }
+
+  .analytics-kpi-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .analytics-kpi > div > strong {
+    margin-top: 3px !important;
+  }
+
+  .analytics-kpi > div > small {
+    margin-top: 3px !important;
+  }
+
+  .analytics-summary-strip {
+    gap: 5px !important;
+    margin-top: 6px !important;
+  }
+
+  .analytics-summary-strip > span {
+    min-height: 36px !important;
+    padding: 6px 8px !important;
+    border-radius: 9px !important;
+  }
+
+  .analytics-focus-list {
+    border-radius: 10px !important;
+  }
+
+  .analytics-focus-row {
+    grid-template-columns: 30px minmax(0,1fr) auto !important;
+    gap: 8px !important;
+    min-height: 52px !important;
+    padding: 6px 8px !important;
+  }
+
+  .analytics-focus-icon {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 9px !important;
+  }
+
+  .analytics-focus-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .analytics-work .analytics-work-grid {
+    gap: 6px !important;
+  }
+
+  .analytics-work .metric {
+    min-height: 66px !important;
+    padding: 7px !important;
+    border-radius: 9px !important;
+  }
+
+  .analytics-work .metric-value {
+    margin-top: 2px !important;
+  }
+
+  .analytics-weekdays {
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .analytics-weekdays > span {
+    min-height: 42px !important;
+    padding: 6px 4px !important;
+  }
+
+  .analytics-work-grid.compact {
+    margin-top: 7px !important;
+  }
+
+  .analytics-collapsible > summary {
+    min-height: 52px !important;
+    padding: 8px 10px !important;
+  }
+
+  .analytics-collapsible > .analytics-work-grid,
+  .analytics-collapsible > .goods-list,
+  .analytics-collapsible > .empty {
+    margin: 0 10px 9px !important;
+  }
+
+  .analytics-ranking-row {
+    min-height: 48px !important;
+    padding: 5px 0 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .analytics-summary-strip,
+  .analytics-comparison-strip {
+    gap: 5px !important;
+  }
+}

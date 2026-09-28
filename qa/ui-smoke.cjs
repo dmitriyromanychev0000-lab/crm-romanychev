@@ -1947,6 +1947,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
         report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
       }
+      const analyticsDensity = await page.evaluate(() => {
+        const kpi = document.querySelector(".analytics-kpi");
+        const workMetric = document.querySelector(".analytics-work .metric");
+        const focusRow = document.querySelector(".analytics-focus-row");
+        const panel = document.querySelector(".analytics-content .panel");
+        const panelStyle = panel ? getComputedStyle(panel) : null;
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
+          workMetricHeight: Math.round(workMetric?.getBoundingClientRect().height || 0),
+          focusHeight: Math.round(focusRow?.getBoundingClientRect().height || 0),
+          panelPaddingTop: panelStyle ? px(panelStyle.paddingTop) : 999,
+          panelMarginBottom: panelStyle ? px(panelStyle.marginBottom) : 999
+        };
+      });
+      if (analyticsDensity.kpiHeight > 90
+        || analyticsDensity.workMetricHeight > 74
+        || analyticsDensity.focusHeight > 58
+        || analyticsDensity.panelPaddingTop > 10
+        || analyticsDensity.panelMarginBottom > 8) {
+        report.failures.push({ width, type: "analytics-compact-density", analyticsDensity });
+      }
       const analyticsModelState = await page.evaluate(() => {
         const numberFrom = (value) => Number(String(value || "").replace(/[^0-9-]/g, "")) || 0;
         const cards = [...document.querySelectorAll(".analytics-kpi")];

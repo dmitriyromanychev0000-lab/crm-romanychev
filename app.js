@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.14";
-const APP_BUILD = "2026.09.28.232";
+const APP_VERSION = "1.7.15";
+const APP_BUILD = "2026.09.28.233";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Денежные карточки заявки теперь реально компактные по высоте без обрезания текста и с сохранением читаемости";
+const APP_RELEASE = "Аналитика стала плотнее и информативнее: меньше пустой высоты в KPI, метриках и панелях без уменьшения основных цифр";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.15",
+    date: "28.09.2026",
+    title: "Плотная премиальная аналитика",
+    items: [
+      "KPI и рабочие метрики стали заметно компактнее по вертикали без уменьшения основных цифр.",
+      "Сокращены лишние отступы между панелями, сводками и блоками фокуса.",
+      "Информация остаётся читаемой на 320–430 px, а экран показывает больше данных без лишней прокрутки."
+    ]
+  },
   {
     version: "1.7.14",
     date: "28.09.2026",
