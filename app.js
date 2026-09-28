@@ -7,11 +7,20 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.1.2";
-const APP_BUILD = "2026.09.28.180";
+const APP_VERSION = "1.1.3";
+const APP_BUILD = "2026.09.28.181";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Уплотнены материалы и склад, выровнены тёмные поверхности и фильтры";
+const APP_RELEASE = "Усилена надёжность складских форм и восстановлены корректные focus-состояния";
 const APP_CHANGELOG = [
+  {
+    version: "1.1.3",
+    date: "28.09.2026",
+    title: "Надёжность складских действий",
+    items: [
+      "Закупка, ручное списание и корректировка склада используют явную проверку CRM без конфликтов встроенной браузерной валидации.",
+      "Фокус поиска в прайсе снова заметен и соответствует общей коралловой системе."
+    ]
+  },
   {
     version: "1.1.2",
     date: "28.09.2026",
@@ -5589,7 +5598,7 @@ async function correctStock(id) {
   const item=data.warehouse.find((entry)=>String(entry.id)===String(id)); if(!item) return;
   const unit=normalizeStockUnit(item.unit||"шт"),locations=activeStorageLocations({includeArchived:true}).filter((location)=>!location.archived||stockLocationPhysicalQuantity(item,location.id)>1e-9||stockReservedQuantityAtLocation(item.id,location.id)>1e-9);
   const modal=document.createElement("div"); modal.className="modal-backdrop stock-correction-backdrop";
-  modal.innerHTML=`<form class="modal stock-adjust-modal stock-correction-modal">
+  modal.innerHTML=`<form class="modal stock-adjust-modal stock-correction-modal" novalidate>
     <div class="stock-adjust-head"><span class="stock-adjust-icon correction">${icon("edit")}</span><div><strong>Корректировка остатка</strong><small>${escapeHtml(item.name||"Позиция склада")}</small></div><button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <label class="stock-adjust-field"><span>МЕСТО ХРАНЕНИЯ</span><select class="field" name="locationId">${locations.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("")}</select></label>
     <div class="stock-correction-before"><span><small>БЫЛО</small><strong id="stock-correction-before">0 ${escapeHtml(unit)}</strong></span><span><small>В РЕЗЕРВЕ</small><strong id="stock-correction-reserved">0 ${escapeHtml(unit)}</strong></span></div>
@@ -6325,7 +6334,7 @@ async function adjustStock(id, direction) {
   const locations=incoming?activeStorageLocations():activeStorageLocations({includeArchived:true}).filter((location)=>stockAvailableQuantityAtLocation(item,location.id)>1e-9);
   if(!locations.length)return toast(incoming?"Добавь место хранения":"Нет свободного остатка для списания");
   const modal=document.createElement("div");modal.className="modal-backdrop stock-adjust-backdrop";
-  modal.innerHTML=`<form class="modal stock-adjust-modal">
+  modal.innerHTML=`<form class="modal stock-adjust-modal" novalidate>
     <div class="stock-adjust-head"><span class="stock-adjust-icon ${incoming?"incoming":"outgoing"}">${icon(incoming?"plus":"minus")}</span><div><strong>${incoming?"Новая закупка":"Ручное списание"}</strong><small>${escapeHtml(item.name||"Позиция склада")}</small></div><button type="button" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <label class="stock-adjust-field"><span>МЕСТО ХРАНЕНИЯ</span><select class="field" name="locationId">${locations.map((location)=>`<option value="${escapeHtml(location.id)}">${escapeHtml(location.name)}</option>`).join("")}</select></label>
     <div class="stock-adjust-balance"><span>ДОСТУПНО В МЕСТЕ</span><strong id="stock-adjust-before">0 ${escapeHtml(unit)}</strong></div>

@@ -14520,3 +14520,17 @@
   }
 }
 
+/* 1.1.3 · Явные focus-состояния после унификации полей. */
+@media screen and (max-width: 520px) {
+  .legacy-price-search #price-search:focus,
+  .legacy-price-search #price-search:focus-visible {
+    border-color: #ff684a !important;
+    background: #0b1217 !important;
+    box-shadow: 0 0 0 3px rgba(255,104,74,.08) !important;
+  }
+
+  .legacy-price-search:focus-within > .ui-icon {
+    color: #ff765c !important;
+  }
+}
+
