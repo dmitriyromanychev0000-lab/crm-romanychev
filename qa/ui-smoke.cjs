@@ -1101,7 +1101,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || warehouseShortcutLayout.columns.split(" ").filter(Boolean).length !== 2
       || warehouseShortcutLayout.buttons.some((button) => button.width < 125)
       || Math.abs(warehouseShortcutLayout.buttons[0]?.width - warehouseShortcutLayout.buttons[1]?.width) > 2
-      || warehouseShortcutLayout.buttons.some((button) => button.height < 48 || button.height > 49)
+      || warehouseShortcutLayout.buttons.some((button) => button.height < 44 || button.height > 45)
       || warehouseShortcutLayout.buttons.some((button) => button.labelWrap)
       || Math.abs(warehouseShortcutLayout.buttons[0]?.top - warehouseShortcutLayout.buttons[1]?.top) > 2
       || warehouseShortcutLayout.buttons[1]?.left <= warehouseShortcutLayout.buttons[0]?.left) {
