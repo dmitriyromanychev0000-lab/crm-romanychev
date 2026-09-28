@@ -18837,3 +18837,70 @@
     padding: 9px 10px 10px !important;
   }
 }
+
+
+/* 1.7.47 · Комментарий мастера: пустая заметка не занимает лишнюю высоту. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-comment-details > summary {
+    list-style: none !important;
+    cursor: pointer !important;
+  }
+
+  .order-editor-modal .order-comment-details > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .order-editor-modal .order-comment-summary {
+    box-sizing: border-box !important;
+    min-height: 48px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .order-editor-modal .order-comment-details[open] .order-comment-summary {
+    margin-bottom: 7px !important;
+  }
+
+  .order-editor-modal .order-comment-summary-copy {
+    display: grid !important;
+    min-width: 0 !important;
+    gap: 2px !important;
+  }
+
+  .order-editor-modal .order-comment-summary-copy > span {
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .order-comment-summary-copy > small {
+    color: #71808a !important;
+    font-size: 8.5px !important;
+    font-weight: 650 !important;
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .order-comment-toggle {
+    display: grid !important;
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: auto !important;
+    place-items: center !important;
+    color: #75828a !important;
+    transition: transform .18s ease !important;
+  }
+
+  .order-editor-modal .order-comment-toggle .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .order-editor-modal .order-comment-details[open] .order-comment-toggle {
+    transform: rotate(90deg) !important;
+  }
+
+  .order-editor-modal .order-comment-details:not([open]) .order-comment {
+    display: none !important;
+  }
+
+  .order-editor-modal .order-comment-details[open] .order-comment {
+    margin-top: 0 !important;
+  }
+}

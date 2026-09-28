@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.46";
-const APP_BUILD = "2026.09.28.264";
+const APP_VERSION = "1.7.47";
+const APP_BUILD = "2026.09.28.265";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустые фотографии больше не занимают пол-экрана: блок сворачивается и автоматически раскрывается в заявках, где фотографии уже есть"
+const APP_RELEASE = "Пустой комментарий мастера больше не раздувает форму: заметка свёрнута в компактную строку и раскрывается только когда нужна"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.47",
+    date: "28.09.2026",
+    title: "Компактный комментарий мастера",
+    items: [
+      "Пустой внутренний комментарий теперь свёрнут по умолчанию и не занимает место большим textarea.",
+      "Если в заявке уже есть заметка мастера, блок автоматически открывается при редактировании.",
+      "Заголовок показывает состояние заметки и остаётся полноценной touch-зоной."
+    ]
+  },
   {
     version: "1.7.46",
     date: "28.09.2026",
@@ -5661,10 +5671,10 @@ function newOrderModal(existing = null, options = {}) {
     </div>
     </section>
 
-    <section class="order-editor-section order-master-comment-section">
-      <div class="form-section-title"><span class="order-editor-section-icon">${icon("document")}</span><span>Комментарий мастера</span></div>
+    <details class="order-editor-section order-master-comment-section order-comment-details" ${String(order.comment || "").trim() ? "open" : ""}>
+      <summary class="form-section-title order-comment-summary"><span class="order-editor-section-icon">${icon("document")}</span><span class="order-comment-summary-copy"><span>Комментарий мастера</span><small id="order-comment-state">${String(order.comment || "").trim() ? "Есть заметка" : "Нет заметки"}</small></span><span class="order-comment-toggle" aria-hidden="true">${icon("chevron")}</span></summary>
       <div class="form-group order-comment"><textarea class="field textarea" name="comment" placeholder="Внутренняя заметка только для тебя">${escapeHtml(order.comment || "")}</textarea><small>Не попадает в акт и клиентские документы.</small></div>
-    </section>
+    </details>
     </div>
     <div class="modal-actions"><button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
@@ -5707,6 +5717,14 @@ function newOrderModal(existing = null, options = {}) {
     applyKnownClient();
   });
   applyKnownClient();
+
+  const commentInput = formElement.elements.comment;
+  const commentState = modal.querySelector("#order-comment-state");
+  const syncCommentState = () => {
+    if (commentState) commentState.textContent = String(commentInput?.value || "").trim() ? "Есть заметка" : "Нет заметки";
+  };
+  commentInput?.addEventListener("input", syncCommentState);
+  syncCommentState();
 
   const warrantyGrid = modal.querySelector("#warranty-target-grid");
   const warrantyWrap = modal.querySelector("#warranty-target-wrap");

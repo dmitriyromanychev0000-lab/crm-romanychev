@@ -1390,6 +1390,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "photos-empty-collapsed", emptyPhotoState });
       }
 
+      const emptyCommentState = await page.evaluate(() => {
+        const block = document.querySelector(".order-comment-details");
+        const summary = block?.querySelector("summary");
+        const body = block?.querySelector(".order-comment");
+        const summaryRect = summary?.getBoundingClientRect();
+        return {
+          tag: block?.tagName || "",
+          open: Boolean(block?.open),
+          summaries: block?.querySelectorAll("summary").length || 0,
+          summaryHeight: Math.round(summaryRect?.height || 0),
+          bodyDisplay: body ? getComputedStyle(body).display : "missing",
+          stateText: block?.querySelector("#order-comment-state")?.textContent || ""
+        };
+      });
+      if (emptyCommentState.tag !== "DETAILS"
+        || emptyCommentState.open
+        || emptyCommentState.summaries !== 1
+        || emptyCommentState.summaryHeight < 44
+        || emptyCommentState.summaryHeight > 54
+        || emptyCommentState.bodyDisplay !== "none"
+        || emptyCommentState.stateText !== "Нет заметки") {
+        report.failures.push({ width, type: "order-comment-empty-collapsed", emptyCommentState });
+      }
+
       const paymentGridLayout = await page.evaluate(() => {
         const grid = document.querySelector(".legacy-payment-grid");
         const gridStyle = grid ? getComputedStyle(grid) : null;
@@ -1944,6 +1968,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       if (width === 390) {
         const photoSeed = structuredClone(seed);
+        photoSeed.orders[0].comment = "Позвонить клиенту перед выездом";
         photoSeed.orders[0].photos = [{
           name: "Фото холодильника",
           dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAEAQH/9jzG9AAAAABJRU5ErkJggg=="
@@ -1976,6 +2001,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || !staticPhotoState.addVisible
           || staticPhotoState.cards !== 1) {
           report.failures.push({ width, type: "photos-with-data-open", staticPhotoState });
+        }
+        const storedCommentState = await page.evaluate(() => {
+          const block = document.querySelector(".order-comment-details");
+          const body = block?.querySelector(".order-comment");
+          return {
+            tag: block?.tagName || "",
+            open: Boolean(block?.open),
+            bodyDisplay: body ? getComputedStyle(body).display : "missing",
+            stateText: block?.querySelector("#order-comment-state")?.textContent || "",
+            value: block?.querySelector('[name="comment"]')?.value || ""
+          };
+        });
+        if (storedCommentState.tag !== "DETAILS"
+          || !storedCommentState.open
+          || storedCommentState.bodyDisplay === "none"
+          || storedCommentState.stateText !== "Есть заметка"
+          || storedCommentState.value !== "Позвонить клиенту перед выездом") {
+          report.failures.push({ width, type: "order-comment-with-data-open", storedCommentState });
         }
         await page.locator("#open-service-catalog").scrollIntoViewIfNeeded();
         report.results.push(await shot(page, width, "order-editor-restored", false));
