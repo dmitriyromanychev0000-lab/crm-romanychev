@@ -2720,9 +2720,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const stockDetailSurface = await page.evaluate(() => {
         const incoming = document.querySelector(".stock-detail-actions .incoming");
         const outgoing = document.querySelector(".stock-detail-actions .outgoing");
+        const transfer = document.querySelector(".stock-detail-actions .stock-detail-transfer");
         const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const incomingRect = incoming?.getBoundingClientRect();
+        const outgoingRect = outgoing?.getBoundingClientRect();
+        const transferRect = transfer?.getBoundingClientRect();
         const correctRect = correct?.getBoundingClientRect();
         const archiveRect = archive?.getBoundingClientRect();
         return {
@@ -2733,11 +2736,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           minimumKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .minimum")).backgroundColor,
           incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
           outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
+          transfer: transfer ? getComputedStyle(transfer).backgroundColor : "missing",
           correct: correct ? getComputedStyle(correct).backgroundColor : "missing",
           archive: archive ? getComputedStyle(archive).backgroundColor : "missing",
           incomingWidth: incomingRect ? Math.round(incomingRect.width) : 0,
+          outgoingWidth: outgoingRect ? Math.round(outgoingRect.width) : 0,
+          transferWidth: transferRect ? Math.round(transferRect.width) : 0,
           correctWidth: correctRect ? Math.round(correctRect.width) : 0,
-          archiveWidth: archiveRect ? Math.round(archiveRect.width) : 0
+          archiveWidth: archiveRect ? Math.round(archiveRect.width) : 0,
+          incomingTop: incomingRect ? Math.round(incomingRect.top) : 0,
+          outgoingTop: outgoingRect ? Math.round(outgoingRect.top) : 0,
+          transferTop: transferRect ? Math.round(transferRect.top) : 0,
+          correctTop: correctRect ? Math.round(correctRect.top) : 0,
+          archiveTop: archiveRect ? Math.round(archiveRect.top) : 0
         };
       });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
@@ -2747,10 +2758,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
         || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
         || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
+        || stockDetailSurface.transfer !== "rgb(7, 17, 26)"
         || stockDetailSurface.correct !== "rgb(16, 13, 6)"
         || stockDetailSurface.archive !== "rgb(8, 16, 25)"
         || stockDetailSurface.incomingWidth < 100
-        || stockDetailSurface.correctWidth < stockDetailSurface.incomingWidth * 1.8
+        || Math.abs(stockDetailSurface.incomingWidth - stockDetailSurface.outgoingWidth) > 2
+        || Math.abs(stockDetailSurface.transferWidth - stockDetailSurface.correctWidth) > 2
+        || stockDetailSurface.transferWidth < 100
+        || stockDetailSurface.correctWidth < 100
+        || Math.abs(stockDetailSurface.incomingTop - stockDetailSurface.outgoingTop) > 2
+        || Math.abs(stockDetailSurface.transferTop - stockDetailSurface.correctTop) > 2
+        || stockDetailSurface.transferTop <= stockDetailSurface.incomingTop
+        || stockDetailSurface.archiveTop <= stockDetailSurface.transferTop
         || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8) {
         report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
@@ -2760,6 +2779,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const title = document.querySelector(".stock-detail-hero h2");
         const kpi = document.querySelector(".stock-detail-kpis > div");
         const incoming = document.querySelector(".stock-detail-actions .incoming");
+        const transfer = document.querySelector(".stock-detail-actions .stock-detail-transfer");
         const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const movement = document.querySelector(".stock-detail-movement");
@@ -2771,6 +2791,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           heroTitleLines: titleLineHeight > 0 ? Math.max(1, Math.round(titleHeight / titleLineHeight)) : 1,
           kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
           incomingHeight: Math.round(incoming?.getBoundingClientRect().height || 0),
+          transferHeight: Math.round(transfer?.getBoundingClientRect().height || 0),
           correctHeight: Math.round(correct?.getBoundingClientRect().height || 0),
           archiveHeight: Math.round(archive?.getBoundingClientRect().height || 0),
           movementHeight: Math.round(movement?.getBoundingClientRect().height || 0)
@@ -2781,8 +2802,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailDensity.kpiHeight > 66
         || stockDetailDensity.incomingHeight < 44
         || stockDetailDensity.incomingHeight > 54
+        || stockDetailDensity.transferHeight < 44
+        || stockDetailDensity.transferHeight > 48
         || stockDetailDensity.correctHeight < 44
-        || stockDetailDensity.correctHeight > 52
+        || stockDetailDensity.correctHeight > 48
         || stockDetailDensity.archiveHeight < 44
         || stockDetailDensity.archiveHeight > 48
         || stockDetailDensity.movementHeight > 50) {
