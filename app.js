@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.4";
-const APP_BUILD = "2026.09.28.201";
+const APP_VERSION = "1.5.5";
+const APP_BUILD = "2026.09.28.202";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Создание товарника и добавление позиций переведены на полноширинную мобильную компоновку";
+const APP_RELEASE = "Все справочники получили одинаковую полноширинную форму добавления";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.5",
+    date: "28.09.2026",
+    title: "Справочники без тесной строки",
+    items: [
+      "Типы техники, источники заявок и результаты гарантии теперь используют такую же полноширинную форму добавления, как категории и гарантийные пункты.",
+      "Поле ввода и кнопка «Добавить» расположены отдельными строками и занимают доступную ширину.",
+      "QA теперь проверяет фактический компонент справочника типов техники, а не соседний шаблон."
+    ]
+  },
   {
     version: "1.5.4",
     date: "28.09.2026",

@@ -15400,3 +15400,23 @@
     min-height: 46px !important;
   }
 }
+
+
+/* 1.5.5 · source-manager: полноширинная форма добавления, как у остальных справочников. */
+@media screen and (max-width: 520px) {
+  .source-manager-add {
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 8px !important;
+  }
+
+  .source-manager-add .field,
+  .source-manager-add .primary-button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+  }
+
+  .source-manager-add .primary-button {
+    justify-content: center !important;
+  }
+}

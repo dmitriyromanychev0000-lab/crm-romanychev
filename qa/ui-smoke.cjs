@@ -504,7 +504,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator('[data-action="manage-appliance-types"]').click();
       await page.waitForTimeout(30);
       const directoryAddLayout = await page.evaluate(() => {
-        const wrap = document.querySelector(".appliance-types-modal .warranty-manager-add");
+        const wrap = document.querySelector(".appliance-types-modal .source-manager-add");
         const input = document.querySelector("#new-appliance-type-name");
         const button = document.querySelector("#add-appliance-type");
         const wr = wrap?.getBoundingClientRect();
