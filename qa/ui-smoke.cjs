@@ -3033,11 +3033,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             }
           }
           if (stressLabel === "stress-warehouse") {
-            const stockTextState = await page.evaluate(() => ({
-              lineClamp: getComputedStyle(document.querySelector(".legacy-stock-copy strong")).webkitLineClamp,
-              whiteSpace: getComputedStyle(document.querySelector(".legacy-stock-copy strong")).whiteSpace
-            }));
-            if (stockTextState.lineClamp !== "2" || stockTextState.whiteSpace === "nowrap") {
+            const stockTextState = await page.evaluate(() => {
+              const title = document.querySelector(".legacy-stock-copy strong");
+              const copy = document.querySelector(".legacy-stock-copy");
+              const copyMeta = document.querySelector(".legacy-stock-copy em");
+              const qty = document.querySelector(".legacy-stock-qty");
+              const copyRect = copy?.getBoundingClientRect();
+              const qtyRect = qty?.getBoundingClientRect();
+              return {
+                lineClamp: getComputedStyle(title).webkitLineClamp,
+                whiteSpace: getComputedStyle(title).whiteSpace,
+                textOverflow: getComputedStyle(title).textOverflow,
+                copyEmDisplay: copyMeta ? getComputedStyle(copyMeta).display : "missing",
+                qtyDisplay: qty ? getComputedStyle(qty).display : "missing",
+                copyBottom: Math.round(copyRect?.bottom || 0),
+                qtyTop: Math.round(qtyRect?.top || 0)
+              };
+            });
+            if (stockTextState.lineClamp !== "2"
+              || stockTextState.whiteSpace === "nowrap"
+              || stockTextState.textOverflow === "ellipsis"
+              || stockTextState.copyEmDisplay !== "none"
+              || stockTextState.qtyDisplay !== "flex"
+              || stockTextState.qtyTop < stockTextState.copyBottom) {
               report.failures.push({ width, type: "stress-warehouse-long-name", stockTextState });
             }
           }

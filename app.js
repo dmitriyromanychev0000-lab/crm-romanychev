@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.9";
-const APP_BUILD = "2026.09.28.216";
+const APP_VERSION = "1.7.0";
+const APP_BUILD = "2026.09.28.217";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Полная деталка заявки больше не обрезает имя клиента, модель техники и адрес";
+const APP_RELEASE = "Склад показывает длинные названия позиций читаемо на 320–430 px без конкуренции с остатком";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.0",
+    date: "28.09.2026",
+    title: "Склад: название важнее тесного счётчика",
+    items: [
+      "Название складской позиции на всех телефонах может занимать до двух строк.",
+      "На 320–340 px количество и статус переносятся под описание, освобождая ширину названию.",
+      "Дублирующая строка доступного остатка на самом узком экране скрыта — количество остаётся один раз, крупно и понятно."
+    ]
+  },
   {
     version: "1.6.9",
     date: "28.09.2026",
