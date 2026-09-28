@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.84";
-const APP_BUILD = "2026.09.29.310";
+const APP_VERSION = "1.7.85";
+const APP_BUILD = "2026.09.29.311";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс стал плотнее: заголовки категорий и строки позиций занимают меньше высоты, длинные названия и touch-зоны сохранены"
+const APP_RELEASE = "Настройки стали заметно плотнее: служебные действия приложения снова стоят в строку, а реквизиты занимают меньше вертикального места"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.85",
+    date: "29.09.2026",
+    title: "Компактные настройки",
+    items: [
+      "Блок «Приложение» на 320–430 px больше не растягивает каждое действие отдельной строкой: кнопки стоят справа и сохраняют touch-зону 44 px.",
+      "Версия приложения показана коротко и читаемо, без повторения названия CRM внутри карточки.",
+      "Реквизиты уплотнены за счёт внутренних отступов и расстояний; поля и рабочие данные не уменьшены ниже удобного размера."
+    ]
+  },
   {
     version: "1.7.84",
     date: "29.09.2026",
@@ -4850,7 +4860,7 @@ function settingsPage() {
     <section class="legacy-settings-card settings-app-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("document")}</span><h2>Приложение</h2></div>
       <div class="legacy-settings-list">
-        <div class="legacy-settings-row app-version-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>CRM by Romanychev · ${APP_VERSION}</strong><small>${APP_RELEASE}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
+        <div class="legacy-settings-row app-version-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>Версия ${APP_VERSION}</strong><small>${APP_RELEASE}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("refresh")}</span><span><strong>Проверка обновления</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("analytics")}</span><span><strong>Диагностика</strong><small>Кэш, база и хранилище</small></span><button type="button" data-action="run-diagnostics">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("backup")}</span><span><strong>Локальные данные</strong><small>${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</small></span><button type="button" data-action="protect-storage">Защитить</button></div>

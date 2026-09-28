@@ -4435,7 +4435,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           })(),
           longLinkHeight: Math.round(document.querySelector('[data-action="manage-warranty-results"]')?.getBoundingClientRect().height || 0),
           appRowWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row")].map((node) => Math.round(node.getBoundingClientRect().width)),
-          appActionWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().width))
+          appRowHeights: [...document.querySelectorAll(".settings-app-card .legacy-settings-row")].map((node) => Math.round(node.getBoundingClientRect().height)),
+          appActionWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().width)),
+          appActionHeights: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().height)),
+          appCardHeight: Math.round(document.querySelector(".settings-app-card")?.getBoundingClientRect().height || 0),
+          profileCardHeight: Math.round(document.querySelector(".settings-profile-card")?.getBoundingClientRect().height || 0)
         };
       });
       if (settingsSurface.profile !== "rgb(7, 12, 16)"
@@ -4478,10 +4482,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.longLinkDescription.whiteSpace === "nowrap"
         || settingsSurface.longLinkDescription.lineClamp !== "2"
         || settingsSurface.longLinkHeight < 60
-        || (width <= 340 && (
-          settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
-          || settingsSurface.appActionWidths.some((value, index) => value < settingsSurface.appRowWidths[index] - 2)
-        ))) {
+        || settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
+        || settingsSurface.appActionWidths.some((value) => value < 78 || value > 90)
+        || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
+        || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
+        || settingsSurface.appCardHeight > 305
+        || settingsSurface.profileCardHeight > 320) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
       const settingsDensity = await page.evaluate(() => {
@@ -4498,7 +4504,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           iconHeight: Math.round(icon?.getBoundingClientRect().height || 0)
         };
       });
-      const settingsRowLimit = width <= 340 ? 108 : 70;
+      const settingsRowLimit = 64;
       const settingsLinkLimit = width <= 340 ? 70 : 60;
       if (settingsDensity.cardPaddingTop > 10
         || settingsDensity.rowHeight > settingsRowLimit
