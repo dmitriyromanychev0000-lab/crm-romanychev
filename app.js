@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.4";
-const APP_BUILD = "2026.09.28.187";
+const APP_VERSION = "1.2.5";
+const APP_BUILD = "2026.09.28.188";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Повторные ручные списания стали устойчивее: причина читается из отправляемой формы";
+const APP_RELEASE = "Нижняя панель редактора заявки теперь полностью заполняет ширину экрана";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.5",
+    date: "28.09.2026",
+    title: "Полноширинные действия заявки",
+    items: [
+      "Кнопки «Отмена» и «Сохранить» в редакторе заявки теперь занимают всю доступную ширину нижней панели.",
+      "Убрана пустая треть панели справа, которая делала форму визуально незаконченной.",
+      "Добавлена автоматическая проверка заполнения ширины кнопками."
+    ]
+  },
   {
     version: "1.2.4",
     date: "28.09.2026",

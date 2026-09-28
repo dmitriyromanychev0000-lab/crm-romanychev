@@ -1246,6 +1246,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       const editorSurfaceState = await page.evaluate(() => {
         const labels = [...document.querySelectorAll("#material-lines .material-card-controls label > span")];
+        const footer = document.querySelector(".order-editor-modal .modal-actions");
+        const secondary = footer?.querySelector(".secondary-button");
+        const primary = footer?.querySelector(".primary-button");
+        const footerRect = footer?.getBoundingClientRect();
+        const secondaryRect = secondary?.getBoundingClientRect();
+        const primaryRect = primary?.getBoundingClientRect();
         return {
           material: getComputedStyle(document.querySelector("#material-lines [data-material-row]")).backgroundColor,
           materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
@@ -1253,7 +1259,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           serviceMatchCount: document.querySelectorAll("#legacy-service-match").length,
           clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent),
           qtyWidth: Math.round(document.querySelector('#material-lines [data-line="qty"]')?.getBoundingClientRect().width || 0),
-          costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0)
+          costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0),
+          footerWidth: Math.round(footerRect?.width || 0),
+          footerCoverage: footerRect && secondaryRect && primaryRect ? Number(((secondaryRect.width + primaryRect.width) / footerRect.width).toFixed(3)) : 0,
+          footerButtonGap: secondaryRect && primaryRect ? Math.round(primaryRect.left - secondaryRect.right) : 999
         };
       });
       if (editorSurfaceState.material !== "rgb(7, 12, 16)"
@@ -1262,7 +1271,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.serviceMatchCount !== 0
         || editorSurfaceState.clippedMaterialLabels.length
         || editorSurfaceState.qtyWidth < 60
-        || editorSurfaceState.costWidth < 100) {
+        || editorSurfaceState.costWidth < 100
+        || editorSurfaceState.footerWidth < width - 2
+        || editorSurfaceState.footerCoverage < 0.82
+        || editorSurfaceState.footerButtonGap > 10) {
         report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
       if (width === 390) {

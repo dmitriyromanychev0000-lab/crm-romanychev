@@ -14778,3 +14778,26 @@
   }
 }
 
+/* 1.2.5 · Редактор заявки: нижние действия занимают всю доступную ширину. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .modal-actions {
+    grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr) !important;
+  }
+
+  .order-editor-modal .modal-actions > .primary-button,
+  .order-editor-modal .modal-actions > .secondary-button {
+    grid-column: auto !important;
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal .modal-actions {
+    grid-template-columns: minmax(0,.92fr) minmax(0,1.08fr) !important;
+  }
+
+  .order-editor-modal .modal-actions > .primary-button {
+    grid-column: auto !important;
+  }
+}
+
