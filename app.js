@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.11";
-const APP_BUILD = "2026.09.28.229";
+const APP_VERSION = "1.7.12";
+const APP_BUILD = "2026.09.28.230";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Каталог услуг жёстко привязан к viewport, а расчёт заявки снова собран в компактные две колонки";
+const APP_RELEASE = "Главный список заявок стал плотнее: меньше пустоты, больше информации на экране без потери удобства";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.12",
+    date: "28.09.2026",
+    title: "Плотный премиальный список заявок",
+    items: [
+      "Карточки заявок стали заметно компактнее по вертикали без уменьшения читаемости.",
+      "Сокращены внутренние отступы между техникой, суммами, контактами и действиями.",
+      "Кнопки действий сохранены удобными для нажатия, но больше не раздувают карточку."
+    ]
+  },
   {
     version: "1.7.11",
     date: "28.09.2026",

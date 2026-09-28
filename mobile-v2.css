@@ -16228,3 +16228,143 @@
     line-height: 1.15 !important;
   }
 }
+
+
+/* 1.7.12 · Главный экран: плотнее, но без тесноты и мелких touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-orders-page {
+    padding-top: 11px !important;
+  }
+
+  .legacy-orders-page .legacy-page-head {
+    margin-bottom: 9px !important;
+  }
+
+  .legacy-orders-page .legacy-orders-add-wide {
+    min-height: 48px !important;
+    margin-bottom: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-orders-page .legacy-nearest-visit {
+    margin-bottom: 8px !important;
+    padding: 9px 11px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-orders-page .legacy-order-search {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-orders-page .legacy-order-filters {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-orders-page .legacy-visit-filter {
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-orders-list {
+    gap: 7px !important;
+  }
+
+  .legacy-order-card {
+    padding: 11px 11px 9px 13px !important;
+    border-radius: 14px !important;
+  }
+
+  .legacy-order-title {
+    gap: 6px !important;
+  }
+
+  .legacy-order-title > span {
+    font-size: 12px !important;
+  }
+
+  .legacy-order-title > strong {
+    font-size: 14px !important;
+  }
+
+  .legacy-order-head-side {
+    gap: 4px !important;
+  }
+
+  .legacy-status {
+    padding: 3px 7px !important;
+    border-radius: 7px !important;
+  }
+
+  .legacy-order-device {
+    grid-template-columns: 41px minmax(0,1fr) !important;
+    gap: 8px !important;
+    margin-top: 8px !important;
+  }
+
+  .legacy-device-icon {
+    width: 39px !important;
+    height: 39px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-device-icon .ui-icon {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .legacy-order-device strong {
+    font-size: 12.5px !important;
+  }
+
+  .legacy-order-device small {
+    margin-top: 2px !important;
+    font-size: 9.5px !important;
+  }
+
+  .legacy-order-money {
+    gap: 6px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-order-money > div {
+    min-height: 50px !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-order-money strong {
+    margin-top: 3px !important;
+    font-size: 15px !important;
+  }
+
+  .legacy-order-meta {
+    gap: 5px 9px !important;
+    margin-top: 7px !important;
+    padding-top: 6px !important;
+    font-size: 8.5px !important;
+  }
+
+  .legacy-next-visit {
+    margin-top: 6px !important;
+    padding: 6px 8px !important;
+  }
+
+  .legacy-order-actions {
+    gap: 4px !important;
+    margin-top: 7px !important;
+    padding-top: 6px !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    min-height: 44px !important;
+    gap: 2px !important;
+    padding: 4px 2px !important;
+    border-radius: 9px !important;
+    font-size: 7.5px !important;
+  }
+
+  .legacy-order-actions .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}

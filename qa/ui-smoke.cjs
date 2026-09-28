@@ -1191,6 +1191,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !orderPageSurfaces.addText.includes("Новая заявка")) {
         report.failures.push({ width, type: "orders-deep-dark-page", orderPageSurfaces });
       }
+      const orderDensity = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-order-card");
+        const list = document.querySelector(".legacy-orders-list");
+        const device = card?.querySelector(".legacy-device-icon");
+        const money = card?.querySelector(".legacy-order-money > div");
+        const actions = card?.querySelector(".legacy-order-actions");
+        const action = actions?.querySelector("button, a");
+        const cardStyle = card ? getComputedStyle(card) : null;
+        const listStyle = list ? getComputedStyle(list) : null;
+        const actionsStyle = actions ? getComputedStyle(actions) : null;
+        return {
+          paddingTop: parseFloat(cardStyle?.paddingTop || "999"),
+          paddingBottom: parseFloat(cardStyle?.paddingBottom || "999"),
+          listGap: parseFloat(listStyle?.rowGap || listStyle?.gap || "999"),
+          deviceHeight: Math.round(device?.getBoundingClientRect().height || 999),
+          moneyHeight: Math.round(money?.getBoundingClientRect().height || 999),
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          actionsMarginTop: parseFloat(actionsStyle?.marginTop || "999"),
+          actionsPaddingTop: parseFloat(actionsStyle?.paddingTop || "999")
+        };
+      });
+      if (orderDensity.paddingTop > 12
+        || orderDensity.paddingBottom > 10
+        || orderDensity.listGap > 8
+        || orderDensity.deviceHeight > 41
+        || orderDensity.moneyHeight > 52
+        || orderDensity.actionHeight < 44
+        || orderDensity.actionHeight > 46
+        || orderDensity.actionsMarginTop > 8
+        || orderDensity.actionsPaddingTop > 7) {
+        report.failures.push({ width, type: "orders-density", orderDensity });
+      }
       await page.locator('[data-action="new-order"]').first().click();
       await page.waitForTimeout(100);
       let modalCheck = await page.evaluate(() => ({
