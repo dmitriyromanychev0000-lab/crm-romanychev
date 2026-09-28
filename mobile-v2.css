@@ -20069,3 +20069,12 @@
     grid-column: 1 / -1 !important;
   }
 }
+
+
+/* 1.7.79 · Фикс точной высоты вторичных действий склада. */
+@media screen and (max-width: 520px) {
+  .stock-detail-actions .stock-detail-transfer,
+  .stock-detail-actions .stock-detail-correct {
+    box-sizing: border-box !important;
+  }
+}
