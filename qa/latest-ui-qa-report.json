@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T14:11:34.319Z",
-  "testedSha": "70f1baecea13c6405db5c4838ad89481e32cd026",
+  "generatedAt": "2026-09-28T14:15:55.868Z",
+  "testedSha": "5be94985ec1c07e093ee63010e2eebf16d05baac",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,8 +1398,8 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 463,
-        "bottom": 511,
+        "top": 465,
+        "bottom": 513,
         "width": 252,
         "height": 48,
         "viewportHeight": 520,
@@ -1412,12 +1412,12 @@
           {
             "width": 252,
             "height": 48,
-            "top": 408
+            "top": 411
           },
           {
             "width": 252,
             "height": 48,
-            "top": 463
+            "top": 465
           }
         ]
       }
@@ -1433,8 +1433,8 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 463,
-        "bottom": 511,
+        "top": 465,
+        "bottom": 513,
         "width": 252,
         "height": 48,
         "viewportHeight": 520,
@@ -1447,12 +1447,12 @@
           {
             "width": 252,
             "height": 48,
-            "top": 408
+            "top": 411
           },
           {
             "width": 252,
             "height": 48,
-            "top": 463
+            "top": 465
           }
         ]
       }
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T14:12:05.922Z"
+      "fallbackCreatedAt": "2026-09-28T14:16:30.752Z"
     },
     {
       "label": "pwa-offline",
@@ -1490,5 +1490,25 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "tool-editor-compact-density",
+      "toolEditorState": {
+        "modal": "rgb(3, 7, 10)",
+        "field": "rgb(9, 15, 20)",
+        "fieldFont": "13.5px",
+        "fieldHeight": 44,
+        "headHeight": 59,
+        "heroHeight": 57,
+        "textareaHeight": 80,
+        "rowGap": 7,
+        "closeWidth": 44,
+        "closeHeight": 44,
+        "actionHeight": 48,
+        "footerBottom": 900,
+        "viewportHeight": 900
+      }
+    }
+  ]
 }
