@@ -4597,6 +4597,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
   await saveButton.scrollIntoViewIfNeeded();
   const keyboardMetrics = await saveButton.evaluate((node) => {
     const rect = node.getBoundingClientRect();
+    const actions = node.closest(".modal-actions");
+    const actionsRect = actions?.getBoundingClientRect();
+    const actionsStyle = actions ? getComputedStyle(actions) : null;
+    const paddingLeft = actionsStyle ? (parseFloat(actionsStyle.paddingLeft) || 0) : 0;
+    const paddingRight = actionsStyle ? (parseFloat(actionsStyle.paddingRight) || 0) : 0;
+    const actionButtons = actions ? [...actions.querySelectorAll(":scope > button")].map((button) => {
+      const buttonRect = button.getBoundingClientRect();
+      return {
+        width: Math.round(buttonRect.width),
+        height: Math.round(buttonRect.height),
+        left: Math.round(buttonRect.left),
+        top: Math.round(buttonRect.top)
+      };
+    }) : [];
     return {
       top: Math.round(rect.top),
       bottom: Math.round(rect.bottom),
@@ -4604,7 +4618,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       height: Math.round(rect.height),
       viewportHeight: window.innerHeight,
       locked: document.body.classList.contains("modal-open"),
-      bodyFixed: getComputedStyle(document.body).position === "fixed"
+      bodyFixed: getComputedStyle(document.body).position === "fixed",
+      actionsInnerLeft: actionsRect ? Math.round(actionsRect.left + paddingLeft) : 0,
+      actionsInnerWidth: actionsRect ? Math.round(actionsRect.width - paddingLeft - paddingRight) : 0,
+      actionButtons
     };
   });
   const keyboardReachable = keyboardMetrics.height >= 44
@@ -4612,7 +4629,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     && keyboardMetrics.bottom <= keyboardMetrics.viewportHeight + 1
     && keyboardMetrics.locked
     && keyboardMetrics.bodyFixed;
+  const orderEditorActionsPaired = keyboardMetrics.actionButtons.length === 2
+    && keyboardMetrics.actionButtons.every((button) => button.width >= 100 && button.height >= 48 && button.height <= 49)
+    && Math.abs((keyboardMetrics.actionButtons[0]?.top || 0) - (keyboardMetrics.actionButtons[1]?.top || 0)) <= 2
+    && (keyboardMetrics.actionButtons[1]?.left || 0) > (keyboardMetrics.actionButtons[0]?.left || 0)
+    && Math.abs((keyboardMetrics.actionButtons[0]?.left || 0) - keyboardMetrics.actionsInnerLeft) <= 2
+    && (keyboardMetrics.actionButtons[0]?.width || 0) + (keyboardMetrics.actionButtons[1]?.width || 0) <= keyboardMetrics.actionsInnerWidth;
   if (!keyboardReachable) report.failures.push({ type: "keyboard-height-order-editor", keyboardMetrics });
+  if (!orderEditorActionsPaired) report.failures.push({ type: "order-editor-actions-two-columns", keyboardMetrics });
   await utilityPage.screenshot({ path: outDir + "/320-keyboard-order-editor.png", fullPage: false });
   report.results.push({
     label: "keyboard-order-editor",

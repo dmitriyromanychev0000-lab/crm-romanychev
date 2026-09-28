@@ -19185,3 +19185,21 @@
     min-width: 0 !important;
   }
 }
+
+/* 1.7.60 · Редактор заявки: Отмена и Сохранить в одной нижней строке. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .modal-actions {
+    grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr) !important;
+    gap: 6px !important;
+  }
+
+  .order-editor-modal .modal-actions > .secondary-button,
+  .order-editor-modal .modal-actions > .primary-button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    white-space: nowrap !important;
+  }
+}

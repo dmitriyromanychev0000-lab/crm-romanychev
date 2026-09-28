@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.59";
-const APP_BUILD = "2026.09.28.280";
+const APP_VERSION = "1.7.60";
+const APP_BUILD = "2026.09.28.281";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс стал плотнее: на обычных телефонах фильтры «Тип» и «Техника» стоят рядом, на узких экранах остаются полноширинными"
+const APP_RELEASE = "Редактор заявки стал компактнее: «Отмена» и «Сохранить» теперь стоят рядом в одной нижней строке"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.60",
+    date: "28.09.2026",
+    title: "Компактный низ редактора заявки",
+    items: [
+      "«Отмена» и «Сохранить» теперь стоят рядом в одной нижней строке.",
+      "Низ редактора занимает меньше высоты и оставляет больше места рабочей форме.",
+      "На 320 px обе кнопки сохраняют 48 px высоты, а сохранение остаётся доступным при уменьшенной высоте viewport."
+    ]
+  },
   {
     version: "1.7.59",
     date: "28.09.2026",
