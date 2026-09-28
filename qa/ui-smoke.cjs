@@ -1597,9 +1597,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           barWidths: [...document.querySelectorAll(".analytics-chart-panel .bar")].map((bar) => Math.round(bar.getBoundingClientRect().width)),
           hasSources: Boolean([...document.querySelectorAll(".analytics-list-panel .panel-title")].find((node) => node.textContent.includes("Источники заявок"))),
           expenseButtonHeight: expenseRect ? Math.round(expenseRect.height) : 0,
+          expenseButtonWidth: expenseRect ? Math.round(expenseRect.width) : 0,
           expenseButtonBackground: expenseButton ? getComputedStyle(expenseButton).backgroundColor : "missing",
           expenseButtonColor: expenseButton ? getComputedStyle(expenseButton).color : "missing",
           pageTitle: document.querySelector(".analytics-content .page-head h1")?.textContent?.trim() || "",
+          pageTitleWhiteSpace: getComputedStyle(document.querySelector(".analytics-content .page-head h1")).whiteSpace,
           pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || ""
         };
       });
@@ -1613,6 +1615,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.barWidths.some((widthValue) => widthValue < 20 || widthValue > 36)
         || !analyticsModelState.hasSources
         || analyticsModelState.expenseButtonHeight < 44
+        || analyticsModelState.expenseButtonWidth < 44
+        || analyticsModelState.expenseButtonWidth > 50
+        || analyticsModelState.pageTitleWhiteSpace !== "nowrap"
         || analyticsModelState.expenseButtonBackground !== "rgb(13, 20, 25)"
         || analyticsModelState.expenseButtonColor !== "rgb(255, 118, 92)"
         || analyticsModelState.pageTitle !== "Аналитический центр"

@@ -7,11 +7,20 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.3.0";
-const APP_BUILD = "2026.09.28.191";
+const APP_VERSION = "1.3.1";
+const APP_BUILD = "2026.09.28.192";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад и аналитика ближе к прежней CRM: крупное главное действие, спокойные акценты и ровные поля";
+const APP_RELEASE = "Шапка аналитики стала компактнее: заголовок больше не ломается, расход — аккуратная иконка";
 const APP_CHANGELOG = [
+  {
+    version: "1.3.1",
+    date: "28.09.2026",
+    title: "Чистая шапка аналитики",
+    items: [
+      "«Аналитический центр» держится одной строкой на мобильных экранах.",
+      "Добавление расхода осталось под рукой, но больше не спорит с заголовком крупной кнопкой."
+    ]
+  },
   {
     version: "1.3.0",
     date: "28.09.2026",
@@ -2630,7 +2639,7 @@ function analyticsPage() {
     </div>` : "";
 
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense">${icon("minus")}<span>Расход</span></button></div>
+    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense" aria-label="Добавить расход" title="Добавить расход">${icon("minus")}<span>Расход</span></button></div>
 
     <div class="analytics-period-grid">
       <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">День</button>
