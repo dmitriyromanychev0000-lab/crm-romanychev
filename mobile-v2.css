@@ -15950,3 +15950,23 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.7.5 hotfix · Перекрываем старые :has-раскладки редакторов. */
+@media screen and (max-width: 520px) {
+  .legacy-price-editor-actions:not(:has(.legacy-editor-delete)),
+  .legacy-price-editor-actions:has(.legacy-editor-delete),
+  .legacy-service-editor-backdrop .modal-actions:not(:has(.danger-button)),
+  .legacy-service-editor-backdrop .modal-actions:has(.danger-button),
+  .legacy-goods-savebar:has(.legacy-delete-goods) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-price-editor-actions > button,
+  .legacy-service-editor-backdrop .modal-actions > button,
+  .legacy-goods-savebar > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    justify-self: stretch !important;
+  }
+}
