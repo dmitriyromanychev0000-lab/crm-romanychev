@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T08:12:32.215Z",
-  "testedSha": "7d751c3f04c14b56ddf1e7faf9a90ee52fecd5ee",
+  "generatedAt": "2026-09-28T08:15:45.245Z",
+  "testedSha": "3f8a939b123b4c985a45de346c9877d1eeedb8e4",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T08:13:02.701Z"
+      "fallbackCreatedAt": "2026-09-28T08:16:20.097Z"
     },
     {
       "label": "pwa-offline",
@@ -1412,98 +1412,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "finance-semantic-hierarchy",
-      "financePageSurface": {
-        "result": "rgb(7, 12, 16)",
-        "income": "rgb(7, 12, 16)",
-        "expense": "rgb(7, 12, 16)",
-        "incomeRow": "rgb(7, 12, 16)",
-        "expenseRow": "rgb(7, 12, 16)",
-        "incomeAction": "rgb(13, 20, 25)",
-        "expenseAction": "rgb(13, 20, 25)",
-        "incomeActionBorder": "rgb(39, 52, 60)",
-        "expenseActionBorder": "rgb(39, 52, 60)",
-        "incomeActionColor": "rgb(213, 246, 223)",
-        "expenseActionColor": "rgb(255, 213, 216)",
-        "actionWidths": [
-          296,
-          296
-        ],
-        "rowTitleFont": "12px"
-      }
-    },
-    {
-      "width": 320,
-      "type": "clients-semantic-hierarchy",
-      "clientPageSurface": {
-        "background": "rgb(7, 12, 16)",
-        "primaryStat": "rgb(7, 12, 16)",
-        "activeStat": "rgb(7, 12, 16)",
-        "closedStat": "rgb(7, 12, 16)",
-        "titleFont": "11.5px",
-        "actionBackgrounds": [
-          "rgb(7, 17, 12)",
-          "rgb(8, 16, 25)"
-        ],
-        "actionBorders": [
-          "rgb(29, 59, 43)",
-          "rgb(34, 59, 82)"
-        ],
-        "actionWidths": [
-          124,
-          124
-        ],
-        "totalColor": "rgb(255, 138, 112)"
-      }
-    },
-    {
-      "width": 390,
-      "type": "finance-semantic-hierarchy",
-      "financePageSurface": {
-        "result": "rgb(7, 12, 16)",
-        "income": "rgb(7, 12, 16)",
-        "expense": "rgb(7, 12, 16)",
-        "incomeRow": "rgb(7, 12, 16)",
-        "expenseRow": "rgb(7, 12, 16)",
-        "incomeAction": "rgb(13, 20, 25)",
-        "expenseAction": "rgb(13, 20, 25)",
-        "incomeActionBorder": "rgb(39, 52, 60)",
-        "expenseActionBorder": "rgb(39, 52, 60)",
-        "incomeActionColor": "rgb(213, 246, 223)",
-        "expenseActionColor": "rgb(255, 213, 216)",
-        "actionWidths": [
-          177,
-          177
-        ],
-        "rowTitleFont": "12px"
-      }
-    },
-    {
-      "width": 390,
-      "type": "clients-semantic-hierarchy",
-      "clientPageSurface": {
-        "background": "rgb(7, 12, 16)",
-        "primaryStat": "rgb(7, 12, 16)",
-        "activeStat": "rgb(7, 12, 16)",
-        "closedStat": "rgb(7, 12, 16)",
-        "titleFont": "12.5px",
-        "actionBackgrounds": [
-          "rgb(7, 17, 12)",
-          "rgb(8, 16, 25)"
-        ],
-        "actionBorders": [
-          "rgb(29, 59, 43)",
-          "rgb(34, 59, 82)"
-        ],
-        "actionWidths": [
-          155,
-          155
-        ],
-        "totalColor": "rgb(255, 138, 112)"
-      }
-    }
-  ]
+  "failures": []
 }
