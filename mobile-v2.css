@@ -18904,3 +18904,18 @@
     margin-top: 0 !important;
   }
 }
+
+
+/* 1.7.48 · Верх заявки: меньше пустой высоты у многострочных полей. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal textarea[name="issue"],
+  .order-editor-modal textarea[name="diagnosis"] {
+    min-height: 60px !important;
+    height: 60px !important;
+  }
+
+  .order-editor-modal textarea[name="defects"] {
+    min-height: 52px !important;
+    height: 52px !important;
+  }
+}

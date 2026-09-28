@@ -1500,6 +1500,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const title = document.querySelector(".order-editor-section .form-section-title");
         const field = document.querySelector(".order-editor-section .field");
         const textarea = document.querySelector(".order-editor-section textarea.field");
+        const issue = document.querySelector('.order-editor-modal textarea[name="issue"]');
+        const diagnosis = document.querySelector('.order-editor-modal textarea[name="diagnosis"]');
+        const defects = document.querySelector('.order-editor-modal textarea[name="defects"]');
         const px = (value) => Number.parseFloat(value || "0") || 0;
         const bodyStyle = body ? getComputedStyle(body) : null;
         const sectionStyle = section ? getComputedStyle(section) : null;
@@ -1509,7 +1512,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           sectionMarginBottom: sectionStyle ? px(sectionStyle.marginBottom) : 999,
           titleMarginBottom: titleStyle ? px(titleStyle.marginBottom) : 999,
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
-          textareaHeight: Math.round(textarea?.getBoundingClientRect().height || 0)
+          textareaHeight: Math.round(textarea?.getBoundingClientRect().height || 0),
+          issueHeight: Math.round(issue?.getBoundingClientRect().height || 0),
+          diagnosisHeight: Math.round(diagnosis?.getBoundingClientRect().height || 0),
+          defectsHeight: Math.round(defects?.getBoundingClientRect().height || 0)
         };
       });
       if (orderEditorDensity.bodyPaddingTop > 12
@@ -1517,7 +1523,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderEditorDensity.titleMarginBottom > 8
         || orderEditorDensity.fieldHeight < 44
         || orderEditorDensity.fieldHeight > 48
-        || orderEditorDensity.textareaHeight > 76) {
+        || orderEditorDensity.textareaHeight > 62
+        || orderEditorDensity.issueHeight < 58
+        || orderEditorDensity.issueHeight > 62
+        || orderEditorDensity.diagnosisHeight < 58
+        || orderEditorDensity.diagnosisHeight > 62
+        || orderEditorDensity.defectsHeight < 50
+        || orderEditorDensity.defectsHeight > 54) {
         report.failures.push({ width, type: "order-editor-compact-density", orderEditorDensity });
       }
 

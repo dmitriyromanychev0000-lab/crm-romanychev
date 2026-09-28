@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.47";
-const APP_BUILD = "2026.09.28.265";
+const APP_VERSION = "1.7.48";
+const APP_BUILD = "2026.09.28.266";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустой комментарий мастера больше не раздувает форму: заметка свёрнута в компактную строку и раскрывается только когда нужна"
+const APP_RELEASE = "Верх формы заявки стал плотнее: неисправность, диагностика и внешние дефекты занимают меньше стартовой высоты без уменьшения текста"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.48",
+    date: "28.09.2026",
+    title: "Плотные многострочные поля",
+    items: [
+      "Неисправность и результат диагностики занимают меньше стартовой высоты, но остаются полноширинными.",
+      "Поле внешних дефектов дополнительно поджато как более короткое вторичное поле.",
+      "Текст и размеры шрифта не уменьшались; QA закрепляет высоту каждого из трёх полей."
+    ]
+  },
   {
     version: "1.7.47",
     date: "28.09.2026",
