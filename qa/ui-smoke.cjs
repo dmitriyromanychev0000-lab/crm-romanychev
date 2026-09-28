@@ -4564,17 +4564,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           gridDisplay: grid ? getComputedStyle(grid).display : "missing",
           gridWidth: Math.round(gridRect?.width || 0),
           gridInnerWidth: grid ? Math.round(grid.clientWidth - (parseFloat(getComputedStyle(grid).paddingLeft) || 0) - (parseFloat(getComputedStyle(grid).paddingRight) || 0)) : 0,
+          gridGap: grid ? (parseFloat(getComputedStyle(grid).columnGap) || 0) : 0,
           buttonWidths: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
           buttonHeights: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().height))
         };
       });
+      const backupAdvancedColumnWidth = (backupAdvancedOpen.gridInnerWidth - backupAdvancedOpen.gridGap) / 2;
       if (!backupAdvancedOpen.open
         || backupAdvancedOpen.gridDisplay === "none"
         || backupAdvancedOpen.buttonWidths.length !== 7
-        || backupAdvancedOpen.buttonWidths.some((value) => value < backupAdvancedOpen.gridInnerWidth - 2)
-        || backupAdvancedOpen.buttonHeights.some((value) => value < 44)) {
-        report.failures.push({ width, type: "backup-advanced-open", backupAdvancedOpen });
+        || backupAdvancedOpen.buttonWidths.slice(0, 6).some((value) => value < Math.floor(backupAdvancedColumnWidth) - 2 || value > Math.ceil(backupAdvancedColumnWidth) + 2)
+        || backupAdvancedOpen.buttonWidths[6] < backupAdvancedOpen.gridInnerWidth - 2
+        || backupAdvancedOpen.buttonHeights.slice(0, 6).some((value) => value < 48)
+        || backupAdvancedOpen.buttonHeights[6] < 44) {
+        report.failures.push({ width, type: "backup-advanced-open", backupAdvancedOpen, backupAdvancedColumnWidth });
       }
+      await shot(page, width, "backup-advanced");
       await page.locator(".legacy-backup-advanced > summary").click();
       const backupDensity = await page.evaluate(() => {
         const card = document.querySelector(".legacy-backup-page .backup-primary-card");

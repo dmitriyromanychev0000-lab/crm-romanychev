@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.87";
-const APP_BUILD = "2026.09.29.314";
+const APP_VERSION = "1.7.88";
+const APP_BUILD = "2026.09.29.315";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Автобэкап на узком экране стал компактнее: переключатель и периодичность остаются справа от текста"
+const APP_RELEASE = "Служебные действия бэкапа собраны в компактную сетку 2×3 плюс отдельный откат"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.88",
+    date: "29.09.2026",
+    title: "Компактные дополнительные действия",
+    items: [
+      "Семь служебных операций бэкапа больше не занимают семь отдельных строк.",
+      "Шесть обычных действий собраны в сетку 2×3, а «Откатить импорт» остаётся отдельной полноширинной кнопкой.",
+      "Все кнопки сохраняют touch-зону не меньше 44 px; QA теперь отдельно снимает раскрытый блок на 320–430 px."
+    ]
+  },
   {
     version: "1.7.87",
     date: "29.09.2026",
