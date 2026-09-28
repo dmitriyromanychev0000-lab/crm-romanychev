@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.12";
-const APP_BUILD = "2026.09.28.230";
+const APP_VERSION = "1.7.13";
+const APP_BUILD = "2026.09.28.231";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Главный список заявок стал плотнее: меньше пустоты, больше информации на экране без потери удобства";
+const APP_RELEASE = "Деталка и редактор заявки стали плотнее: меньше пустых зон, те же удобные нажатия и больше рабочих данных на экране";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.13",
+    date: "28.09.2026",
+    title: "Плотная деталка и редактор заявки",
+    items: [
+      "Уменьшены лишние вертикальные отступы между блоками редактора без уменьшения основных touch-targets ниже 44 px.",
+      "Деталка заявки стала компактнее: суммы, техника, действия, работы и материалы занимают меньше высоты.",
+      "Текст и длинные рабочие данные остаются читаемыми; уплотнение сделано за счёт геометрии, а не микроскопического шрифта."
+    ]
+  },
   {
     version: "1.7.12",
     date: "28.09.2026",

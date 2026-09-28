@@ -1274,6 +1274,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned });
       }
 
+      const orderEditorDensity = await page.evaluate(() => {
+        const body = document.querySelector(".order-editor-body");
+        const section = document.querySelector(".order-editor-section");
+        const title = document.querySelector(".order-editor-section .form-section-title");
+        const field = document.querySelector(".order-editor-section .field");
+        const textarea = document.querySelector(".order-editor-section textarea.field");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        const bodyStyle = body ? getComputedStyle(body) : null;
+        const sectionStyle = section ? getComputedStyle(section) : null;
+        const titleStyle = title ? getComputedStyle(title) : null;
+        return {
+          bodyPaddingTop: bodyStyle ? px(bodyStyle.paddingTop) : 999,
+          sectionMarginBottom: sectionStyle ? px(sectionStyle.marginBottom) : 999,
+          titleMarginBottom: titleStyle ? px(titleStyle.marginBottom) : 999,
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          textareaHeight: Math.round(textarea?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (orderEditorDensity.bodyPaddingTop > 12
+        || orderEditorDensity.sectionMarginBottom > 18
+        || orderEditorDensity.titleMarginBottom > 8
+        || orderEditorDensity.fieldHeight < 44
+        || orderEditorDensity.fieldHeight > 48
+        || orderEditorDensity.textareaHeight > 76) {
+        report.failures.push({ width, type: "order-editor-compact-density", orderEditorDensity });
+      }
+
       await page.locator("#open-service-catalog").click();
       await page.waitForTimeout(100);
       const nested = await page.evaluate(() => {
@@ -1783,6 +1810,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || detailWorkState.serviceRows < 1
         || detailWorkState.materialRows < 1) {
         report.failures.push({ width, type: "order-detail-work-materials", detailWorkState });
+      }
+      const orderDetailDensity = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-expanded-order-card");
+        const money = document.querySelector(".legacy-expanded-money > div");
+        const action = document.querySelector(".legacy-expanded-actions > button, .legacy-expanded-actions > a");
+        const section = document.querySelector(".legacy-detail-section");
+        const line = document.querySelector(".legacy-detail-line");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        const cardStyle = card ? getComputedStyle(card) : null;
+        const sectionStyle = section ? getComputedStyle(section) : null;
+        return {
+          cardPaddingTop: cardStyle ? px(cardStyle.paddingTop) : 999,
+          moneyHeight: Math.round(money?.getBoundingClientRect().height || 0),
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          sectionMarginTop: sectionStyle ? px(sectionStyle.marginTop) : 999,
+          sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
+          lineHeight: Math.round(line?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (orderDetailDensity.cardPaddingTop > 12
+        || orderDetailDensity.moneyHeight > 52
+        || orderDetailDensity.actionHeight < 44
+        || orderDetailDensity.actionHeight > 48
+        || orderDetailDensity.sectionMarginTop > 8
+        || orderDetailDensity.sectionPaddingTop > 10
+        || orderDetailDensity.lineHeight > 52) {
+        report.failures.push({ width, type: "order-detail-compact-density", orderDetailDensity });
       }
       report.results.push(await shot(page, width, "order-detail", false));
       await page.locator('.legacy-expanded-actions [data-detail-action="more"]').click();

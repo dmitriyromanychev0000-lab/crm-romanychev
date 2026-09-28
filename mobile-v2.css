@@ -16368,3 +16368,199 @@
     height: 16px !important;
   }
 }
+
+
+/* 1.7.13 · Деталка и редактор: плотнее без потери читаемости и удобных touch-targets. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-editor-head {
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    padding: calc(7px + env(safe-area-inset-top)) 12px 7px !important;
+  }
+
+  .order-editor-title-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+  }
+
+  .order-editor-modal .order-editor-body {
+    padding: 10px 0 18px !important;
+    scroll-padding-bottom: 18px !important;
+  }
+
+  .order-editor-modal .order-editor-section {
+    margin-bottom: 16px !important;
+  }
+
+  .order-editor-modal .form-section-title {
+    min-height: 30px !important;
+    margin-bottom: 7px !important;
+    font-size: 14px !important;
+  }
+
+  .order-editor-modal .order-editor-section-icon {
+    width: 28px !important;
+    height: 28px !important;
+    flex-basis: 28px !important;
+    border-radius: 9px !important;
+  }
+
+  .order-editor-modal .form-grid {
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .form-group label {
+    margin-bottom: 4px !important;
+  }
+
+  .order-editor-modal .field,
+  .order-editor-modal .legacy-payment-grid .field,
+  .order-editor-modal .material-card-controls .field {
+    min-height: 46px !important;
+  }
+
+  .order-editor-modal .textarea {
+    min-height: 72px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .order-editor-modal .compact-textarea {
+    min-height: 56px !important;
+  }
+
+  .order-editor-modal .legacy-catalog-button,
+  .order-editor-modal .legacy-stock-button {
+    min-height: 46px !important;
+    margin-bottom: 7px !important;
+    border-radius: 12px !important;
+  }
+
+  .order-editor-modal .legacy-service-row {
+    min-height: 50px !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+
+  .order-editor-modal .legacy-service-total {
+    min-height: 34px !important;
+    margin-top: 3px !important;
+    padding-top: 6px !important;
+  }
+
+  .warranty-target-grid {
+    gap: 6px !important;
+  }
+
+  .warranty-target-option {
+    min-height: 44px !important;
+    padding: 7px 8px !important;
+  }
+
+  .legacy-order-detail-content {
+    padding: 8px 10px calc(20px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-expanded-order-card {
+    padding: 11px 10px 9px 13px !important;
+    border-radius: 14px !important;
+    background: #060b0f !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-expanded-device {
+    grid-template-columns: 40px minmax(0,1fr) !important;
+    gap: 8px !important;
+    margin-top: 8px !important;
+  }
+
+  .legacy-expanded-device-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-expanded-device-icon .ui-icon {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .legacy-expanded-money {
+    gap: 6px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-expanded-money > div {
+    min-height: 50px !important;
+    padding: 7px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-expanded-money strong {
+    margin-top: 3px !important;
+  }
+
+  .legacy-expanded-meta {
+    gap: 5px 8px !important;
+    margin-top: 7px !important;
+    padding-top: 6px !important;
+  }
+
+  .legacy-expanded-visit {
+    margin-top: 6px !important;
+    padding: 6px 8px !important;
+  }
+
+  .legacy-expanded-actions {
+    gap: 4px !important;
+    margin-top: 7px !important;
+    padding-top: 6px !important;
+  }
+
+  .legacy-expanded-actions > button,
+  .legacy-expanded-actions > a {
+    min-height: 44px !important;
+    padding: 4px 2px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-detail-section,
+  .legacy-detail-services,
+  .legacy-detail-materials {
+    margin-top: 7px !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-detail-services .legacy-detail-lines,
+  .legacy-detail-materials .legacy-detail-lines {
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line,
+  .legacy-detail-materials .legacy-detail-line {
+    min-height: 48px !important;
+    padding: 7px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-detail-services .legacy-detail-line small,
+  .legacy-detail-materials .legacy-detail-line small {
+    margin-top: 3px !important;
+  }
+
+  .legacy-detail-notes > div:not(.legacy-detail-section-head) {
+    padding: 7px 0 !important;
+  }
+
+  .legacy-detail-notes p {
+    margin-top: 4px !important;
+  }
+
+  .legacy-detail-total-row {
+    margin-top: 7px !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+}
