@@ -20078,3 +20078,14 @@
     box-sizing: border-box !important;
   }
 }
+
+
+/* 1.7.79 · Специфичность: старое правило кнопок не возвращает 50 px. */
+@media screen and (max-width: 520px) {
+  .stock-detail-actions button.stock-detail-transfer,
+  .stock-detail-actions button.stock-detail-correct {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+  }
+}
