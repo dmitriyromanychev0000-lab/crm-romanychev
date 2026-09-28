@@ -382,36 +382,42 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator('[data-action="new-order"]').first().click();
       await page.waitForTimeout(60);
       const sourceVisitFields = await page.evaluate(() => {
-        const grid = document.querySelector(".order-editor-modal .form-grid");
-        const source = document.querySelector('.order-editor-modal [name="sourceId"]')?.closest(".form-group");
-        const status = document.querySelector('.order-editor-modal [name="status"]')?.closest(".form-group");
-        const client = document.querySelector('.order-editor-modal [name="name"]')?.closest(".form-group");
-        const phone = document.querySelector('.order-editor-modal [name="phone"]')?.closest(".form-group");
+        const grid = document.querySelector(".order-editor-modal .form-grid:not(.legacy-payment-grid)");
+        const rect = (name) => {
+          const box = document.querySelector(`.order-editor-modal [name="${name}"]`)?.closest(".form-group")?.getBoundingClientRect();
+          return box ? { left: Math.round(box.left), top: Math.round(box.top), width: Math.round(box.width) } : null;
+        };
         const gridRect = grid?.getBoundingClientRect();
-        const sourceRect = source?.getBoundingClientRect();
-        const statusRect = status?.getBoundingClientRect();
-        const clientRect = client?.getBoundingClientRect();
-        const phoneRect = phone?.getBoundingClientRect();
         return {
           sourceOptions: document.querySelectorAll('.order-editor-modal [name="sourceId"] option').length,
-          hasVisitDate: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDate"]')),
-          hasVisitTime: Boolean(document.querySelector('.order-editor-modal [name="nextVisitTime"]')),
-          hasVisitDuration: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDuration"]')),
           gridWidth: Math.round(gridRect?.width || 0),
-          sourceWidth: Math.round(sourceRect?.width || 0),
-          statusWidth: Math.round(statusRect?.width || 0),
-          clientWidth: Math.round(clientRect?.width || 0),
-          phoneWidth: Math.round(phoneRect?.width || 0)
+          client: rect("name"),
+          phone: rect("phone"),
+          tech: rect("tech"),
+          brand: rect("brand"),
+          createdDate: rect("createdDate"),
+          visitDate: rect("nextVisitDate"),
+          visitTime: rect("nextVisitTime"),
+          visitDuration: rect("nextVisitDuration"),
+          source: rect("sourceId"),
+          status: rect("status"),
+          issue: rect("issue")
         };
       });
+      const pairAligned = (left, right) => left && right
+        && Math.abs(left.top - right.top) <= 2
+        && right.left > left.left
+        && left.width >= 120
+        && right.width >= 120;
+      const fullWidthField = (field) => field && field.width >= sourceVisitFields.gridWidth * 0.92;
       if (sourceVisitFields.sourceOptions < 3
-        || !sourceVisitFields.hasVisitDate
-        || !sourceVisitFields.hasVisitTime
-        || !sourceVisitFields.hasVisitDuration
-        || sourceVisitFields.sourceWidth < sourceVisitFields.gridWidth * 0.92
-        || sourceVisitFields.statusWidth < sourceVisitFields.gridWidth * 0.92
-        || sourceVisitFields.clientWidth < sourceVisitFields.gridWidth * 0.92
-        || sourceVisitFields.phoneWidth < sourceVisitFields.gridWidth * 0.92) {
+        || !pairAligned(sourceVisitFields.client, sourceVisitFields.phone)
+        || !pairAligned(sourceVisitFields.tech, sourceVisitFields.brand)
+        || !pairAligned(sourceVisitFields.createdDate, sourceVisitFields.visitDate)
+        || !pairAligned(sourceVisitFields.visitTime, sourceVisitFields.visitDuration)
+        || !fullWidthField(sourceVisitFields.source)
+        || !fullWidthField(sourceVisitFields.status)
+        || !fullWidthField(sourceVisitFields.issue)) {
         report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
       }
 

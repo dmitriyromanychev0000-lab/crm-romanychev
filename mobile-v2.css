@@ -18721,3 +18721,21 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.44 · Форма заявки: две колонки только для коротких полей. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) > .full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) > .form-group:not(.full) {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+}

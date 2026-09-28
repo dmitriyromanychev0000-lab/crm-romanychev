@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.43";
-const APP_BUILD = "2026.09.28.261";
+const APP_VERSION = "1.7.44";
+const APP_BUILD = "2026.09.28.262";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Расчёт заявки стал плотнее: три итоговых показателя собраны в одну строку, а денежные поля остаются удобной сеткой 2×N"
+const APP_RELEASE = "Короткие поля заявки снова собраны в две колонки: меньше прокрутки без сжатия адреса, диагностики и других длинных данных"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.44",
+    date: "28.09.2026",
+    title: "Компактная форма заявки",
+    items: [
+      "Клиент и телефон, техника и модель, даты и параметры визита снова используют две колонки на телефоне.",
+      "Адрес, источник, неисправность, диагностика, дефекты и статус остаются полноширинными там, где ширина действительно нужна.",
+      "QA теперь отдельно проверяет пары коротких полей и полноширинные длинные поля на мобильных ширинах."
+    ]
+  },
   {
     version: "1.7.43",
     date: "28.09.2026",
