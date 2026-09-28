@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T18:31:41.316Z",
-  "testedSha": "9138db07f463f8df9e1d15dc165113297ff2bac9",
+  "generatedAt": "2026-09-28T18:34:21.175Z",
+  "testedSha": "c1996735815631907fca027e6fac7c91b48ae097",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1258,11 +1258,27 @@
       "keyboardMetrics": {
         "top": 463,
         "bottom": 511,
-        "width": 304,
+        "width": 176,
         "height": 48,
         "viewportHeight": 520,
         "locked": true,
-        "bodyFixed": true
+        "bodyFixed": true,
+        "actionsInnerLeft": 8,
+        "actionsInnerWidth": 304,
+        "actionButtons": [
+          {
+            "width": 122,
+            "height": 48,
+            "left": 8,
+            "top": 463
+          },
+          {
+            "width": 176,
+            "height": 48,
+            "left": 136,
+            "top": 463
+          }
+        ]
       }
     },
     {
@@ -1494,7 +1510,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T18:32:18.675Z"
+      "fallbackCreatedAt": "2026-09-28T18:34:53.517Z"
     },
     {
       "label": "pwa-offline",
@@ -1508,5 +1524,48 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(7, 12, 16)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 61,
+        "costWidth": 105,
+        "footerWidth": 320,
+        "footerInnerWidth": 304,
+        "footerCoverage": 0.931,
+        "footerButtonGap": 6,
+        "secondaryWidth": 122,
+        "primaryWidth": 176,
+        "secondaryTop": 843,
+        "primaryTop": 843
+      }
+    },
+    {
+      "width": 390,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(7, 12, 16)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 80,
+        "costWidth": 128,
+        "footerWidth": 390,
+        "footerInnerWidth": 366,
+        "footerCoverage": 0.923,
+        "footerButtonGap": 6,
+        "secondaryWidth": 148,
+        "primaryWidth": 212,
+        "secondaryTop": 843,
+        "primaryTop": 843
+      }
+    }
+  ]
 }
