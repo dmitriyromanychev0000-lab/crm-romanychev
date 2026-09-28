@@ -4034,7 +4034,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.longLinkTitle.textOverflow === "ellipsis"
         || settingsSurface.longLinkDescription.whiteSpace === "nowrap"
         || settingsSurface.longLinkDescription.lineClamp !== "2"
-        || settingsSurface.longLinkHeight < 68
+        || settingsSurface.longLinkHeight < 60
         || (width <= 340 && (
           settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
           || settingsSurface.appActionWidths.some((value, index) => value < settingsSurface.appRowWidths[index] - 2)
@@ -4056,11 +4056,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       const settingsRowLimit = width <= 340 ? 108 : 70;
-      const settingsLinkLimit = width <= 340 ? 76 : 68;
+      const settingsLinkLimit = width <= 340 ? 70 : 60;
       if (settingsDensity.cardPaddingTop > 10
         || settingsDensity.rowHeight > settingsRowLimit
+        || settingsDensity.linkHeight < 54
         || settingsDensity.linkHeight > settingsLinkLimit
-        || settingsDensity.iconHeight > 36) {
+        || settingsDensity.iconHeight > 34) {
         report.failures.push({ width, type: "settings-compact-density", settingsDensity, settingsRowLimit, settingsLinkLimit });
       }
 

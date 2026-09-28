@@ -18983,3 +18983,38 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.53 · Настройки: рабочие справочники плотнее без потери читаемости. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-links {
+    gap: 4px !important;
+  }
+
+  .legacy-settings-links > button {
+    min-height: 54px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-results"] {
+    min-height: 62px !important;
+  }
+
+  .legacy-settings-links .settings-link-icon {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-settings-links > button {
+    min-height: 58px !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-results"] {
+    min-height: 64px !important;
+  }
+}

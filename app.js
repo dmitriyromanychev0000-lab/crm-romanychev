@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.52";
-const APP_BUILD = "2026.09.28.272";
+const APP_VERSION = "1.7.53";
+const APP_BUILD = "2026.09.28.273";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Реквизиты исполнителя стали компактнее: название и исполнитель, телефон и ИНН собраны попарно, адрес остаётся полноширинным"
+const APP_RELEASE = "Рабочие данные в настройках стали плотнее: девять справочников занимают меньше места, но длинные названия и описания остаются читаемыми"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.53",
+    date: "28.09.2026",
+    title: "Плотные рабочие данные",
+    items: [
+      "Строки справочников в настройках стали ниже за счёт внутренних отступов и иконок, а не уменьшения основного текста.",
+      "Обычные пункты остаются не меньше 54 px, длинный пункт результатов гарантии получает дополнительную высоту.",
+      "На 320 px сохранены две строки названия и описания без обрезания."
+    ]
+  },
   {
     version: "1.7.52",
     date: "28.09.2026",
