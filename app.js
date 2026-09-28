@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.54";
-const APP_BUILD = "2026.09.28.275";
+const APP_VERSION = "1.7.55";
+const APP_BUILD = "2026.09.28.276";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки склада стали короче: приход и списание остаются текстовыми, архив и настройка собраны компактными иконками в той же строке"
+const APP_RELEASE = "Верх склада стал короче: история движения и список покупок теперь стоят рядом в одной строке, сохраняя большие touch-зоны"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.55",
+    date: "28.09.2026",
+    title: "Компактные переходы склада",
+    items: [
+      "История движения и список покупок теперь стоят рядом вместо двух полноширинных строк.",
+      "Обе кнопки сохраняют высоту 48 px и читаемые подписи даже на экране 320 px.",
+      "Фильтры, поиск и основное действие «Новая позиция» не менялись."
+    ]
+  },
   {
     version: "1.7.54",
     date: "28.09.2026",

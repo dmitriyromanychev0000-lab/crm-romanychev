@@ -1005,15 +1005,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         innerWidth: rect && style
           ? Math.round(rect.width - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0))
           : 0,
+        columns: style?.gridTemplateColumns || "",
         buttons
       };
     });
     if (warehouseShortcutLayout.buttons.length !== 2
-      || warehouseShortcutLayout.buttons.some((button) => button.width < warehouseShortcutLayout.innerWidth - 2)
-      || warehouseShortcutLayout.buttons.some((button) => button.height < 48)
+      || warehouseShortcutLayout.columns.split(" ").filter(Boolean).length !== 2
+      || warehouseShortcutLayout.buttons.some((button) => button.width < 125)
+      || Math.abs(warehouseShortcutLayout.buttons[0]?.width - warehouseShortcutLayout.buttons[1]?.width) > 2
+      || warehouseShortcutLayout.buttons.some((button) => button.height < 48 || button.height > 49)
       || warehouseShortcutLayout.buttons.some((button) => button.labelWrap)
-      || warehouseShortcutLayout.buttons[1]?.top <= warehouseShortcutLayout.buttons[0]?.top) {
-      report.failures.push({ width, type: "warehouse-shortcuts-full-width", warehouseShortcutLayout });
+      || Math.abs(warehouseShortcutLayout.buttons[0]?.top - warehouseShortcutLayout.buttons[1]?.top) > 2
+      || warehouseShortcutLayout.buttons[1]?.left <= warehouseShortcutLayout.buttons[0]?.left) {
+      report.failures.push({ width, type: "warehouse-shortcuts-two-columns", warehouseShortcutLayout });
     }
 
     const warehouseDensity = await page.evaluate(() => {

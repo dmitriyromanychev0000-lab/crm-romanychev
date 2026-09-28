@@ -19075,3 +19075,29 @@
     height: 17px !important;
   }
 }
+
+
+/* 1.7.55 · Склад: история и покупки в одной компактной строке. */
+@media screen and (max-width: 520px) {
+  .legacy-warehouse-shortcuts {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-warehouse-shortcuts > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-warehouse-shortcuts > button .ui-icon {
+    flex: 0 0 auto !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
