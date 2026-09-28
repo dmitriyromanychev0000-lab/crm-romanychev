@@ -3203,11 +3203,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping", warehouseMovementFilter: "all" }));
       const shoppingSurface = await page.evaluate(() => {
+        const summary = document.querySelector(".shopping-summary");
+        const summaryIcon = document.querySelector(".shopping-summary-icon");
+        const summaryRect = summary?.getBoundingClientRect();
+        const summaryIconRect = summaryIcon?.getBoundingClientRect();
         const card = document.querySelector(".shopping-card");
         const need = card?.querySelector(".shopping-need");
         const needRect = need?.getBoundingClientRect();
         return {
           summary: getComputedStyle(document.querySelector(".shopping-summary")).backgroundColor,
+          summaryHeight: Math.round(summaryRect?.height || 0),
+          summaryIconWidth: Math.round(summaryIconRect?.width || 0),
+          summaryIconHeight: Math.round(summaryIconRect?.height || 0),
           card: card ? getComputedStyle(card).backgroundColor : "missing",
           critical: card?.classList.contains("critical") || false,
           needBackground: need ? getComputedStyle(need).backgroundColor : "missing",
@@ -3224,6 +3231,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (shoppingSurface.summary !== "rgb(16, 13, 6)"
+        || shoppingSurface.summaryHeight < 56
+        || shoppingSurface.summaryHeight > 60
+        || shoppingSurface.summaryIconWidth < 36
+        || shoppingSurface.summaryIconWidth > 37
+        || shoppingSurface.summaryIconHeight < 36
+        || shoppingSurface.summaryIconHeight > 37
         || shoppingSurface.card !== "rgb(22, 9, 12)"
         || !shoppingSurface.critical
         || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.067)"

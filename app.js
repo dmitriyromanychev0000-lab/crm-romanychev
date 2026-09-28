@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.71";
-const APP_BUILD = "2026.09.28.293";
+const APP_VERSION = "1.7.72";
+const APP_BUILD = "2026.09.28.294";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы стали плотнее: три ключевых показателя собраны в одну строку, поэтому список начинается выше без потери цифр и подписей"
+const APP_RELEASE = "Список покупок стал плотнее: сводка нужного количества занимает меньше места, а действия и карточки товаров сохраняют прежнюю удобную геометрию"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.72",
+    date: "28.09.2026",
+    title: "Компактная сводка покупок",
+    items: [
+      "Верхняя карточка «Нужно докупить» стала ниже и ближе по ритму к остальным рабочим сводкам.",
+      "Иконка и типографика поджаты без уменьшения touch-зон действий ниже.",
+      "Карточки товаров, количества к покупке, поделиться и копировать не меняют логику."
+    ]
+  },
   {
     version: "1.7.71",
     date: "28.09.2026",
