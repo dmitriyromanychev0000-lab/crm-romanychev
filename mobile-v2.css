@@ -16751,3 +16751,25 @@
     gap: 5px !important;
   }
 }
+
+
+/* 1.7.16 · Аналитика: 44px управления и точная плотность KPI. */
+@media screen and (max-width: 520px) {
+  .analytics-period-grid .chip {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    box-sizing: border-box !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  .analytics-kpi > div > strong,
+  .analytics-kpi > div > small {
+    margin-top: 2px !important;
+  }
+}

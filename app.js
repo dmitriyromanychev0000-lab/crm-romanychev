@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.15";
-const APP_BUILD = "2026.09.28.233";
+const APP_VERSION = "1.7.16";
+const APP_BUILD = "2026.09.28.234";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Аналитика стала плотнее и информативнее: меньше пустой высоты в KPI, метриках и панелях без уменьшения основных цифр";
+const APP_RELEASE = "Аналитика доведена по мобильной геометрии: фильтры снова удобные 44 px, KPI плотнее без потери читаемости";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.16",
+    date: "28.09.2026",
+    title: "Доводка плотной аналитики",
+    items: [
+      "Фильтры периода снова имеют полноценную высоту 44 px для уверенного нажатия.",
+      "KPI дополнительно поджаты по внутренней геометрии без уменьшения рабочих цифр.",
+      "Убраны последние два расхождения мобильного QA после уплотнения аналитики."
+    ]
+  },
   {
     version: "1.7.15",
     date: "28.09.2026",
