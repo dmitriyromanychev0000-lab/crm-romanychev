@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.82";
-const APP_BUILD = "2026.09.29.308";
+const APP_VERSION = "1.7.83";
+const APP_BUILD = "2026.09.29.309";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки клиентов стали плотнее на узких экранах: сумма остаётся справа, служебные данные помещаются в одну строку, touch-зоны сохранены"
+const APP_RELEASE = "Товарник стал плотнее на телефоне: автозаполнение занимает меньше места, а суммы позиций остаются справа даже на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.83",
+    date: "29.09.2026",
+    title: "Плотный товарник",
+    items: [
+      "Блок автозаполнения стал короче: убрана дублирующая видимая подпись, селект сохранил доступное имя.",
+      "Служебное пояснение сокращено до одной строки «Склад и статистика не меняются».",
+      "На 320–340 px сумма позиции больше не падает под названием; touch-зоны создания и редактирования не уменьшались."
+    ]
+  },
   {
     version: "1.7.82",
     date: "29.09.2026",
@@ -4183,12 +4193,12 @@ function goodsPage() {
       </div>
       <label class="legacy-goods-order-source">
         <span>ЗАЯВКА ДЛЯ АВТОЗАПОЛНЕНИЯ</span>
-        <select class="field" id="goods-source-order">
+        <select class="field" id="goods-source-order" aria-label="Заявка для автозаполнения">
           <option value="">— Выберите заявку —</option>
           ${closedOrders.map((order) => `<option value="${escapeHtml(order.id)}">№${escapeHtml(order.id)} · ${escapeHtml(order.name || "Клиент")} · ${escapeHtml(order.tech || "Техника")}</option>`).join("")}
         </select>
       </label>
-      <p class="legacy-goods-help">Отдельный расчёт товаров — склад и статистика не изменяются.</p>
+      <p class="legacy-goods-help">Склад и статистика не меняются.</p>
     </section>
 
     <section class="legacy-goods-panel legacy-goods-current">

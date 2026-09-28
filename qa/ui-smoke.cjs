@@ -3992,6 +3992,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const panel = document.querySelector(".legacy-goods-panel");
         const summary = document.querySelector(".legacy-goods-current-summary");
         const row = document.querySelector(".legacy-goods-position");
+        const rowAmount = row?.querySelector(":scope > b")?.getBoundingClientRect();
+        const sourceLabel = document.querySelector(".legacy-goods-new .legacy-goods-order-source > span");
+        const help = document.querySelector(".legacy-goods-new .legacy-goods-help")?.getBoundingClientRect();
         const edit = document.querySelector(".legacy-open-editor");
         const panelStyle = panel ? getComputedStyle(panel) : null;
         const px = (value) => Number.parseFloat(value || "0") || 0;
@@ -3999,13 +4002,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           panelPaddingTop: panelStyle ? px(panelStyle.paddingTop) : 999,
           summaryHeight: Math.round(summary?.getBoundingClientRect().height || 0),
           rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          rowColumns: row ? getComputedStyle(row).gridTemplateColumns : "",
+          rowAmountRight: Math.round(rowAmount?.right || 0),
+          sourceLabelDisplay: sourceLabel ? getComputedStyle(sourceLabel).display : "missing",
+          helpHeight: Math.round(help?.height || 0),
           editHeight: Math.round(edit?.getBoundingClientRect().height || 0)
         };
       });
-      const goodsRowLimit = width <= 340 ? 66 : 58;
+      const goodsRowLimit = 58;
       if (goodsDensity.panelPaddingTop > 10
         || goodsDensity.summaryHeight > 62
         || goodsDensity.rowHeight > goodsRowLimit
+        || goodsDensity.rowColumns.split(" ").filter(Boolean).length !== 2
+        || goodsDensity.rowAmountRight <= 0
+        || goodsDensity.sourceLabelDisplay !== "none"
+        || goodsDensity.helpHeight > 16
         || goodsDensity.editHeight < 44) {
         report.failures.push({ width, type: "goods-compact-density", goodsDensity, goodsRowLimit });
       }

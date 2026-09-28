@@ -20284,3 +20284,38 @@
     justify-self: end !important;
   }
 }
+
+/* 1.7.83 · Товарник: меньше служебной высоты и сумма позиции справа даже на 320 px. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-new .legacy-goods-order-source {
+    margin-top: 5px !important;
+  }
+
+  .legacy-goods-new .legacy-goods-order-source > span {
+    display: none !important;
+  }
+
+  .legacy-goods-new .legacy-goods-help {
+    margin-top: 4px !important;
+    font-size: 9.5px !important;
+    line-height: 1.15 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-goods-current .legacy-goods-position {
+    grid-template-columns: minmax(0,1fr) max-content !important;
+    gap: 8px !important;
+    min-height: 48px !important;
+    align-items: center !important;
+  }
+
+  .legacy-goods-current .legacy-goods-position > span {
+    min-width: 0 !important;
+  }
+
+  .legacy-goods-current .legacy-goods-position > b {
+    justify-self: end !important;
+    align-self: center !important;
+  }
+}
