@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.38";
-const APP_BUILD = "2026.09.28.256";
+const APP_VERSION = "1.7.39";
+const APP_BUILD = "2026.09.28.257";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Менеджеры источников и справочников стали плотнее: меньше воздуха в шапке, списке и форме добавления при сохранённых крупных контролах"
+const APP_RELEASE = "Вспомогательные шторки стали плотнее: свой период аналитики и дополнительные действия заявки занимают меньше высоты без уменьшения touch-зон"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.39",
+    date: "28.09.2026",
+    title: "Плотные вспомогательные шторки",
+    items: [
+      "Выбор собственного периода аналитики получил компактнее шапку, поля и промежутки без уменьшения кнопки закрытия 44×44.",
+      "Дополнительные действия заявки стали плотнее по вертикали: меньше padding и зазоры, основные действия остаются удобными для нажатия.",
+      "Геометрия обеих шторок закреплена отдельными QA-проверками на мобильных ширинах."
+    ]
+  },
   {
     version: "1.7.38",
     date: "28.09.2026",

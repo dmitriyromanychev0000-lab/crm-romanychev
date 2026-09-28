@@ -18404,3 +18404,87 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.39 · Вспомогательные шторки: меньше пустоты при сохранённых крупных touch-зонах. */
+@media screen and (max-width: 520px) {
+  .legacy-analytics-range-modal {
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom)) !important;
+    border-radius: 15px 15px 0 0 !important;
+  }
+
+  .legacy-range-head {
+    grid-template-columns: 36px minmax(0,1fr) 44px !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-range-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-range-grid {
+    gap: 6px !important;
+  }
+
+  .legacy-range-grid label > span {
+    margin-bottom: 3px !important;
+  }
+
+  .legacy-range-grid .field {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-range-actions {
+    gap: 6px !important;
+    margin-top: 8px !important;
+  }
+
+  .legacy-range-actions button {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-sheet {
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom)) !important;
+    border-radius: 15px 15px 0 0 !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-head {
+    min-height: 44px !important;
+    gap: 8px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-head small {
+    margin-top: 1px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid {
+    gap: 6px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-grid button,
+  .legacy-order-actions-backdrop .order-actions-grid a {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-order-actions-backdrop .order-actions-cancel {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    margin-top: 7px !important;
+    border-radius: 10px !important;
+  }
+}

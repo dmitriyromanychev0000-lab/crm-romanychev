@@ -2005,6 +2005,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderActionsSurface.cancel !== "rgb(9, 15, 20)") {
         report.failures.push({ width, type: "order-actions-deep-dark", orderActionsSurface });
       }
+      const orderActionsDensity = await page.evaluate(() => {
+        const sheet = document.querySelector(".order-actions-sheet");
+        const head = sheet?.querySelector(".order-actions-head");
+        const grid = sheet?.querySelector(".order-actions-grid");
+        const action = grid?.querySelector("button, a");
+        const cancel = sheet?.querySelector(".order-actions-cancel");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          paddingTop: sheet ? px(getComputedStyle(sheet).paddingTop) : 999,
+          headMarginBottom: head ? px(getComputedStyle(head).marginBottom) : 999,
+          gridGap: grid ? px(getComputedStyle(grid).rowGap || getComputedStyle(grid).gap) : 999,
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          cancelMarginTop: cancel ? px(getComputedStyle(cancel).marginTop) : 999,
+          cancelHeight: Math.round(cancel?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (orderActionsDensity.paddingTop > 10
+        || orderActionsDensity.headMarginBottom > 7
+        || orderActionsDensity.gridGap > 6.5
+        || orderActionsDensity.actionHeight < 44
+        || orderActionsDensity.actionHeight > 50
+        || orderActionsDensity.cancelMarginTop > 7
+        || orderActionsDensity.cancelHeight < 44
+        || orderActionsDensity.cancelHeight > 48) {
+        report.failures.push({ width, type: "order-actions-compact-density", orderActionsDensity });
+      }
       report.results.push(await shot(page, width, "order-actions", false));
       await page.keyboard.press("Escape");
 
@@ -2204,6 +2230,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsRangeSurface.rangeFieldTops.length !== 2
         || analyticsRangeSurface.rangeFieldTops[1] <= analyticsRangeSurface.rangeFieldTops[0]) {
         report.failures.push({ width, type: "analytics-range-deep-dark", analyticsRangeSurface });
+      }
+      const analyticsRangeDensity = await page.evaluate(() => {
+        const modal = document.querySelector(".legacy-analytics-range-modal");
+        const head = modal?.querySelector(".legacy-range-head");
+        const grid = modal?.querySelector(".legacy-range-grid");
+        const field = modal?.querySelector(".legacy-range-grid .field");
+        const actions = modal?.querySelector(".legacy-range-actions");
+        const action = actions?.querySelector("button");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          paddingTop: modal ? px(getComputedStyle(modal).paddingTop) : 999,
+          headMarginBottom: head ? px(getComputedStyle(head).marginBottom) : 999,
+          gridGap: grid ? px(getComputedStyle(grid).rowGap || getComputedStyle(grid).gap) : 999,
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          actionsMarginTop: actions ? px(getComputedStyle(actions).marginTop) : 999,
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (analyticsRangeDensity.paddingTop > 10
+        || analyticsRangeDensity.headMarginBottom > 8
+        || analyticsRangeDensity.gridGap > 6.5
+        || analyticsRangeDensity.fieldHeight < 44
+        || analyticsRangeDensity.fieldHeight > 48
+        || analyticsRangeDensity.actionsMarginTop > 8
+        || analyticsRangeDensity.actionHeight < 44
+        || analyticsRangeDensity.actionHeight > 48) {
+        report.failures.push({ width, type: "analytics-range-compact-density", analyticsRangeDensity });
       }
       report.results.push(await shot(page, width, "analytics-range", false));
       await page.locator(".legacy-analytics-range-modal [data-close-modal]").last().click();
