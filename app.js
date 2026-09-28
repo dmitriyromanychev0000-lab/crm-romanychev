@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.50";
-const APP_BUILD = "2026.09.28.269";
+const APP_VERSION = "1.7.51";
+const APP_BUILD = "2026.09.28.270";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Источник заявки и статус теперь стоят рядом: форма стала короче ещё на одну строку без сжатия длинных полей"
+const APP_RELEASE = "Многострочные поля заявки теперь растут по содержимому: пустая форма компактнее, а длинный текст не зажимается в маленьком поле"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.51",
+    date: "28.09.2026",
+    title: "Авторастущие поля заявки",
+    items: [
+      "Неисправность, диагностика и внешние дефекты стали ниже в пустой форме и автоматически растут по мере ввода.",
+      "Длинный текст остаётся читаемым до разумной максимальной высоты, после чего прокручивается внутри поля.",
+      "QA отдельно проверяет компактное пустое состояние и реальное увеличение высоты после многострочного ввода."
+    ]
+  },
   {
     version: "1.7.50",
     date: "28.09.2026",

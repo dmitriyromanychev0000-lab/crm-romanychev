@@ -1522,15 +1522,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderEditorDensity.titleMarginBottom > 8
         || orderEditorDensity.fieldHeight < 44
         || orderEditorDensity.fieldHeight > 48
-        || orderEditorDensity.textareaHeight > 62
-        || orderEditorDensity.issueHeight < 58
-        || orderEditorDensity.issueHeight > 62
-        || orderEditorDensity.diagnosisHeight < 58
-        || orderEditorDensity.diagnosisHeight > 62
-        || orderEditorDensity.defectsHeight < 50
-        || orderEditorDensity.defectsHeight > 54) {
+        || orderEditorDensity.textareaHeight > 50
+        || orderEditorDensity.issueHeight < 46
+        || orderEditorDensity.issueHeight > 50
+        || orderEditorDensity.diagnosisHeight < 46
+        || orderEditorDensity.diagnosisHeight > 50
+        || orderEditorDensity.defectsHeight < 42
+        || orderEditorDensity.defectsHeight > 46) {
         report.failures.push({ width, type: "order-editor-compact-density", orderEditorDensity });
       }
+
+      const issueBeforeGrow = orderEditorDensity.issueHeight;
+      await page.locator('.order-editor-modal textarea[name="issue"]').fill("Первая строка\nВторая строка\nТретья строка\nЧетвёртая строка");
+      await page.waitForTimeout(20);
+      const issueAfterGrow = await page.evaluate(() => Math.round(document.querySelector('.order-editor-modal textarea[name="issue"]')?.getBoundingClientRect().height || 0));
+      if (issueAfterGrow <= issueBeforeGrow + 12 || issueAfterGrow > 132) {
+        report.failures.push({ width, type: "order-editor-textarea-autogrow", issueBeforeGrow, issueAfterGrow });
+      }
+      await page.locator('.order-editor-modal textarea[name="issue"]').fill("");
 
       await page.locator("#open-service-catalog").click();
       await page.waitForTimeout(100);

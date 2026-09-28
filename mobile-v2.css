@@ -18906,17 +18906,23 @@
 }
 
 
-/* 1.7.48 · Верх заявки: меньше пустой высоты у многострочных полей. */
+/* 1.7.51 · Верх заявки: компактные пустые textarea растут по содержимому. */
 @media screen and (max-width: 520px) {
   .order-editor-modal textarea[name="issue"],
   .order-editor-modal textarea[name="diagnosis"] {
-    min-height: 60px !important;
-    height: 60px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    max-height: 132px !important;
+    field-sizing: content;
+    overflow-y: auto !important;
   }
 
   .order-editor-modal textarea[name="defects"] {
-    min-height: 52px !important;
-    height: 52px !important;
+    min-height: 44px !important;
+    height: auto !important;
+    max-height: 108px !important;
+    field-sizing: content;
+    overflow-y: auto !important;
   }
 }
 
