@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T22:32:21.953Z",
-  "testedSha": "08c41af4ccbae51c26af09e49809c37b20269e7e",
+  "generatedAt": "2026-09-28T22:44:49.416Z",
+  "testedSha": "4fca04ac60d2c11e217cc13a6d7bebae006e4aae",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T22:33:03.521Z"
+      "fallbackCreatedAt": "2026-09-28T22:45:26.573Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,33 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "diagnostics-compact-density",
+      "diagnosticsDensity": {
+        "paddingTop": 10,
+        "titleMarginBottom": 8,
+        "listGap": 5,
+        "rowHeight": 48,
+        "footerPaddingTop": 8,
+        "actionHeight": 46,
+        "statusWidth": 30,
+        "statusHeight": 30,
+        "statusCenterDelta": 0,
+        "copyCenterDelta": 0,
+        "statusIconWidth": 16,
+        "actionOverflows": [
+          false,
+          true,
+          false
+        ],
+        "actionIconWidths": [
+          14,
+          14,
+          14
+        ]
+      }
+    }
+  ]
 }
