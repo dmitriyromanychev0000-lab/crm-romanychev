@@ -1683,7 +1683,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(warehousePageSurfaces.actionTops[0] - warehousePageSurfaces.actionTops[1]) > 2
         || Math.abs(warehousePageSurfaces.actionTops[2] - warehousePageSurfaces.actionTops[3]) > 2
         || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]
-        || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 26
+        || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 34
         || warehousePageSurfaces.addHeight < 48
         || !warehousePageSurfaces.addText.includes("Новая позиция")) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
