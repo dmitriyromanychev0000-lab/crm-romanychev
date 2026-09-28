@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.1.0";
-const APP_BUILD = "2026.09.28.178";
+const APP_VERSION = "1.1.1";
+const APP_BUILD = "2026.09.28.179";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Единая мобильная сетка, спокойное меню и понятная история версий";
+const APP_RELEASE = "Доведены мобильные формы, склад и аналитика; интерфейс стал темнее и ровнее";
 const APP_CHANGELOG = [
+  {
+    version: "1.1.1",
+    date: "28.09.2026",
+    title: "Доводка основных экранов",
+    items: [
+      "Склад получил ровные фильтры и симметричную сетку действий без одинокой кнопки в строке.",
+      "Материалы в заявке больше не сжимают место хранения в узкую колонку.",
+      "Периоды аналитики стали крупнее и располагаются сеткой 3×2; возвращены более глубокие тёмные поверхности."
+    ]
+  },
   {
     version: "1.1.0",
     date: "28.09.2026",
@@ -2510,7 +2520,7 @@ function analyticsPage() {
       <button type="button" class="chip ${analyticsPeriod === "30" ? "active" : ""}" data-analytics-period="30" aria-pressed="${analyticsPeriod === "30"}">Месяц</button>
       <button type="button" class="chip ${analyticsPeriod === "365" ? "active" : ""}" data-analytics-period="365" aria-pressed="${analyticsPeriod === "365"}">Год</button>
       <button type="button" class="chip ${analyticsPeriod === "all" ? "active" : ""}" data-analytics-period="all" aria-pressed="${analyticsPeriod === "all"}">Всё</button>
-      <button type="button" class="chip calendar ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom" aria-pressed="${analyticsPeriod === "custom"}" aria-label="Свой период">${icon("calendar")}</button>
+      <button type="button" class="chip calendar ${analyticsPeriod === "custom" ? "active" : ""}" data-analytics-period="custom" aria-pressed="${analyticsPeriod === "custom"}">Свой период</button>
     </div>
 
     <div class="analytics-range-nav">
@@ -6317,7 +6327,7 @@ async function adjustStock(id, direction) {
   </form>`;
   document.body.appendChild(modal);
   const place=modal.querySelector('[name="locationId"]'),amount=modal.querySelector('[name="amount"]'),cost=modal.querySelector('[name="totalCost"]'),beforeOut=modal.querySelector("#stock-adjust-before"),result=modal.querySelector("#stock-adjust-result"),unitCost=modal.querySelector("#stock-adjust-unit-cost");
-  const update=()=>{const physical=stockLocationPhysicalQuantity(item,place.value),free=stockAvailableQuantityAtLocation(item,place.value),qty=Math.max(0,Number(amount.value)||0);beforeOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`;result.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming?physical+qty:Math.max(0,physical-qty))} ${unit}`;result.className=!incoming&&qty>free?"red":"";if(!incoming)amount.max=String(free);if(unitCost){const total=Math.max(0,Number(cost?.value)||0);unitCost.textContent=`Себестоимость партии: ${money(qty>0?total/qty:0)} / ${unit}`;}};
+  const update=()=>{const physical=stockLocationPhysicalQuantity(item,place.value),free=stockAvailableQuantityAtLocation(item,place.value),qty=Math.max(0,Number(amount.value)||0);beforeOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`;result.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming?physical+qty:Math.max(0,physical-qty))} ${unit}`;result.className=!incoming&&qty>free?"red":"";if(!incoming) amount.dataset.maxAvailable=String(free);if(unitCost){const total=Math.max(0,Number(cost?.value)||0);unitCost.textContent=`Себестоимость партии: ${money(qty>0?total/qty:0)} / ${unit}`;}};
   place.addEventListener("change",update);amount.addEventListener("input",update);cost?.addEventListener("input",update);modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",()=>modal.remove()));modal.addEventListener("click",(event)=>{if(event.target===modal)modal.remove();});
   modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const form=new FormData(event.currentTarget),locationId=String(form.get("locationId")||UNASSIGNED_LOCATION_ID),qty=Number(form.get("amount")),comment=String(form.get("comment")||"").trim(),free=stockAvailableQuantityAtLocation(item,locationId);if(!Number.isFinite(qty)||qty<=0)return toast("Укажи количество");if(!incoming&&qty>free+1e-9)return toast(`В «${storageLocationName(locationId)}» доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`);if(!incoming&&!comment)return toast("Напиши причину ручного списания");const date=new Date().toISOString(),movementId=crypto.randomUUID();if(incoming){const totalCost=Math.max(0,Number(form.get("totalCost"))||0),batch=createStockBatch(item,qty,totalCost,{acquiredAt:date,source:"purchase"});changeStockLocationQuantity(item,locationId,qty);syncStockQuantityFromLocations(item);if(Number(batch?.unitCost)>0)item.lastPurchasePrice=Number(batch.unitCost);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"purchase_in",totalCost,unitCost:Number(batch?.unitCost)||0,batchId:batch?.id||null,locationId,comment,date});if(totalCost>0)data.expenses.push({id:crypto.randomUUID(),amount:totalCost,category:"Закупка на склад",description:comment?`${item.name} · ${comment}`:item.name,date,source:"stock_purchase",warehouseId:item.id,movementId});}else{const consumed=consumeStockBatches(item,qty,null,movementId);if(!consumed.ok)return toast("Не удалось распределить списание по партиям");const batchCost=consumed.allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0);changeStockLocationQuantity(item,locationId,-qty);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"manual_out",batchCost,allocations:consumed.allocations,locationId,comment,date});}await saveData();modal.remove();await render();toast(incoming?"Закупка сохранена":"Списание сохранено");});
   update();requestAnimationFrame(()=>amount.focus());

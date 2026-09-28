@@ -14319,3 +14319,163 @@
   }
 }
 
+/* 1.1.1 · Ровная мобильная сетка: склад, материалы, аналитика и глубокие поверхности. */
+@media screen and (max-width: 520px) {
+  .content .field,
+  .content .search,
+  .modal .field,
+  .modal .search {
+    background: #090f14 !important;
+  }
+
+  .order-editor-modal .field,
+  .order-editor-modal .material-card-controls .field {
+    background: #090f14 !important;
+  }
+
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .order-editor-modal .material-card-controls > label:nth-child(3) {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .material-card-controls label > span {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+
+  .warehouse-filter-control:last-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-warehouse-group {
+    border-color: #202a31 !important;
+    background: #070c10 !important;
+  }
+
+  .warehouse-category-block {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .warehouse-category-title {
+    min-height: 36px !important;
+    border-bottom: 1px solid #182229 !important;
+    background: transparent !important;
+  }
+
+  .warehouse-category-block .legacy-stock-list {
+    padding: 7px 0 2px !important;
+  }
+
+  .legacy-stock-card-v2 {
+    border-color: #243038 !important;
+    background: #0a1116 !important;
+  }
+
+  .legacy-stock-actions-v2 {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-stock-actions-v2 button {
+    min-height: 46px !important;
+    font-size: 11px !important;
+  }
+
+  .analytics-period-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .analytics-period-grid .chip {
+    min-height: 46px !important;
+    padding: 7px 5px !important;
+    font-size: 11.5px !important;
+  }
+
+  .analytics-content .panel {
+    background: #070c10 !important;
+  }
+
+  .analytics-kpi {
+    background: #090f14 !important;
+  }
+
+  .legacy-analytics-range-modal .field,
+  .stock-editor-modal .field,
+  .stock-adjust-modal .field,
+  .legacy-finance-entry-backdrop .field,
+  .legacy-service-editor-backdrop .field,
+  .legacy-goods-editor .field,
+  .legacy-settings-page .field {
+    background: #090f14 !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) {
+    min-height: 80px !important;
+    padding: 9px 10px !important;
+    grid-template-columns: 42px minmax(0,1fr) auto !important;
+    gap: 9px !important;
+    align-items: center !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) .shopping-item-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) .shopping-need {
+    align-self: center !important;
+    min-width: 96px !important;
+    padding: 5px 6px !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) .shopping-qty-editor {
+    padding: 5px 6px !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) .shopping-qty-editor .field {
+    min-height: 34px !important;
+    height: 34px !important;
+  }
+
+  .legacy-more-page {
+    padding-bottom: 98px !important;
+  }
+
+  .app-version-strip {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .order-editor-modal .material-card-controls {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .warehouse-filter-control,
+  .warehouse-filter-control:first-child,
+  .warehouse-filter-control:last-child {
+    grid-column: auto !important;
+  }
+
+  .warehouse-filter-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) {
+    grid-template-columns: 38px minmax(0,1fr) auto !important;
+    gap: 7px !important;
+  }
+
+  .shopping-content .legacy-shopping-card:not(.manual) .shopping-need {
+    min-width: 88px !important;
+  }
+}
+

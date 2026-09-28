@@ -2212,31 +2212,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
         };
       });
-      const expectedMoreNames = ["Календарь","Клиенты","Прайс-лист","Калькулятор","Акт","Настройки"];
-      const expectedMoreBackgrounds = [
-        "rgb(7, 12, 16)",
-        "rgb(8, 16, 25)",
-        "rgb(16, 11, 23)",
-        "rgb(16, 11, 23)",
-        "rgb(16, 11, 8)",
-        "rgb(9, 15, 20)"
-      ];
-      const expectedMoreIconBackgrounds = [
-        "rgba(255, 107, 79, 0.1)",
-        "rgba(92, 169, 255, 0.12)",
-        "rgba(168, 138, 240, 0.12)",
-        "rgba(255, 113, 83, 0.12)",
-        "rgba(65, 201, 220, 0.12)",
-        "rgba(137, 148, 156, 0.11)"
-      ];
+      const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Товарник","Акт","Календарь","Настройки"];
+      const expectedMoreBackgrounds = Array(expectedMoreNames.length).fill("rgb(13, 20, 25)");
+      const expectedMoreIconBackgrounds = Array(expectedMoreNames.length).fill("rgb(17, 25, 30)");
       if (JSON.stringify(moreMenuSurface.names) !== JSON.stringify(expectedMoreNames)
-        || moreMenuSurface.finance !== 0
-        || moreMenuSurface.shopping !== 0
+        || moreMenuSurface.finance !== 1
+        || moreMenuSurface.shopping !== 1
         || moreMenuSurface.tools !== 0
         || JSON.stringify(moreMenuSurface.backgrounds) !== JSON.stringify(expectedMoreBackgrounds)
         || JSON.stringify(moreMenuSurface.iconBackgrounds) !== JSON.stringify(expectedMoreIconBackgrounds)
-        || new Set(moreMenuSurface.backgrounds).size < 4
-        || parseFloat(moreMenuSurface.titleFont) < 11.5) {
+        || new Set(moreMenuSurface.backgrounds).size !== 1
+        || parseFloat(moreMenuSurface.titleFont) < 13.5) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
 
