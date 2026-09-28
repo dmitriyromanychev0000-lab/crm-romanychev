@@ -1891,7 +1891,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           stockCopyRight: Math.round(stockCopyRect?.right || 0),
           stockQtyLeft: Math.round(stockQtyRect?.left || 0),
           stockQtyRight: Math.round(stockQtyRect?.right || 0),
-          stockTitleHeight: Math.round(stockTitleRect?.height || 0)
+          stockTitleHeight: Math.round(stockTitleRect?.height || 0),
+          filterIconTransforms: [...document.querySelectorAll(".warehouse-filter-control > span > .ui-icon")].map((node) => getComputedStyle(node).transform),
+          groupChevronTransforms: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-chevron")].slice(0, 2).map((node) => getComputedStyle(node).transform)
         };
       });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
@@ -1914,7 +1916,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.addHeight < 48
         || !warehousePageSurfaces.addText.includes("Новая позиция")
         || warehousePageSurfaces.filterWidths.some((value) => value < warehousePageSurfaces.filterGridWidth - 2)
-        || warehousePageSurfaces.filterTops.some((top, index, list) => index > 0 && top <= list[index - 1])) {
+        || warehousePageSurfaces.filterTops.some((top, index, list) => index > 0 && top <= list[index - 1])
+        || warehousePageSurfaces.filterIconTransforms.length !== 4
+        || warehousePageSurfaces.filterIconTransforms.some((value) => value === "none")
+        || warehousePageSurfaces.groupChevronTransforms.length < 2
+        || warehousePageSurfaces.groupChevronTransforms[0] === "none"
+        || warehousePageSurfaces.groupChevronTransforms[0] === warehousePageSurfaces.groupChevronTransforms[1]) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       if (width <= 340 && (
@@ -2500,7 +2507,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           firstCopyRight: Math.round(copyRect?.right || 0),
           firstPriceLeft: Math.round(priceRect?.left || 0),
           firstPriceCenter: priceRect ? Math.round(priceRect.top + priceRect.height / 2) : 0,
-          firstRowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0
+          firstRowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
+          groupCounts: [...document.querySelectorAll(".legacy-price-groups .legacy-price-group")].map((group) => {
+            const badge = group.querySelector(":scope > h3 > small");
+            const rect = badge?.getBoundingClientRect();
+            return {
+              badge: Number(badge?.textContent || -1),
+              rows: group.querySelectorAll(".legacy-price-row").length,
+              width: Math.round(rect?.width || 0),
+              height: Math.round(rect?.height || 0)
+            };
+          })
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
@@ -2519,7 +2536,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)"
         || pricePageSurface.filterWidths.some((value) => value < pricePageSurface.filterGridWidth - 2)
         || pricePageSurface.filterTops.length !== 2
-        || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0]) {
+        || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0]
+        || pricePageSurface.groupCounts.length < 1
+        || pricePageSurface.groupCounts.some((group) => group.badge !== group.rows || group.width < 24 || group.height < 24)) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
       }
       if (width <= 340 && (

@@ -16062,3 +16062,47 @@
     font-size: 7.5px !important;
   }
 }
+
+
+/* 1.7.8 · Семантика навигации и информативные заголовки групп. */
+@media screen and (max-width: 520px) {
+  .warehouse-filter-control > span > .ui-icon {
+    transform: translateY(-50%) rotate(90deg) !important;
+  }
+
+  .legacy-group-chevron {
+    transform: rotate(0deg) !important;
+  }
+
+  .legacy-warehouse-group[open] .legacy-group-chevron {
+    transform: rotate(90deg) !important;
+  }
+
+  .legacy-price-group > h3 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  .legacy-price-group > h3 > span {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-price-group > h3 > small {
+    display: grid !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    padding: 0 6px !important;
+    place-items: center !important;
+    border-radius: 999px !important;
+    background: #10181d !important;
+    color: #87939a !important;
+    font-size: 8.5px !important;
+    font-weight: 760 !important;
+    font-variant-numeric: tabular-nums;
+  }
+}

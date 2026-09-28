@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.7";
-const APP_BUILD = "2026.09.28.225";
+const APP_VERSION = "1.7.8";
+const APP_BUILD = "2026.09.28.226";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс и склад на 320 px сохраняют компактную правую колонку цены и остатка";
+const APP_RELEASE = "Склад получил правильные направления стрелок, а группы прайса — компактные счётчики позиций";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.8",
+    date: "28.09.2026",
+    title: "Правильные стрелки и счётчики групп",
+    items: [
+      "Стрелки складских фильтров теперь направлены вниз и читаются как выпадающие списки.",
+      "Открытая группа склада показывает стрелку вниз, закрытая — вправо, без странного поворота влево.",
+      "В заголовках категорий прайса добавлен компактный счётчик позиций."
+    ]
+  },
   {
     version: "1.7.7",
     date: "28.09.2026",
@@ -3116,7 +3126,7 @@ function priceList() {
 
     ${groups.length ? `<div class="legacy-price-groups">${groups.map(([category, items]) => `
       <section class="legacy-price-group">
-        <h3>${escapeHtml(category)}</h3>
+        <h3><span>${escapeHtml(category)}</span><small>${items.length}</small></h3>
         <div class="legacy-price-list">${items.map((item) => {
           const index = data.receipt_prices.indexOf(item);
           const meta = [item.unit, item.tech, item.archived ? "Архив" : ""].filter(Boolean).join(" · ") || (item.kind === "material" ? "Материал" : "Услуга");
