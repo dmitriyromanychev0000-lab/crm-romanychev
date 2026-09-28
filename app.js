@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.3";
-const APP_BUILD = "2026.09.28.186";
+const APP_VERSION = "1.2.4";
+const APP_BUILD = "2026.09.28.187";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Складские действия собраны в ровную сетку 2×2 — без одиноких половинчатых кнопок";
+const APP_RELEASE = "Повторные ручные списания стали устойчивее: причина читается из отправляемой формы";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.4",
+    date: "28.09.2026",
+    title: "Надёжность повторных списаний",
+    items: [
+      "Причина ручного списания читается из конкретной формы, которая отправляется в данный момент.",
+      "Устранён редкий сбой при последовательных FIFO-списаниях после закупки.",
+      "Сетка действий склада 2×2 сохранена без изменений."
+    ]
+  },
   {
     version: "1.2.3",
     date: "28.09.2026",
@@ -6394,10 +6404,10 @@ async function adjustStock(id, direction) {
     <div class="stock-adjust-actions"><button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="${incoming?"stock-adjust-confirm incoming":"stock-adjust-confirm outgoing"}">${incoming?"Сохранить закупку":"Списать"}</button></div>
   </form>`;
   document.body.appendChild(modal);
-  const place=modal.querySelector('[name="locationId"]'),amount=modal.querySelector('[name="amount"]'),cost=modal.querySelector('[name="totalCost"]'),commentInput=modal.querySelector('[name="comment"]'),beforeOut=modal.querySelector("#stock-adjust-before"),result=modal.querySelector("#stock-adjust-result"),unitCost=modal.querySelector("#stock-adjust-unit-cost");
+  const place=modal.querySelector('[name="locationId"]'),amount=modal.querySelector('[name="amount"]'),cost=modal.querySelector('[name="totalCost"]'),beforeOut=modal.querySelector("#stock-adjust-before"),result=modal.querySelector("#stock-adjust-result"),unitCost=modal.querySelector("#stock-adjust-unit-cost");
   const update=()=>{const physical=stockLocationPhysicalQuantity(item,place.value),free=stockAvailableQuantityAtLocation(item,place.value),qty=Math.max(0,Number(amount.value)||0);beforeOut.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`;result.textContent=`${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(incoming?physical+qty:Math.max(0,physical-qty))} ${unit}`;result.className=!incoming&&qty>free?"red":"";if(!incoming) amount.dataset.maxAvailable=String(free);if(unitCost){const total=Math.max(0,Number(cost?.value)||0);unitCost.textContent=`Себестоимость партии: ${money(qty>0?total/qty:0)} / ${unit}`;}};
   place.addEventListener("change",update);amount.addEventListener("input",update);cost?.addEventListener("input",update);modal.querySelectorAll("[data-close-modal]").forEach((button)=>button.addEventListener("click",()=>modal.remove()));modal.addEventListener("click",(event)=>{if(event.target===modal)modal.remove();});
-  modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const form=new FormData(event.currentTarget),locationId=String(form.get("locationId")||UNASSIGNED_LOCATION_ID),qty=Number(form.get("amount")),comment=String(commentInput?.value||form.get("comment")||"").trim(),free=stockAvailableQuantityAtLocation(item,locationId);if(!Number.isFinite(qty)||qty<=0)return toast("Укажи количество");if(!incoming&&qty>free+1e-9)return toast(`В «${storageLocationName(locationId)}» доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`);if(!incoming&&!comment)return toast("Напиши причину ручного списания");const date=new Date().toISOString(),movementId=crypto.randomUUID();if(incoming){const totalCost=Math.max(0,Number(form.get("totalCost"))||0),batch=createStockBatch(item,qty,totalCost,{acquiredAt:date,source:"purchase"});changeStockLocationQuantity(item,locationId,qty);syncStockQuantityFromLocations(item);if(Number(batch?.unitCost)>0)item.lastPurchasePrice=Number(batch.unitCost);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"purchase_in",totalCost,unitCost:Number(batch?.unitCost)||0,batchId:batch?.id||null,locationId,comment,date});if(totalCost>0)data.expenses.push({id:crypto.randomUUID(),amount:totalCost,category:"Закупка на склад",description:comment?`${item.name} · ${comment}`:item.name,date,source:"stock_purchase",warehouseId:item.id,movementId});}else{const consumed=consumeStockBatches(item,qty,null,movementId);if(!consumed.ok)return toast("Не удалось распределить списание по партиям");const batchCost=consumed.allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0);changeStockLocationQuantity(item,locationId,-qty);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"manual_out",batchCost,allocations:consumed.allocations,locationId,comment,date});}await saveData();modal.remove();await render();toast(incoming?"Закупка сохранена":"Списание сохранено");});
+  modal.querySelector("form").addEventListener("submit",async(event)=>{event.preventDefault();const formElement=event.currentTarget,form=new FormData(formElement),commentField=formElement.elements?.namedItem("comment")||formElement.querySelector('[name="comment"]'),locationId=String(form.get("locationId")||UNASSIGNED_LOCATION_ID),qty=Number(form.get("amount")),comment=String(commentField?.value??form.get("comment")??"").trim(),free=stockAvailableQuantityAtLocation(item,locationId);if(!Number.isFinite(qty)||qty<=0)return toast("Укажи количество");if(!incoming&&qty>free+1e-9)return toast(`В «${storageLocationName(locationId)}» доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(free)} ${unit}`);if(!incoming&&!comment)return toast("Напиши причину ручного списания");const date=new Date().toISOString(),movementId=crypto.randomUUID();if(incoming){const totalCost=Math.max(0,Number(form.get("totalCost"))||0),batch=createStockBatch(item,qty,totalCost,{acquiredAt:date,source:"purchase"});changeStockLocationQuantity(item,locationId,qty);syncStockQuantityFromLocations(item);if(Number(batch?.unitCost)>0)item.lastPurchasePrice=Number(batch.unitCost);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"purchase_in",totalCost,unitCost:Number(batch?.unitCost)||0,batchId:batch?.id||null,locationId,comment,date});if(totalCost>0)data.expenses.push({id:crypto.randomUUID(),amount:totalCost,category:"Закупка на склад",description:comment?`${item.name} · ${comment}`:item.name,date,source:"stock_purchase",warehouseId:item.id,movementId});}else{const consumed=consumeStockBatches(item,qty,null,movementId);if(!consumed.ok)return toast("Не удалось распределить списание по партиям");const batchCost=consumed.allocations.reduce((sum,a)=>sum+(Number(a.qty)||0)*(Number(a.unitCost)||0),0);changeStockLocationQuantity(item,locationId,-qty);syncStockQuantityFromLocations(item);data.warehouse_movements.push({id:movementId,warehouseId:item.id,name:item.name,qty,type:"manual_out",batchCost,allocations:consumed.allocations,locationId,comment,date});}await saveData();modal.remove();await render();toast(incoming?"Закупка сохранена":"Списание сохранено");});
   update();requestAnimationFrame(()=>amount.focus());
 }
 
