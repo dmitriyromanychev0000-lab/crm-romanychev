@@ -3090,7 +3090,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         incomeActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).color,
         expenseActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).color,
         actionsWidth: Math.round(document.querySelector(".legacy-finance-actions")?.getBoundingClientRect().width || 0),
-        actionWidths: [...document.querySelectorAll(".legacy-finance-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+        actionRects: [...document.querySelectorAll(".legacy-finance-actions > button")].map((node) => {
+          const rect = node.getBoundingClientRect();
+          return { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
+        }),
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
       if (financePageSurface.result !== "rgb(7, 12, 16)"
@@ -3104,8 +3107,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financePageSurface.expenseActionBorder !== "rgb(39, 52, 60)"
         || financePageSurface.incomeActionColor !== "rgb(101, 217, 149)"
         || financePageSurface.expenseActionColor !== "rgb(255, 113, 123)"
-        || financePageSurface.actionWidths.length !== 2
-        || financePageSurface.actionWidths.some((value) => value < financePageSurface.actionsWidth - 2)
+        || financePageSurface.actionRects.length !== 2
+        || financePageSurface.actionRects.some((rect) => rect.width < 120 || rect.height < 48 || rect.height > 49)
+        || Math.abs(financePageSurface.actionRects[0].width - financePageSurface.actionRects[1].width) > 2
+        || Math.abs(financePageSurface.actionRects[0].top - financePageSurface.actionRects[1].top) > 2
+        || financePageSurface.actionRects[1].left <= financePageSurface.actionRects[0].left
+        || financePageSurface.actionRects[0].width + financePageSurface.actionRects[1].width > financePageSurface.actionsWidth
         || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }

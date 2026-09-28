@@ -19101,3 +19101,26 @@
     height: 16px !important;
   }
 }
+
+
+/* 1.7.56 · Финансы: доход и расход в одной рабочей строке. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-finance-actions > button,
+  .legacy-finance-actions .legacy-orange-button[data-type="income"],
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+  }
+}

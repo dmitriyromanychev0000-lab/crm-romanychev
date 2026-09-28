@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.55";
-const APP_BUILD = "2026.09.28.276";
+const APP_VERSION = "1.7.56";
+const APP_BUILD = "2026.09.28.277";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх склада стал короче: история движения и список покупок теперь стоят рядом в одной строке, сохраняя большие touch-зоны"
+const APP_RELEASE = "Финансы стали плотнее: доход и расход теперь добавляются из одной двухколоночной строки вместо двух полноширинных кнопок"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.56",
+    date: "28.09.2026",
+    title: "Компактные действия финансов",
+    items: [
+      "«Добавить доход» и «Добавить расход» теперь стоят рядом в одной строке.",
+      "Обе кнопки сохраняют высоту 48 px, смысловые зелёный и красный акценты и полноценные подписи.",
+      "На 320–430 px действия проверяются на равную ширину и отсутствие переноса во второй ряд."
+    ]
+  },
   {
     version: "1.7.55",
     date: "28.09.2026",
