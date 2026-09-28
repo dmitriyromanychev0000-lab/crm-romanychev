@@ -1816,33 +1816,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           });
           await page.locator('[data-stock="out"][data-id="w1"]').click();
         }
-        const secondFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
-        await secondFifoAmount.fill("0.5");
-        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · вторая партия");
-        const secondFifoMax = await secondFifoAmount.getAttribute("max");
-        await page.locator('.stock-adjust-modal button[type="submit"]').click();
-        let secondFifoClosed = true;
-        try {
-          await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 });
-        } catch {
-          secondFifoClosed = false;
-          const diagnosticData = await readStoredData(page);
-          const diagnosticItem = diagnosticData.warehouse.find((item) => item.id === "w1");
-          const diagnosticOrder = diagnosticData.orders.find((item) => item.id === "0060");
-          const toastText = await page.locator("#toast").innerText().catch(() => "");
-          report.failures.push({
-            width,
-            type: "stock-fifo-submit",
-            amount: "0.5",
-            max: secondFifoMax,
-            toast: toastText,
-            quantity: diagnosticItem?.quantity,
-            locationBalances: diagnosticItem?.locationBalances,
-            batches: diagnosticItem?.batches,
-            reservedMaterial: diagnosticOrder?.materials?.find((item) => item.warehouseId === "w1")
-          });
-          await page.locator('.stock-adjust-modal [data-close-modal]').first().click().catch(() => {});
-          await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 }).catch(() => {});
+        let secondFifoClosed = false;
+        if (firstFifoClosed) {
+          const secondFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
+          await secondFifoAmount.fill("0.5");
+          await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · вторая партия");
+          const secondFifoMax = await secondFifoAmount.getAttribute("max");
+          await page.locator('.stock-adjust-modal button[type="submit"]').click();
+          secondFifoClosed = true;
+          try {
+            await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 });
+          } catch {
+            secondFifoClosed = false;
+            const diagnosticData = await readStoredData(page);
+            const diagnosticItem = diagnosticData.warehouse.find((item) => item.id === "w1");
+            const diagnosticOrder = diagnosticData.orders.find((item) => item.id === "0060");
+            const toastText = await page.locator("#toast").innerText().catch(() => "");
+            report.failures.push({
+              width,
+              type: "stock-fifo-submit",
+              amount: "0.5",
+              max: secondFifoMax,
+              toast: toastText,
+              quantity: diagnosticItem?.quantity,
+              locationBalances: diagnosticItem?.locationBalances,
+              batches: diagnosticItem?.batches,
+              reservedMaterial: diagnosticOrder?.materials?.find((item) => item.warehouseId === "w1")
+            });
+            await page.locator('.stock-adjust-modal [data-close-modal]').first().click().catch(() => {});
+            await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 }).catch(() => {});
+          }
         }
         await page.waitForTimeout(30);
 
@@ -1855,7 +1858,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const secondFifo = fifoMovements[1];
         const firstAllocations = firstFifo?.allocations || [];
         const secondAllocations = secondFifo?.allocations || [];
-        if (secondFifoClosed && (Number(fifoItem?.quantity) !== 1.5
+        if (firstFifoClosed && secondFifoClosed && (Number(fifoItem?.quantity) !== 1.5
           || Number(fifoItem?.batches?.[0]?.remainingQty) !== 0
           || Number(fifoItem?.batches?.[1]?.remainingQty) !== 1.5
           || fifoMovements.length !== 2
