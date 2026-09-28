@@ -1401,6 +1401,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const secondary = footer?.querySelector(".secondary-button");
         const primary = footer?.querySelector(".primary-button");
         const footerRect = footer?.getBoundingClientRect();
+        const footerStyle = footer ? getComputedStyle(footer) : null;
         const secondaryRect = secondary?.getBoundingClientRect();
         const primaryRect = primary?.getBoundingClientRect();
         return {
@@ -1412,6 +1413,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           qtyWidth: Math.round(document.querySelector('#material-lines [data-line="qty"]')?.getBoundingClientRect().width || 0),
           costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0),
           footerWidth: Math.round(footerRect?.width || 0),
+          footerInnerWidth: footerRect && footerStyle
+            ? Math.round(footerRect.width - (parseFloat(footerStyle.paddingLeft) || 0) - (parseFloat(footerStyle.paddingRight) || 0))
+            : 0,
           footerCoverage: footerRect && secondaryRect && primaryRect ? Number(((secondaryRect.width + primaryRect.width) / footerRect.width).toFixed(3)) : 0,
           footerButtonGap: secondaryRect && primaryRect ? Math.round(primaryRect.left - secondaryRect.right) : 999,
           secondaryWidth: Math.round(secondaryRect?.width || 0),
@@ -1430,8 +1434,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.footerWidth < width - 2
         || editorSurfaceState.footerCoverage < 1.8
         || editorSurfaceState.footerButtonGap > 10
-        || editorSurfaceState.secondaryWidth < editorSurfaceState.footerWidth - 8
-        || editorSurfaceState.primaryWidth < editorSurfaceState.footerWidth - 8
+        || editorSurfaceState.secondaryWidth < editorSurfaceState.footerInnerWidth - 2
+        || editorSurfaceState.primaryWidth < editorSurfaceState.footerInnerWidth - 2
         || editorSurfaceState.primaryTop <= editorSurfaceState.secondaryTop) {
         report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
