@@ -3889,6 +3889,32 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || diagnosticsSurface.footer !== "rgba(3, 7, 10, 0.99)") {
         report.failures.push({ width, type: "diagnostics-deep-dark", diagnosticsSurface });
       }
+      const diagnosticsDensity = await page.evaluate(() => {
+        const modal = document.querySelector(".diagnostics-modal");
+        const title = modal?.querySelector(":scope > h2");
+        const list = modal?.querySelector(".goods-list");
+        const row = modal?.querySelector(".goods-sheet");
+        const footer = modal?.querySelector(".modal-actions");
+        const action = footer?.querySelector("button");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          paddingTop: modal ? px(getComputedStyle(modal).paddingTop) : 999,
+          titleMarginBottom: title ? px(getComputedStyle(title).marginBottom) : 999,
+          listGap: list ? px(getComputedStyle(list).rowGap || getComputedStyle(list).gap) : 999,
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          footerPaddingTop: footer ? px(getComputedStyle(footer).paddingTop) : 999,
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (diagnosticsDensity.paddingTop > 10
+        || diagnosticsDensity.titleMarginBottom > 8
+        || diagnosticsDensity.listGap > 5.5
+        || diagnosticsDensity.rowHeight < 44
+        || diagnosticsDensity.rowHeight > 50
+        || diagnosticsDensity.footerPaddingTop > 8
+        || diagnosticsDensity.actionHeight < 44) {
+        report.failures.push({ width, type: "diagnostics-compact-density", diagnosticsDensity });
+      }
       report.results.push(await shot(page, width, "diagnostics-modal", false));
       await page.locator('body > .modal-backdrop [data-close-modal]').click();
 
@@ -3909,6 +3935,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || confirmSurface.cancel !== "rgb(10, 17, 22)"
         || confirmSurface.cancelHeight < 48) {
         report.failures.push({ width, type: "confirm-dialog-deep-dark", confirmSurface });
+      }
+      const confirmDensity = await page.evaluate(() => {
+        const modal = document.querySelector(".crm-confirm-modal");
+        const icon = modal?.querySelector(".crm-confirm-icon");
+        const paragraph = modal?.querySelector("p");
+        const actions = modal?.querySelector(".crm-confirm-actions");
+        const cancel = actions?.querySelector("[data-confirm-cancel]");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        const iconStyle = icon ? getComputedStyle(icon) : null;
+        const paragraphStyle = paragraph ? getComputedStyle(paragraph) : null;
+        return {
+          paddingTop: modal ? px(getComputedStyle(modal).paddingTop) : 999,
+          iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+          iconMarginBottom: iconStyle ? px(iconStyle.marginBottom) : 999,
+          paragraphMarginTop: paragraphStyle ? px(paragraphStyle.marginTop) : 999,
+          paragraphMarginBottom: paragraphStyle ? px(paragraphStyle.marginBottom) : 999,
+          actionsGap: actions ? px(getComputedStyle(actions).columnGap || getComputedStyle(actions).gap) : 999,
+          cancelHeight: Math.round(cancel?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (confirmDensity.paddingTop > 14
+        || confirmDensity.iconHeight > 42
+        || confirmDensity.iconMarginBottom > 9
+        || confirmDensity.paragraphMarginTop > 7
+        || confirmDensity.paragraphMarginBottom > 12
+        || confirmDensity.actionsGap > 6.5
+        || confirmDensity.cancelHeight < 48) {
+        report.failures.push({ width, type: "confirm-dialog-compact-density", confirmDensity });
       }
       report.results.push(await shot(page, width, "confirm-dialog", false));
       await page.locator("[data-confirm-cancel]").click();

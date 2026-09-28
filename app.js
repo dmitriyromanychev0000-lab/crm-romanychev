@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.39";
-const APP_BUILD = "2026.09.28.257";
+const APP_VERSION = "1.7.40";
+const APP_BUILD = "2026.09.28.258";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Вспомогательные шторки стали плотнее: свой период аналитики и дополнительные действия заявки занимают меньше высоты без уменьшения touch-зон"
+const APP_RELEASE = "Диагностика и подтверждения стали плотнее: меньше пустых полей и короче строки, при этом ключевые кнопки сохранили крупные зоны нажатия"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.40",
+    date: "28.09.2026",
+    title: "Плотные диагностика и подтверждения",
+    items: [
+      "Диагностика получила собственный класс и теперь уплотняется изолированно, не затрагивая другие compact-модалки.",
+      "Строки диагностики и промежутки между ними стали короче, нижние действия сохранили крупные touch-зоны.",
+      "Фирменное подтверждение стало компактнее по padding, иконке и вертикальным отступам; кнопки остались не меньше 48 px."
+    ]
+  },
   {
     version: "1.7.39",
     date: "28.09.2026",
@@ -2458,7 +2468,7 @@ async function runAppDiagnostics() {
 
   const modal = document.createElement("div");
   modal.className = "modal-backdrop";
-  modal.innerHTML = `<div class="modal compact-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="secondary-button" id="copy-diagnostics">Скопировать отчёт</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
+  modal.innerHTML = `<div class="modal compact-modal diagnostics-modal"><h2>Диагностика приложения</h2><div class="goods-list">${rows.map(([name, value, ok]) => `<div class="goods-sheet"><span><strong>${escapeHtml(name)}</strong><small>${escapeHtml(value)}</small></span><b class="${ok ? "green" : "red"}">${ok ? "✓" : "!"}</b><span></span></div>`).join("")}</div><div class="modal-actions"><button type="button" class="secondary-button" id="diagnostic-backup-test">Проверить бэкап</button><button type="button" class="secondary-button" id="copy-diagnostics">Скопировать отчёт</button><button type="button" class="primary-button" data-close-modal>Закрыть</button></div></div>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });

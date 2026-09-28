@@ -18488,3 +18488,80 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.40 · Диагностика и confirm: компактнее без влияния на остальные модалки. */
+@media screen and (max-width: 520px) {
+  .diagnostics-modal {
+    padding: 10px 10px 0 !important;
+    border-radius: 14px !important;
+  }
+
+  .diagnostics-modal > h2 {
+    margin: 0 0 8px !important;
+    font-size: 17px !important;
+    line-height: 1.12 !important;
+  }
+
+  .diagnostics-modal .goods-list {
+    gap: 5px !important;
+    margin: 0 0 8px !important;
+  }
+
+  .diagnostics-modal .goods-sheet {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    padding: 6px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .diagnostics-modal .goods-sheet small {
+    margin-top: 2px !important;
+  }
+
+  .diagnostics-modal .modal-actions {
+    gap: 6px !important;
+    margin: 0 -10px !important;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .diagnostics-modal .modal-actions > * {
+    min-height: 46px !important;
+    border-radius: 10px !important;
+  }
+
+  .crm-confirm-backdrop {
+    padding: 12px !important;
+  }
+
+  .crm-confirm-modal {
+    padding: 14px 14px 12px !important;
+    border-radius: 15px !important;
+  }
+
+  .crm-confirm-icon {
+    width: 42px !important;
+    height: 42px !important;
+    margin-bottom: 9px !important;
+    border-radius: 12px !important;
+  }
+
+  .crm-confirm-icon .ui-icon {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .crm-confirm-modal p {
+    margin: 7px 0 12px !important;
+    line-height: 1.38 !important;
+  }
+
+  .crm-confirm-actions {
+    gap: 6px !important;
+  }
+
+  .crm-confirm-actions button {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+}
