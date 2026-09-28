@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T06:58:46.591Z",
-  "testedSha": "2d3662ee54bc916c0078f2dec34a213636a7578f",
+  "generatedAt": "2026-09-28T07:05:19.207Z",
+  "testedSha": "97e0cd04d809d7fc52db488ebac249926ef5b6da",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -965,6 +965,24 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": []
+    },
+    {
+      "label": "stock-transfer",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
+    },
+    {
+      "label": "stock-correction",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": []
     }
   ],
   "failures": [
@@ -980,8 +998,55 @@
       }
     },
     {
+      "width": 390,
+      "type": "stock-fifo-first-submit",
+      "amount": "3",
+      "max": null,
+      "locationId": "location-unassigned",
+      "beforeText": "4 шт",
+      "toast": "Закупка сохранена",
+      "quantity": 5,
+      "locationBalances": [
+        {
+          "locationId": "location-unassigned",
+          "qty": 5
+        }
+      ],
+      "batches": [
+        {
+          "id": "c3fc30b4-83ad-47c7-90e1-4baf62f0d1df",
+          "acquiredAt": "2026-09-26T12:00:00.000Z",
+          "initialQty": 3,
+          "remainingQty": 3,
+          "totalCost": 9300,
+          "unitCost": 3100,
+          "source": "opening",
+          "consumptions": []
+        },
+        {
+          "id": "c43ff25d-52cb-4eb0-bdfc-547b160f620f",
+          "acquiredAt": "2026-09-28T07:05:44.590Z",
+          "initialQty": 2,
+          "remainingQty": 2,
+          "totalCost": 10000,
+          "unitCost": 5000,
+          "source": "purchase",
+          "consumptions": []
+        }
+      ],
+      "reservedMaterial": {
+        "warehouseId": "w1",
+        "name": "Вентилятор испарителя Samsung",
+        "qty": 1,
+        "unit": "шт.",
+        "unitCost": 3100,
+        "writeOff": true,
+        "locationId": "location-unassigned"
+      }
+    },
+    {
       "type": "fatal",
-      "message": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('.stock-adjust-modal') to be detached\n    20 × locator resolved to visible <form role=\"dialog\" aria-modal=\"true\" class=\"modal stock-adjust-modal\">…</form>\n"
+      "message": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('.stock-correction-modal') to be detached\n    20 × locator resolved to visible <form role=\"dialog\" aria-modal=\"true\" class=\"modal stock-adjust-modal stock-correction-modal\">…</form>\n"
     }
   ]
 }
