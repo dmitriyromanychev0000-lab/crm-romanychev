@@ -1404,6 +1404,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const page = document.querySelector(".legacy-orders-page");
         const addRect = add?.getBoundingClientRect();
         const pageRect = page?.getBoundingClientRect();
+        const search = document.querySelector(".legacy-order-search .search")?.getBoundingClientRect();
+        const filters = document.querySelector(".legacy-order-filters")?.getBoundingClientRect();
+        const filterButton = document.querySelector(".legacy-order-filters button")?.getBoundingClientRect();
+        const visit = document.querySelector(".legacy-visit-filter .field")?.getBoundingClientRect();
         return {
           card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
           money: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-money > div")).backgroundColor,
@@ -1411,7 +1415,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addWidth: Math.round(addRect?.width || 0),
           addHeight: Math.round(addRect?.height || 0),
           pageWidth: Math.round(pageRect?.width || 0),
-          addText: add?.textContent?.trim() || ""
+          addText: add?.textContent?.trim() || "",
+          searchHeight: Math.round(search?.height || 0),
+          filtersHeight: Math.round(filters?.height || 0),
+          filterButtonHeight: Math.round(filterButton?.height || 0),
+          visitHeight: Math.round(visit?.height || 0),
+          gapAddSearch: addRect && search ? Math.round(search.top - addRect.bottom) : 999,
+          gapSearchFilters: search && filters ? Math.round(filters.top - search.bottom) : 999,
+          gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999
         };
       });
       if (orderPageSurfaces.card !== "rgb(7, 12, 16)"
@@ -1419,6 +1430,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderPageSurfaces.action !== "rgb(9, 15, 20)"
         || orderPageSurfaces.addWidth < orderPageSurfaces.pageWidth - 34
         || orderPageSurfaces.addHeight < 48
+        || orderPageSurfaces.addHeight > 49
+        || orderPageSurfaces.searchHeight < 44
+        || orderPageSurfaces.searchHeight > 45
+        || orderPageSurfaces.filtersHeight > 50
+        || orderPageSurfaces.filterButtonHeight < 44
+        || orderPageSurfaces.filterButtonHeight > 45
+        || orderPageSurfaces.visitHeight < 44
+        || orderPageSurfaces.visitHeight > 45
+        || orderPageSurfaces.gapAddSearch > 7
+        || orderPageSurfaces.gapSearchFilters > 6
+        || orderPageSurfaces.gapFiltersVisit > 6
         || !orderPageSurfaces.addText.includes("Новая заявка")) {
         report.failures.push({ width, type: "orders-deep-dark-page", orderPageSurfaces });
       }

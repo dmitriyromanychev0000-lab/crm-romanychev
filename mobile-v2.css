@@ -19379,3 +19379,56 @@
     font-size: 7.5px !important;
   }
 }
+
+
+/* 1.7.66 · Заявки: плотнее верхняя рабочая панель без мелких touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-orders-page {
+    padding-top: 9px !important;
+  }
+
+  .legacy-orders-page .legacy-page-head {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-orders-page .legacy-orders-add-wide {
+    min-height: 48px !important;
+    height: 48px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .legacy-orders-page .legacy-order-search {
+    margin-bottom: 5px !important;
+  }
+
+  .legacy-orders-page .legacy-order-search .search {
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-orders-page .legacy-order-filters {
+    gap: 4px !important;
+    margin-bottom: 5px !important;
+    padding: 2px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-orders-page .legacy-order-filters button {
+    min-height: 44px !important;
+    height: 44px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-orders-page .legacy-visit-filter {
+    margin-bottom: 6px !important;
+  }
+
+  .legacy-orders-page .legacy-visit-filter .field {
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 11px !important;
+  }
+}

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.65";
-const APP_BUILD = "2026.09.28.286";
+const APP_VERSION = "1.7.66";
+const APP_BUILD = "2026.09.28.287";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "На 320 px название позиции склада снова получает приоритет: остаток переносится ниже и больше не отъедает ширину у двухстрочного названия"
+const APP_RELEASE = "Главный экран заявок стал плотнее сверху: создание, поиск и фильтры занимают меньше высоты, сохраняя полноразмерные зоны нажатия"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.66",
+    date: "28.09.2026",
+    title: "Плотный верх заявок",
+    items: [
+      "Кнопка создания, поиск, статусные фильтры и фильтр визитов собраны плотнее по вертикали.",
+      "Рабочие элементы остаются не меньше 44 px, главное действие — 48 px.",
+      "Первая карточка заявки начинается выше без уменьшения текста и без изменения логики фильтров."
+    ]
+  },
   {
     version: "1.7.65",
     date: "28.09.2026",
