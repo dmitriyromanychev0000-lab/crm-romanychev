@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T21:27:16.193Z",
-  "testedSha": "1b02da1f88deb7afa96a62768f5c7d91a2a2bdf1",
+  "generatedAt": "2026-09-28T21:30:10.430Z",
+  "testedSha": "0f2aa8617b7aefeae22f44898d6a91db512e9364",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T21:27:54.418Z"
+      "fallbackCreatedAt": "2026-09-28T21:30:51.404Z"
     },
     {
       "label": "pwa-offline",
@@ -1687,16 +1687,16 @@
           274
         ],
         "appRowHeights": [
-          89,
-          83,
-          83,
-          83
+          58,
+          53,
+          53,
+          53
         ],
         "appActionWidths": [
-          274,
-          274,
-          274,
-          274
+          80,
+          80,
+          80,
+          80
         ],
         "appActionHeights": [
           44,
@@ -1704,21 +1704,9 @@
           44,
           44
         ],
-        "appCardHeight": 405,
+        "appCardHeight": 284,
         "profileCardHeight": 321
       }
-    },
-    {
-      "width": 320,
-      "type": "settings-compact-density",
-      "settingsDensity": {
-        "cardPaddingTop": 10,
-        "rowHeight": 89,
-        "linkHeight": 69,
-        "iconHeight": 32
-      },
-      "settingsRowLimit": 64,
-      "settingsLinkLimit": 70
     },
     {
       "width": 390,
