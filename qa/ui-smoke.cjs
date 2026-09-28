@@ -3160,19 +3160,52 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "clients-compact-density", clientDensity, clientDensityLimits });
       }
       await page.locator('[data-action="open-client"]').first().click();
-      const clientProfileState = await page.evaluate(() => ({
-        modal: getComputedStyle(document.querySelector(".client-profile-modal")).backgroundColor,
-        hero: getComputedStyle(document.querySelector(".client-profile-hero")).backgroundColor,
-        totalKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(4)")).backgroundColor,
-        closedKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(2)")).backgroundColor,
-        activeKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(3)")).backgroundColor
-      }));
+      const clientProfileState = await page.evaluate(() => {
+        const head = document.querySelector(".client-profile-head")?.getBoundingClientRect();
+        const hero = document.querySelector(".client-profile-hero")?.getBoundingClientRect();
+        const address = document.querySelector(".client-profile-address")?.getBoundingClientRect();
+        const action = document.querySelector(".client-profile-actions > *")?.getBoundingClientRect();
+        const kpi = document.querySelector(".client-profile-kpis > div")?.getBoundingClientRect();
+        const note = document.querySelector(".client-profile-note");
+        const textarea = document.querySelector(".client-profile-note .textarea")?.getBoundingClientRect();
+        const order = document.querySelector(".client-profile-orders > button")?.getBoundingClientRect();
+        const back = document.querySelector(".client-profile-back")?.getBoundingClientRect();
+        return {
+          modal: getComputedStyle(document.querySelector(".client-profile-modal")).backgroundColor,
+          hero: getComputedStyle(document.querySelector(".client-profile-hero")).backgroundColor,
+          totalKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(4)")).backgroundColor,
+          closedKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(2)")).backgroundColor,
+          activeKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(3)")).backgroundColor,
+          headHeight: Math.round(head?.height || 0),
+          heroHeight: Math.round(hero?.height || 0),
+          addressHeight: Math.round(address?.height || 0),
+          actionHeight: Math.round(action?.height || 0),
+          kpiHeight: Math.round(kpi?.height || 0),
+          notePaddingTop: note ? parseFloat(getComputedStyle(note).paddingTop) || 0 : 0,
+          textareaHeight: Math.round(textarea?.height || 0),
+          orderHeight: Math.round(order?.height || 0),
+          backWidth: Math.round(back?.width || 0),
+          backHeight: Math.round(back?.height || 0)
+        };
+      });
       if (clientProfileState.modal !== "rgb(3, 7, 10)"
         || clientProfileState.hero !== "rgb(7, 12, 16)"
         || clientProfileState.totalKpi !== "rgb(9, 15, 20)"
         || clientProfileState.closedKpi !== "rgb(9, 15, 20)"
         || clientProfileState.activeKpi !== "rgb(9, 15, 20)") {
         report.failures.push({ width, type: "client-profile-semantic-hierarchy", clientProfileState });
+      }
+      if (clientProfileState.headHeight > 60
+        || clientProfileState.heroHeight > 72
+        || (clientProfileState.addressHeight && clientProfileState.addressHeight > 60)
+        || clientProfileState.actionHeight < 44
+        || clientProfileState.kpiHeight > 60
+        || clientProfileState.notePaddingTop > 10
+        || (clientProfileState.textareaHeight && clientProfileState.textareaHeight > 74)
+        || (clientProfileState.orderHeight && clientProfileState.orderHeight > (width <= 340 ? 70 : 66))
+        || clientProfileState.backWidth < 44
+        || clientProfileState.backHeight < 44) {
+        report.failures.push({ width, type: "client-profile-compact-density", clientProfileState });
       }
       report.results.push(await shot(page, width, "client-profile", false));
       await page.keyboard.press("Escape");

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.33";
-const APP_BUILD = "2026.09.28.251";
+const APP_VERSION = "1.7.34";
+const APP_BUILD = "2026.09.28.252";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редакторы финансов и прайса стали плотнее: меньше пустых зон в шапках, карточках и формах, рабочие поля и действия остаются крупными"
+const APP_RELEASE = "Профиль клиента стал плотнее: компактнее шапка, карточка клиента, адрес, KPI, заметка и история ремонтов без уменьшения основных действий"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.34",
+    date: "28.09.2026",
+    title: "Плотный профиль клиента",
+    items: [
+      "Шапка профиля клиента стала ниже, а кнопки назад и звонка сохранены полноценными touch-target 44×44.",
+      "Карточка клиента, адрес, KPI и заметка занимают меньше вертикального места без уменьшения основных цифр и текста.",
+      "История ремонтов уплотнена по иконкам, отступам и строкам; действия остаются не меньше 44 px и длинный контент может расти по высоте."
+    ]
+  },
   {
     version: "1.7.33",
     date: "28.09.2026",
