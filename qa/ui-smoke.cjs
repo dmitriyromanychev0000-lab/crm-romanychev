@@ -4582,15 +4582,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const mainButton = document.querySelector(".legacy-backup-main-actions > button");
         const cardStyle = card ? getComputedStyle(card) : null;
         const px = (value) => Number.parseFloat(value || "0") || 0;
+        const autoCard = document.querySelector(".backup-auto-card");
+        const autoRows = [...document.querySelectorAll(".backup-auto-card .legacy-settings-row.plain")];
+        const autoToggle = document.querySelector('.backup-auto-card [data-action="toggle-auto"]');
+        const periodSelect = document.querySelector(".backup-auto-card #backup-days");
         return {
           cardPaddingTop: cardStyle ? px(cardStyle.paddingTop) : 999,
           statHeight: Math.round(stat?.getBoundingClientRect().height || 0),
-          mainButtonHeight: Math.round(mainButton?.getBoundingClientRect().height || 0)
+          mainButtonHeight: Math.round(mainButton?.getBoundingClientRect().height || 0),
+          autoCardHeight: Math.round(autoCard?.getBoundingClientRect().height || 0),
+          autoRowHeights: autoRows.map((node) => Math.round(node.getBoundingClientRect().height)),
+          autoToggleWidth: Math.round(autoToggle?.getBoundingClientRect().width || 0),
+          periodSelectWidth: Math.round(periodSelect?.getBoundingClientRect().width || 0),
+          periodSelectHeight: Math.round(periodSelect?.getBoundingClientRect().height || 0)
         };
       });
       if (backupDensity.cardPaddingTop > 10
         || backupDensity.statHeight > 62
-        || backupDensity.mainButtonHeight < 48) {
+        || backupDensity.mainButtonHeight < 48
+        || (width <= 340 && (
+          backupDensity.autoCardHeight > 325
+          || backupDensity.autoToggleWidth < 50
+          || backupDensity.autoToggleWidth > 54
+          || backupDensity.periodSelectWidth < 108
+          || backupDensity.periodSelectWidth > 116
+          || backupDensity.periodSelectHeight < 44
+          || backupDensity.autoRowHeights.some((value) => value > 72)
+        ))) {
         report.failures.push({ width, type: "backup-compact-density", backupDensity });
       }
 

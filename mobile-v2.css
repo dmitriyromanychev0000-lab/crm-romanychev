@@ -20527,3 +20527,44 @@
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
+
+
+/* 1.7.87 · Бэкапы 320 px: контролы автобэкапа остаются справа, а не падают вниз. */
+@media screen and (max-width: 340px) {
+  .legacy-backup-page .backup-auto-card .legacy-settings-row.plain {
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 6px !important;
+    align-items: center !important;
+  }
+
+  .legacy-backup-page .backup-auto-card .legacy-settings-row.plain > span {
+    min-width: 0 !important;
+  }
+
+  .legacy-backup-page .backup-auto-card .legacy-settings-row.plain > select,
+  .legacy-backup-page .backup-auto-card .legacy-settings-row.plain > button {
+    grid-column: 2 !important;
+    justify-self: end !important;
+    width: auto !important;
+  }
+
+  .legacy-backup-page .backup-auto-card .legacy-settings-row.plain > .toggle {
+    width: 52px !important;
+    min-width: 52px !important;
+  }
+
+  .legacy-backup-page .backup-auto-card #backup-days {
+    width: 112px !important;
+    min-width: 112px !important;
+    min-height: 44px !important;
+  }
+
+  .legacy-backup-page .backup-auto-card .legacy-settings-row small {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}

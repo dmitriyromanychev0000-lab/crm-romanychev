@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.86";
-const APP_BUILD = "2026.09.29.313";
+const APP_VERSION = "1.7.87";
+const APP_BUILD = "2026.09.29.314";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Бэкапы стали плотнее: скачивание и импорт стоят рядом, оставаясь полноценными 48 px действиями"
+const APP_RELEASE = "Автобэкап на узком экране стал компактнее: переключатель и периодичность остаются справа от текста"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.87",
+    date: "29.09.2026",
+    title: "Плотный автобэкап на 320 px",
+    items: [
+      "Переключатель автоматического бэкапа снова стоит справа от описания вместо отдельной строки.",
+      "Периодичность также остаётся справа; селект сохраняет полноценную touch-зону 44 px.",
+      "Длинная служебная подпись может занимать две строки и не перекрывает контролы."
+    ]
+  },
   {
     version: "1.7.86",
     date: "29.09.2026",
