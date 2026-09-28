@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.69";
-const APP_BUILD = "2026.09.28.291";
+const APP_VERSION = "1.7.70";
+const APP_BUILD = "2026.09.28.292";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх прайса стал компактнее: создание, поиск и два фильтра занимают меньше высоты, а фильтры остаются в одной строке даже на узких телефонах"
+const APP_RELEASE = "Новый товарник стал компактнее: два способа создания собраны в одну строку, а выбор заявки остаётся полноширинным и понятным"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.70",
+    date: "28.09.2026",
+    title: "Компактное создание товарника",
+    items: [
+      "«Создать вручную» и «Из закрытой заявки» теперь стоят рядом вместо двух полноширинных строк.",
+      "На 320–430 px обе кнопки сохраняют touch-зону 48 px и нормальную читаемость.",
+      "Выбор заявки для автозаполнения остаётся отдельным полноширинным полем."
+    ]
+  },
   {
     version: "1.7.69",
     date: "28.09.2026",

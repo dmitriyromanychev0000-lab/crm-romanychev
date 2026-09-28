@@ -3810,7 +3810,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         manualBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-sheet"]')).backgroundColor,
         fromOrderBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-from-order"]')).backgroundColor,
         createGridWidth: Math.round(document.querySelector(".legacy-goods-create-grid")?.getBoundingClientRect().width || 0),
-        createWidths: [...document.querySelectorAll(".legacy-goods-create-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+        createRects: [...document.querySelectorAll(".legacy-goods-create-grid > button")].map((node) => {
+          const rect = node.getBoundingClientRect();
+          return { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
+        }),
         rowAmountColors: [...document.querySelectorAll(".legacy-goods-position > b")].map((node) => getComputedStyle(node).color),
         currentTotalColor: getComputedStyle(document.querySelector(".legacy-goods-current-summary > b")).color,
         currentSummaryBorder: getComputedStyle(document.querySelector(".legacy-goods-current-summary")).borderTopColor,
@@ -3823,8 +3826,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsPageSurface.productPrice !== "rgb(7, 12, 16)"
         || goodsPageSurface.manualBackground !== "rgb(255, 113, 79)"
         || goodsPageSurface.fromOrderBackground !== "rgb(13, 20, 25)"
-        || goodsPageSurface.createWidths.length !== 2
-        || goodsPageSurface.createWidths.some((value) => value < goodsPageSurface.createGridWidth - 2)
+        || goodsPageSurface.createRects.length !== 2
+        || goodsPageSurface.createRects.some((item) => item.width < 120 || item.height < 48 || item.height > 49)
+        || Math.abs(goodsPageSurface.createRects[0].width - goodsPageSurface.createRects[1].width) > 2
+        || Math.abs(goodsPageSurface.createRects[0].top - goodsPageSurface.createRects[1].top) > 2
+        || goodsPageSurface.createRects[1].left <= goodsPageSurface.createRects[0].left
         || goodsPageSurface.rowAmountColors.some((value) => value !== "rgb(231, 236, 238)")
         || goodsPageSurface.currentTotalColor !== "rgb(255, 138, 112)"
         || goodsPageSurface.currentSummaryBorder !== "rgb(39, 52, 60)"
