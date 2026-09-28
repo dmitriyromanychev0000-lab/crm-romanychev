@@ -7,11 +7,20 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.0";
-const APP_BUILD = "2026.09.28.197";
+const APP_VERSION = "1.5.1";
+const APP_BUILD = "2026.09.28.198";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы, инструменты, черновики и бэкапы переведены на единую спокойную графитовую систему";
+const APP_RELEASE = "Дочищен экран черновиков и стабилизирован мобильный UI-прогон после серии перезагрузок";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.1",
+    date: "28.09.2026",
+    title: "Дочистка черновиков",
+    items: [
+      "Кнопка удаления черновика теперь тоже использует нейтральную тёмную поверхность; красный оставлен только для опасного действия.",
+      "Мобильная автопроверка повторяет случайно прерванную перезагрузку вместо ложного падения всего прогона."
+    ]
+  },
   {
     version: "1.5.0",
     date: "28.09.2026",

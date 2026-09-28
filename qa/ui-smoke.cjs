@@ -160,9 +160,20 @@ async function readIdbKey(page, key) {
 
 async function setState(page, state) {
   await page.evaluate((stateValue) => sessionStorage.setItem("__crm_qa_next_state", JSON.stringify(stateValue)), state);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await page.locator("#app > *").first().waitFor({ state: "attached" });
-  await page.waitForTimeout(20);
+  let lastError = null;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await page.locator("#app > *").first().waitFor({ state: "attached" });
+      await page.waitForTimeout(20);
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!String(error?.message || error).includes("ERR_ABORTED") || attempt === 1) throw error;
+      await page.waitForTimeout(40);
+    }
+  }
+  if (lastError) throw lastError;
 }
 
 async function inspect(page, label, width) {

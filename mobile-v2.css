@@ -15361,3 +15361,13 @@
   }
 }
 
+/* 1.5.1 · Опасное действие остаётся красным только по смыслу, без красной заливки. */
+@media screen and (max-width: 520px) {
+  .legacy-drafts-page .legacy-draft-actions button.danger[data-action="delete-draft"] {
+    border-color: rgba(255,113,123,.28) !important;
+    background: #0d1419 !important;
+    color: #ff7b84 !important;
+    box-shadow: none !important;
+  }
+}
+
