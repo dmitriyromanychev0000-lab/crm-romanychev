@@ -745,11 +745,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const buttons = [...document.querySelectorAll(".nav-button")];
       const active = document.querySelector('.nav-button[data-nav="orders"]');
       const activeIcon = active?.querySelector(".nav-icon");
+      const logo = document.querySelector(".legacy-mobile-header .logo");
       const labelTops = buttons.map((button) => Math.round(button.querySelector(":scope > span:last-child")?.getBoundingClientRect().top || 0));
       const hr = header?.getBoundingClientRect();
       const ir = activeIcon?.getBoundingClientRect();
+      const lr = logo?.getBoundingClientRect();
       return {
         headerHeight: hr ? Math.round(hr.height) : 0,
+        logoDisplay: logo ? getComputedStyle(logo).display : "missing",
+        logoWidth: lr ? Math.round(lr.width) : 0,
+        logoHeight: lr ? Math.round(lr.height) : 0,
         headerBorder: header ? getComputedStyle(header).borderBottomWidth : "missing",
         headerBackground: header ? getComputedStyle(header).backgroundColor : "missing",
         titleFont: title ? getComputedStyle(title).fontSize : "missing",
@@ -766,11 +771,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || shellSurface.headerHeight > 86
       || shellSurface.headerBorder !== "0px"
       || !shellSurface.headerBackground.startsWith("rgba(4, 8, 11, ")
-      || parseFloat(shellSurface.titleFont) < 18
+      || parseFloat(shellSurface.titleFont) < 17
+      || shellSurface.logoDisplay === "none"
+      || shellSurface.logoWidth < 40
+      || shellSurface.logoHeight < 40
       || !shellSurface.navBackground.startsWith("rgba(3, 7, 10, ")
       || shellSurface.navBorder !== "rgb(21, 31, 37)"
       || shellSurface.activeColor !== "rgb(255, 118, 92)"
-      || shellSurface.activeIconBackground !== "rgba(255, 113, 83, 0.1)"
+      || shellSurface.activeIconBackground !== "rgba(0, 0, 0, 0)"
       || shellSurface.activeIconWidth < 30
       || shellSurface.activeIconHeight < 30
       || shellSurface.labelSpread > 1) {
@@ -786,8 +794,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         iconBackground: icon ? getComputedStyle(icon).backgroundColor : "missing"
       };
     });
-    if (moreNavSurface.color !== "rgb(231, 180, 80)"
-      || moreNavSurface.iconBackground !== "rgba(231, 180, 80, 0.1)") {
+    if (moreNavSurface.color !== "rgb(255, 118, 92)"
+      || moreNavSurface.iconBackground !== "rgba(0, 0, 0, 0)") {
       report.failures.push({ width, type: "shell-more-nav-state", moreNavSurface });
     }
 

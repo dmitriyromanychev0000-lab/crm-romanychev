@@ -14534,3 +14534,92 @@
   }
 }
 
+/* 1.2.0 · Фирменная оболочка: логотип снова виден, навигация использует один акцент. */
+@media screen and (max-width: 520px) {
+  .legacy-mobile-header {
+    min-height: calc(68px + env(safe-area-inset-top)) !important;
+    gap: 11px !important;
+    padding: calc(10px + env(safe-area-inset-top)) 14px 10px !important;
+  }
+
+  .legacy-mobile-header .logo {
+    display: grid !important;
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    place-items: center !important;
+    border: 1px solid rgba(255,113,83,.34) !important;
+    border-radius: 13px !important;
+    background:
+      radial-gradient(circle at 35% 25%, rgba(255,113,83,.12), transparent 65%),
+      #0a1014 !important;
+    color: #ff765c !important;
+    box-shadow: inset 0 0 18px rgba(255,113,83,.045) !important;
+  }
+
+  .legacy-mobile-header .logo .ui-icon {
+    width: 27px !important;
+    height: 27px !important;
+    stroke-width: 1.8 !important;
+  }
+
+  .legacy-mobile-header .brand-title {
+    font-size: 18px !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-mobile-header .brand-subtitle {
+    font-size: 9.5px !important;
+  }
+
+  .nav-button,
+  .nav-button[data-nav="orders"],
+  .nav-button[data-nav="warehouse"],
+  .nav-button[data-nav="analytics"],
+  .nav-button[data-nav="more"] {
+    --nav-accent: #ff765c !important;
+    --nav-bg: transparent !important;
+    --nav-border: transparent !important;
+  }
+
+  .nav-button.active .nav-icon,
+  .nav-button[aria-current="page"] .nav-icon {
+    border-color: transparent !important;
+    background: transparent !important;
+    color: #ff765c !important;
+  }
+
+  .nav-button.active,
+  .nav-button[aria-current="page"] {
+    color: #ff765c !important;
+  }
+
+  .nav-button:not(.active):not([aria-current="page"]) .nav-icon {
+    border-color: transparent !important;
+    background: transparent !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-mobile-header {
+    gap: 9px !important;
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+  }
+
+  .legacy-mobile-header .logo {
+    width: 40px !important;
+    height: 40px !important;
+    flex-basis: 40px !important;
+  }
+
+  .legacy-mobile-header .brand-title {
+    font-size: 17px !important;
+  }
+
+  .legacy-mobile-header .brand-subtitle {
+    font-size: 9px !important;
+    letter-spacing: .095em !important;
+  }
+}
+

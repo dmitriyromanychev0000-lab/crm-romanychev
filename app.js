@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.1.4";
-const APP_BUILD = "2026.09.28.182";
+const APP_VERSION = "1.2.0";
+const APP_BUILD = "2026.09.28.183";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлено сохранение причины ручного списания и корректировки склада";
+const APP_RELEASE = "Вернули фирменную шапку и сделали нижнее меню единым, без случайных разноцветных акцентов";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.0",
+    date: "28.09.2026",
+    title: "Фирменная оболочка",
+    items: [
+      "Вернулся компактный фирменный знак в шапке — как в прежней версии, но без лишней высоты.",
+      "Нижняя навигация теперь использует один коралловый акцент во всех разделах вместо разноцветных состояний.",
+      "Активный пункт меню стал чище: без цветной плашки вокруг иконки."
+    ]
+  },
   {
     version: "1.1.4",
     date: "28.09.2026",
@@ -1896,7 +1906,7 @@ function header() {
   return `<header class="topbar legacy-mobile-header">
     <div class="logo">${icon("logo")}</div>
     <div class="brand">
-      <div class="brand-title">CRM by <span>Romanychev</span></div>
+      <div class="brand-title">CRM by <span>Romanychev</span> 😎</div>
       <div class="brand-subtitle">ЛИЧНЫЙ КАБИНЕТ МАСТЕРА</div>
     </div>
   </header>`;
