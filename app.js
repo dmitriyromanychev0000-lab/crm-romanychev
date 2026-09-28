@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.51";
-const APP_BUILD = "2026.09.28.270";
+const APP_VERSION = "1.7.52";
+const APP_BUILD = "2026.09.28.271";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Многострочные поля заявки теперь растут по содержимому: пустая форма компактнее, а длинный текст не зажимается в маленьком поле"
+const APP_RELEASE = "Реквизиты исполнителя стали компактнее: название и исполнитель, телефон и ИНН собраны попарно, адрес остаётся полноширинным"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.52",
+    date: "28.09.2026",
+    title: "Компактные реквизиты",
+    items: [
+      "Название и исполнитель теперь стоят в одной строке вместо двух полноширинных полей.",
+      "Телефон и ИНН собраны второй двухколоночной строкой, адрес остаётся полноширинным.",
+      "На 320–430 px поля сохраняют удобную высоту и минимальную рабочую ширину."
+    ]
+  },
   {
     version: "1.7.51",
     date: "28.09.2026",
@@ -4499,11 +4509,11 @@ function settingsPage() {
     <form class="legacy-settings-card settings-profile-card" id="settings-form">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("settings")}</span><h2>Реквизиты исполнителя</h2></div>
       <div class="legacy-settings-grid">
-        <label class="full"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
+        <label class="settings-company-name"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
         <label><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
         <label><span>ТЕЛЕФОН</span><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></label>
         <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
-        <label class="full"><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
+        <label class="settings-inn"><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
       </div>
       <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>

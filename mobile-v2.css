@@ -18956,3 +18956,30 @@
     padding-left: 2px !important;
   }
 }
+
+
+/* 1.7.52 · Настройки: реквизиты снова используют компактные пары там, где это удобно. */
+@media screen and (max-width: 520px) {
+  .settings-profile-card .legacy-settings-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 7px 8px !important;
+  }
+
+  .settings-profile-card .legacy-settings-grid > * {
+    width: auto !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .settings-profile-card .legacy-settings-grid > .full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .settings-profile-card .legacy-settings-grid .field {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+}

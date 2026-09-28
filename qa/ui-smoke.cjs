@@ -3952,7 +3952,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const settingsSurface = await page.evaluate(() => {
         const grid = document.querySelector(".legacy-settings-grid");
         const gridRect = grid?.getBoundingClientRect();
-        const fieldRects = [...document.querySelectorAll(".legacy-settings-grid > label")].map((node) => node.getBoundingClientRect());
+        const field = (name) => {
+          const rect = document.querySelector(`.settings-profile-card [name="${name}"]`)?.closest("label")?.getBoundingClientRect();
+          return rect ? { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) } : null;
+        };
         return {
           profile: getComputedStyle(document.querySelector(".settings-profile-card")).backgroundColor,
           app: getComputedStyle(document.querySelector(".settings-app-card")).backgroundColor,
@@ -3963,8 +3966,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           linkIconBackgrounds: [...document.querySelectorAll(".legacy-settings-links > button .settings-link-icon")].map((node) => getComputedStyle(node).backgroundColor),
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize,
           gridWidth: Math.round(gridRect?.width || 0),
-          fieldWidths: fieldRects.map((rect) => Math.round(rect.width)),
-          fieldTops: fieldRects.map((rect) => Math.round(rect.top)),
+          companyName: field("companyName"),
+          name: field("name"),
+          phone: field("phone"),
+          companyAddress: field("companyAddress"),
+          inn: field("inn"),
           longLinkTitle: (() => {
             const node = document.querySelector('[data-action="manage-warranty-results"] strong');
             const style = node ? getComputedStyle(node) : null;
@@ -4008,9 +4014,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         ])
         || new Set(settingsSurface.linkIconBackgrounds).size < 5
         || parseFloat(settingsSurface.rowTitleFont) < 11.5
-        || settingsSurface.fieldWidths.length !== 5
-        || settingsSurface.fieldWidths.some((value) => value < settingsSurface.gridWidth - 2)
-        || settingsSurface.fieldTops.some((top, index, list) => index > 0 && top <= list[index - 1])
+        || !settingsSurface.companyName
+        || !settingsSurface.name
+        || !settingsSurface.phone
+        || !settingsSurface.companyAddress
+        || !settingsSurface.inn
+        || Math.abs(settingsSurface.companyName.top - settingsSurface.name.top) > 2
+        || settingsSurface.name.left <= settingsSurface.companyName.left
+        || Math.abs(settingsSurface.phone.top - settingsSurface.inn.top) > 2
+        || settingsSurface.inn.left <= settingsSurface.phone.left
+        || settingsSurface.companyName.width < 120
+        || settingsSurface.name.width < 120
+        || settingsSurface.phone.width < 120
+        || settingsSurface.inn.width < 120
+        || settingsSurface.companyAddress.width < settingsSurface.gridWidth - 2
+        || settingsSurface.companyAddress.top <= settingsSurface.phone.top
         || settingsSurface.longLinkTitle.whiteSpace === "nowrap"
         || settingsSurface.longLinkTitle.lineClamp !== "2"
         || settingsSurface.longLinkTitle.textOverflow === "ellipsis"
