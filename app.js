@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.0";
-const APP_BUILD = "2026.09.28.207";
+const APP_VERSION = "1.6.1";
+const APP_BUILD = "2026.09.28.208";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Меню «Ещё» получило спокойные смысловые акценты в иконках без цветных карточек";
+const APP_RELEASE = "Рабочие данные в настройках получили аккуратную группировку через смысловые акценты иконок";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.1",
+    date: "28.09.2026",
+    title: "Настройки легче сканировать",
+    items: [
+      "Строки настроек остаются нейтральными графитовыми, без цветной заливки карточек.",
+      "Справочники, гарантии, склад, инструменты и бэкап различаются только приглушёнными икон-блоками.",
+      "Связанные пункты используют одинаковый цветовой смысл: техника и источники — синий, гарантии — зелёный, склад — янтарный."
+    ]
+  },
   {
     version: "1.6.0",
     date: "28.09.2026",

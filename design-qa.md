@@ -130,3 +130,10 @@ final result: passed
 - Menu cards stay on one neutral graphite surface.
 - Meaningful section identity is carried only by the compact icon tiles: finance, shopping, clients, price, goods, act and calendar use restrained semantic tints; settings remains neutral.
 - Automated QA asserts all card backgrounds remain identical while icon tiles retain distinct semantic surfaces.
+
+
+## Release 1.6.1 — semantic grouping in Settings
+
+- Settings rows remain on the same neutral graphite surface.
+- Only the compact leading icon tiles carry category identity: directories blue/purple, warranty green, stock amber, tools cyan, backup coral.
+- QA verifies row surfaces remain neutral while the nine work-data icons resolve into semantic groups.

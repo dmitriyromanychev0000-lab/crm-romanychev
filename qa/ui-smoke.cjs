@@ -2793,6 +2793,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor,
           toolsLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="tools"]')).backgroundColor,
           backupLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="backup"]')).backgroundColor,
+          linkIconBackgrounds: [...document.querySelectorAll(".legacy-settings-links > button .settings-link-icon")].map((node) => getComputedStyle(node).backgroundColor),
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize,
           gridWidth: Math.round(gridRect?.width || 0),
           fieldWidths: fieldRects.map((rect) => Math.round(rect.width)),
@@ -2805,6 +2806,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.field !== "rgb(9, 15, 20)"
         || settingsSurface.toolsLink !== "rgb(13, 20, 25)"
         || settingsSurface.backupLink !== "rgb(13, 20, 25)"
+        || JSON.stringify(settingsSurface.linkIconBackgrounds) !== JSON.stringify([
+          "rgb(13, 24, 34)",
+          "rgb(22, 17, 36)",
+          "rgb(13, 24, 34)",
+          "rgb(13, 29, 21)",
+          "rgb(13, 29, 21)",
+          "rgb(27, 23, 12)",
+          "rgb(27, 23, 12)",
+          "rgb(12, 25, 28)",
+          "rgb(28, 17, 13)"
+        ])
+        || new Set(settingsSurface.linkIconBackgrounds).size < 5
         || parseFloat(settingsSurface.rowTitleFont) < 11.5
         || settingsSurface.fieldWidths.length !== 5
         || settingsSurface.fieldWidths.some((value) => value < settingsSurface.gridWidth - 2)

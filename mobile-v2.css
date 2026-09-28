@@ -15558,3 +15558,46 @@
     color: #b6c0c6 !important;
   }
 }
+
+
+/* 1.6.1 · Настройки: смысловая группировка только через компактные иконки. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-links > button[data-action="manage-appliance-types"] .settings-link-icon,
+  .legacy-settings-links > button[data-action="manage-order-sources"] .settings-link-icon {
+    border-color: #254565 !important;
+    background: #0d1822 !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-price-categories"] .settings-link-icon {
+    border-color: #493b68 !important;
+    background: #161124 !important;
+    color: var(--crm-purple) !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-options"] .settings-link-icon,
+  .legacy-settings-links > button[data-action="manage-warranty-results"] .settings-link-icon {
+    border-color: #244b35 !important;
+    background: #0d1d15 !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-stock-categories"] .settings-link-icon,
+  .legacy-settings-links > button[data-action="manage-storage-locations"] .settings-link-icon {
+    border-color: #51411f !important;
+    background: #1b170c !important;
+    color: var(--crm-yellow) !important;
+  }
+
+  .legacy-settings-links > button[data-more="tools"] .settings-link-icon {
+    border-color: #28505a !important;
+    background: #0c191c !important;
+    color: #55cee1 !important;
+  }
+
+  .legacy-settings-links > button[data-more="backup"] .settings-link-icon {
+    border-color: #5a3529 !important;
+    background: #1c110d !important;
+    color: #ff8066 !important;
+  }
+}
