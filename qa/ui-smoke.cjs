@@ -204,6 +204,23 @@ async function shot(page, width, label, fullPage = true) {
   return result;
 }
 
+async function fillConfirmed(locator, value) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await locator.fill(value);
+    await locator.evaluate((node, nextValue) => {
+      if (node.value === nextValue) return;
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+      if (setter) setter.call(node, nextValue);
+      else node.value = nextValue;
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(new Event("change", { bubbles: true }));
+    }, value);
+    if (await locator.inputValue() === value) return true;
+    await locator.page().waitForTimeout(15);
+  }
+  return false;
+}
+
 let activeBrowser = null;
 const report = { generatedAt: new Date().toISOString(), testedSha: process.env.GITHUB_SHA || null, baseUrl: BASE_URL, results: [], failures: [] };
 
@@ -1825,7 +1842,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('[data-stock="out"][data-id="w1"]').click();
         const firstFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
         await firstFifoAmount.fill("3");
-        await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · первая партия");
+        const firstFifoComment = page.locator('.stock-adjust-modal [name="comment"]');
+        const firstFifoReasonReady = await fillConfirmed(firstFifoComment, "Тест FIFO · первая партия");
+        if (!firstFifoReasonReady) report.failures.push({ width, type: "qa-input-fill", field: "first-fifo-comment" });
         const firstFifoMax = await firstFifoAmount.getAttribute("max");
         const firstFifoLocation = await page.locator('.stock-adjust-modal [name="locationId"]').inputValue();
         const firstFifoBeforeText = await page.locator("#stock-adjust-before").innerText();
@@ -1868,7 +1887,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         if (firstFifoClosed) {
           const secondFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
           await secondFifoAmount.fill("0.5");
-          await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · вторая партия");
+          const secondFifoComment = page.locator('.stock-adjust-modal [name="comment"]');
+          const secondFifoReasonReady = await fillConfirmed(secondFifoComment, "Тест FIFO · вторая партия");
+          if (!secondFifoReasonReady) report.failures.push({ width, type: "qa-input-fill", field: "second-fifo-comment" });
           const secondFifoMax = await secondFifoAmount.getAttribute("max");
           await page.locator('.stock-adjust-modal button[type="submit"]').click();
           secondFifoClosed = true;
@@ -1967,8 +1988,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const correctionComment = page.locator('.stock-correction-modal [name="comment"]');
         const physicalBeforeCorrection = Number(await correctionQuantity.inputValue()) || 0;
         await correctionQuantity.fill(String(physicalBeforeCorrection + 1));
-        await correctionComment.fill("Контрольный пересчёт");
+        const correctionReasonReady = await fillConfirmed(correctionComment, "Контрольный пересчёт");
+        if (!correctionReasonReady) report.failures.push({ width, type: "qa-input-fill", field: "stock-correction-comment" });
         report.results.push(await shot(page, width, "stock-correction", false));
+        if (await correctionComment.inputValue() !== "Контрольный пересчёт") {
+          await fillConfirmed(correctionComment, "Контрольный пересчёт");
+        }
         const correctionPreSubmit = await page.evaluate(() => {
           const form = document.querySelector(".stock-correction-modal");
           const quantity = form?.querySelector('[name="quantity"]');
