@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T22:47:49.409Z",
-  "testedSha": "a19569d66fd89e9e7d079243bb17520c1a9fae60",
+  "generatedAt": "2026-09-28T22:50:58.206Z",
+  "testedSha": "1b64104a9ec31698903ec39bf84536e9f9034eb0",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T22:48:22.342Z"
+      "fallbackCreatedAt": "2026-09-28T22:51:37.685Z"
     },
     {
       "label": "pwa-offline",
@@ -1631,8 +1631,8 @@
         "copyCenterDelta": 0,
         "statusIconWidth": 16,
         "actionOverflows": [
-          true,
           false,
+          true,
           false
         ],
         "actionIconWidths": [
