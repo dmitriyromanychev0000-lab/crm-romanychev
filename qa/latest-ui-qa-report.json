@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T17:10:13.389Z",
-  "testedSha": "fe1c1ca03c2005dcbfcfe11ba23f5c1ce1dfb464",
+  "generatedAt": "2026-09-28T17:12:35.000Z",
+  "testedSha": "22c325a072201b7bd7559cbeb6043c58519231dc",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1494,7 +1494,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T17:10:50.058Z"
+      "fallbackCreatedAt": "2026-09-28T17:13:11.345Z"
     },
     {
       "label": "pwa-offline",
@@ -1508,164 +1508,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "settings-semantic-hierarchy",
-      "settingsSurface": {
-        "profile": "rgb(7, 12, 16)",
-        "app": "rgb(7, 12, 16)",
-        "data": "rgb(7, 12, 16)",
-        "field": "rgb(9, 15, 20)",
-        "toolsLink": "rgb(13, 20, 25)",
-        "backupLink": "rgb(13, 20, 25)",
-        "linkIconBackgrounds": [
-          "rgb(13, 24, 34)",
-          "rgb(22, 17, 36)",
-          "rgb(13, 24, 34)",
-          "rgb(13, 29, 21)",
-          "rgb(13, 29, 21)",
-          "rgb(27, 23, 12)",
-          "rgb(27, 23, 12)",
-          "rgb(12, 25, 28)",
-          "rgb(28, 17, 13)"
-        ],
-        "rowTitleFont": "11.5px",
-        "gridWidth": 274,
-        "companyName": {
-          "left": 23,
-          "top": 203,
-          "width": 133,
-          "height": 62
-        },
-        "name": {
-          "left": 164,
-          "top": 203,
-          "width": 133,
-          "height": 62
-        },
-        "phone": {
-          "left": 23,
-          "top": 272,
-          "width": 133,
-          "height": 62
-        },
-        "companyAddress": {
-          "left": 23,
-          "top": 341,
-          "width": 274,
-          "height": 62
-        },
-        "inn": {
-          "left": 23,
-          "top": 411,
-          "width": 133,
-          "height": 62
-        },
-        "longLinkTitle": {
-          "whiteSpace": "normal",
-          "lineClamp": "2",
-          "textOverflow": "clip",
-          "scrollWidth": 182,
-          "clientWidth": 182
-        },
-        "longLinkDescription": {
-          "whiteSpace": "normal",
-          "lineClamp": "2"
-        },
-        "longLinkHeight": 89,
-        "appRowWidths": [
-          274,
-          274,
-          274,
-          274
-        ],
-        "appActionWidths": [
-          274,
-          274,
-          274,
-          274
-        ]
-      }
-    },
-    {
-      "width": 390,
-      "type": "settings-semantic-hierarchy",
-      "settingsSurface": {
-        "profile": "rgb(7, 12, 16)",
-        "app": "rgb(7, 12, 16)",
-        "data": "rgb(7, 12, 16)",
-        "field": "rgb(9, 15, 20)",
-        "toolsLink": "rgb(13, 20, 25)",
-        "backupLink": "rgb(13, 20, 25)",
-        "linkIconBackgrounds": [
-          "rgb(13, 24, 34)",
-          "rgb(22, 17, 36)",
-          "rgb(13, 24, 34)",
-          "rgb(13, 29, 21)",
-          "rgb(13, 29, 21)",
-          "rgb(27, 23, 12)",
-          "rgb(27, 23, 12)",
-          "rgb(12, 25, 28)",
-          "rgb(28, 17, 13)"
-        ],
-        "rowTitleFont": "12px",
-        "gridWidth": 336,
-        "companyName": {
-          "left": 27,
-          "top": 203,
-          "width": 164,
-          "height": 62
-        },
-        "name": {
-          "left": 199,
-          "top": 203,
-          "width": 164,
-          "height": 62
-        },
-        "phone": {
-          "left": 27,
-          "top": 272,
-          "width": 164,
-          "height": 62
-        },
-        "companyAddress": {
-          "left": 27,
-          "top": 341,
-          "width": 336,
-          "height": 62
-        },
-        "inn": {
-          "left": 27,
-          "top": 411,
-          "width": 164,
-          "height": 62
-        },
-        "longLinkTitle": {
-          "whiteSpace": "normal",
-          "lineClamp": "2",
-          "textOverflow": "clip",
-          "scrollWidth": 238,
-          "clientWidth": 238
-        },
-        "longLinkDescription": {
-          "whiteSpace": "normal",
-          "lineClamp": "2"
-        },
-        "longLinkHeight": 68,
-        "appRowWidths": [
-          336,
-          336,
-          336,
-          336
-        ],
-        "appActionWidths": [
-          81,
-          79,
-          79,
-          75
-        ]
-      }
-    }
-  ]
+  "failures": []
 }
