@@ -20729,3 +20729,11 @@
     grid-template-columns: .88fr 1.12fr !important;
   }
 }
+
+
+/* 1.7.89 fix 2 · Диагностика 320 px: симметричные кнопки без обрезания. */
+@media screen and (max-width: 340px) {
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
