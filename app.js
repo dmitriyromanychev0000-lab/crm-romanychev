@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.56";
-const APP_BUILD = "2026.09.28.277";
+const APP_VERSION = "1.7.57";
+const APP_BUILD = "2026.09.28.278";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансы стали плотнее: доход и расход теперь добавляются из одной двухколоночной строки вместо двух полноширинных кнопок"
+const APP_RELEASE = "Список покупок стал короче: добавление остаётся главным действием, а «Поделиться» и «Копировать» стоят рядом в одной строке"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.57",
+    date: "28.09.2026",
+    title: "Компактные действия покупок",
+    items: [
+      "«Добавить вручную» остаётся главным полноширинным действием.",
+      "«Поделиться» и «Копировать» теперь стоят рядом в одной строке вместо двух дополнительных полноширинных строк.",
+      "Все три действия сохраняют высоту 48 px и читаемые подписи на 320–430 px."
+    ]
+  },
   {
     version: "1.7.56",
     date: "28.09.2026",

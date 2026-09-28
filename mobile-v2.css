@@ -19124,3 +19124,28 @@
     white-space: nowrap !important;
   }
 }
+
+/* 1.7.57 · Покупки: главное действие + компактная пара вторичных. */
+@media screen and (max-width: 520px) {
+  .shopping-page-actions-primary {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .shopping-page-actions-primary > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+  }
+
+  .shopping-page-actions-primary [data-action="new-shopping-item"] {
+    grid-column: 1 / -1 !important;
+  }
+}

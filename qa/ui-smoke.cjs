@@ -1046,6 +1046,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const rect = button.getBoundingClientRect();
         return {
           width: Math.round(rect.width),
+          height: Math.round(rect.height),
           left: Math.round(rect.left),
           top: Math.round(rect.top)
         };
@@ -1057,10 +1058,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       };
     });
     if (shoppingActionLayout.buttons.length !== 3
-      || shoppingActionLayout.buttons.some((button) => button.width < shoppingActionLayout.containerWidth - 8)
-      || shoppingActionLayout.buttons.some((button) => Math.abs(button.left - shoppingActionLayout.containerLeft) > 2)
-      || shoppingActionLayout.buttons.some((button, index, buttons) => index > 0 && button.top <= buttons[index - 1].top)) {
-      report.failures.push({ width, type: "shopping-actions-full-width", shoppingActionLayout });
+      || shoppingActionLayout.buttons[0]?.width < shoppingActionLayout.containerWidth - 8
+      || Math.abs((shoppingActionLayout.buttons[0]?.left || 0) - shoppingActionLayout.containerLeft) > 2
+      || shoppingActionLayout.buttons.some((button) => button.height < 48 || button.height > 49)
+      || shoppingActionLayout.buttons[1]?.top <= shoppingActionLayout.buttons[0]?.top
+      || Math.abs((shoppingActionLayout.buttons[1]?.top || 0) - (shoppingActionLayout.buttons[2]?.top || 0)) > 2
+      || Math.abs((shoppingActionLayout.buttons[1]?.width || 0) - (shoppingActionLayout.buttons[2]?.width || 0)) > 2
+      || (shoppingActionLayout.buttons[1]?.width || 0) < 120
+      || Math.abs((shoppingActionLayout.buttons[1]?.left || 0) - shoppingActionLayout.containerLeft) > 2
+      || (shoppingActionLayout.buttons[2]?.left || 0) <= (shoppingActionLayout.buttons[1]?.left || 0)) {
+      report.failures.push({ width, type: "shopping-actions-compact-grid", shoppingActionLayout });
     }
 
     if (width >= 360) {
