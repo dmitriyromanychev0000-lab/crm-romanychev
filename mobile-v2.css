@@ -19149,3 +19149,20 @@
     grid-column: 1 / -1 !important;
   }
 }
+
+/* 1.7.58 · Каталог услуг: компактная нижняя пара действий. */
+@media screen and (max-width: 520px) {
+  .catalog-modal .catalog-modal-actions {
+    grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr) !important;
+    gap: 7px !important;
+  }
+
+  .catalog-modal .catalog-modal-actions > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    white-space: nowrap !important;
+  }
+}

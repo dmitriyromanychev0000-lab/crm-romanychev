@@ -1592,10 +1592,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (serviceCatalogActions.buttons.length !== 2
-        || serviceCatalogActions.buttons.some((button) => button.width < serviceCatalogActions.innerWidth - 2)
-        || serviceCatalogActions.buttons.some((button) => button.height < 48)
-        || serviceCatalogActions.buttons[1]?.top <= serviceCatalogActions.buttons[0]?.top) {
-        report.failures.push({ width, type: "service-catalog-actions-full-width", serviceCatalogActions });
+        || serviceCatalogActions.buttons.some((button) => button.height < 48 || button.height > 49)
+        || serviceCatalogActions.buttons.some((button) => button.width < 105)
+        || Math.abs((serviceCatalogActions.buttons[0]?.top || 0) - (serviceCatalogActions.buttons[1]?.top || 0)) > 2
+        || (serviceCatalogActions.buttons[1]?.left || 0) <= (serviceCatalogActions.buttons[0]?.left || 0)
+        || Math.abs((serviceCatalogActions.buttons[0]?.left || 0) - serviceCatalogActions.left) > 2
+        || (serviceCatalogActions.buttons[0]?.width || 0) + (serviceCatalogActions.buttons[1]?.width || 0) > serviceCatalogActions.innerWidth) {
+        report.failures.push({ width, type: "service-catalog-actions-two-columns", serviceCatalogActions });
       }
       report.results.push(await shot(page, width, "service-catalog", false));
 
