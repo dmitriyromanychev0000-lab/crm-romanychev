@@ -19278,3 +19278,58 @@
     white-space: nowrap !important;
   }
 }
+
+/* 1.7.63 · Перекрываем старые высокоспецифичные футеры и маленькие delete-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool),
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0,.82fr) minmax(0,1.18fr) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool) > #delete-tool,
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) > #delete-receipt {
+    grid-column: auto !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool) > .secondary-button,
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool) > .primary-button,
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) > .secondary-button,
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) > .primary-button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    justify-self: stretch !important;
+  }
+
+  .legacy-goods-editor .legacy-goods-row-label > button[data-remove-line] {
+    box-sizing: border-box !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool),
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) {
+    grid-template-columns: 44px minmax(0,.82fr) minmax(0,1.18fr) !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .modal-actions:has(#delete-tool) > .primary-button,
+  .legacy-service-editor-backdrop .receipt-editor-modal .modal-actions:has(#delete-receipt) > .primary-button {
+    grid-column: auto !important;
+  }
+}
