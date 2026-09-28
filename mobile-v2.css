@@ -15085,3 +15085,33 @@
   }
 }
 
+/* 1.4.1 · Перекрываем старые семантические каскады точной специфичностью. */
+@media screen and (max-width: 520px) {
+  .legacy-client-actions > a:first-child,
+  .legacy-client-actions > button:last-child {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-actions > a:first-child .ui-icon,
+  .legacy-client-actions > button:last-child .ui-icon {
+    color: #ff765c !important;
+  }
+
+  .legacy-finance-actions .legacy-orange-button[data-type="income"] {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #65d995 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #ff717b !important;
+    box-shadow: none !important;
+  }
+}
+
