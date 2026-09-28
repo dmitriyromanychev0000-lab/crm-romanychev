@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.35";
-const APP_BUILD = "2026.09.28.253";
+const APP_VERSION = "1.7.36";
+const APP_BUILD = "2026.09.28.254";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Профиль клиента на 320 px больше не растягивается: адрес и строка ремонта собраны в компактную читаемую компоновку"
+const APP_RELEASE = "Адрес в профиле клиента окончательно собран по высоте: длинный адрес остаётся читаемым, служебная подпись не раздувает карточку"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.36",
+    date: "28.09.2026",
+    title: "Компактный адрес клиента",
+    items: [
+      "Карточка адреса использует устойчивую сетку и меньше вертикальных отступов на всех мобильных ширинах.",
+      "Служебная подпись адреса остаётся одной строкой с многоточием, сам адрес сохраняет до двух строк.",
+      "Touch-зона адреса остаётся не меньше 52 px, строгий лимит QA по высоте не ослаблялся."
+    ]
+  },
   {
     version: "1.7.35",
     date: "28.09.2026",
