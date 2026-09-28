@@ -3366,7 +3366,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           fitBackground: getComputedStyle(document.querySelector("#adjust-goods-prices")).backgroundColor,
           fitColor: getComputedStyle(document.querySelector("#adjust-goods-prices")).color,
           restoreBackground: getComputedStyle(document.querySelector("#restore-goods-prices")).backgroundColor,
-          previewBackground: getComputedStyle(document.querySelector("#preview-goods")).backgroundColor
+          previewBackground: getComputedStyle(document.querySelector("#preview-goods")).backgroundColor,
+          headHeight: Math.round(document.querySelector(".legacy-goods-editor .goods-modal-head")?.getBoundingClientRect().height || 0),
+          fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          panelPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).paddingTop) || 0,
+          targetPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-target")).paddingTop) || 0,
+          savebarGap: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-savebar")).rowGap) || 0,
+          addButtonHeight: Math.round(addButtonRect?.height || 0)
         };
       });
       if (goodsEditorState.modal !== "rgb(3, 7, 10)"
@@ -3384,6 +3390,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsEditorState.restoreBackground !== "rgb(13, 20, 25)"
         || goodsEditorState.previewBackground !== "rgb(255, 113, 83)") {
         report.failures.push({ width, type: "goods-editor-deep-dark", goodsEditorState });
+      }
+      if (goodsEditorState.headHeight > 60
+        || goodsEditorState.fieldHeight > 46
+        || goodsEditorState.panelPaddingTop > 10
+        || goodsEditorState.targetPaddingTop > 9
+        || goodsEditorState.savebarGap > 6.5
+        || goodsEditorState.addButtonHeight < 44) {
+        report.failures.push({ width, type: "goods-editor-compact-density", goodsEditorState });
       }
       report.results.push(await shot(page, width, "goods-editor", false));
       await page.keyboard.press("Escape");

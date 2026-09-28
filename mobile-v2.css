@@ -18227,3 +18227,120 @@
     line-height: 1.2 !important;
   }
 }
+
+
+/* 1.7.37 · Товарник: плотный полноэкранный редактор без потери рабочих зон. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-editor .goods-modal-head {
+    box-sizing: border-box !important;
+    min-height: calc(58px + env(safe-area-inset-top)) !important;
+    margin-bottom: 7px !important;
+    padding-top: calc(7px + env(safe-area-inset-top)) !important;
+    padding-bottom: 7px !important;
+  }
+
+  .legacy-goods-editor .goods-modal-head h1 {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .legacy-goods-editor .goods-modal-head p {
+    margin-top: 2px !important;
+    line-height: 1.1 !important;
+  }
+
+  .legacy-goods-editor .legacy-editor-panel,
+  .legacy-goods-editor .legacy-editor-preview,
+  .legacy-goods-editor .legacy-product-price {
+    margin-bottom: 6px !important;
+    padding: 9px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-goods-editor .legacy-section-title {
+    margin-bottom: 6px !important;
+  }
+
+  .legacy-goods-editor .legacy-goods-intro {
+    margin: 4px 0 7px !important;
+  }
+
+  .legacy-goods-editor label > span,
+  .legacy-goods-editor .legacy-editor-title > span,
+  .legacy-goods-editor .legacy-goods-target label > span {
+    margin-bottom: 4px !important;
+  }
+
+  .legacy-goods-editor .field {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-goods-add-line {
+    gap: 6px !important;
+  }
+
+  .legacy-goods-add-line > button,
+  .legacy-manual-add {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-goods-edit-row {
+    margin-top: 6px !important;
+    padding: 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-goods-row-label {
+    margin-bottom: 5px !important;
+  }
+
+  .legacy-goods-row-grid {
+    gap: 6px !important;
+  }
+
+  .legacy-goods-target {
+    margin-top: 7px !important;
+    padding: 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-goods-target p {
+    margin-top: 5px !important;
+  }
+
+  .legacy-goods-editor-actions {
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-goods-editor-actions button {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-editor-preview {
+    scroll-margin-top: 66px !important;
+  }
+
+  .legacy-preview-table th,
+  .legacy-preview-table td {
+    padding: 6px !important;
+  }
+
+  .legacy-preview-total {
+    padding: 7px 2px 0 !important;
+  }
+
+  .legacy-goods-savebar,
+  .legacy-goods-savebar:has(.legacy-delete-goods) {
+    gap: 6px !important;
+    padding: 7px 12px calc(7px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-goods-savebar > * {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+}

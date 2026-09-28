@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.36";
-const APP_BUILD = "2026.09.28.254";
+const APP_VERSION = "1.7.37";
+const APP_BUILD = "2026.09.28.255";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Адрес в профиле клиента окончательно собран по высоте: длинный адрес остаётся читаемым, служебная подпись не раздувает карточку"
+const APP_RELEASE = "Редактор товарника стал плотнее: компактнее шапка, панели, строки расчёта, целевая сумма и предпросмотр при сохранённых крупных действиях"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.37",
+    date: "28.09.2026",
+    title: "Плотный редактор товарника",
+    items: [
+      "Шапка и рабочие панели товарника стали ниже и собраннее, без уменьшения заголовка и основного текста.",
+      "Поля, строки товаров, целевая сумма и предпросмотр занимают меньше вертикального места; поля остаются не меньше 44 px.",
+      "Полноширинное добавление товара сохранено, нижние действия остаются не меньше 48 px и контролируются отдельным мобильным QA."
+    ]
+  },
   {
     version: "1.7.36",
     date: "28.09.2026",
