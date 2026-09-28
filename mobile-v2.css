@@ -20319,3 +20319,41 @@
     align-self: center !important;
   }
 }
+
+
+/* 1.7.84 · Прайс: компактнее группы и строки без потери touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-price-groups {
+    gap: 6px !important;
+  }
+
+  .legacy-price-group > h3 {
+    min-height: 34px !important;
+    padding: 0 9px !important;
+  }
+
+  .legacy-custom-price-head {
+    min-height: 50px !important;
+    padding: 3px 8px !important;
+  }
+
+  .legacy-custom-price-head button {
+    min-height: 44px !important;
+  }
+
+  .legacy-price-row {
+    min-height: 52px !important;
+    gap: 8px !important;
+    padding: 6px 9px !important;
+  }
+
+  .legacy-price-row small {
+    margin-top: 1px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-price-row {
+    min-height: 54px !important;
+  }
+}

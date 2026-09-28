@@ -3457,6 +3457,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           firstPriceLeft: Math.round(priceRect?.left || 0),
           firstPriceCenter: priceRect ? Math.round(priceRect.top + priceRect.height / 2) : 0,
           firstRowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
+          groupHeaderHeights: [...document.querySelectorAll(".legacy-price-groups .legacy-price-group > h3")].map((node) => Math.round(node.getBoundingClientRect().height)),
+          customHeadHeight: Math.round(document.querySelector(".legacy-custom-price-head")?.getBoundingClientRect().height || 0),
+          customActionHeight: Math.round(document.querySelector(".legacy-custom-price-head button")?.getBoundingClientRect().height || 0),
           groupCounts: [...document.querySelectorAll(".legacy-price-groups .legacy-price-group")].map((group) => {
             const badge = group.querySelector(":scope > h3 > small");
             const rect = badge?.getBoundingClientRect();
@@ -3509,6 +3512,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       if (width > 340 && pricePageSurface.firstRowHeight > 62) {
         report.failures.push({ width, type: "price-compact-density", pricePageSurface });
+      }
+      const priceRowLimit = width <= 340 ? 56 : 54;
+      if (pricePageSurface.groupHeaderHeights.length < 1
+        || pricePageSurface.groupHeaderHeights.some((value) => value < 32 || value > 36)
+        || pricePageSurface.customHeadHeight < 48
+        || pricePageSurface.customHeadHeight > 52
+        || pricePageSurface.customActionHeight < 44
+        || pricePageSurface.firstRowHeight > priceRowLimit) {
+        report.failures.push({ width, type: "price-group-density", pricePageSurface, priceRowLimit });
       }
       await page.waitForTimeout(80);
       await page.locator("#price-search").click();

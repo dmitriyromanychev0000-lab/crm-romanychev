@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.83";
-const APP_BUILD = "2026.09.29.309";
+const APP_VERSION = "1.7.84";
+const APP_BUILD = "2026.09.29.310";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Товарник стал плотнее на телефоне: автозаполнение занимает меньше места, а суммы позиций остаются справа даже на 320 px"
+const APP_RELEASE = "Прайс стал плотнее: заголовки категорий и строки позиций занимают меньше высоты, длинные названия и touch-зоны сохранены"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.84",
+    date: "29.09.2026",
+    title: "Плотные группы прайса",
+    items: [
+      "Заголовки категорий стали ниже, поэтому на экране помещается больше позиций без лишней прокрутки.",
+      "Строки услуг и товаров уплотнены без уменьшения текста; длинные названия по-прежнему могут занимать две строки.",
+      "Кнопка «Добавить» в своих услугах и сами строки прайса остаются полноценными touch-зонами не меньше 44 px."
+    ]
+  },
   {
     version: "1.7.83",
     date: "29.09.2026",
