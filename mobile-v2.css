@@ -15705,3 +15705,27 @@
     min-height: 82px !important;
   }
 }
+
+
+/* 1.6.7 · Календарь: клиент и техника в визите до двух строк. */
+@media screen and (max-width: 520px) {
+  .calendar-event {
+    height: auto !important;
+    min-height: 60px !important;
+  }
+
+  .calendar-event > span {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.2 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .calendar-event.compact {
+    min-height: 56px !important;
+  }
+}

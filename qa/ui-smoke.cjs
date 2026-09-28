@@ -781,7 +781,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           eventText: event?.innerText || "",
           timelineRows: timelineRows.length,
           overflow: Math.max(root.scrollWidth, document.body.scrollWidth) - window.innerWidth,
-          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
+          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0),
+          eventNameStyle: (() => {
+            const node = event?.querySelector("span");
+            const style = node ? getComputedStyle(node) : null;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              textOverflow: style?.textOverflow || "missing",
+              lineClamp: style?.webkitLineClamp || "missing"
+            };
+          })()
         };
       });
       if (calendarState.dayButtons < 28
@@ -790,7 +799,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !calendarState.eventText.includes("11:30")
         || !calendarState.eventText.includes("Анна Смирнова")
         || calendarState.timelineRows !== 13
-        || calendarState.overflow > 0) {
+        || calendarState.overflow > 0
+        || calendarState.eventNameStyle.whiteSpace === "nowrap"
+        || calendarState.eventNameStyle.textOverflow === "ellipsis"
+        || calendarState.eventNameStyle.lineClamp !== "2") {
         report.failures.push({ width, type: "calendar-month-day-timeline", calendarState });
       }
       report.results.push(await shot(page, width, "calendar-selected-day", false));

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.6";
-const APP_BUILD = "2026.09.28.213";
+const APP_VERSION = "1.6.7";
+const APP_BUILD = "2026.09.28.214";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинные названия материалов в покупках и истории движения больше не обрезаются на первой строке";
+const APP_RELEASE = "Карточки визитов в календаре показывают клиента и технику до двух строк без раннего многоточия";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.7",
+    date: "28.09.2026",
+    title: "Календарь без обрезанной техники",
+    items: [
+      "Имя клиента и тип техники в карточке визита могут занимать до двух строк.",
+      "Высота визита растёт по содержимому, а часовая шкала сохраняет ровную структуру.",
+      "Адрес остаётся компактной отдельной строкой, номер заявки — справа."
+    ]
+  },
   {
     version: "1.6.6",
     date: "28.09.2026",
