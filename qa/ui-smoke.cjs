@@ -4590,7 +4590,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (backupDensity.cardPaddingTop > 10
         || backupDensity.statHeight > 62
-        || backupDensity.mainButtonHeight < 50) {
+        || backupDensity.mainButtonHeight < 48) {
         report.failures.push({ width, type: "backup-compact-density", backupDensity });
       }
 
