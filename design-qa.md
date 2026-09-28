@@ -137,3 +137,10 @@ final result: passed
 - Settings rows remain on the same neutral graphite surface.
 - Only the compact leading icon tiles carry category identity: directories blue/purple, warranty green, stock amber, tools cyan, backup coral.
 - QA verifies row surfaces remain neutral while the nine work-data icons resolve into semantic groups.
+
+
+## Release 1.6.2 — readable long labels in Settings
+
+- Work-data titles and descriptions use two-line clamping instead of one-line ellipsis.
+- Rows expand from a 68 px minimum height while keeping counters and chevrons aligned.
+- QA checks the longest warranty-results label specifically for wrapping and absence of ellipsis.

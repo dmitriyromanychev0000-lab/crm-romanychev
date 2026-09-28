@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.1";
-const APP_BUILD = "2026.09.28.208";
+const APP_VERSION = "1.6.2";
+const APP_BUILD = "2026.09.28.209";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Рабочие данные в настройках получили аккуратную группировку через смысловые акценты иконок";
+const APP_RELEASE = "Длинные названия и описания в настройках больше не обрезаются многоточием";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.2",
+    date: "28.09.2026",
+    title: "Настройки без обрезанного текста",
+    items: [
+      "Длинные названия справочников переносятся максимум на две строки вместо обрезки посередине слова.",
+      "Описания рабочих данных тоже могут занимать две строки, поэтому смысл пункта остаётся видимым на 320–430 px.",
+      "Высота строк адаптируется под текст, сохраняя ровные иконки, счётчики и стрелки справа."
+    ]
+  },
   {
     version: "1.6.1",
     date: "28.09.2026",

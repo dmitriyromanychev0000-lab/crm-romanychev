@@ -15601,3 +15601,28 @@
     color: #ff8066 !important;
   }
 }
+
+
+/* 1.6.2 · Рабочие данные: не режем длинные подписи многоточием. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-links > button {
+    height: auto !important;
+    min-height: 68px !important;
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+  }
+
+  .legacy-settings-links > button > span:nth-child(2) {
+    min-width: 0 !important;
+  }
+
+  .legacy-settings-links strong,
+  .legacy-settings-links small {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}

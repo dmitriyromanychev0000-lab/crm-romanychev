@@ -2797,7 +2797,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize,
           gridWidth: Math.round(gridRect?.width || 0),
           fieldWidths: fieldRects.map((rect) => Math.round(rect.width)),
-          fieldTops: fieldRects.map((rect) => Math.round(rect.top))
+          fieldTops: fieldRects.map((rect) => Math.round(rect.top)),
+          longLinkTitle: (() => {
+            const node = document.querySelector('[data-action="manage-warranty-results"] strong');
+            const style = node ? getComputedStyle(node) : null;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              lineClamp: style?.webkitLineClamp || "missing",
+              textOverflow: style?.textOverflow || "missing",
+              scrollWidth: node?.scrollWidth || 0,
+              clientWidth: node?.clientWidth || 0
+            };
+          })(),
+          longLinkDescription: (() => {
+            const node = document.querySelector('[data-action="manage-warranty-results"] small');
+            const style = node ? getComputedStyle(node) : null;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              lineClamp: style?.webkitLineClamp || "missing"
+            };
+          })(),
+          longLinkHeight: Math.round(document.querySelector('[data-action="manage-warranty-results"]')?.getBoundingClientRect().height || 0)
         };
       });
       if (settingsSurface.profile !== "rgb(7, 12, 16)"
@@ -2821,7 +2841,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(settingsSurface.rowTitleFont) < 11.5
         || settingsSurface.fieldWidths.length !== 5
         || settingsSurface.fieldWidths.some((value) => value < settingsSurface.gridWidth - 2)
-        || settingsSurface.fieldTops.some((top, index, list) => index > 0 && top <= list[index - 1])) {
+        || settingsSurface.fieldTops.some((top, index, list) => index > 0 && top <= list[index - 1])
+        || settingsSurface.longLinkTitle.whiteSpace === "nowrap"
+        || settingsSurface.longLinkTitle.lineClamp !== "2"
+        || settingsSurface.longLinkTitle.textOverflow === "ellipsis"
+        || settingsSurface.longLinkDescription.whiteSpace === "nowrap"
+        || settingsSurface.longLinkDescription.lineClamp !== "2"
+        || settingsSurface.longLinkHeight < 68) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
 
