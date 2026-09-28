@@ -3326,6 +3326,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filterGrid = document.querySelector(".legacy-price-filters");
         const filterGridRect = filterGrid?.getBoundingClientRect();
         const filterRects = [...document.querySelectorAll(".legacy-price-filters > label")].map((node) => node.getBoundingClientRect());
+        const filterFields = [...document.querySelectorAll(".legacy-price-filters .field")].map((node) => node.getBoundingClientRect());
+        const addRect = document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect();
+        const searchRect = search?.getBoundingClientRect();
         const firstRow = document.querySelector(".legacy-price-row");
         const firstCopy = firstRow?.querySelector(":scope > span");
         const firstPrice = firstRow?.querySelector(":scope > b");
@@ -3341,10 +3344,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           searchBackground: searchStyle.backgroundColor,
           searchBorder: searchStyle.borderTopColor,
           searchShadow: searchStyle.boxShadow,
-          addWidth: Math.round(document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect().width || 0),
-          searchWidth: Math.round(search?.getBoundingClientRect().width || 0),
-          addHeight: Math.round(document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect().height || 0),
+          addWidth: Math.round(addRect?.width || 0),
+          searchWidth: Math.round(searchRect?.width || 0),
+          addHeight: Math.round(addRect?.height || 0),
+          searchHeight: Math.round(searchRect?.height || 0),
           addBackground: getComputedStyle(document.querySelector(".legacy-price-add-wide")).backgroundColor,
+          filterFieldHeights: filterFields.map((rect) => Math.round(rect.height)),
+          gapAddSearch: addRect && searchRect ? Math.round(searchRect.top - addRect.bottom) : 999,
+          gapSearchFilters: searchRect && filterGridRect ? Math.round(filterGridRect.top - searchRect.bottom) : 999,
           priceColors: [...document.querySelectorAll(".legacy-price-row > b")].map((node) => getComputedStyle(node).color),
           rowBorders: [...document.querySelectorAll(".legacy-price-row")].map((node) => getComputedStyle(node).borderTopColor),
           customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor,
@@ -3379,19 +3386,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.searchShadow !== "none"
         || Math.abs(pricePageSurface.addWidth - pricePageSurface.searchWidth) > 2
         || pricePageSurface.addHeight < 48
+        || pricePageSurface.addHeight > 49
+        || pricePageSurface.searchHeight < 44
+        || pricePageSurface.searchHeight > 45
+        || pricePageSurface.filterFieldHeights.length !== 2
+        || pricePageSurface.filterFieldHeights.some((value) => value < 44 || value > 45)
+        || pricePageSurface.gapAddSearch > 7
+        || pricePageSurface.gapSearchFilters > 7
         || pricePageSurface.addBackground !== "rgb(255, 113, 79)"
         || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")
         || pricePageSurface.rowBorders.some((value) => value !== "rgb(32, 45, 53)")
         || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)"
         || pricePageSurface.filterTops.length !== 2
         || pricePageSurface.filterLefts.length !== 2
-        || (width <= 360
-          ? (pricePageSurface.filterWidths.some((value) => value < pricePageSurface.filterGridWidth - 2)
-            || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0])
-          : (pricePageSurface.filterWidths.some((value) => value < 150)
-            || Math.abs(pricePageSurface.filterWidths[0] - pricePageSurface.filterWidths[1]) > 2
-            || Math.abs(pricePageSurface.filterTops[0] - pricePageSurface.filterTops[1]) > 2
-            || pricePageSurface.filterLefts[1] <= pricePageSurface.filterLefts[0]))
+        || pricePageSurface.filterWidths.some((value) => value < 130)
+        || Math.abs(pricePageSurface.filterWidths[0] - pricePageSurface.filterWidths[1]) > 2
+        || Math.abs(pricePageSurface.filterTops[0] - pricePageSurface.filterTops[1]) > 2
+        || pricePageSurface.filterLefts[1] <= pricePageSurface.filterLefts[0]
         || pricePageSurface.groupCounts.length < 1
         || pricePageSurface.groupCounts.some((group) => group.badge !== group.rows || group.width < 24 || group.height < 24)) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });

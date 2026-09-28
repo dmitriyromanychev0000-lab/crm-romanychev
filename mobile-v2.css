@@ -19539,3 +19539,57 @@
     -webkit-line-clamp: 2;
   }
 }
+
+
+/* 1.7.69 · Прайс: компактная верхняя панель и два фильтра в одной строке на всех телефонах. */
+@media screen and (max-width: 520px) {
+  .legacy-price-page {
+    padding-top: 9px !important;
+  }
+
+  .legacy-price-page .legacy-price-head {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-price-page .legacy-price-add-wide {
+    min-height: 48px !important;
+    height: 48px !important;
+    margin-bottom: 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-price-page .legacy-price-search {
+    margin-bottom: 5px !important;
+  }
+
+  .legacy-price-page .legacy-price-search .search {
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-price-page .legacy-price-filters {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-price-page .legacy-price-filters > label {
+    width: auto !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .legacy-price-page .legacy-price-filters label > span {
+    margin-bottom: 2px !important;
+  }
+
+  .legacy-price-page .legacy-price-filters .field {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+    font-size: 11.5px !important;
+  }
+}

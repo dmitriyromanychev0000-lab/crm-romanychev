@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.68";
-const APP_BUILD = "2026.09.28.290";
+const APP_VERSION = "1.7.69";
+const APP_BUILD = "2026.09.28.291";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Клиентская сводка стала компактнее: клиенты, активные и закрытые заявки собраны в одну трёхколоночную строку"
+const APP_RELEASE = "Верх прайса стал компактнее: создание, поиск и два фильтра занимают меньше высоты, а фильтры остаются в одной строке даже на узких телефонах"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.69",
+    date: "28.09.2026",
+    title: "Плотный верх прайса",
+    items: [
+      "Кнопка добавления и поиск приведены к компактному ритму 48/44 px.",
+      "Фильтры «Тип» и «Техника» остаются рядом на 320–430 px вместо перехода в две строки.",
+      "Смысловые подписи фильтров сохранены; первая группа прайса начинается выше."
+    ]
+  },
   {
     version: "1.7.68",
     date: "28.09.2026",
