@@ -17678,3 +17678,158 @@
     text-align: center !important;
   }
 }
+
+
+/* 1.7.30 · Акт и черновики: рабочая плотность без уменьшения touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-act-page,
+  .legacy-drafts-page {
+    padding-top: 10px !important;
+  }
+
+  .legacy-act-page .legacy-subpage-head,
+  .legacy-drafts-page .legacy-subpage-head {
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-act-control {
+    padding: 9px !important;
+    border-radius: 13px !important;
+  }
+
+  .legacy-act-control-title {
+    grid-template-columns: 32px minmax(0,1fr) !important;
+    gap: 7px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-act-control-title > span {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-act-control-title > span .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .legacy-act-control > label > span {
+    margin-bottom: 3px !important;
+  }
+
+  .legacy-act-control .field {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  .legacy-act-selected {
+    box-sizing: border-box !important;
+    grid-template-columns: 34px minmax(0,1fr) !important;
+    gap: 7px !important;
+    min-height: 54px !important;
+    padding: 6px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-act-selected-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-act-selected-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .legacy-act-selected strong {
+    margin-top: 1px !important;
+  }
+
+  .legacy-act-selected em {
+    margin-top: 2px !important;
+  }
+
+  .legacy-act-control-actions {
+    gap: 5px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-act-control-actions button {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-act-preview {
+    margin-top: 7px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-drafts-page .legacy-service-note {
+    margin-bottom: 7px !important;
+    padding: 8px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-drafts-page .legacy-service-list {
+    gap: 5px !important;
+  }
+
+  .legacy-draft-card {
+    box-sizing: border-box !important;
+    grid-template-columns: 34px minmax(0,1fr) auto !important;
+    gap: 7px !important;
+    padding: 8px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-draft-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-draft-icon .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .legacy-draft-copy em {
+    margin-bottom: 1px !important;
+  }
+
+  .legacy-draft-copy small {
+    margin-top: 2px !important;
+  }
+
+  .legacy-draft-actions {
+    gap: 5px !important;
+    margin-top: 0 !important;
+  }
+
+  .legacy-draft-actions button {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    gap: 5px !important;
+    border-radius: 9px !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .legacy-draft-card {
+    grid-template-columns: 34px minmax(0,1fr) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-draft-card > b {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    margin-top: -1px !important;
+  }
+
+  .legacy-draft-actions {
+    grid-column: 1 / -1 !important;
+  }
+}

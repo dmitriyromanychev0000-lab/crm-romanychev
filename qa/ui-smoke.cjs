@@ -1215,6 +1215,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !actScreenSurface.saveButton.includes("Сохранить картинку")) {
         report.failures.push({ width, type: "act-semantic-hierarchy", actScreenSurface });
       }
+      const actDensity = await page.evaluate(() => {
+        const control = document.querySelector(".legacy-act-control")?.getBoundingClientRect();
+        const title = document.querySelector(".legacy-act-control-title")?.getBoundingClientRect();
+        const field = document.querySelector(".legacy-act-control .field")?.getBoundingClientRect();
+        const selected = document.querySelector(".legacy-act-selected")?.getBoundingClientRect();
+        const action = document.querySelector(".legacy-act-control-actions button")?.getBoundingClientRect();
+        return {
+          controlHeight: Math.round(control?.height || 0),
+          titleHeight: Math.round(title?.height || 0),
+          fieldHeight: Math.round(field?.height || 0),
+          selectedHeight: Math.round(selected?.height || 0),
+          actionHeight: Math.round(action?.height || 0)
+        };
+      });
+      if (!actDensity.controlHeight
+        || actDensity.controlHeight > 208
+        || actDensity.titleHeight > 38
+        || actDensity.fieldHeight < 44
+        || actDensity.selectedHeight > 58
+        || actDensity.actionHeight < 44) {
+        report.failures.push({ width, type: "act-compact-density", actDensity });
+      }
       const actPreviewState = await page.evaluate(() => {
         const preview = document.querySelector(".legacy-act-preview");
         const sheet = document.querySelector(".legacy-act-preview .act-sheet");
@@ -3497,11 +3519,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const remove = document.querySelector('.legacy-draft-actions [data-action="delete-draft"]');
         const nextRect = next?.getBoundingClientRect();
         const removeRect = remove?.getBoundingClientRect();
+        const cardRect = card?.getBoundingClientRect();
+        const noteRect = note?.getBoundingClientRect();
         return {
           card: card ? getComputedStyle(card).backgroundColor : "missing",
           note: note ? getComputedStyle(note).backgroundColor : "missing",
           next: next ? getComputedStyle(next).backgroundColor : "missing",
           remove: remove ? getComputedStyle(remove).backgroundColor : "missing",
+          cardHeight: cardRect ? Math.round(cardRect.height) : 0,
+          noteHeight: noteRect ? Math.round(noteRect.height) : 0,
           nextHeight: nextRect ? Math.round(nextRect.height) : 0,
           removeHeight: removeRect ? Math.round(removeRect.height) : 0
         };
@@ -3513,6 +3539,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || draftSurface.nextHeight < 44
         || draftSurface.removeHeight < 44) {
         report.failures.push({ width, type: "drafts-workflow-hierarchy", draftSurface });
+      }
+      const draftHeightLimit = width <= 320 ? 126 : 110;
+      if (!draftSurface.cardHeight
+        || draftSurface.cardHeight > draftHeightLimit
+        || !draftSurface.noteHeight
+        || draftSurface.noteHeight > 58) {
+        report.failures.push({ width, type: "drafts-compact-density", draftSurface, draftHeightLimit });
       }
 
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));

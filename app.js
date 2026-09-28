@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.29";
-const APP_BUILD = "2026.09.28.247";
+const APP_VERSION = "1.7.30";
+const APP_BUILD = "2026.09.28.248";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "История движения склада стала плотнее: количество остаётся справа даже на 320 px, длинные названия сохраняют до двух строк"
+const APP_RELEASE = "Акт и черновики стали плотнее: меньше лишней высоты в рабочих карточках, действия остаются удобными для нажатия"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.30",
+    date: "28.09.2026",
+    title: "Плотные акт и черновики",
+    items: [
+      "Панель акта стала компактнее: уменьшены лишние отступы, карточка выбранной заявки и шапка занимают меньше высоты.",
+      "Карточки черновиков и служебная подсказка уплотнены без уменьшения названий и без потери двух основных действий.",
+      "Для акта и черновиков добавлен отдельный мобильный контроль плотности на 320 и 390 px; кнопки остаются не меньше 44 px."
+    ]
+  },
   {
     version: "1.7.29",
     date: "28.09.2026",
