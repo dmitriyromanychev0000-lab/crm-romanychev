@@ -15970,3 +15970,31 @@
     justify-self: stretch !important;
   }
 }
+
+
+/* 1.7.6 · Товарник: цвет как акцент, а не большая заливка. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-editor-actions #adjust-goods-prices {
+    border-color: #493b68 !important;
+    background: #0d1419 !important;
+    color: #d8c9f8 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-goods-editor-actions #adjust-goods-prices .ui-icon {
+    color: var(--crm-purple) !important;
+  }
+
+  .legacy-goods-editor-actions #restore-goods-prices {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-goods-editor-actions #preview-goods {
+    border-color: #ff7153 !important;
+    background: #ff7153 !important;
+    color: #17110f !important;
+  }
+}

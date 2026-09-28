@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.5";
-const APP_BUILD = "2026.09.28.223";
+const APP_VERSION = "1.7.6";
+const APP_BUILD = "2026.09.28.224";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Все основные мобильные редакторы получили одинаковые полноширинные нижние действия";
+const APP_RELEASE = "Товарник очищен от большой фиолетовой заливки: цвет остался только смысловым акцентом";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.6",
+    date: "28.09.2026",
+    title: "Спокойные действия товарника",
+    items: [
+      "«Подогнать цены» больше не выглядит большой ярко-фиолетовой плашкой.",
+      "Фиолетовый оставлен только как смысловой акцент текста и иконки на графитовой поверхности.",
+      "«К итогу» остаётся единственным ярким основным действием в этом блоке."
+    ]
+  },
   {
     version: "1.7.5",
     date: "28.09.2026",

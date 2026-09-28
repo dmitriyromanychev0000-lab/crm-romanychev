@@ -2768,7 +2768,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           pickerWidth: Math.round(pickerRect?.width || 0),
           addButtonWidth: Math.round(addButtonRect?.width || 0),
           pickerBottom: Math.round(pickerRect?.bottom || 0),
-          addButtonTop: Math.round(addButtonRect?.top || 0)
+          addButtonTop: Math.round(addButtonRect?.top || 0),
+          fitBackground: getComputedStyle(document.querySelector("#adjust-goods-prices")).backgroundColor,
+          fitColor: getComputedStyle(document.querySelector("#adjust-goods-prices")).color,
+          restoreBackground: getComputedStyle(document.querySelector("#restore-goods-prices")).backgroundColor,
+          previewBackground: getComputedStyle(document.querySelector("#preview-goods")).backgroundColor
         };
       });
       if (goodsEditorState.modal !== "rgb(3, 7, 10)"
@@ -2780,7 +2784,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsEditorState.actionHeight < 48
         || goodsEditorState.pickerWidth < goodsEditorState.addLineWidth - 2
         || goodsEditorState.addButtonWidth < goodsEditorState.addLineWidth - 2
-        || goodsEditorState.addButtonTop < goodsEditorState.pickerBottom) {
+        || goodsEditorState.addButtonTop < goodsEditorState.pickerBottom
+        || goodsEditorState.fitBackground !== "rgb(13, 20, 25)"
+        || goodsEditorState.fitColor !== "rgb(216, 201, 248)"
+        || goodsEditorState.restoreBackground !== "rgb(13, 20, 25)"
+        || goodsEditorState.previewBackground !== "rgb(255, 113, 83)") {
         report.failures.push({ width, type: "goods-editor-deep-dark", goodsEditorState });
       }
       report.results.push(await shot(page, width, "goods-editor", false));
