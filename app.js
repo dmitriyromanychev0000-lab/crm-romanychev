@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.81";
-const APP_BUILD = "2026.09.28.307";
+const APP_VERSION = "1.7.82";
+const APP_BUILD = "2026.09.29.308";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Шапка аналитики стала плотнее: период и навигация занимают меньше высоты, а все touch-зоны сохранены"
+const APP_RELEASE = "Карточки клиентов стали плотнее на узких экранах: сумма остаётся справа, служебные данные помещаются в одну строку, touch-зоны сохранены"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.82",
+    date: "29.09.2026",
+    title: "Плотные карточки клиентов",
+    items: [
+      "На 320–340 px сумма клиента больше не падает отдельной строкой под именем и адресом.",
+      "Закрытые, активные и дата последнего обращения собраны в одну компактную строку.",
+      "Кнопки «Позвонить» и «История» остались полноценными touch-зонами 44 px; данные и логика клиентов не менялись."
+    ]
+  },
   {
     version: "1.7.81",
     date: "28.09.2026",

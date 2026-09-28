@@ -3700,6 +3700,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || clientDensity.actionHeight < 44) {
         report.failures.push({ width, type: "clients-compact-density", clientDensity, clientDensityLimits });
       }
+      const clientCardDensity = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-client-card")?.getBoundingClientRect();
+        const main = document.querySelector(".legacy-client-main")?.getBoundingClientRect();
+        const copy = document.querySelector(".legacy-client-copy")?.getBoundingClientRect();
+        const side = document.querySelector(".legacy-client-side")?.getBoundingClientRect();
+        const meta = document.querySelector(".legacy-client-meta")?.getBoundingClientRect();
+        const action = document.querySelector(".legacy-client-actions > *")?.getBoundingClientRect();
+        return {
+          cardHeight: Math.round(card?.height || 0),
+          mainHeight: Math.round(main?.height || 0),
+          metaHeight: Math.round(meta?.height || 0),
+          actionHeight: Math.round(action?.height || 0),
+          mainColumns: main ? getComputedStyle(document.querySelector(".legacy-client-main")).gridTemplateColumns : "",
+          copyLeft: Math.round(copy?.left || 0),
+          copyBottom: Math.round(copy?.bottom || 0),
+          sideLeft: Math.round(side?.left || 0),
+          sideTop: Math.round(side?.top || 0)
+        };
+      });
+      if (clientCardDensity.mainHeight > (width <= 340 ? 80 : 76)
+        || clientCardDensity.metaHeight > 30
+        || clientCardDensity.actionHeight < 44
+        || clientCardDensity.mainColumns.split(" ").filter(Boolean).length !== 3
+        || clientCardDensity.sideLeft <= clientCardDensity.copyLeft
+        || clientCardDensity.sideTop >= clientCardDensity.copyBottom) {
+        report.failures.push({ width, type: "clients-card-density", clientCardDensity });
+      }
       await page.locator('[data-action="open-client"]').first().click();
       const clientProfileState = await page.evaluate(() => {
         const head = document.querySelector(".client-profile-head")?.getBoundingClientRect();
