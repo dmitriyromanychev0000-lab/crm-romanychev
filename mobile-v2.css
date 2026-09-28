@@ -18344,3 +18344,63 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.38 · Источники и справочники: плотный менеджер с крупными рабочими контролами. */
+@media screen and (max-width: 520px) {
+  .source-manager-head {
+    box-sizing: border-box !important;
+    min-height: 60px !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+  }
+
+  .source-manager-head small {
+    line-height: 1.1 !important;
+  }
+
+  .source-manager-head h2 {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .source-manager-head > button {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .source-manager-list {
+    gap: 6px !important;
+    padding: 8px 10px !important;
+  }
+
+  .source-manager-row {
+    gap: 6px !important;
+  }
+
+  .source-manager-row .field {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .source-manager-row > button {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .source-manager-add {
+    gap: 6px !important;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .source-manager-add .field,
+  .source-manager-add .primary-button {
+    box-sizing: border-box !important;
+    min-height: 48px !important;
+    border-radius: 10px !important;
+  }
+}

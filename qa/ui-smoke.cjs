@@ -470,13 +470,43 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
       await page.locator('[data-action="manage-order-sources"]').click();
       await page.waitForTimeout(40);
-      const sourceManagerInitial = await page.evaluate(() => ({
-        modal: document.querySelectorAll(".source-manager-modal").length,
-        rows: document.querySelectorAll(".source-manager-row").length,
-        locked: document.body.classList.contains("modal-open")
-      }));
+      const sourceManagerInitial = await page.evaluate(() => {
+        const head = document.querySelector(".source-manager-head");
+        const list = document.querySelector(".source-manager-list");
+        const row = document.querySelector(".source-manager-row");
+        const close = document.querySelector(".source-manager-head > button");
+        const add = document.querySelector(".source-manager-add");
+        const addField = document.querySelector(".source-manager-add .field");
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          modal: document.querySelectorAll(".source-manager-modal").length,
+          rows: document.querySelectorAll(".source-manager-row").length,
+          locked: document.body.classList.contains("modal-open"),
+          headHeight: Math.round(head?.getBoundingClientRect().height || 0),
+          listPaddingTop: list ? px(getComputedStyle(list).paddingTop) : 999,
+          listGap: list ? px(getComputedStyle(list).rowGap) : 999,
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          closeWidth: Math.round(close?.getBoundingClientRect().width || 0),
+          closeHeight: Math.round(close?.getBoundingClientRect().height || 0),
+          addPaddingTop: add ? px(getComputedStyle(add).paddingTop) : 999,
+          addGap: add ? px(getComputedStyle(add).rowGap) : 999,
+          addFieldHeight: Math.round(addField?.getBoundingClientRect().height || 0)
+        };
+      });
       if (sourceManagerInitial.modal !== 1 || sourceManagerInitial.rows < 2 || !sourceManagerInitial.locked) {
         report.failures.push({ width, type: "source-manager-open", sourceManagerInitial });
+      }
+      if (sourceManagerInitial.headHeight > 62
+        || sourceManagerInitial.listPaddingTop > 10
+        || sourceManagerInitial.listGap > 6.5
+        || sourceManagerInitial.rowHeight < 44
+        || sourceManagerInitial.rowHeight > 46
+        || sourceManagerInitial.closeWidth < 44
+        || sourceManagerInitial.closeHeight < 44
+        || sourceManagerInitial.addPaddingTop > 10
+        || sourceManagerInitial.addGap > 6.5
+        || sourceManagerInitial.addFieldHeight < 48) {
+        report.failures.push({ width, type: "source-manager-compact-density", sourceManagerInitial });
       }
       await page.locator("#new-source-name").fill("Сайт");
       await page.locator("#add-order-source").click();
