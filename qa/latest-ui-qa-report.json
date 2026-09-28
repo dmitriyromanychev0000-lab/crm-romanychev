@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T15:28:28.128Z",
-  "testedSha": "2b19684499b76c3f6e4f9f9b8c73713c64302744",
+  "generatedAt": "2026-09-28T15:31:37.377Z",
+  "testedSha": "ffc15f6a6a975925283042f364d4fd5367d13769",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T15:29:01.452Z"
+      "fallbackCreatedAt": "2026-09-28T15:32:10.635Z"
     },
     {
       "label": "pwa-offline",
@@ -1490,30 +1490,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "diagnostics-compact-density",
-      "diagnosticsDensity": {
-        "paddingTop": 16,
-        "titleMarginBottom": 14,
-        "listGap": 6,
-        "rowHeight": 52,
-        "footerPaddingTop": 8,
-        "actionHeight": 46
-      }
-    },
-    {
-      "width": 390,
-      "type": "diagnostics-compact-density",
-      "diagnosticsDensity": {
-        "paddingTop": 16,
-        "titleMarginBottom": 14,
-        "listGap": 6,
-        "rowHeight": 52,
-        "footerPaddingTop": 8,
-        "actionHeight": 46
-      }
-    }
-  ]
+  "failures": []
 }
