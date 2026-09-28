@@ -1378,9 +1378,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const gray = group("expense_gray");
         const white = group("expense_white");
         const tag = group("tag");
+        const fieldHeights = [...(grid?.querySelectorAll(".field") || [])].map((field) => Math.round(field.getBoundingClientRect().height));
         return {
           gridWidth: Math.round(gridRect?.width || 0),
           columns: gridStyle?.gridTemplateColumns || "",
+          rowGap: Number.parseFloat(gridStyle?.rowGap || "0") || 0,
+          fieldHeights,
           sum: sum ? { left: Math.round(sum.left), top: Math.round(sum.top), width: Math.round(sum.width) } : null,
           prepay: prepay ? { left: Math.round(prepay.left), top: Math.round(prepay.top), width: Math.round(prepay.width) } : null,
           discount: discount ? { left: Math.round(discount.left), top: Math.round(discount.top), width: Math.round(discount.width) } : null,
@@ -1399,12 +1402,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && paymentGridLayout.prepay.left > paymentGridLayout.sum.left
         && paymentGridLayout.percent.left > paymentGridLayout.discount.left
         && paymentGridLayout.white.left > paymentGridLayout.gray.left;
+      const paymentColumnWidth = Math.min(paymentGridLayout.sum?.width || 0, paymentGridLayout.prepay?.width || 0);
+      const tagCompact = paymentGridLayout.tag
+        && paymentGridLayout.tag.width >= 120
+        && Math.abs(paymentGridLayout.tag.width - paymentColumnWidth) <= 3
+        && paymentGridLayout.tag.width <= paymentGridLayout.gridWidth * 0.55;
+      const paymentControlsCompact = paymentGridLayout.fieldHeights?.length >= 7
+        && paymentGridLayout.fieldHeights.every((height) => height >= 44 && height <= 45)
+        && paymentGridLayout.rowGap <= 7;
       if (!paymentPairsAligned
-        || !paymentGridLayout.tag
-        || paymentGridLayout.tag.width < paymentGridLayout.gridWidth - 2
+        || !tagCompact
+        || !paymentControlsCompact
         || paymentGridLayout.sum.width < 120
         || paymentGridLayout.prepay.width < 120) {
-        report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned });
+        report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned, tagCompact, paymentControlsCompact });
       }
 
       const calculationSummaryLayout = await page.evaluate(() => {

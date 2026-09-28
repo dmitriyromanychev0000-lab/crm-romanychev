@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.44";
-const APP_BUILD = "2026.09.28.262";
+const APP_VERSION = "1.7.45";
+const APP_BUILD = "2026.09.28.263";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Короткие поля заявки снова собраны в две колонки: меньше прокрутки без сжатия адреса, диагностики и других длинных данных"
+const APP_RELEASE = "Расчёт заявки стал ещё плотнее: денежные поля получили минимальную удобную высоту, а «Метка» больше не растягивается на весь экран"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.45",
+    date: "28.09.2026",
+    title: "Компактные поля расчёта",
+    items: [
+      "Итог, предоплата, скидка, процент и расходы сохраняют двухколоночную сетку, но занимают меньше высоты.",
+      "Поле «Метка» больше не растягивается отдельной полосой на всю ширину формы.",
+      "QA закрепляет ширину «Метки» в одну колонку и минимальную удобную высоту денежных контролов."
+    ]
+  },
   {
     version: "1.7.44",
     date: "28.09.2026",
@@ -5637,7 +5647,7 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group payment-percent"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
       <div class="form-group payment-gray"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
       <div class="form-group white-expense-group payment-white"><label>Белый расход</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /><small class="white-expense-hint" id="white-expense-minimum">Минимум: 0 ₽</small></div>
-      <div class="form-group payment-tag full"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
+      <div class="form-group payment-tag"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
     </section>
 

@@ -18739,3 +18739,32 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.7.45 · Расчёт: плотные двухколоночные контролы без растянутой «Метки». */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .legacy-payment-grid {
+    gap: 6px 8px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid > .payment-tag {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .form-group label {
+    margin-bottom: 3px !important;
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .field {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .white-expense-hint {
+    margin-top: 2px !important;
+  }
+}
