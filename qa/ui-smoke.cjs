@@ -967,10 +967,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         contract: document.querySelector(".act-contract-line")?.textContent || "",
         saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || ""
       }));
-      if (actScreenSurface.control !== "rgb(16, 11, 8)"
+      if (actScreenSurface.control !== "rgb(7, 12, 16)"
         || actScreenSurface.field !== "rgb(9, 15, 20)"
-        || actScreenSurface.selected !== "rgb(8, 16, 25)"
-        || actScreenSurface.primary !== "rgb(38, 18, 13)"
+        || actScreenSurface.selected !== "rgb(13, 20, 25)"
+        || actScreenSurface.primary !== "rgb(255, 113, 79)"
         || actScreenSurface.preview !== "rgb(5, 9, 12)"
         || actScreenSurface.sheet !== "rgb(255, 255, 255)"
         || actScreenSurface.headers.length !== 5
@@ -2059,13 +2059,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         expenseAction: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).backgroundColor,
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
-      if (financePageSurface.result !== "rgb(7, 19, 13)"
-        || financePageSurface.income !== "rgb(7, 17, 12)"
-        || financePageSurface.expense !== "rgb(20, 9, 11)"
-        || financePageSurface.incomeRow !== "rgb(7, 16, 11)"
-        || financePageSurface.expenseRow !== "rgb(18, 9, 11)"
-        || financePageSurface.incomeAction !== "rgb(10, 33, 20)"
-        || financePageSurface.expenseAction !== "rgb(38, 13, 17)"
+      if (financePageSurface.result !== "rgb(7, 12, 16)"
+        || financePageSurface.income !== "rgb(7, 12, 16)"
+        || financePageSurface.expense !== "rgb(7, 12, 16)"
+        || financePageSurface.incomeRow !== "rgb(7, 12, 16)"
+        || financePageSurface.expenseRow !== "rgb(7, 12, 16)"
+        || financePageSurface.incomeAction !== "rgb(13, 20, 25)"
+        || financePageSurface.expenseAction !== "rgb(13, 20, 25)"
         || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }
@@ -2118,9 +2118,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
-        || pricePageSurface.service !== "rgb(8, 16, 25)"
-        || pricePageSurface.material !== "rgb(19, 16, 6)"
-        || pricePageSurface.custom !== "rgb(16, 11, 23)"
+        || pricePageSurface.service !== "rgb(7, 12, 16)"
+        || pricePageSurface.material !== "rgb(7, 12, 16)"
+        || pricePageSurface.custom !== "rgb(7, 12, 16)"
         || parseFloat(pricePageSurface.rowTitleFont) < 11.5
         || pricePageSurface.searchBackground !== "rgb(9, 15, 20)"
         || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
@@ -2258,9 +2258,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         titleFont: getComputedStyle(document.querySelector(".legacy-client-copy strong")).fontSize
       }));
       if (clientPageSurface.background !== "rgb(7, 12, 16)"
-        || clientPageSurface.primaryStat !== "rgb(16, 11, 8)"
-        || clientPageSurface.activeStat !== "rgb(8, 16, 25)"
-        || clientPageSurface.closedStat !== "rgb(7, 17, 12)"
+        || clientPageSurface.primaryStat !== "rgb(7, 12, 16)"
+        || clientPageSurface.activeStat !== "rgb(7, 12, 16)"
+        || clientPageSurface.closedStat !== "rgb(7, 12, 16)"
         || parseFloat(clientPageSurface.titleFont) < 11.5) {
         report.failures.push({ width, type: "clients-semantic-hierarchy", clientPageSurface });
       }
@@ -2273,10 +2273,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         activeKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(3)")).backgroundColor
       }));
       if (clientProfileState.modal !== "rgb(3, 7, 10)"
-        || clientProfileState.hero !== "rgb(8, 16, 25)"
-        || clientProfileState.totalKpi !== "rgb(19, 16, 6)"
-        || clientProfileState.closedKpi !== "rgb(7, 17, 12)"
-        || clientProfileState.activeKpi !== "rgb(8, 16, 25)") {
+        || clientProfileState.hero !== "rgb(7, 12, 16)"
+        || clientProfileState.totalKpi !== "rgb(9, 15, 20)"
+        || clientProfileState.closedKpi !== "rgb(9, 15, 20)"
+        || clientProfileState.activeKpi !== "rgb(9, 15, 20)") {
         report.failures.push({ width, type: "client-profile-semantic-hierarchy", clientProfileState });
       }
       report.results.push(await shot(page, width, "client-profile", false));
@@ -2317,10 +2317,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         productPrice: getComputedStyle(document.querySelector(".legacy-product-price")).backgroundColor,
         itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize
       }));
-      if (goodsPageSurface.create !== "rgb(16, 11, 23)"
-        || goodsPageSurface.current !== "rgb(6, 11, 15)"
-        || goodsPageSurface.currentSummary !== "rgb(16, 11, 23)"
-        || goodsPageSurface.productPrice !== "rgb(19, 16, 6)"
+      if (goodsPageSurface.create !== "rgb(7, 12, 16)"
+        || goodsPageSurface.current !== "rgb(7, 12, 16)"
+        || goodsPageSurface.currentSummary !== "rgb(13, 20, 25)"
+        || goodsPageSurface.productPrice !== "rgb(7, 12, 16)"
         || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
         report.failures.push({ width, type: "goods-semantic-hierarchy", goodsPageSurface });
       }
@@ -2485,12 +2485,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         backupLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="backup"]')).backgroundColor,
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize
       }));
-      if (settingsSurface.profile !== "rgb(16, 11, 8)"
-        || settingsSurface.app !== "rgb(8, 16, 25)"
-        || settingsSurface.data !== "rgb(6, 11, 15)"
+      if (settingsSurface.profile !== "rgb(7, 12, 16)"
+        || settingsSurface.app !== "rgb(7, 12, 16)"
+        || settingsSurface.data !== "rgb(7, 12, 16)"
         || settingsSurface.field !== "rgb(9, 15, 20)"
-        || settingsSurface.toolsLink !== "rgb(8, 16, 25)"
-        || settingsSurface.backupLink !== "rgb(7, 17, 12)"
+        || settingsSurface.toolsLink !== "rgb(13, 20, 25)"
+        || settingsSurface.backupLink !== "rgb(13, 20, 25)"
         || parseFloat(settingsSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }

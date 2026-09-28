@@ -14623,3 +14623,94 @@
   }
 }
 
+/* 1.2.1 · Цвет — только смысловой акцент, поверхности единые и глубокие. */
+@media screen and (max-width: 520px) {
+  .finance-result-hero,
+  .legacy-finance-summary > .income,
+  .legacy-finance-summary > .expense,
+  .legacy-finance-row.income,
+  .legacy-finance-row.expense {
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-finance-actions > button {
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .client-profile-hero {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .client-profile-kpis > div {
+    background-color: #090f14 !important;
+    background-image: none !important;
+  }
+
+  .legacy-price-row.service,
+  .legacy-price-row.material,
+  .legacy-price-row.custom {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-custom-price-head {
+    background-color: #0d1419 !important;
+    background-image: none !important;
+  }
+
+  .legacy-goods-panel.legacy-goods-new,
+  .legacy-goods-panel.legacy-goods-current,
+  .legacy-goods-panel.legacy-product-price {
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-goods-current .legacy-goods-current-summary {
+    background-color: #0d1419 !important;
+    background-image: none !important;
+  }
+
+  .legacy-settings-page .settings-profile-card,
+  .legacy-settings-page .settings-app-card,
+  .legacy-settings-page .settings-data-card {
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button,
+  .legacy-settings-page .settings-links > button {
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-control {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-act-selected {
+    background-color: #0d1419 !important;
+    background-image: none !important;
+  }
+
+  .legacy-act-control-actions .legacy-orange-button {
+    border-color: #ff714f !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    box-shadow: 0 8px 20px rgba(255,113,79,.15) !important;
+  }
+}
+

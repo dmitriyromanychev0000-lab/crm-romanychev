@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.0";
-const APP_BUILD = "2026.09.28.183";
+const APP_VERSION = "1.2.1";
+const APP_BUILD = "2026.09.28.184";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Вернули фирменную шапку и сделали нижнее меню единым, без случайных разноцветных акцентов";
+const APP_RELEASE = "Вторичные разделы переведены на спокойные тёмные поверхности; цвет остался только как смысловой акцент";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.1",
+    date: "28.09.2026",
+    title: "Спокойная визуальная система",
+    items: [
+      "Финансы, клиенты, прайс, товарник, настройки и акт получили единые глубокие тёмные карточки вместо цветных заливок.",
+      "Зелёный, красный, синий, жёлтый и фиолетовый сохранены только в суммах, иконках, границах и статусах.",
+      "Основное действие в акте приведено к фирменному коралловому акценту."
+    ]
+  },
   {
     version: "1.2.0",
     date: "28.09.2026",
