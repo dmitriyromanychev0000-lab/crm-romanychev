@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T14:15:55.868Z",
-  "testedSha": "5be94985ec1c07e093ee63010e2eebf16d05baac",
+  "generatedAt": "2026-09-28T14:53:54.641Z",
+  "testedSha": "40e5f92994f99080e10da49e1679befd2fb13850",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1293,8 +1293,8 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 453,
-        "bottom": 501,
+        "top": 455,
+        "bottom": 503,
         "width": 248,
         "height": 48,
         "viewportHeight": 520,
@@ -1307,12 +1307,12 @@
           {
             "width": 248,
             "height": 48,
-            "top": 398
+            "top": 401
           },
           {
             "width": 248,
             "height": 48,
-            "top": 453
+            "top": 455
           }
         ]
       }
@@ -1328,26 +1328,26 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 464,
-        "bottom": 512,
-        "width": 300,
+        "top": 465,
+        "bottom": 513,
+        "width": 296,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
         "backdropOverflow": "hidden",
         "locked": true,
         "bodyFixed": true,
-        "actionsInnerWidth": 300,
+        "actionsInnerWidth": 296,
         "actionButtons": [
           {
-            "width": 300,
+            "width": 296,
             "height": 48,
-            "top": 409
+            "top": 411
           },
           {
-            "width": 300,
+            "width": 296,
             "height": 48,
-            "top": 464
+            "top": 465
           }
         ]
       }
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T14:16:30.752Z"
+      "fallbackCreatedAt": "2026-09-28T14:54:23.632Z"
     },
     {
       "label": "pwa-offline",
@@ -1490,25 +1490,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "tool-editor-compact-density",
-      "toolEditorState": {
-        "modal": "rgb(3, 7, 10)",
-        "field": "rgb(9, 15, 20)",
-        "fieldFont": "13.5px",
-        "fieldHeight": 44,
-        "headHeight": 59,
-        "heroHeight": 57,
-        "textareaHeight": 80,
-        "rowGap": 7,
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "footerBottom": 900,
-        "viewportHeight": 900
-      }
-    }
-  ]
+  "failures": []
 }
