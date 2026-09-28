@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T20:05:14.753Z",
-  "testedSha": "be1ccf3821a360a7d0c3b3c376181f257c273065",
+  "generatedAt": "2026-09-28T20:08:39.674Z",
+  "testedSha": "1076740455731097359e998816645bb17a5c805d",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T20:05:47.346Z"
+      "fallbackCreatedAt": "2026-09-28T20:09:16.955Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,19 +1614,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "photos-empty-always-open",
-      "emptyPhotoState": {
-        "tag": "SECTION",
-        "summaries": 0,
-        "headHeight": 46,
-        "bodyDisplay": "block",
-        "addHeight": 57,
-        "gridDisplay": "none",
-        "countText": "Нет фото"
-      }
-    }
-  ]
+  "failures": []
 }
