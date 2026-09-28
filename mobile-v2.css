@@ -15894,3 +15894,17 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.7.3 · Каталог услуг: полноширинные нижние действия. */
+@media screen and (max-width: 520px) {
+  .catalog-modal .catalog-modal-actions {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .catalog-modal .catalog-modal-actions > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

@@ -1167,6 +1167,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || serviceCatalogSurface.summary !== "rgb(6, 11, 15)") {
         report.failures.push({ width, type: "service-catalog-deep-dark", serviceCatalogSurface });
       }
+      const serviceCatalogActions = await page.evaluate(() => {
+        const actions = document.querySelector(".catalog-modal-actions");
+        const actionStyle = actions ? getComputedStyle(actions) : null;
+        const rect = actions?.getBoundingClientRect();
+        const buttons = [...document.querySelectorAll(".catalog-modal-actions > button")].map((button) => {
+          const buttonRect = button.getBoundingClientRect();
+          return {
+            width: Math.round(buttonRect.width),
+            height: Math.round(buttonRect.height),
+            left: Math.round(buttonRect.left),
+            top: Math.round(buttonRect.top)
+          };
+        });
+        return {
+          width: Math.round(rect?.width || 0),
+          left: Math.round(rect?.left || 0),
+          innerWidth: rect && actionStyle
+            ? Math.round(rect.width - (parseFloat(actionStyle.paddingLeft) || 0) - (parseFloat(actionStyle.paddingRight) || 0))
+            : 0,
+          buttons
+        };
+      });
+      if (serviceCatalogActions.buttons.length !== 2
+        || serviceCatalogActions.buttons.some((button) => button.width < serviceCatalogActions.innerWidth - 2)
+        || serviceCatalogActions.buttons.some((button) => button.height < 48)
+        || serviceCatalogActions.buttons[1]?.top <= serviceCatalogActions.buttons[0]?.top) {
+        report.failures.push({ width, type: "service-catalog-actions-full-width", serviceCatalogActions });
+      }
       report.results.push(await shot(page, width, "service-catalog", false));
 
       await page.evaluate(() => {
