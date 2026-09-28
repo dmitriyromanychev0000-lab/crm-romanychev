@@ -1714,19 +1714,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const cancel = modal?.querySelector(".legacy-dark-button");
         const close = modal?.querySelector(".legacy-range-head > button");
         const closeRect = close?.getBoundingClientRect();
+        const rangeGrid = modal?.querySelector(".legacy-range-grid");
+        const rangeRect = rangeGrid?.getBoundingClientRect();
+        const rangeRects = [...(rangeGrid?.querySelectorAll("label") || [])].map((node) => node.getBoundingClientRect());
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
           field: field ? getComputedStyle(field).backgroundColor : "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
-          closeHeight: closeRect ? Math.round(closeRect.height) : 0
+          closeHeight: closeRect ? Math.round(closeRect.height) : 0,
+          rangeWidth: Math.round(rangeRect?.width || 0),
+          rangeFieldWidths: rangeRects.map((rect) => Math.round(rect.width)),
+          rangeFieldTops: rangeRects.map((rect) => Math.round(rect.top))
         };
       });
       if (analyticsRangeSurface.modal !== "rgb(6, 11, 15)"
         || analyticsRangeSurface.field !== "rgb(9, 15, 20)"
         || analyticsRangeSurface.cancel !== "rgb(10, 17, 22)"
         || analyticsRangeSurface.closeWidth < 44
-        || analyticsRangeSurface.closeHeight < 44) {
+        || analyticsRangeSurface.closeHeight < 44
+        || analyticsRangeSurface.rangeFieldWidths.some((value) => value < analyticsRangeSurface.rangeWidth - 2)
+        || analyticsRangeSurface.rangeFieldTops.length !== 2
+        || analyticsRangeSurface.rangeFieldTops[1] <= analyticsRangeSurface.rangeFieldTops[0]) {
         report.failures.push({ width, type: "analytics-range-deep-dark", analyticsRangeSurface });
       }
       report.results.push(await shot(page, width, "analytics-range", false));
@@ -1736,21 +1745,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const warehousePageSurfaces = await page.evaluate(() => {
         const actionButtons = [...document.querySelectorAll(".legacy-stock-actions-v2 button")].slice(0, 4);
         const actionRects = actionButtons.map((button) => button.getBoundingClientRect());
+        const filterGrid = document.querySelector(".warehouse-filter-grid");
+        const filterGridRect = filterGrid?.getBoundingClientRect();
+        const filterRects = [...document.querySelectorAll(".warehouse-filter-grid > .warehouse-filter-control")].map((node) => node.getBoundingClientRect());
         return {
-        group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
-        stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
-        action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
-        actionWidths: actionRects.map((rect) => Math.round(rect.width)),
-        actionTops: actionRects.map((rect) => Math.round(rect.top)),
-        filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value),
-        techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
-        categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
-        hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
-        hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter")),
-        addWidth: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().width || 0),
-        pageWidth: Math.round(document.querySelector(".legacy-warehouse-page")?.getBoundingClientRect().width || 0),
-        addHeight: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().height || 0),
-        addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || ""
+          group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
+          stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
+          action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
+          actionWidths: actionRects.map((rect) => Math.round(rect.width)),
+          actionTops: actionRects.map((rect) => Math.round(rect.top)),
+          filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value),
+          techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
+          categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
+          hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
+          hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter")),
+          addWidth: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().width || 0),
+          pageWidth: Math.round(document.querySelector(".legacy-warehouse-page")?.getBoundingClientRect().width || 0),
+          addHeight: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().height || 0),
+          addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || "",
+          filterGridWidth: Math.round(filterGridRect?.width || 0),
+          filterWidths: filterRects.map((rect) => Math.round(rect.width)),
+          filterTops: filterRects.map((rect) => Math.round(rect.top))
         };
       });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
@@ -1771,7 +1786,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]
         || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 34
         || warehousePageSurfaces.addHeight < 48
-        || !warehousePageSurfaces.addText.includes("Новая позиция")) {
+        || !warehousePageSurfaces.addText.includes("Новая позиция")
+        || warehousePageSurfaces.filterWidths.some((value) => value < warehousePageSurfaces.filterGridWidth - 2)
+        || warehousePageSurfaces.filterTops.some((top, index, list) => index > 0 && top <= list[index - 1])) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       if (width === 390) {
@@ -2297,6 +2314,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const pricePageSurface = await page.evaluate(() => {
         const search = document.querySelector("#price-search");
         const searchStyle = getComputedStyle(search);
+        const filterGrid = document.querySelector(".legacy-price-filters");
+        const filterGridRect = filterGrid?.getBoundingClientRect();
+        const filterRects = [...document.querySelectorAll(".legacy-price-filters > label")].map((node) => node.getBoundingClientRect());
         return {
           group: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
           service: getComputedStyle(document.querySelector(".legacy-price-row.service")).backgroundColor,
@@ -2312,7 +2332,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addBackground: getComputedStyle(document.querySelector(".legacy-price-add-wide")).backgroundColor,
           priceColors: [...document.querySelectorAll(".legacy-price-row > b")].map((node) => getComputedStyle(node).color),
           rowBorders: [...document.querySelectorAll(".legacy-price-row")].map((node) => getComputedStyle(node).borderTopColor),
-          customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor
+          customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor,
+          filterGridWidth: Math.round(filterGridRect?.width || 0),
+          filterWidths: filterRects.map((rect) => Math.round(rect.width)),
+          filterTops: filterRects.map((rect) => Math.round(rect.top))
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
@@ -2328,7 +2351,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.addBackground !== "rgb(255, 113, 79)"
         || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")
         || pricePageSurface.rowBorders.some((value) => value !== "rgb(32, 45, 53)")
-        || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)") {
+        || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)"
+        || pricePageSurface.filterWidths.some((value) => value < pricePageSurface.filterGridWidth - 2)
+        || pricePageSurface.filterTops.length !== 2
+        || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0]) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
       }
       await page.waitForTimeout(80);

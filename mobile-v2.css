@@ -15462,3 +15462,28 @@
     grid-column: auto !important;
   }
 }
+
+
+/* 1.5.8 · Поля-фильтры и даты: одна полноширинная колонка на телефоне. */
+@media screen and (max-width: 520px) {
+  .warehouse-filter-grid,
+  .legacy-price-filters,
+  .legacy-range-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .warehouse-filter-control,
+  .legacy-price-filters > label,
+  .legacy-range-grid > label {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .warehouse-filter-control .field,
+  .legacy-price-filters .field,
+  .legacy-range-grid .field {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

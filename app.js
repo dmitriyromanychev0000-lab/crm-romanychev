@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.7";
-const APP_BUILD = "2026.09.28.204";
+const APP_VERSION = "1.5.8";
+const APP_BUILD = "2026.09.28.205";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Основные действия финансов и бэкапов стали полноширинными и визуально последовательными";
+const APP_RELEASE = "Фильтры склада, прайса и даты аналитики переведены на полноширинные мобильные поля";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.8",
+    date: "28.09.2026",
+    title: "Фильтры тоже на всю ширину",
+    items: [
+      "Фильтры склада больше не сжимают остаток, технику и категорию в две колонки.",
+      "Фильтры прайса «Тип» и «Техника» идут отдельными полноширинными строками.",
+      "В окне «Свой период» даты «С» и «По» тоже стали полноширинными и читаемыми."
+    ]
+  },
   {
     version: "1.5.7",
     date: "28.09.2026",
