@@ -20477,3 +20477,27 @@
     justify-self: end !important;
   }
 }
+
+
+/* 1.7.85 fix · 320 px: перебиваем старое полноширинное действие приложения. */
+@media screen and (max-width: 520px) {
+  .settings-profile-card {
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .settings-app-card .legacy-settings-row:not(.plain) > button:not(.toggle) {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 4px 6px !important;
+    text-align: center !important;
+  }
+}
