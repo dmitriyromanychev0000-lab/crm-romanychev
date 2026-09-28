@@ -2601,12 +2601,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.groupChevronTransforms[0] === warehousePageSurfaces.groupChevronTransforms[1]) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
-      if (width <= 340 && (
-        warehousePageSurfaces.stockMainHeight > 90
-        || warehousePageSurfaces.stockQtyLeft < warehousePageSurfaces.stockCopyRight - 2
-        || warehousePageSurfaces.stockTitleHeight > 38
-      )) {
-        report.failures.push({ width, type: "warehouse-320-compact-card", warehousePageSurfaces });
+      if (width <= 340) {
+        const stockQtyBelowCopy = warehousePageSurfaces.stockQtyLeft >= 50
+          && warehousePageSurfaces.stockQtyLeft < warehousePageSurfaces.stockCopyRight - 2;
+        if (warehousePageSurfaces.stockMainHeight > 98
+          || !stockQtyBelowCopy
+          || warehousePageSurfaces.stockTitleHeight > 38) {
+          report.failures.push({ width, type: "warehouse-320-compact-card", warehousePageSurfaces, stockQtyBelowCopy });
+        }
       }
       if (width === 390) {
         await page.locator("#warehouse-tech-filter").selectOption({ label: "Холодильник" });

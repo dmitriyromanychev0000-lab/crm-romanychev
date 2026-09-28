@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.64";
-const APP_BUILD = "2026.09.28.285";
+const APP_VERSION = "1.7.65";
+const APP_BUILD = "2026.09.28.286";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Узкие экраны дочищены: короткие заголовки существующих Инструментов/Документов и лаконичное «Сохранить» в товарнике больше не обрезаются"
+const APP_RELEASE = "На 320 px название позиции склада снова получает приоритет: остаток переносится ниже и больше не отъедает ширину у двухстрочного названия"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.65",
+    date: "28.09.2026",
+    title: "Склад без тесных названий",
+    items: [
+      "На 320 px остаток позиции переносится отдельной компактной строкой под названием вместо правой колонки.",
+      "Название получает всю рабочую ширину и остаётся читаемым в две строки.",
+      "Иконка, остаток и статус не перекрываются; карточка сохраняет компактную высоту."
+    ]
+  },
   {
     version: "1.7.64",
     date: "28.09.2026",
