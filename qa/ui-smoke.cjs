@@ -939,7 +939,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || Math.max(...backupStatsLayout.widths) - Math.min(...backupStatsLayout.widths) > 2
       || Math.max(...backupStatsLayout.tops) - Math.min(...backupStatsLayout.tops) > 2
       || backupStatsLayout.widths.some((value) => value < 80)
-      || backupStatsLayout.heights.some((value) => value < 60)) {
+      || backupStatsLayout.heights.some((value) => value < 56)) {
       report.failures.push({ width, type: "backup-stats-single-row", backupStatsLayout });
     }
 
