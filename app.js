@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.23";
-const APP_BUILD = "2026.09.28.241";
+const APP_VERSION = "1.7.24";
+const APP_BUILD = "2026.09.28.242";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Каталог услуг больше не пропадает после выбора услуги внизу списка: выбор обновляется без пересборки прокрученного окна";
+const APP_RELEASE = "Документы и инструмент стали плотнее: статистика и рабочие строки занимают меньше места без потери сумм, названий и зон нажатия";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.24",
+    date: "28.09.2026",
+    title: "Плотные документы и инструмент",
+    items: [
+      "Карточки статистики документов и инструмента стали ниже без уменьшения ключевых чисел.",
+      "Строки документов и инструмента уплотнены по вертикали, сумма справа и шеврон остаются на одной линии.",
+      "На 320 px длинные названия могут расти по высоте, чтобы не ломать читаемость."
+    ]
+  },
   {
     version: "1.7.23",
     date: "28.09.2026",

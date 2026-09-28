@@ -3231,6 +3231,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         ))) {
         report.failures.push({ width, type: "tools-status-hierarchy", toolsPageSurface });
       }
+      const toolsDensity = await page.evaluate(() => {
+        const stat = document.querySelector(".tools-stats > div");
+        const row = document.querySelector(".legacy-document-row.tool");
+        return {
+          statHeight: Math.round(stat?.getBoundingClientRect().height || 0),
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (toolsDensity.statHeight > 66
+        || toolsDensity.rowHeight > (width <= 340 ? 72 : 64)) {
+        report.failures.push({ width, type: "tools-compact-density", toolsDensity });
+      }
       await page.locator('[data-action="new-tool"]').click();
       const toolEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".tool-editor-modal .modal-actions");
@@ -3307,6 +3319,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || Math.abs(receiptsPageSurface.amountCenter - receiptsPageSurface.rowCenter) > 10
         ))) {
         report.failures.push({ width, type: "receipts-semantic-hierarchy", receiptsPageSurface });
+      }
+      const receiptsDensity = await page.evaluate(() => {
+        const stat = document.querySelector(".receipts-stats > div");
+        const row = document.querySelector(".legacy-document-row.receipt");
+        return {
+          statHeight: Math.round(stat?.getBoundingClientRect().height || 0),
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (receiptsDensity.statHeight > 66
+        || receiptsDensity.rowHeight > (width <= 340 ? 72 : 64)) {
+        report.failures.push({ width, type: "receipts-compact-density", receiptsDensity });
       }
       await page.locator('[data-action="new-receipt"]').click();
       const receiptEditorState = await page.evaluate(() => {

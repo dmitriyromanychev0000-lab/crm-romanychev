@@ -17224,3 +17224,59 @@
     min-height: 70px !important;
   }
 }
+
+
+/* 1.7.24 · Документы и инструмент: плотнее списки и статистика без потери читаемости. */
+@media screen and (max-width: 520px) {
+  .legacy-service-page {
+    padding-top: 10px !important;
+  }
+
+  .legacy-service-stats.receipts-stats,
+  .legacy-service-stats.tools-stats {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .receipts-stats > div,
+  .tools-stats > div {
+    min-height: 60px !important;
+    padding: 8px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .receipts-stats small,
+  .tools-stats small {
+    margin-top: 3px !important;
+  }
+
+  .legacy-service-page .legacy-service-list {
+    gap: 5px !important;
+  }
+
+  .legacy-document-row.receipt,
+  .legacy-document-row.tool {
+    min-height: 60px !important;
+    padding: 7px 9px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-document-row.receipt .legacy-document-icon,
+  .legacy-document-row.tool .legacy-document-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-document-row.receipt small,
+  .legacy-document-row.tool small {
+    margin-top: 2px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-document-row.receipt,
+  .legacy-document-row.tool {
+    min-height: 64px !important;
+  }
+}
