@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.60";
-const APP_BUILD = "2026.09.28.281";
+const APP_VERSION = "1.7.61";
+const APP_BUILD = "2026.09.28.282";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор заявки стал компактнее: «Отмена» и «Сохранить» теперь стоят рядом в одной нижней строке"
+const APP_RELEASE = "Новые редакторы стали компактнее: «Отмена» и «Сохранить» стоят рядом в складе, финансах, прайсе, товарнике, инструментах и документах"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.61",
+    date: "28.09.2026",
+    title: "Компактные футеры редакторов",
+    items: [
+      "В новых позициях склада, финансах, прайсе, товарнике, инструментах и документах «Отмена» и «Сохранить» стоят рядом.",
+      "Редакторы больше не тратят две большие строки на два коротких действия.",
+      "Редактирование существующих сущностей с опасным действием не менялось: удаление и архив остаются отдельно."
+    ]
+  },
   {
     version: "1.7.60",
     date: "28.09.2026",

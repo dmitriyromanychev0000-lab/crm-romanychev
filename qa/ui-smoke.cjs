@@ -221,6 +221,47 @@ async function shot(page, width, label, fullPage = true) {
   return result;
 }
 
+async function assertPairedFooter(page, width, selector, type) {
+  const state = await page.evaluate((selectorValue) => {
+    const footer = document.querySelector(selectorValue);
+    const rect = footer?.getBoundingClientRect();
+    const style = footer ? getComputedStyle(footer) : null;
+    const paddingLeft = style ? (parseFloat(style.paddingLeft) || 0) : 0;
+    const paddingRight = style ? (parseFloat(style.paddingRight) || 0) : 0;
+    const buttons = footer ? [...footer.querySelectorAll(":scope > button")].map((button) => {
+      const buttonRect = button.getBoundingClientRect();
+      return {
+        left: Math.round(buttonRect.left),
+        top: Math.round(buttonRect.top),
+        width: Math.round(buttonRect.width),
+        height: Math.round(buttonRect.height)
+      };
+    }) : [];
+    return {
+      footerHeight: Math.round(rect?.height || 0),
+      contentLeft: rect ? Math.round(rect.left + paddingLeft) : 0,
+      innerWidth: rect ? Math.round(rect.width - paddingLeft - paddingRight) : 0,
+      buttons
+    };
+  }, selector);
+  const first = state.buttons[0];
+  const second = state.buttons[1];
+  const gap = first && second ? second.left - (first.left + first.width) : 999;
+  const usedWidth = first && second ? first.width + gap + second.width : 0;
+  if (state.buttons.length !== 2
+    || state.buttons.some((button) => button.width < 100 || button.height < 48 || button.height > 49)
+    || Math.abs((first?.top || 0) - (second?.top || 0)) > 2
+    || (second?.left || 0) <= (first?.left || 0)
+    || Math.abs((first?.left || 0) - state.contentLeft) > 2
+    || gap < 4
+    || gap > 10
+    || Math.abs(usedWidth - state.innerWidth) > 2
+    || state.footerHeight > 72) {
+    report.failures.push({ width, type, state, gap, usedWidth });
+  }
+  return state;
+}
+
 async function fillConfirmed(locator, value) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     await locator.fill(value);
@@ -2674,6 +2715,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorDensity.compatHeight > 48) {
         report.failures.push({ width, type: "stock-editor-compact-density", stockEditorDensity });
       }
+      await assertPairedFooter(page, width, ".stock-editor-modal .modal-actions", "stock-editor-actions-two-columns");
       report.results.push(await shot(page, width, "stock-editor", false));
       if (width === 390) {
         await page.locator('.stock-editor-modal [name="name"]').fill("Датчик температуры 10 кОм");
@@ -3171,6 +3213,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financeEditorState.rowGap > 7.5) {
         report.failures.push({ width, type: "finance-editor-compact-density", financeEditorState });
       }
+      await assertPairedFooter(page, width, ".finance-entry-modal .modal-actions", "finance-editor-actions-two-columns");
       report.results.push(await shot(page, width, "finance-editor", false));
       await page.keyboard.press("Escape");
 
@@ -3320,6 +3363,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || priceEditorState.cardPaddingTop > 10) {
         report.failures.push({ width, type: "price-editor-compact-density", priceEditorState });
       }
+      await assertPairedFooter(page, width, ".legacy-price-editor-actions", "price-editor-actions-two-columns");
       report.results.push(await shot(page, width, "price-editor", false));
       await page.keyboard.press("Escape");
 
@@ -3747,6 +3791,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsEditorState.addButtonHeight < 44) {
         report.failures.push({ width, type: "goods-editor-compact-density", goodsEditorState });
       }
+      await assertPairedFooter(page, width, ".legacy-goods-savebar", "goods-editor-actions-two-columns");
       report.results.push(await shot(page, width, "goods-editor", false));
       await page.keyboard.press("Escape");
 
@@ -3850,6 +3895,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolEditorState.rowGap > 7.5) {
         report.failures.push({ width, type: "tool-editor-compact-density", toolEditorState });
       }
+      await assertPairedFooter(page, width, ".tool-editor-modal .modal-actions", "tool-editor-actions-two-columns");
       report.results.push(await shot(page, width, "tool-editor", false));
       await page.keyboard.press("Escape");
 
@@ -3955,6 +4001,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptEditorState.rowGap > 7.5) {
         report.failures.push({ width, type: "receipt-editor-compact-density", receiptEditorState });
       }
+      await assertPairedFooter(page, width, ".receipt-editor-modal .modal-actions", "receipt-editor-actions-two-columns");
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
 

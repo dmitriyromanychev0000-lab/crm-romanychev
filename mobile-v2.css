@@ -19203,3 +19203,30 @@
     white-space: nowrap !important;
   }
 }
+
+/* 1.7.61 · Новые редакторы: Отмена и Сохранить в одной строке. */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal .modal-actions,
+  .legacy-finance-entry-backdrop .modal-actions,
+  .legacy-service-editor-backdrop .modal-actions:not(:has(.danger-button)),
+  .legacy-price-editor-actions:not(:has(.legacy-editor-delete)),
+  .legacy-goods-savebar:not(:has(.legacy-delete-goods)) {
+    display: grid !important;
+    grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr) !important;
+    gap: 6px !important;
+  }
+
+  .stock-editor-modal .modal-actions > button,
+  .legacy-finance-entry-backdrop .modal-actions > button,
+  .legacy-service-editor-backdrop .modal-actions:not(:has(.danger-button)) > button,
+  .legacy-price-editor-actions:not(:has(.legacy-editor-delete)) > button,
+  .legacy-goods-savebar:not(:has(.legacy-delete-goods)) > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    justify-self: stretch !important;
+    white-space: nowrap !important;
+  }
+}
