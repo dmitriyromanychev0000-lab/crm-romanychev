@@ -19907,3 +19907,11 @@
     border-top: 1px solid #172128 !important;
   }
 }
+
+
+/* 1.7.75 · Закрепляем фактическое скрытие служебных действий в закрытом details. */
+@media screen and (max-width: 520px) {
+  .legacy-backup-advanced:not([open]) > .legacy-backup-grid {
+    display: none !important;
+  }
+}

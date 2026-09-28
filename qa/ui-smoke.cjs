@@ -4428,6 +4428,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           open: Boolean(details?.open),
           gridDisplay: grid ? getComputedStyle(grid).display : "missing",
           gridWidth: Math.round(gridRect?.width || 0),
+          gridInnerWidth: grid ? Math.round(grid.clientWidth - (parseFloat(getComputedStyle(grid).paddingLeft) || 0) - (parseFloat(getComputedStyle(grid).paddingRight) || 0)) : 0,
           buttonWidths: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
           buttonHeights: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().height))
         };
@@ -4435,7 +4436,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (!backupAdvancedOpen.open
         || backupAdvancedOpen.gridDisplay === "none"
         || backupAdvancedOpen.buttonWidths.length !== 7
-        || backupAdvancedOpen.buttonWidths.some((value) => value < backupAdvancedOpen.gridWidth - 2)
+        || backupAdvancedOpen.buttonWidths.some((value) => value < backupAdvancedOpen.gridInnerWidth - 2)
         || backupAdvancedOpen.buttonHeights.some((value) => value < 44)) {
         report.failures.push({ width, type: "backup-advanced-open", backupAdvancedOpen });
       }
@@ -5078,6 +5079,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
   await writeSeed(utilityPage, seed);
   await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
+  await utilityPage.locator(".legacy-backup-advanced > summary").click();
   await utilityPage.locator('[data-action="backup-self-test"]').click();
   await utilityPage.locator("#toast.show").waitFor({ state: "visible", timeout: 8000 });
   const backupToast = (await utilityPage.locator("#toast").innerText()).trim();
