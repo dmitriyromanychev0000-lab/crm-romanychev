@@ -249,7 +249,7 @@ async function assertPairedFooter(page, width, selector, type) {
   const gap = first && second ? second.left - (first.left + first.width) : 999;
   const usedWidth = first && second ? first.width + gap + second.width : 0;
   if (state.buttons.length !== 2
-    || state.buttons.some((button) => button.width < 100 || button.height < 48 || button.height > 49)
+    || state.buttons.some((button) => button.width < 96 || button.height < 48 || button.height > 49)
     || Math.abs((first?.top || 0) - (second?.top || 0)) > 2
     || (second?.left || 0) <= (first?.left || 0)
     || Math.abs((first?.left || 0) - state.contentLeft) > 2
@@ -4791,17 +4791,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         actionButtons
       };
     }, editorCase.actions);
-    const actionsFullWidth = metrics.actionButtons.length >= 2
-      && metrics.actionButtons.every((button) => button.width >= metrics.actionsInnerWidth - 2 && button.height >= 44)
-      && metrics.actionButtons.every((button, index, buttons) => index === 0 || button.top > buttons[index - 1].top);
+    const actionsCompact = metrics.actionButtons.length === 2
+      && metrics.actionButtons.every((button) => button.width >= 96 && button.height >= 44)
+      && Math.abs((metrics.actionButtons[0]?.top || 0) - (metrics.actionButtons[1]?.top || 0)) <= 2
+      && metrics.actionButtons.reduce((sum, button) => sum + button.width, 0) <= metrics.actionsInnerWidth
+      && metrics.actionsInnerWidth - metrics.actionButtons.reduce((sum, button) => sum + button.width, 0) <= 10;
     const reachable = metrics.height >= 44
       && metrics.top >= 0
       && metrics.bottom <= metrics.viewportHeight + 1
       && metrics.backdropCount === 1
       && metrics.locked
       && metrics.bodyFixed
-      && actionsFullWidth;
-    if (!reachable) report.failures.push({ type: "keyboard-height-editor", label: editorCase.label, metrics, actionsFullWidth });
+      && actionsCompact;
+    if (!reachable) report.failures.push({ type: "keyboard-height-editor", label: editorCase.label, metrics, actionsCompact });
     await utilityPage.screenshot({ path: outDir + "/320-keyboard-" + editorCase.label + ".png", fullPage: false });
     report.results.push({
       label: "keyboard-" + editorCase.label,
