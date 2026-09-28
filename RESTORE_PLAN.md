@@ -223,7 +223,7 @@
 
 ## 14. Релиз 1.0
 
-- ✅ 99 автоматических Chromium-проверок без ошибок.
+- ✅ 146 автоматических Chromium-проверок без ошибок.
 - ✅ 320 / 360 / 390 / 430 px.
 - ✅ 320×520 keyboard-height сценарий: кнопка сохранения достижима.
 - ✅ Backup self-test: JSON → validate → IndexedDB → validate, включая settings.
