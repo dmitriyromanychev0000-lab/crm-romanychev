@@ -16564,3 +16564,34 @@
     border-radius: 12px !important;
   }
 }
+
+
+/* 1.7.14 · Денежные карточки: высота включает padding, без скрытого раздувания. */
+@media screen and (max-width: 520px) {
+  .legacy-order-money > div,
+  .legacy-expanded-money > div {
+    box-sizing: border-box !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .legacy-order-money span,
+  .legacy-expanded-money span {
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-money strong,
+  .legacy-expanded-money strong {
+    margin-top: 3px !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-card.active .legacy-order-money > div:last-child strong,
+  .legacy-expanded-money > div:last-child strong {
+    font-size: clamp(12px,3.8vw,15px) !important;
+  }
+}

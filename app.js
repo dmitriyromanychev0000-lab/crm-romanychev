@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.13";
-const APP_BUILD = "2026.09.28.231";
+const APP_VERSION = "1.7.14";
+const APP_BUILD = "2026.09.28.232";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Деталка и редактор заявки стали плотнее: меньше пустых зон, те же удобные нажатия и больше рабочих данных на экране";
+const APP_RELEASE = "Денежные карточки заявки теперь реально компактные по высоте без обрезания текста и с сохранением читаемости";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.14",
+    date: "28.09.2026",
+    title: "Компактные денежные карточки без скрытой высоты",
+    items: [
+      "Исправлена скрытая лишняя высота блоков сумм: padding теперь учитывается внутри заданной высоты.",
+      "Суммы на главном экране и в деталке заявки занимают меньше места, не уменьшая основной текст.",
+      "Сохранены две колонки и читаемость статуса «После закрытия» на узких экранах."
+    ]
+  },
   {
     version: "1.7.13",
     date: "28.09.2026",
