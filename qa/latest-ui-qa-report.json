@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T11:51:08.546Z",
-  "testedSha": "e7e11b8a398276e38549c94af1a6e5c2ecd63d30",
+  "generatedAt": "2026-09-28T11:53:43.545Z",
+  "testedSha": "bc1fcb9b45b6bb121615c125a0ebc209a4937287",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -46,44 +46,7 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 96,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "more",
@@ -263,44 +226,7 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 96,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "stock-detail",
@@ -561,44 +487,7 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 107,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "more",
@@ -823,44 +712,7 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 117,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "more",
@@ -1085,44 +937,7 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 117,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "stock-detail",
@@ -1302,44 +1117,7 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 130,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "more",
@@ -1698,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T11:51:44.411Z"
+      "fallbackCreatedAt": "2026-09-28T11:54:21.915Z"
     },
     {
       "label": "pwa-offline",
@@ -1712,275 +1490,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "small-touch-target",
-      "label": "analytics",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 96,
-          "h": 42
-        }
-      ]
-    },
-    {
-      "width": 320,
-      "type": "small-touch-target",
-      "label": "analytics-range",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 96,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 96,
-          "h": 42
-        }
-      ]
-    },
-    {
-      "width": 360,
-      "type": "small-touch-target",
-      "label": "analytics",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 107,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 107,
-          "h": 42
-        }
-      ]
-    },
-    {
-      "width": 390,
-      "type": "small-touch-target",
-      "label": "analytics",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 117,
-          "h": 42
-        }
-      ]
-    },
-    {
-      "width": 390,
-      "type": "analytics-compact-density",
-      "analyticsDensity": {
-        "kpiHeight": 92,
-        "workMetricHeight": 66,
-        "focusHeight": 52,
-        "panelPaddingTop": 10,
-        "panelMarginBottom": 7
-      }
-    },
-    {
-      "width": 390,
-      "type": "small-touch-target",
-      "label": "analytics-range",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 117,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 117,
-          "h": 42
-        }
-      ]
-    },
-    {
-      "width": 430,
-      "type": "small-touch-target",
-      "label": "analytics",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "День",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Неделя",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Месяц",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Год",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Всё",
-          "w": 130,
-          "h": 42
-        },
-        {
-          "tag": "BUTTON",
-          "text": "Свой период",
-          "w": 130,
-          "h": 42
-        }
-      ]
-    }
-  ]
+  "failures": []
 }
