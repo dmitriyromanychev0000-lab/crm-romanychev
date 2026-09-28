@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T10:20:36.324Z",
-  "testedSha": "50e9af21f6194c7a28c4e36711b4eba8172f7ed0",
+  "generatedAt": "2026-09-28T10:22:52.427Z",
+  "testedSha": "089a2f482c6f2626a479a1cd9d8c1044353485db",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T10:21:13.865Z"
+      "fallbackCreatedAt": "2026-09-28T10:23:29.296Z"
     },
     {
       "label": "pwa-offline",
@@ -1412,46 +1412,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "order-editor-polish",
-      "editorSurfaceState": {
-        "material": "rgb(7, 12, 16)",
-        "materialField": "rgb(9, 15, 20)",
-        "secondaryAction": "rgb(10, 17, 22)",
-        "serviceMatchCount": 0,
-        "clippedMaterialLabels": [],
-        "qtyWidth": 61,
-        "costWidth": 105,
-        "footerWidth": 320,
-        "footerCoverage": 1.9,
-        "footerButtonGap": -304,
-        "secondaryWidth": 304,
-        "primaryWidth": 304,
-        "secondaryTop": 790,
-        "primaryTop": 843
-      }
-    },
-    {
-      "width": 390,
-      "type": "order-editor-polish",
-      "editorSurfaceState": {
-        "material": "rgb(7, 12, 16)",
-        "materialField": "rgb(9, 15, 20)",
-        "secondaryAction": "rgb(10, 17, 22)",
-        "serviceMatchCount": 0,
-        "clippedMaterialLabels": [],
-        "qtyWidth": 80,
-        "costWidth": 128,
-        "footerWidth": 390,
-        "footerCoverage": 1.877,
-        "footerButtonGap": -366,
-        "secondaryWidth": 366,
-        "primaryWidth": 366,
-        "secondaryTop": 788,
-        "primaryTop": 843
-      }
-    }
-  ]
+  "failures": []
 }
