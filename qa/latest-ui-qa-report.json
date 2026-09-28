@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T14:57:36.323Z",
-  "testedSha": "4546f5771b3bb9fbd91bcc2f32b272553ef11942",
+  "generatedAt": "2026-09-28T15:02:10.155Z",
+  "testedSha": "3daeb862f8d6698db28b6765c0fca1161c37f2ff",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T14:58:12.077Z"
+      "fallbackCreatedAt": "2026-09-28T15:02:43.915Z"
     },
     {
       "label": "pwa-offline",
@@ -1502,12 +1502,12 @@
         "activeKpi": "rgb(9, 15, 20)",
         "headHeight": 59,
         "heroHeight": 68,
-        "addressHeight": 81,
+        "addressHeight": 63,
         "actionHeight": 44,
         "kpiHeight": 56,
         "notePaddingTop": 9,
         "textareaHeight": 72,
-        "orderHeight": 106,
+        "orderHeight": 64,
         "backWidth": 44,
         "backHeight": 44
       }
