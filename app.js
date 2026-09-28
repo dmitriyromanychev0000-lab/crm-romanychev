@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.8";
-const APP_BUILD = "2026.09.28.205";
+const APP_VERSION = "1.5.9";
+const APP_BUILD = "2026.09.28.206";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Фильтры склада, прайса и даты аналитики переведены на полноширинные мобильные поля";
+const APP_RELEASE = "Реквизиты исполнителя в настройках переведены на полноценную одноколоночную мобильную форму";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.9",
+    date: "28.09.2026",
+    title: "Реквизиты без сжатых полей",
+    items: [
+      "Поля «Исполнитель» и «Телефон» больше не делят строку пополам на 360–430 px.",
+      "Все реквизиты исполнителя идут одной полноширинной колонкой с единым вертикальным ритмом.",
+      "Проверка фиксирует ширину и последовательность всех пяти полей формы настроек."
+    ]
+  },
   {
     version: "1.5.8",
     date: "28.09.2026",

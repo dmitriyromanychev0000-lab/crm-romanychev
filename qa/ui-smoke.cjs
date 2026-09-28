@@ -2772,22 +2772,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));
-      const settingsSurface = await page.evaluate(() => ({
-        profile: getComputedStyle(document.querySelector(".settings-profile-card")).backgroundColor,
-        app: getComputedStyle(document.querySelector(".settings-app-card")).backgroundColor,
-        data: getComputedStyle(document.querySelector(".settings-data-card")).backgroundColor,
-        field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor,
-        toolsLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="tools"]')).backgroundColor,
-        backupLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="backup"]')).backgroundColor,
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize
-      }));
+      const settingsSurface = await page.evaluate(() => {
+        const grid = document.querySelector(".legacy-settings-grid");
+        const gridRect = grid?.getBoundingClientRect();
+        const fieldRects = [...document.querySelectorAll(".legacy-settings-grid > label")].map((node) => node.getBoundingClientRect());
+        return {
+          profile: getComputedStyle(document.querySelector(".settings-profile-card")).backgroundColor,
+          app: getComputedStyle(document.querySelector(".settings-app-card")).backgroundColor,
+          data: getComputedStyle(document.querySelector(".settings-data-card")).backgroundColor,
+          field: getComputedStyle(document.querySelector(".legacy-settings-grid .field")).backgroundColor,
+          toolsLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="tools"]')).backgroundColor,
+          backupLink: getComputedStyle(document.querySelector('.legacy-settings-links [data-more="backup"]')).backgroundColor,
+          rowTitleFont: getComputedStyle(document.querySelector(".legacy-settings-row strong")).fontSize,
+          gridWidth: Math.round(gridRect?.width || 0),
+          fieldWidths: fieldRects.map((rect) => Math.round(rect.width)),
+          fieldTops: fieldRects.map((rect) => Math.round(rect.top))
+        };
+      });
       if (settingsSurface.profile !== "rgb(7, 12, 16)"
         || settingsSurface.app !== "rgb(7, 12, 16)"
         || settingsSurface.data !== "rgb(7, 12, 16)"
         || settingsSurface.field !== "rgb(9, 15, 20)"
         || settingsSurface.toolsLink !== "rgb(13, 20, 25)"
         || settingsSurface.backupLink !== "rgb(13, 20, 25)"
-        || parseFloat(settingsSurface.rowTitleFont) < 11.5) {
+        || parseFloat(settingsSurface.rowTitleFont) < 11.5
+        || settingsSurface.fieldWidths.length !== 5
+        || settingsSurface.fieldWidths.some((value) => value < settingsSurface.gridWidth - 2)
+        || settingsSurface.fieldTops.some((top, index, list) => index > 0 && top <= list[index - 1])) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
 

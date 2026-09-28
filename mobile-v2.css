@@ -15487,3 +15487,22 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.5.9 · Настройки: реквизиты исполнителя всегда одной полноширинной колонкой. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-settings-grid > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .legacy-settings-grid .field {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
