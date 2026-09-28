@@ -20089,3 +20089,54 @@
     height: 46px !important;
   }
 }
+
+
+/* 1.7.80 · Финансы: спокойная, но не монотонная иерархия сводки. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-summary > div {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .legacy-finance-summary > div::before {
+    position: absolute;
+    top: 9px;
+    bottom: 9px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    content: "";
+  }
+
+  .legacy-finance-summary .finance-result-hero.positive {
+    border-color: #1f563e !important;
+  }
+
+  .legacy-finance-summary .finance-result-hero.positive::before {
+    background: var(--crm-green);
+  }
+
+  .legacy-finance-summary .finance-result-hero.negative {
+    border-color: #6b2d35 !important;
+  }
+
+  .legacy-finance-summary .finance-result-hero.negative::before {
+    background: var(--crm-red);
+  }
+
+  .legacy-finance-summary > .income {
+    border-color: #24513a !important;
+  }
+
+  .legacy-finance-summary > .income::before {
+    background: var(--crm-green);
+  }
+
+  .legacy-finance-summary > .expense {
+    border-color: #63323a !important;
+  }
+
+  .legacy-finance-summary > .expense::before {
+    background: var(--crm-red);
+  }
+}

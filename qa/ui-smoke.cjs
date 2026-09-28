@@ -3314,6 +3314,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         expenseActionBorder: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).borderTopColor,
         incomeActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).color,
         expenseActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).color,
+        resultBorder: getComputedStyle(document.querySelector(".finance-result-hero")).borderTopColor,
+        incomeBorder: getComputedStyle(document.querySelector(".legacy-finance-summary > .income")).borderTopColor,
+        expenseBorder: getComputedStyle(document.querySelector(".legacy-finance-summary > .expense")).borderTopColor,
         actionsWidth: Math.round(document.querySelector(".legacy-finance-actions")?.getBoundingClientRect().width || 0),
         actionRects: [...document.querySelectorAll(".legacy-finance-actions > button")].map((node) => {
           const rect = node.getBoundingClientRect();
@@ -3332,6 +3335,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financePageSurface.expenseActionBorder !== "rgb(39, 52, 60)"
         || financePageSurface.incomeActionColor !== "rgb(101, 217, 149)"
         || financePageSurface.expenseActionColor !== "rgb(255, 113, 123)"
+        || financePageSurface.resultBorder !== "rgb(31, 86, 62)"
+        || financePageSurface.incomeBorder !== "rgb(36, 81, 58)"
+        || financePageSurface.expenseBorder !== "rgb(99, 50, 58)"
         || financePageSurface.actionRects.length !== 2
         || financePageSurface.actionRects.some((rect) => rect.width < 120 || rect.height < 48 || rect.height > 49)
         || Math.abs(financePageSurface.actionRects[0].width - financePageSurface.actionRects[1].width) > 2
