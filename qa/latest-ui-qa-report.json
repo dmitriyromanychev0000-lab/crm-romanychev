@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T15:04:58.107Z",
-  "testedSha": "a3565fcd271c676a043caae6cde0281caf1fb7c4",
+  "generatedAt": "2026-09-28T15:08:01.770Z",
+  "testedSha": "dd582922ef2368758f88d1e4e40aa1861706700d",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1363,26 +1363,26 @@
       "tooSmall": [],
       "keyboardReachable": true,
       "keyboardMetrics": {
-        "top": 464,
-        "bottom": 512,
-        "width": 300,
+        "top": 465,
+        "bottom": 513,
+        "width": 296,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
         "backdropOverflow": "hidden",
         "locked": true,
         "bodyFixed": true,
-        "actionsInnerWidth": 300,
+        "actionsInnerWidth": 296,
         "actionButtons": [
           {
-            "width": 300,
+            "width": 296,
             "height": 48,
-            "top": 409
+            "top": 411
           },
           {
-            "width": 300,
+            "width": 296,
             "height": 48,
-            "top": 464
+            "top": 465
           }
         ]
       }
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T15:05:30.905Z"
+      "fallbackCreatedAt": "2026-09-28T15:08:36.963Z"
     },
     {
       "label": "pwa-offline",
