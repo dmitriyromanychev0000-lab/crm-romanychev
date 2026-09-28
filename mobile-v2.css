@@ -15115,3 +15115,36 @@
   }
 }
 
+/* 1.4.2 · Убираем последние цветные разделители старого оформления. */
+@media screen and (max-width: 520px) {
+  .legacy-price-row.service,
+  .legacy-price-row.material,
+  .legacy-price-row.custom {
+    border-top-color: #202d35 !important;
+  }
+
+  .legacy-custom-price-head {
+    border-bottom-color: #202d35 !important;
+    background-color: #0d1419 !important;
+    background-image: none !important;
+  }
+
+  .legacy-goods-current .legacy-goods-current-summary {
+    border-color: #27343c !important;
+    background-color: #0d1419 !important;
+    background-image: none !important;
+  }
+
+  .legacy-goods-current .legacy-open-editor {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #ff9a82 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-product-price-list > div {
+    border-color: #202d35 !important;
+    background-color: #090f14 !important;
+  }
+}
+

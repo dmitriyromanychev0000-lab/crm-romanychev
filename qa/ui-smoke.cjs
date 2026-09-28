@@ -2222,7 +2222,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           searchWidth: Math.round(search?.getBoundingClientRect().width || 0),
           addHeight: Math.round(document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect().height || 0),
           addBackground: getComputedStyle(document.querySelector(".legacy-price-add-wide")).backgroundColor,
-          priceColors: [...document.querySelectorAll(".legacy-price-row > b")].map((node) => getComputedStyle(node).color)
+          priceColors: [...document.querySelectorAll(".legacy-price-row > b")].map((node) => getComputedStyle(node).color),
+          rowBorders: [...document.querySelectorAll(".legacy-price-row")].map((node) => getComputedStyle(node).borderTopColor),
+          customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
@@ -2236,7 +2238,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(pricePageSurface.addWidth - pricePageSurface.searchWidth) > 2
         || pricePageSurface.addHeight < 48
         || pricePageSurface.addBackground !== "rgb(255, 113, 79)"
-        || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")) {
+        || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")
+        || pricePageSurface.rowBorders.some((value) => value !== "rgb(32, 45, 53)")
+        || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)") {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
       }
       await page.waitForTimeout(80);
@@ -2446,7 +2450,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         fromOrderBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-from-order"]')).backgroundColor,
         createWidths: [...document.querySelectorAll(".legacy-goods-create-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
         rowAmountColors: [...document.querySelectorAll(".legacy-goods-position > b")].map((node) => getComputedStyle(node).color),
-        currentTotalColor: getComputedStyle(document.querySelector(".legacy-goods-current-summary > b")).color
+        currentTotalColor: getComputedStyle(document.querySelector(".legacy-goods-current-summary > b")).color,
+        currentSummaryBorder: getComputedStyle(document.querySelector(".legacy-goods-current-summary")).borderTopColor,
+        editBackground: getComputedStyle(document.querySelector(".legacy-goods-current .legacy-open-editor")).backgroundColor,
+        editBorder: getComputedStyle(document.querySelector(".legacy-goods-current .legacy-open-editor")).borderTopColor
       }));
       if (goodsPageSurface.create !== "rgb(7, 12, 16)"
         || goodsPageSurface.current !== "rgb(7, 12, 16)"
@@ -2458,6 +2465,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(goodsPageSurface.createWidths[0] - goodsPageSurface.createWidths[1]) > 2
         || goodsPageSurface.rowAmountColors.some((value) => value !== "rgb(231, 236, 238)")
         || goodsPageSurface.currentTotalColor !== "rgb(255, 138, 112)"
+        || goodsPageSurface.currentSummaryBorder !== "rgb(39, 52, 60)"
+        || goodsPageSurface.editBackground !== "rgb(13, 20, 25)"
+        || goodsPageSurface.editBorder !== "rgb(39, 52, 60)"
         || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
         report.failures.push({ width, type: "goods-semantic-hierarchy", goodsPageSurface });
       }
