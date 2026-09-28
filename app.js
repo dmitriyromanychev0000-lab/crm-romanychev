@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.24";
-const APP_BUILD = "2026.09.28.242";
+const APP_VERSION = "1.7.25";
+const APP_BUILD = "2026.09.28.243";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы и инструмент стали плотнее: статистика и рабочие строки занимают меньше места без потери сумм, названий и зон нажатия";
+const APP_RELEASE = "Статистика документов и инструмента теперь действительно компактная: высота включает padding, цифры и подписи не обрезаются";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.25",
+    date: "28.09.2026",
+    title: "Точная геометрия статистики",
+    items: [
+      "Карточки статистики документов и инструмента переведены на border-box, поэтому padding больше не раздувает высоту.",
+      "Сохранены прежние размеры цифр и подписей, уплотнены только внутренние интервалы и line-height.",
+      "Строки документов и инструмента остаются компактными и читаемыми на 320–430 px."
+    ]
+  },
   {
     version: "1.7.24",
     date: "28.09.2026",

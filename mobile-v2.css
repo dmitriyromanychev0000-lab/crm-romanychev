@@ -17280,3 +17280,32 @@
     min-height: 64px !important;
   }
 }
+
+
+/* 1.7.25 · Документы и инструмент: реальная высота статистики включает padding. */
+@media screen and (max-width: 520px) {
+  .receipts-stats > div,
+  .tools-stats > div {
+    box-sizing: border-box !important;
+    min-height: 62px !important;
+    padding: 6px 8px !important;
+  }
+
+  .receipts-stats span,
+  .tools-stats span {
+    line-height: 1.1 !important;
+  }
+
+  .receipts-stats strong,
+  .tools-stats strong {
+    display: block !important;
+    margin-top: 2px !important;
+    line-height: 1.05 !important;
+  }
+
+  .receipts-stats small,
+  .tools-stats small {
+    margin-top: 2px !important;
+    line-height: 1.1 !important;
+  }
+}
