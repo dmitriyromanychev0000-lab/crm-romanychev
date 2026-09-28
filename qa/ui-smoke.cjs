@@ -3453,42 +3453,48 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       state: uiState({ activePage: "warehouse", warehouseSection: "list" }),
       open: '[data-action="new-stock"]',
       field: '.stock-editor-modal [name="initialPurchaseTotal"]',
-      action: '.stock-editor-modal .modal-actions .primary-button'
+      action: '.stock-editor-modal .modal-actions .primary-button',
+      actions: '.stock-editor-modal .modal-actions'
     },
     {
       label: "finance-editor",
       state: uiState({ activePage: "more", moreSection: "finance" }),
       open: '[data-action="add-finance"][data-type="income"]',
       field: '.finance-entry-modal [name="description"]',
-      action: '.finance-entry-modal .modal-actions .primary-button'
+      action: '.finance-entry-modal .modal-actions .primary-button',
+      actions: '.finance-entry-modal .modal-actions'
     },
     {
       label: "price-editor",
       state: uiState({ activePage: "more", moreSection: "prices" }),
       open: '[data-action="new-price"]',
       field: '.legacy-price-editor [name="price"]',
-      action: '.legacy-price-editor-actions .legacy-editor-save'
+      action: '.legacy-price-editor-actions .legacy-editor-save',
+      actions: '.legacy-price-editor-actions'
     },
     {
       label: "goods-editor",
       state: uiState({ activePage: "more", moreSection: "goods" }),
       open: '[data-action="new-goods-sheet"]',
       field: '.legacy-goods-editor [name="target"]',
-      action: '.legacy-goods-savebar .legacy-save-goods'
+      action: '.legacy-goods-savebar .legacy-save-goods',
+      actions: '.legacy-goods-savebar'
     },
     {
       label: "tool-editor",
       state: uiState({ activePage: "more", moreSection: "tools" }),
       open: '[data-action="new-tool"]',
       field: '.tool-editor-modal [name="note"]',
-      action: '.tool-editor-modal .modal-actions .primary-button'
+      action: '.tool-editor-modal .modal-actions .primary-button',
+      actions: '.tool-editor-modal .modal-actions'
     },
     {
       label: "receipt-editor",
       state: uiState({ activePage: "more", moreSection: "receipts" }),
       open: '[data-action="new-receipt"]',
       field: '.receipt-editor-modal [name="note"]',
-      action: '.receipt-editor-modal .modal-actions .primary-button'
+      action: '.receipt-editor-modal .modal-actions .primary-button',
+      actions: '.receipt-editor-modal .modal-actions'
     }
   ];
 
@@ -3501,9 +3507,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     await editorField.focus();
     const editorAction = utilityPage.locator(editorCase.action);
     await editorAction.scrollIntoViewIfNeeded();
-    const metrics = await editorAction.evaluate((node) => {
+    const metrics = await editorAction.evaluate((node, actionsSelector) => {
       const rect = node.getBoundingClientRect();
       const backdrop = node.closest(".modal-backdrop");
+      const actions = document.querySelector(actionsSelector);
+      const actionsStyle = actions ? getComputedStyle(actions) : null;
+      const actionsRect = actions?.getBoundingClientRect();
+      const actionButtons = actions ? [...actions.querySelectorAll(":scope > button")].map((button) => {
+        const buttonRect = button.getBoundingClientRect();
+        return {
+          width: Math.round(buttonRect.width),
+          height: Math.round(buttonRect.height),
+          top: Math.round(buttonRect.top)
+        };
+      }) : [];
       return {
         top: Math.round(rect.top),
         bottom: Math.round(rect.bottom),
@@ -3513,16 +3530,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         backdropCount: document.querySelectorAll(".modal-backdrop").length,
         backdropOverflow: backdrop ? getComputedStyle(backdrop).overflowY : "missing",
         locked: document.body.classList.contains("modal-open"),
-        bodyFixed: getComputedStyle(document.body).position === "fixed"
+        bodyFixed: getComputedStyle(document.body).position === "fixed",
+        actionsInnerWidth: actionsRect && actionsStyle
+          ? Math.round(actionsRect.width - (parseFloat(actionsStyle.paddingLeft) || 0) - (parseFloat(actionsStyle.paddingRight) || 0))
+          : 0,
+        actionButtons
       };
-    });
+    }, editorCase.actions);
+    const actionsFullWidth = metrics.actionButtons.length >= 2
+      && metrics.actionButtons.every((button) => button.width >= metrics.actionsInnerWidth - 2 && button.height >= 44)
+      && metrics.actionButtons.every((button, index, buttons) => index === 0 || button.top > buttons[index - 1].top);
     const reachable = metrics.height >= 44
       && metrics.top >= 0
       && metrics.bottom <= metrics.viewportHeight + 1
       && metrics.backdropCount === 1
       && metrics.locked
-      && metrics.bodyFixed;
-    if (!reachable) report.failures.push({ type: "keyboard-height-editor", label: editorCase.label, metrics });
+      && metrics.bodyFixed
+      && actionsFullWidth;
+    if (!reachable) report.failures.push({ type: "keyboard-height-editor", label: editorCase.label, metrics, actionsFullWidth });
     await utilityPage.screenshot({ path: outDir + "/320-keyboard-" + editorCase.label + ".png", fullPage: false });
     report.results.push({
       label: "keyboard-" + editorCase.label,

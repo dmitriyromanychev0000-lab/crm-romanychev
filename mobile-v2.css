@@ -15926,3 +15926,27 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* 1.7.5 · Редакторы: одна полноширинная колонка действий на телефоне. */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal .modal-actions,
+  .legacy-finance-entry-backdrop .modal-actions,
+  .legacy-service-editor-backdrop .modal-actions,
+  .legacy-price-editor-actions,
+  .legacy-goods-savebar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 7px !important;
+  }
+
+  .stock-editor-modal .modal-actions > button,
+  .legacy-finance-entry-backdrop .modal-actions > button,
+  .legacy-service-editor-backdrop .modal-actions > button,
+  .legacy-price-editor-actions > button,
+  .legacy-goods-savebar > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
