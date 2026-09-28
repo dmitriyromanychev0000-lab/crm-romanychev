@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.63";
-const APP_BUILD = "2026.09.28.284";
+const APP_VERSION = "1.7.64";
+const APP_BUILD = "2026.09.28.285";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактные футеры существующих записей доведены без старых CSS-конфликтов; удаление строк товарника теперь имеет полноценную touch-зону 44×44"
+const APP_RELEASE = "Узкие экраны дочищены: короткие заголовки существующих Инструментов/Документов и лаконичное «Сохранить» в товарнике больше не обрезаются"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.64",
+    date: "28.09.2026",
+    title: "Чистые подписи на 320 px",
+    items: [
+      "В существующем товарнике кнопка теперь называется коротко «Сохранить» и не режется многоточием.",
+      "Заголовки редактирования Инструмента и Документа сокращены до контекстных названий без обрезания.",
+      "Логика форм, сохранения и удаления не менялась."
+    ]
+  },
   {
     version: "1.7.63",
     date: "28.09.2026",
@@ -6206,7 +6216,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop receipt-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal receipt-editor-modal" id="receipt-form">
-    <div class="receipt-editor-head"><span class="service-editor-head-icon receipt">${icon("receipt")}</span><div><small>ДОКУМЕНТЫ</small><h2>${isStored ? "Редактировать документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
+    <div class="receipt-editor-head"><span class="service-editor-head-icon receipt">${icon("receipt")}</span><div><small>ДОКУМЕНТЫ</small><h2>${isStored ? "Документ" : "Новый документ"}</h2></div><button type="button" class="receipt-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
@@ -6253,7 +6263,7 @@ function toolModal(existing = null, toolIndex = -1) {
   const modal = document.createElement("div");
   modal.className = "modal-backdrop tool-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
-    <div class="tool-editor-head"><span class="service-editor-head-icon tool">${icon("tools")}</span><div><small>ИНСТРУМЕНТЫ</small><h2>${existing ? "Редактировать инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
+    <div class="tool-editor-head"><span class="service-editor-head-icon tool">${icon("tools")}</span><div><small>ИНСТРУМЕНТЫ</small><h2>${existing ? "Инструмент" : "Новый инструмент"}</h2></div><button type="button" class="tool-editor-close" data-close-modal aria-label="Закрыть">${icon("close")}</button></div>
     <div class="tool-editor-hero">${icon("tools")}<span><strong>Учёт оборудования</strong><small>Название, состояние, стоимость и серийный номер</small></span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
@@ -6938,7 +6948,7 @@ function goodsModal(existing = null, seed = null) {
     <div class="legacy-goods-savebar">
       ${isStored ? `<button type="button" class="legacy-delete-goods editor-danger-icon" id="delete-goods-sheet" aria-label="Удалить товарник" title="Удалить товарник">${icon("trash")}<span>Удалить</span></button>` : ""}
       <button type="button" class="legacy-dark-button legacy-goods-cancel" data-close-modal>Отмена</button>
-      <button type="submit" class="legacy-save-goods">Сохранить товарник</button>
+      <button type="submit" class="legacy-save-goods">Сохранить</button>
     </div>
   </form>`;
   document.body.appendChild(modal);
