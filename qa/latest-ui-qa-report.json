@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T18:36:18.295Z",
-  "testedSha": "3be819f1fe98d784c6bde5c9dd8747828def5ad8",
+  "generatedAt": "2026-09-28T18:38:52.620Z",
+  "testedSha": "cf44acdf2db2a5b4bc717dff8939c69e0f49cec2",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1290,12 +1290,12 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
-        "top": 454,
+        "top": 452,
         "bottom": 500,
-        "width": 246,
-        "height": 46,
+        "width": 142,
+        "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
         "backdropOverflow": "hidden",
@@ -1304,14 +1304,14 @@
         "actionsInnerWidth": 246,
         "actionButtons": [
           {
-            "width": 246,
-            "height": 46,
-            "top": 401
+            "width": 98,
+            "height": 48,
+            "top": 452
           },
           {
-            "width": 246,
-            "height": 46,
-            "top": 454
+            "width": 142,
+            "height": 48,
+            "top": 452
           }
         ]
       }
@@ -1325,11 +1325,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
         "top": 455,
         "bottom": 503,
-        "width": 248,
+        "width": 143,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1339,12 +1339,12 @@
         "actionsInnerWidth": 248,
         "actionButtons": [
           {
-            "width": 248,
+            "width": 99,
             "height": 48,
-            "top": 401
+            "top": 455
           },
           {
-            "width": 248,
+            "width": 143,
             "height": 48,
             "top": 455
           }
@@ -1360,11 +1360,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
-        "width": 296,
+        "width": 171,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1374,12 +1374,12 @@
         "actionsInnerWidth": 296,
         "actionButtons": [
           {
-            "width": 296,
+            "width": 119,
             "height": 48,
-            "top": 411
+            "top": 465
           },
           {
-            "width": 296,
+            "width": 171,
             "height": 48,
             "top": 465
           }
@@ -1395,11 +1395,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
-        "width": 296,
+        "width": 171,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1409,12 +1409,12 @@
         "actionsInnerWidth": 296,
         "actionButtons": [
           {
-            "width": 296,
+            "width": 119,
             "height": 48,
-            "top": 411
+            "top": 465
           },
           {
-            "width": 296,
+            "width": 171,
             "height": 48,
             "top": 465
           }
@@ -1430,11 +1430,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
-        "width": 252,
+        "width": 145,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1444,12 +1444,12 @@
         "actionsInnerWidth": 252,
         "actionButtons": [
           {
-            "width": 252,
+            "width": 101,
             "height": 48,
-            "top": 411
+            "top": 465
           },
           {
-            "width": 252,
+            "width": 145,
             "height": 48,
             "top": 465
           }
@@ -1465,11 +1465,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": true,
+      "keyboardReachable": false,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
-        "width": 252,
+        "width": 145,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1479,12 +1479,12 @@
         "actionsInnerWidth": 252,
         "actionButtons": [
           {
-            "width": 252,
+            "width": 101,
             "height": 48,
-            "top": 411
+            "top": 465
           },
           {
-            "width": 252,
+            "width": 145,
             "height": 48,
             "top": 465
           }
@@ -1510,7 +1510,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T18:36:54.643Z"
+      "fallbackCreatedAt": "2026-09-28T18:39:28.129Z"
     },
     {
       "label": "pwa-offline",
@@ -1524,5 +1524,230 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stock-editor-actions-two-columns",
+      "state": {
+        "footerHeight": 67,
+        "contentLeft": 25,
+        "innerWidth": 246,
+        "buttons": [
+          {
+            "left": 25,
+            "top": 832,
+            "width": 98,
+            "height": 48
+          },
+          {
+            "left": 129,
+            "top": 832,
+            "width": 142,
+            "height": 48
+          }
+        ]
+      },
+      "gap": 6,
+      "usedWidth": 246
+    },
+    {
+      "width": 320,
+      "type": "finance-editor-actions-two-columns",
+      "state": {
+        "footerHeight": 63,
+        "contentLeft": 24,
+        "innerWidth": 248,
+        "buttons": [
+          {
+            "left": 24,
+            "top": 835,
+            "width": 99,
+            "height": 48
+          },
+          {
+            "left": 129,
+            "top": 835,
+            "width": 143,
+            "height": 48
+          }
+        ]
+      },
+      "gap": 6,
+      "usedWidth": 248
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "stock-editor",
+      "metrics": {
+        "top": 452,
+        "bottom": 500,
+        "width": 142,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 246,
+        "actionButtons": [
+          {
+            "width": 98,
+            "height": 48,
+            "top": 452
+          },
+          {
+            "width": 142,
+            "height": 48,
+            "top": 452
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "finance-editor",
+      "metrics": {
+        "top": 455,
+        "bottom": 503,
+        "width": 143,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 248,
+        "actionButtons": [
+          {
+            "width": 99,
+            "height": 48,
+            "top": 455
+          },
+          {
+            "width": 143,
+            "height": 48,
+            "top": 455
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "price-editor",
+      "metrics": {
+        "top": 465,
+        "bottom": 513,
+        "width": 171,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 296,
+        "actionButtons": [
+          {
+            "width": 119,
+            "height": 48,
+            "top": 465
+          },
+          {
+            "width": 171,
+            "height": 48,
+            "top": 465
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "goods-editor",
+      "metrics": {
+        "top": 465,
+        "bottom": 513,
+        "width": 171,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 296,
+        "actionButtons": [
+          {
+            "width": 119,
+            "height": 48,
+            "top": 465
+          },
+          {
+            "width": 171,
+            "height": 48,
+            "top": 465
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "tool-editor",
+      "metrics": {
+        "top": 465,
+        "bottom": 513,
+        "width": 145,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 252,
+        "actionButtons": [
+          {
+            "width": 101,
+            "height": 48,
+            "top": 465
+          },
+          {
+            "width": 145,
+            "height": 48,
+            "top": 465
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    },
+    {
+      "type": "keyboard-height-editor",
+      "label": "receipt-editor",
+      "metrics": {
+        "top": 465,
+        "bottom": 513,
+        "width": 145,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 252,
+        "actionButtons": [
+          {
+            "width": 101,
+            "height": 48,
+            "top": 465
+          },
+          {
+            "width": 145,
+            "height": 48,
+            "top": 465
+          }
+        ]
+      },
+      "actionsFullWidth": false
+    }
+  ]
 }
