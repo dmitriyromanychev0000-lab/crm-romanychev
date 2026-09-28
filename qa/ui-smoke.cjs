@@ -1683,6 +1683,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           expenseButtonColor: expenseButton ? getComputedStyle(expenseButton).color : "missing",
           pageTitle: document.querySelector(".analytics-content .page-head h1")?.textContent?.trim() || "",
           pageTitleWhiteSpace: getComputedStyle(document.querySelector(".analytics-content .page-head h1")).whiteSpace,
+          pageTitleScrollWidth: document.querySelector(".analytics-content .page-head h1")?.scrollWidth || 0,
+          pageTitleClientWidth: document.querySelector(".analytics-content .page-head h1")?.clientWidth || 0,
+          pageTitleFontSize: parseFloat(getComputedStyle(document.querySelector(".analytics-content .page-head h1")).fontSize) || 0,
           pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || ""
         };
       });
@@ -1699,6 +1702,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.expenseButtonWidth < 44
         || analyticsModelState.expenseButtonWidth > 50
         || analyticsModelState.pageTitleWhiteSpace !== "nowrap"
+        || (width <= 340 && analyticsModelState.pageTitleScrollWidth > analyticsModelState.pageTitleClientWidth + 1)
+        || (width <= 340 && analyticsModelState.pageTitleFontSize < 18)
         || analyticsModelState.expenseButtonBackground !== "rgb(13, 20, 25)"
         || analyticsModelState.expenseButtonColor !== "rgb(255, 118, 92)"
         || analyticsModelState.pageTitle !== "Аналитический центр"

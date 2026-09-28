@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.4";
-const APP_BUILD = "2026.09.28.211";
+const APP_VERSION = "1.6.5";
+const APP_BUILD = "2026.09.28.212";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Подписи меню «Ещё» на 320 px больше не обрезаются многоточием";
+const APP_RELEASE = "Заголовок аналитики полностью помещается на 320 px рядом с быстрым добавлением расхода";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.5",
+    date: "28.09.2026",
+    title: "Аналитика без обрезанного заголовка",
+    items: [
+      "«Аналитический центр» больше не обрезается на узком 320 px экране.",
+      "Кнопка быстрого расхода остаётся компактной 44×44 и не вытесняет название.",
+      "QA теперь проверяет фактическую ширину заголовка, а не только запрет переноса."
+    ]
+  },
   {
     version: "1.6.4",
     date: "28.09.2026",

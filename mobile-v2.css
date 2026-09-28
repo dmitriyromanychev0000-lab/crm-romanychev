@@ -15664,3 +15664,18 @@
     -webkit-line-clamp: 2;
   }
 }
+
+
+/* 1.6.5 · Аналитика 320 px: заголовок целиком рядом с 44px действием. */
+@media screen and (max-width: 340px) {
+  .analytics-content .page-head h1 {
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    font-size: 19px !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.035em !important;
+  }
+}
