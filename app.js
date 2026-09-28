@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.0";
-const APP_BUILD = "2026.09.28.217";
+const APP_VERSION = "1.7.1";
+const APP_BUILD = "2026.09.28.218";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад показывает длинные названия позиций читаемо на 320–430 px без конкуренции с остатком";
+const APP_RELEASE = "Длинное имя клиента в деталке заявки больше не пересекается с датой и статусом на 320 px";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.1",
+    date: "28.09.2026",
+    title: "Деталка заявки без перекрытий",
+    items: [
+      "На 320–340 px дата и статус вынесены в отдельную строку под номером и именем клиента.",
+      "Длинное имя может свободно переноситься и больше не налезает на правую колонку.",
+      "На 360–430 px сохранена более компактная шапка с датой и статусом справа."
+    ]
+  },
   {
     version: "1.7.0",
     date: "28.09.2026",

@@ -15853,3 +15853,27 @@
     font-size: 8px !important;
   }
 }
+
+
+/* 1.7.1 · Деталка 320 px: длинное имя не конфликтует с датой и статусом. */
+@media screen and (max-width: 340px) {
+  .legacy-expanded-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 8px !important;
+  }
+
+  .legacy-expanded-title {
+    width: 100% !important;
+    align-items: flex-start !important;
+  }
+
+  .legacy-expanded-head-side {
+    display: flex !important;
+    width: 100% !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    justify-items: stretch !important;
+    gap: 10px !important;
+  }
+}

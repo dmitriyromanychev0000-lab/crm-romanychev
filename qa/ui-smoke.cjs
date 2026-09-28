@@ -3104,7 +3104,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             addressTextOverflow: as.textOverflow,
             nameOverflow: Math.max(0, name.scrollWidth - name.clientWidth),
             modelOverflow: Math.max(0, model.scrollWidth - model.clientWidth),
-            addressOverflow: Math.max(0, address.scrollWidth - address.clientWidth)
+            addressOverflow: Math.max(0, address.scrollWidth - address.clientWidth),
+            titleBottom: Math.round(document.querySelector(".legacy-expanded-title")?.getBoundingClientRect().bottom || 0),
+            headSideTop: Math.round(document.querySelector(".legacy-expanded-head-side")?.getBoundingClientRect().top || 0)
           };
         });
         if (stressDetailText.nameClamp === "2"
@@ -3118,7 +3120,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || stressDetailText.addressTextOverflow === "ellipsis"
           || stressDetailText.nameOverflow > 1
           || stressDetailText.modelOverflow > 1
-          || stressDetailText.addressOverflow > 1) {
+          || stressDetailText.addressOverflow > 1
+          || stressDetailText.headSideTop < stressDetailText.titleBottom) {
           report.failures.push({ width, type: "stress-order-detail-long-text", stressDetailText });
         }
         const stressDetail = await shot(page, width, "stress-order-detail", false);
