@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.2";
-const APP_BUILD = "2026.09.28.209";
+const APP_VERSION = "1.6.3";
+const APP_BUILD = "2026.09.28.210";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинные названия и описания в настройках больше не обрезаются многоточием";
+const APP_RELEASE = "Действия блока «Приложение» на 320 px больше не превращаются в маленькие случайные плашки";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.3",
+    date: "28.09.2026",
+    title: "Настройки 320 px без случайных плашек",
+    items: [
+      "На узких экранах «Что нового», «Проверить» и «Защитить» занимают полную ширину строки под описанием.",
+      "Иконка и описание остаются в верхней строке, а действие отделено как явная нижняя кнопка.",
+      "На 360–430 px сохранена более компактная правая компоновка."
+    ]
+  },
   {
     version: "1.6.2",
     date: "28.09.2026",

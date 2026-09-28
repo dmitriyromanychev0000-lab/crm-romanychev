@@ -144,3 +144,10 @@ final result: passed
 - Work-data titles and descriptions use two-line clamping instead of one-line ellipsis.
 - Rows expand from a 68 px minimum height while keeping counters and chevrons aligned.
 - QA checks the longest warranty-results label specifically for wrapping and absence of ellipsis.
+
+
+## Release 1.6.3 — narrow Settings application actions
+
+- At 320–340 px the application-card actions span the full row below icon + copy instead of becoming small left-aligned chips.
+- 360–430 px keeps the compact side action layout.
+- QA compares every application action width with its containing row on the narrow viewport.

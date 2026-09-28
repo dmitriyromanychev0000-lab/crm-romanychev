@@ -15626,3 +15626,22 @@
     -webkit-line-clamp: 2;
   }
 }
+
+
+/* 1.6.3 · Настройки 320 px: действие приложения — отдельная полноширинная строка. */
+@media screen and (max-width: 340px) {
+  .settings-app-card .legacy-settings-row:not(.plain) {
+    grid-template-columns: 36px minmax(0,1fr) !important;
+    row-gap: 8px !important;
+    height: auto !important;
+  }
+
+  .settings-app-card .legacy-settings-row:not(.plain) > button:not(.toggle) {
+    grid-column: 1 / -1 !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    text-align: center !important;
+  }
+}

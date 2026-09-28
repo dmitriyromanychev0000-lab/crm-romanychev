@@ -2817,7 +2817,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               lineClamp: style?.webkitLineClamp || "missing"
             };
           })(),
-          longLinkHeight: Math.round(document.querySelector('[data-action="manage-warranty-results"]')?.getBoundingClientRect().height || 0)
+          longLinkHeight: Math.round(document.querySelector('[data-action="manage-warranty-results"]')?.getBoundingClientRect().height || 0),
+          appRowWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row")].map((node) => Math.round(node.getBoundingClientRect().width)),
+          appActionWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().width))
         };
       });
       if (settingsSurface.profile !== "rgb(7, 12, 16)"
@@ -2847,7 +2849,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.longLinkTitle.textOverflow === "ellipsis"
         || settingsSurface.longLinkDescription.whiteSpace === "nowrap"
         || settingsSurface.longLinkDescription.lineClamp !== "2"
-        || settingsSurface.longLinkHeight < 68) {
+        || settingsSurface.longLinkHeight < 68
+        || (width <= 340 && (
+          settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
+          || settingsSurface.appActionWidths.some((value, index) => value < settingsSurface.appRowWidths[index] - 2)
+        ))) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
 
