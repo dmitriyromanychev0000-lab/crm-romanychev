@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T18:38:52.620Z",
-  "testedSha": "cf44acdf2db2a5b4bc717dff8939c69e0f49cec2",
+  "generatedAt": "2026-09-28T18:41:12.309Z",
+  "testedSha": "bbfa5840265e88da8285a58f0599c6b2afe50117",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1290,7 +1290,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 452,
         "bottom": 500,
@@ -1325,7 +1325,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 455,
         "bottom": 503,
@@ -1360,7 +1360,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
@@ -1395,7 +1395,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
@@ -1430,7 +1430,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
@@ -1465,7 +1465,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 465,
         "bottom": 513,
@@ -1510,244 +1510,13 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T18:39:28.129Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-28T18:41:50.369Z"
     }
   ],
   "failures": [
     {
-      "width": 320,
-      "type": "stock-editor-actions-two-columns",
-      "state": {
-        "footerHeight": 67,
-        "contentLeft": 25,
-        "innerWidth": 246,
-        "buttons": [
-          {
-            "left": 25,
-            "top": 832,
-            "width": 98,
-            "height": 48
-          },
-          {
-            "left": 129,
-            "top": 832,
-            "width": 142,
-            "height": 48
-          }
-        ]
-      },
-      "gap": 6,
-      "usedWidth": 246
-    },
-    {
-      "width": 320,
-      "type": "finance-editor-actions-two-columns",
-      "state": {
-        "footerHeight": 63,
-        "contentLeft": 24,
-        "innerWidth": 248,
-        "buttons": [
-          {
-            "left": 24,
-            "top": 835,
-            "width": 99,
-            "height": 48
-          },
-          {
-            "left": 129,
-            "top": 835,
-            "width": 143,
-            "height": 48
-          }
-        ]
-      },
-      "gap": 6,
-      "usedWidth": 248
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "stock-editor",
-      "metrics": {
-        "top": 452,
-        "bottom": 500,
-        "width": 142,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 246,
-        "actionButtons": [
-          {
-            "width": 98,
-            "height": 48,
-            "top": 452
-          },
-          {
-            "width": 142,
-            "height": 48,
-            "top": 452
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "finance-editor",
-      "metrics": {
-        "top": 455,
-        "bottom": 503,
-        "width": 143,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 248,
-        "actionButtons": [
-          {
-            "width": 99,
-            "height": 48,
-            "top": 455
-          },
-          {
-            "width": 143,
-            "height": 48,
-            "top": 455
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "price-editor",
-      "metrics": {
-        "top": 465,
-        "bottom": 513,
-        "width": 171,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 296,
-        "actionButtons": [
-          {
-            "width": 119,
-            "height": 48,
-            "top": 465
-          },
-          {
-            "width": 171,
-            "height": 48,
-            "top": 465
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "goods-editor",
-      "metrics": {
-        "top": 465,
-        "bottom": 513,
-        "width": 171,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 296,
-        "actionButtons": [
-          {
-            "width": 119,
-            "height": 48,
-            "top": 465
-          },
-          {
-            "width": 171,
-            "height": 48,
-            "top": 465
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "tool-editor",
-      "metrics": {
-        "top": 465,
-        "bottom": 513,
-        "width": 145,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 252,
-        "actionButtons": [
-          {
-            "width": 101,
-            "height": 48,
-            "top": 465
-          },
-          {
-            "width": 145,
-            "height": 48,
-            "top": 465
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "receipt-editor",
-      "metrics": {
-        "top": 465,
-        "bottom": 513,
-        "width": 145,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 252,
-        "actionButtons": [
-          {
-            "width": 101,
-            "height": 48,
-            "top": 465
-          },
-          {
-            "width": 145,
-            "height": 48,
-            "top": 465
-          }
-        ]
-      },
-      "actionsFullWidth": false
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
     }
   ]
 }
