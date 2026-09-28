@@ -1775,17 +1775,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           if (details) details.open = true;
         });
         await page.locator('[data-stock="out"][data-id="w1"]').click();
-        await page.locator('.stock-adjust-modal [name="amount"]').fill("3");
+        const firstFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
+        await firstFifoAmount.fill("3");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · первая партия");
+        const firstFifoMax = await firstFifoAmount.getAttribute("max");
+        const firstFifoLocation = await page.locator('.stock-adjust-modal [name="locationId"]').inputValue();
+        const firstFifoBeforeText = await page.locator("#stock-adjust-before").innerText();
         await page.locator('.stock-adjust-modal button[type="submit"]').click();
-        await page.locator(".stock-adjust-modal").waitFor({ state: "detached" });
+        let firstFifoClosed = true;
+        try {
+          await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 });
+        } catch {
+          firstFifoClosed = false;
+          const diagnosticData = await readStoredData(page);
+          const diagnosticItem = diagnosticData.warehouse.find((item) => item.id === "w1");
+          const diagnosticOrder = diagnosticData.orders.find((item) => item.id === "0060");
+          const toastText = await page.locator("#toast").innerText().catch(() => "");
+          report.failures.push({
+            width,
+            type: "stock-fifo-first-submit",
+            amount: "3",
+            max: firstFifoMax,
+            locationId: firstFifoLocation,
+            beforeText: firstFifoBeforeText,
+            toast: toastText,
+            quantity: diagnosticItem?.quantity,
+            locationBalances: diagnosticItem?.locationBalances,
+            batches: diagnosticItem?.batches,
+            reservedMaterial: diagnosticOrder?.materials?.find((item) => item.warehouseId === "w1")
+          });
+          await page.locator('.stock-adjust-modal [data-close-modal]').first().click().catch(() => {});
+          await page.locator(".stock-adjust-modal").waitFor({ state: "detached", timeout: 1500 }).catch(() => {});
+        }
         await page.waitForTimeout(20);
 
-        await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
-          const details = node.closest("details");
-          if (details) details.open = true;
-        });
-        await page.locator('[data-stock="out"][data-id="w1"]').click();
+        if (firstFifoClosed) {
+          await page.locator('[data-stock-detail="w1"]').evaluate((node) => {
+            const details = node.closest("details");
+            if (details) details.open = true;
+          });
+          await page.locator('[data-stock="out"][data-id="w1"]').click();
+        }
         const secondFifoAmount = page.locator('.stock-adjust-modal [name="amount"]');
         await secondFifoAmount.fill("0.5");
         await page.locator('.stock-adjust-modal [name="comment"]').fill("Тест FIFO · вторая партия");
