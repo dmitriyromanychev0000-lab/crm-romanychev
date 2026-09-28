@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.2";
-const APP_BUILD = "2026.09.28.199";
+const APP_VERSION = "1.5.3";
+const APP_BUILD = "2026.09.28.200";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Главное действие на экране заявок стало полноширинным и визуально согласованным с остальными рабочими разделами";
+const APP_RELEASE = "Поля добавления в справочниках получили полную ширину, а кнопки вынесены в отдельную полноширинную строку";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.3",
+    date: "28.09.2026",
+    title: "Полноширинные справочники",
+    items: [
+      "В справочниках типы техники, категории прайса, источники, гарантия, категории склада и места хранения больше не сжимают поле ввода рядом с кнопкой.",
+      "Поле добавления занимает всю ширину окна, а кнопка «Добавить» расположена отдельной полноширинной строкой.",
+      "Автопроверка контролирует геометрию общего блока справочников, чтобы узкая компоновка не вернулась."
+    ]
+  },
   {
     version: "1.5.2",
     date: "28.09.2026",

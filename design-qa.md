@@ -109,3 +109,10 @@ final result: passed
 - The Orders screen now uses a full-width “Новая заявка” primary action instead of a 44 px icon-only button in the title row.
 - Geometry is shared with the existing wide primary actions used by Price, Documents and Tools.
 - Automated mobile QA now asserts the order CTA is at least 48 px high, spans the content width, and retains its visible label at 320 and 390 px.
+
+
+## Release 1.5.3 — full-width directory add controls
+
+- Shared directory managers now stack the creation field and primary action vertically.
+- The input and “Добавить” button each occupy the available modal width with a 48 px minimum height.
+- Automated QA checks the appliance-type manager geometry as the representative shared layout.

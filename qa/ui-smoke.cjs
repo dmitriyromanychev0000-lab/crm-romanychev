@@ -503,6 +503,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await page.locator('[data-action="manage-appliance-types"]').click();
       await page.waitForTimeout(30);
+      const directoryAddLayout = await page.evaluate(() => {
+        const wrap = document.querySelector(".appliance-types-modal .warranty-manager-add");
+        const input = document.querySelector("#new-appliance-type-name");
+        const button = document.querySelector("#add-appliance-type");
+        const wr = wrap?.getBoundingClientRect();
+        const ir = input?.getBoundingClientRect();
+        const br = button?.getBoundingClientRect();
+        return {
+          wrapWidth: Math.round(wr?.width || 0),
+          inputWidth: Math.round(ir?.width || 0),
+          buttonWidth: Math.round(br?.width || 0),
+          inputTop: Math.round(ir?.top || 0),
+          buttonTop: Math.round(br?.top || 0),
+          inputBottom: Math.round(ir?.bottom || 0)
+        };
+      });
+      if (directoryAddLayout.inputWidth < directoryAddLayout.wrapWidth - 30
+        || directoryAddLayout.buttonWidth < directoryAddLayout.wrapWidth - 30
+        || directoryAddLayout.buttonTop < directoryAddLayout.inputBottom) {
+        report.failures.push({ width, type: "directory-add-full-width", directoryAddLayout });
+      }
       await page.locator("#new-appliance-type-name").fill("Кофемашина");
       await page.locator("#add-appliance-type").click();
       await page.waitForTimeout(30);
