@@ -1582,11 +1582,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             top: Math.round(buttonRect.top)
           };
         });
+        const paddingLeft = actionStyle ? (parseFloat(actionStyle.paddingLeft) || 0) : 0;
+        const paddingRight = actionStyle ? (parseFloat(actionStyle.paddingRight) || 0) : 0;
         return {
           width: Math.round(rect?.width || 0),
           left: Math.round(rect?.left || 0),
-          innerWidth: rect && actionStyle
-            ? Math.round(rect.width - (parseFloat(actionStyle.paddingLeft) || 0) - (parseFloat(actionStyle.paddingRight) || 0))
+          innerLeft: rect ? Math.round(rect.left + paddingLeft) : 0,
+          innerWidth: rect
+            ? Math.round(rect.width - paddingLeft - paddingRight)
             : 0,
           buttons
         };
@@ -1596,7 +1599,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || serviceCatalogActions.buttons.some((button) => button.width < 105)
         || Math.abs((serviceCatalogActions.buttons[0]?.top || 0) - (serviceCatalogActions.buttons[1]?.top || 0)) > 2
         || (serviceCatalogActions.buttons[1]?.left || 0) <= (serviceCatalogActions.buttons[0]?.left || 0)
-        || Math.abs((serviceCatalogActions.buttons[0]?.left || 0) - serviceCatalogActions.left) > 2
+        || Math.abs((serviceCatalogActions.buttons[0]?.left || 0) - serviceCatalogActions.innerLeft) > 2
         || (serviceCatalogActions.buttons[0]?.width || 0) + (serviceCatalogActions.buttons[1]?.width || 0) > serviceCatalogActions.innerWidth) {
         report.failures.push({ width, type: "service-catalog-actions-two-columns", serviceCatalogActions });
       }
