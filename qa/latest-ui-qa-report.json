@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T08:47:04.068Z",
-  "testedSha": "5b5cae224d18fcabffa44e8303d1e207a5daea7d",
+  "generatedAt": "2026-09-28T08:49:36.244Z",
+  "testedSha": "846d8f8d2550cb2f60d332777489e2c92fb9aa8b",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T08:47:39.228Z"
+      "fallbackCreatedAt": "2026-09-28T08:50:11.934Z"
     },
     {
       "label": "pwa-offline",
@@ -1412,5 +1412,18 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "directory-add-full-width",
+      "directoryAddLayout": {
+        "wrapWidth": 0,
+        "inputWidth": 206,
+        "buttonWidth": 99,
+        "inputTop": 752,
+        "buttonTop": 752,
+        "inputBottom": 800
+      }
+    }
+  ]
 }
