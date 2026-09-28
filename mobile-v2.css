@@ -19230,3 +19230,51 @@
     white-space: nowrap !important;
   }
 }
+
+/* 1.7.62 · Существующие записи: опасное действие и Отмена/Сохранить в одной строке. */
+@media screen and (max-width: 520px) {
+  .legacy-price-editor-actions:has(.legacy-editor-delete),
+  .legacy-goods-savebar:has(.legacy-delete-goods),
+  .tool-editor-modal .modal-actions:has(.danger-button),
+  .receipt-editor-modal .modal-actions:has(.danger-button) {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0,.82fr) minmax(0,1.18fr) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-price-editor-actions:has(.legacy-editor-delete) > *,
+  .legacy-goods-savebar:has(.legacy-delete-goods) > *,
+  .tool-editor-modal .modal-actions:has(.danger-button) > *,
+  .receipt-editor-modal .modal-actions:has(.danger-button) > * {
+    grid-column: auto !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    justify-self: stretch !important;
+  }
+
+  .editor-danger-icon {
+    display: grid !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+  }
+
+  .editor-danger-icon > span {
+    display: none !important;
+  }
+
+  .editor-danger-icon > .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .legacy-price-editor-actions:has(.legacy-editor-delete) > :not(.editor-danger-icon),
+  .legacy-goods-savebar:has(.legacy-delete-goods) > :not(.editor-danger-icon),
+  .tool-editor-modal .modal-actions:has(.danger-button) > :not(.editor-danger-icon),
+  .receipt-editor-modal .modal-actions:has(.danger-button) > :not(.editor-danger-icon) {
+    width: 100% !important;
+    white-space: nowrap !important;
+  }
+}

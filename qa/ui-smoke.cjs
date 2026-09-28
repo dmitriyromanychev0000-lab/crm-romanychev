@@ -262,6 +262,53 @@ async function assertPairedFooter(page, width, selector, type) {
   return state;
 }
 
+async function assertCompactDangerFooter(page, width, selector, type) {
+  const state = await page.evaluate((selectorValue) => {
+    const footer = document.querySelector(selectorValue);
+    const rect = footer?.getBoundingClientRect();
+    const style = footer ? getComputedStyle(footer) : null;
+    const paddingLeft = style ? (parseFloat(style.paddingLeft) || 0) : 0;
+    const paddingRight = style ? (parseFloat(style.paddingRight) || 0) : 0;
+    const buttons = footer ? [...footer.querySelectorAll(":scope > button")].map((button) => {
+      const buttonRect = button.getBoundingClientRect();
+      const label = button.querySelector("span");
+      return {
+        left: Math.round(buttonRect.left),
+        top: Math.round(buttonRect.top),
+        width: Math.round(buttonRect.width),
+        height: Math.round(buttonRect.height),
+        aria: button.getAttribute("aria-label") || "",
+        hasIcon: Boolean(button.querySelector(".ui-icon")),
+        labelDisplay: label ? getComputedStyle(label).display : "missing"
+      };
+    }) : [];
+    return {
+      footerHeight: Math.round(rect?.height || 0),
+      contentLeft: rect ? Math.round(rect.left + paddingLeft) : 0,
+      innerWidth: rect ? Math.round(rect.width - paddingLeft - paddingRight) : 0,
+      buttons
+    };
+  }, selector);
+  const [danger, cancel, save] = state.buttons;
+  const gap1 = danger && cancel ? cancel.left - (danger.left + danger.width) : 999;
+  const gap2 = cancel && save ? save.left - (cancel.left + cancel.width) : 999;
+  const usedWidth = danger && cancel && save ? danger.width + gap1 + cancel.width + gap2 + save.width : 0;
+  if (state.buttons.length !== 3
+    || danger?.width < 44 || danger?.width > 45
+    || danger?.height < 48 || danger?.height > 49
+    || !danger?.aria || !danger?.hasIcon || danger?.labelDisplay !== "none"
+    || cancel?.width < 72 || cancel?.height < 48 || cancel?.height > 49
+    || save?.width < 100 || save?.height < 48 || save?.height > 49
+    || Math.max(...state.buttons.map((button) => button.top)) - Math.min(...state.buttons.map((button) => button.top)) > 2
+    || Math.abs((danger?.left || 0) - state.contentLeft) > 2
+    || gap1 < 4 || gap1 > 10 || gap2 < 4 || gap2 > 10
+    || Math.abs(usedWidth - state.innerWidth) > 2
+    || state.footerHeight > 72) {
+    report.failures.push({ width, type, state, gap1, gap2, usedWidth });
+  }
+  return state;
+}
+
 async function fillConfirmed(locator, value) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     await locator.fill(value);
@@ -4004,6 +4051,42 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await assertPairedFooter(page, width, ".receipt-editor-modal .modal-actions", "receipt-editor-actions-two-columns");
       report.results.push(await shot(page, width, "receipt-editor", false));
       await page.keyboard.press("Escape");
+
+      if (width === 320 || width === 390) {
+        await writeSeed(page, seed);
+
+        await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
+        await page.locator(".legacy-price-row.service").first().click();
+        await assertCompactDangerFooter(page, width, ".legacy-price-editor-actions", "price-existing-actions-compact");
+        report.results.push(await shot(page, width, "price-editor-existing", false));
+        await page.keyboard.press("Escape");
+
+        await setState(page, uiState({ activePage: "more", moreSection: "prices" }));
+        await page.locator(".legacy-price-row.custom").first().click();
+        await assertCompactDangerFooter(page, width, ".legacy-price-editor-actions", "custom-price-existing-actions-compact");
+        report.results.push(await shot(page, width, "custom-price-editor-existing", false));
+        await page.keyboard.press("Escape");
+
+        await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
+        await page.locator('[data-action="edit-goods-sheet"]').click();
+        await assertCompactDangerFooter(page, width, ".legacy-goods-savebar", "goods-existing-actions-compact");
+        report.results.push(await shot(page, width, "goods-editor-existing", false));
+        await page.keyboard.press("Escape");
+
+        await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
+        await page.locator('[data-action="edit-tool"]').first().click();
+        await assertCompactDangerFooter(page, width, ".tool-editor-modal .modal-actions", "tool-existing-actions-compact");
+        report.results.push(await shot(page, width, "tool-editor-existing", false));
+        await page.keyboard.press("Escape");
+
+        await setState(page, uiState({ activePage: "more", moreSection: "receipts" }));
+        await page.locator('[data-action="edit-receipt"]').first().click();
+        await assertCompactDangerFooter(page, width, ".receipt-editor-modal .modal-actions", "receipt-existing-actions-compact");
+        report.results.push(await shot(page, width, "receipt-editor-existing", false));
+        await page.keyboard.press("Escape");
+
+        await writeSeed(page, seed);
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "drafts" }));
       const draftSurface = await page.evaluate(() => {

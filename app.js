@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.61";
-const APP_BUILD = "2026.09.28.282";
+const APP_VERSION = "1.7.62";
+const APP_BUILD = "2026.09.28.283";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новые редакторы стали компактнее: «Отмена» и «Сохранить» стоят рядом в складе, финансах, прайсе, товарнике, инструментах и документах"
+const APP_RELEASE = "Редактирование существующих записей стало компактнее: архив и удаление вынесены в отдельную 44×44 иконку рядом с «Отмена / Сохранить»"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.62",
+    date: "28.09.2026",
+    title: "Компактные опасные действия",
+    items: [
+      "В существующих позициях прайса, товарнике, инструментах и документах архив/удаление стало отдельной кнопкой 44×44.",
+      "«Отмена» и «Сохранить» остаются рядом в той же строке, поэтому футер больше не разрастается на три ряда.",
+      "Опасные действия сохранили подписи для доступности, подтверждение и прежнюю логику."
+    ]
+  },
   {
     version: "1.7.61",
     date: "28.09.2026",
@@ -6196,7 +6206,7 @@ function receiptModal(existing = null, receiptIndex = -1) {
       <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Комментарий к документу">${escapeHtml(view.note)}</textarea></div>
     </div>
-    <div class="modal-actions">${isStored ? '<button type="button" class="danger-button" id="delete-receipt">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <div class="modal-actions">${isStored ? `<button type="button" class="danger-button editor-danger-icon" id="delete-receipt" aria-label="Удалить документ" title="Удалить документ">${icon("trash")}<span>Удалить</span></button>` : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
@@ -6243,7 +6253,7 @@ function toolModal(existing = null, toolIndex = -1) {
       <div class="form-group"><label>Серийный номер</label><input class="field" name="serial" value="${escapeHtml(item.serial || item.serialNumber || "")}" /></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
     </div>
-    <div class="modal-actions">${existing ? '<button type="button" class="danger-button" id="delete-tool">Удалить</button>' : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
+    <div class="modal-actions">${existing ? `<button type="button" class="danger-button editor-danger-icon" id="delete-tool" aria-label="Удалить инструмент" title="Удалить инструмент">${icon("trash")}<span>Удалить</span></button>` : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelector("[data-close-modal]").addEventListener("click", () => modal.remove());
@@ -6294,7 +6304,7 @@ function customServiceModal(existing = null, serviceIndex = -1) {
       </div>
     </section>
 
-    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete" id="toggle-custom-service-archive">${item.archived ? "Вернуть" : "В архив"}</button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
+    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete editor-danger-icon" id="toggle-custom-service-archive" aria-label="${item.archived ? "Вернуть услугу из архива" : "Переместить услугу в архив"}" title="${item.archived ? "Вернуть из архива" : "В архив"}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "В архив"}</span></button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
@@ -6351,7 +6361,7 @@ function priceModal(existing = null, priceIndex = -1) {
       </div>
     </section>
 
-    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete" id="toggle-price-archive">${item.archived ? "Вернуть" : "В архив"}</button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
+    <div class="legacy-price-editor-actions">${existing ? `<button type="button" class="legacy-editor-delete editor-danger-icon" id="toggle-price-archive" aria-label="${item.archived ? "Вернуть позицию из архива" : "Переместить позицию в архив"}" title="${item.archived ? "Вернуть из архива" : "В архив"}">${icon(item.archived ? "restore" : "archive")}<span>${item.archived ? "Вернуть" : "В архив"}</span></button>` : ""}<button type="button" class="legacy-dark-button" data-close-modal>Отмена</button><button type="submit" class="legacy-editor-save">Сохранить</button></div>
   </form>`;
   document.body.appendChild(modal);
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
@@ -6916,7 +6926,7 @@ function goodsModal(existing = null, seed = null) {
     </details>
 
     <div class="legacy-goods-savebar">
-      ${isStored ? '<button type="button" class="legacy-delete-goods" id="delete-goods-sheet">Удалить</button>' : ""}
+      ${isStored ? `<button type="button" class="legacy-delete-goods editor-danger-icon" id="delete-goods-sheet" aria-label="Удалить товарник" title="Удалить товарник">${icon("trash")}<span>Удалить</span></button>` : ""}
       <button type="button" class="legacy-dark-button legacy-goods-cancel" data-close-modal>Отмена</button>
       <button type="submit" class="legacy-save-goods">Сохранить товарник</button>
     </div>
