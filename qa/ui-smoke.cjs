@@ -3416,6 +3416,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         ))) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
+      const settingsDensity = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-settings-card");
+        const row = document.querySelector(".legacy-settings-row");
+        const link = document.querySelector(".legacy-settings-links > button:not([data-action=\"manage-warranty-results\"])");
+        const icon = document.querySelector(".legacy-settings-links .settings-link-icon");
+        const cardStyle = card ? getComputedStyle(card) : null;
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          cardPaddingTop: cardStyle ? px(cardStyle.paddingTop) : 999,
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          linkHeight: Math.round(link?.getBoundingClientRect().height || 0),
+          iconHeight: Math.round(icon?.getBoundingClientRect().height || 0)
+        };
+      });
+      const settingsRowLimit = width <= 340 ? 108 : 70;
+      const settingsLinkLimit = width <= 340 ? 76 : 68;
+      if (settingsDensity.cardPaddingTop > 10
+        || settingsDensity.rowHeight > settingsRowLimit
+        || settingsDensity.linkHeight > settingsLinkLimit
+        || settingsDensity.iconHeight > 36) {
+        report.failures.push({ width, type: "settings-compact-density", settingsDensity, settingsRowLimit, settingsLinkLimit });
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "backup" }));
       const backupSurface = await page.evaluate(() => ({
@@ -3441,6 +3463,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || backupSurface.mainButtonWidths.some((value) => value < backupSurface.mainWidth - 2)
         || backupSurface.gridButtonWidths.some((value) => value < backupSurface.gridWidth - 2)) {
         report.failures.push({ width, type: "backup-semantic-hierarchy", backupSurface });
+      }
+      const backupDensity = await page.evaluate(() => {
+        const card = document.querySelector(".legacy-backup-page .backup-primary-card");
+        const stat = document.querySelector(".legacy-service-stats.backup > div");
+        const mainButton = document.querySelector(".legacy-backup-main-actions > button");
+        const cardStyle = card ? getComputedStyle(card) : null;
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          cardPaddingTop: cardStyle ? px(cardStyle.paddingTop) : 999,
+          statHeight: Math.round(stat?.getBoundingClientRect().height || 0),
+          mainButtonHeight: Math.round(mainButton?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (backupDensity.cardPaddingTop > 10
+        || backupDensity.statHeight > 62
+        || backupDensity.mainButtonHeight < 50) {
+        report.failures.push({ width, type: "backup-compact-density", backupDensity });
       }
 
       await setState(page, uiState({ activePage: "more", moreSection: "settings" }));

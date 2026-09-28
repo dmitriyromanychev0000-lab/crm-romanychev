@@ -17124,3 +17124,103 @@
     min-height: 54px !important;
   }
 }
+
+
+/* 1.7.22 · Настройки и бэкап: меньше пустоты без потери длинных подписей и touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-settings-card {
+    margin-bottom: 7px !important;
+    padding: 10px !important;
+    border-radius: 13px !important;
+  }
+
+  .legacy-settings-grid {
+    gap: 7px !important;
+  }
+
+  .legacy-settings-grid label > span {
+    margin-bottom: 3px !important;
+  }
+
+  .legacy-settings-toggle-row {
+    min-height: 54px !important;
+    margin-top: 7px !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-settings-save {
+    margin-top: 7px !important;
+  }
+
+  .legacy-settings-row {
+    min-height: 56px !important;
+    padding: 6px 0 !important;
+  }
+
+  .legacy-settings-row-icon,
+  .settings-link-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-settings-links {
+    gap: 5px !important;
+  }
+
+  .legacy-settings-links > button {
+    min-height: 60px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-results"] {
+    min-height: 68px !important;
+  }
+
+  .legacy-backup-page .backup-primary-card,
+  .legacy-backup-page .backup-auto-card {
+    margin-bottom: 7px !important;
+    padding: 10px !important;
+    border-radius: 13px !important;
+  }
+
+  .legacy-backup-main-actions {
+    gap: 6px !important;
+    margin-top: 7px !important;
+  }
+
+  .legacy-backup-grid {
+    gap: 5px !important;
+    margin-top: 6px !important;
+  }
+
+  .legacy-backup-page .legacy-settings-row.plain {
+    gap: 6px !important;
+  }
+
+  .legacy-service-stats.backup {
+    gap: 5px !important;
+  }
+
+  .legacy-service-stats.backup > div {
+    min-height: 56px !important;
+    padding: 7px 6px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .settings-app-card .legacy-settings-row:not(.plain) {
+    row-gap: 6px !important;
+  }
+
+  .legacy-settings-links > button {
+    min-height: 64px !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-results"] {
+    min-height: 70px !important;
+  }
+}

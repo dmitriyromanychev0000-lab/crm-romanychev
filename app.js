@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.21";
-const APP_BUILD = "2026.09.28.239";
+const APP_VERSION = "1.7.22";
+const APP_BUILD = "2026.09.28.240";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Товарник стал плотнее: панели, сводки и строки позиций занимают меньше места, основные действия остались удобными для нажатия";
+const APP_RELEASE = "Настройки и бэкап стали плотнее: меньше пустых зон в карточках и строках, длинные подписи сохранены, основные действия остались крупными";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.22",
+    date: "28.09.2026",
+    title: "Плотные настройки и бэкап",
+    items: [
+      "Карточки настроек, строки параметров и обычные ссылки стали компактнее без уменьшения основного текста.",
+      "Длинные пункты справочников по-прежнему получают до двух строк и не режутся многоточием.",
+      "Блоки резервного копирования и счётчики уплотнены, а основные действия сохранены полноширинными и крупными."
+    ]
+  },
   {
     version: "1.7.21",
     date: "28.09.2026",
