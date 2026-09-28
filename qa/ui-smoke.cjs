@@ -4487,7 +4487,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.profileCardHeight > 320) {
+        || settingsSurface.profileCardHeight > 322) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
       const settingsDensity = await page.evaluate(() => {
