@@ -347,13 +347,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await page.locator('[data-action="new-order"]').first().click();
       await page.waitForTimeout(60);
-      const sourceVisitFields = await page.evaluate(() => ({
-        sourceOptions: document.querySelectorAll('.order-editor-modal [name="sourceId"] option').length,
-        hasVisitDate: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDate"]')),
-        hasVisitTime: Boolean(document.querySelector('.order-editor-modal [name="nextVisitTime"]')),
-        hasVisitDuration: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDuration"]'))
-      }));
-      if (sourceVisitFields.sourceOptions < 3 || !sourceVisitFields.hasVisitDate || !sourceVisitFields.hasVisitTime || !sourceVisitFields.hasVisitDuration) {
+      const sourceVisitFields = await page.evaluate(() => {
+        const grid = document.querySelector(".order-editor-modal .form-grid");
+        const source = document.querySelector('.order-editor-modal [name="sourceId"]')?.closest(".form-group");
+        const status = document.querySelector('.order-editor-modal [name="status"]')?.closest(".form-group");
+        const gridRect = grid?.getBoundingClientRect();
+        const sourceRect = source?.getBoundingClientRect();
+        const statusRect = status?.getBoundingClientRect();
+        return {
+          sourceOptions: document.querySelectorAll('.order-editor-modal [name="sourceId"] option').length,
+          hasVisitDate: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDate"]')),
+          hasVisitTime: Boolean(document.querySelector('.order-editor-modal [name="nextVisitTime"]')),
+          hasVisitDuration: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDuration"]')),
+          gridWidth: Math.round(gridRect?.width || 0),
+          sourceWidth: Math.round(sourceRect?.width || 0),
+          statusWidth: Math.round(statusRect?.width || 0)
+        };
+      });
+      if (sourceVisitFields.sourceOptions < 3
+        || !sourceVisitFields.hasVisitDate
+        || !sourceVisitFields.hasVisitTime
+        || !sourceVisitFields.hasVisitDuration
+        || sourceVisitFields.sourceWidth < sourceVisitFields.gridWidth * 0.92
+        || sourceVisitFields.statusWidth < sourceVisitFields.gridWidth * 0.92) {
         report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
       }
 
