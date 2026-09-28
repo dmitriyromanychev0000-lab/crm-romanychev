@@ -15148,3 +15148,216 @@
   }
 }
 
+/* 1.5.0 · Документы, инструменты, черновики и бэкапы: единая графитовая система. */
+@media screen and (max-width: 520px) {
+  .legacy-service-add-wide {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    margin: 0 0 10px !important;
+    padding: 0 15px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border: 1px solid #ff714f !important;
+    border-radius: 13px !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    font-size: 12px !important;
+    font-weight: 780 !important;
+    box-shadow: 0 8px 20px rgba(255,113,79,.14) !important;
+  }
+
+  .legacy-service-add-wide .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .receipts-stats > .service-stat-primary,
+  .receipts-stats > div:nth-child(2),
+  .receipts-stats > div:nth-child(3),
+  .tools-stats > .service-stat-primary,
+  .tools-stats > div:nth-child(2),
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(1),
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(2),
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(3) {
+    border-color: #26323a !important;
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .receipts-stats > .service-stat-primary strong,
+  .tools-stats > .service-stat-primary strong {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-document-row.receipt,
+  .legacy-document-row.receipt.linked,
+  .legacy-document-row.receipt.standalone,
+  .legacy-document-row.tool,
+  .legacy-document-row.tool.available,
+  .legacy-document-row.tool.busy,
+  .legacy-document-row.tool.retired {
+    border-color: #26323a !important;
+    background-color: #090f14 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-document-row.receipt .legacy-document-icon,
+  .legacy-document-row.receipt.linked .legacy-document-icon,
+  .legacy-document-row.receipt.standalone .legacy-document-icon,
+  .legacy-document-row.tool .legacy-document-icon {
+    border: 1px solid #2a353d !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-document-row.receipt > b,
+  .legacy-document-row.tool > b {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-type {
+    border-color: #26323a !important;
+    background-color: #0d1419 !important;
+    color: #dce3e6 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-type .ui-icon,
+  .legacy-service-editor-backdrop .service-editor-head-icon.receipt {
+    color: #ff765c !important;
+  }
+
+  .legacy-service-editor-backdrop .service-editor-head-icon.receipt {
+    border-color: #2a353d !important;
+    background: #11191e !important;
+  }
+
+  .legacy-drafts-page .legacy-service-note {
+    border-color: #26323a !important;
+    background: #0d1419 !important;
+    color: #a7b0b6 !important;
+  }
+
+  .legacy-draft-card {
+    border-color: #26323a !important;
+    background: #070c10 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-draft-icon {
+    border-color: #2a353d !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-draft-copy em {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-draft-card > b {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-draft-actions [data-action="continue-draft"] {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #e2e7e9 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-draft-actions [data-action="continue-draft"] .ui-icon {
+    color: #ff765c !important;
+  }
+
+  .legacy-draft-actions [data-action="delete-draft"] {
+    border-color: rgba(255,113,123,.28) !important;
+    background: #0d1419 !important;
+    color: #ff7b84 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-page .settings-profile-card,
+  .legacy-settings-page .settings-app-card,
+  .legacy-settings-page .settings-data-card {
+    border-color: #26323a !important;
+    background: #070c10 !important;
+  }
+
+  .legacy-settings-page .legacy-section-icon,
+  .legacy-settings-page .settings-link-icon {
+    border-color: #2a353d !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button,
+  .legacy-settings-page .legacy-settings-links > button[data-more="tools"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="backup"],
+  .legacy-settings-page .settings-links > button[data-more="receipts"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="drafts"] {
+    border-color: #26323a !important;
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-page .legacy-settings-row > button:not(.toggle) {
+    min-height: 44px !important;
+    border-color: #26323a !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+  }
+
+  .legacy-backup-page .backup-primary-card,
+  .legacy-backup-page .backup-auto-card {
+    border-color: #26323a !important;
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-backup-page .backup-primary-card .legacy-section-icon {
+    border-color: #2a353d !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-backup-page .legacy-backup-main-actions .legacy-orange-button {
+    border-color: #ff714f !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    box-shadow: 0 8px 20px rgba(255,113,79,.12) !important;
+  }
+
+  .legacy-backup-page .legacy-backup-main-actions .legacy-dark-button,
+  .legacy-backup-page .legacy-backup-grid button {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-act-selected-icon {
+    border-color: #2a353d !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .bottom-nav {
+    border-top-color: #151f25 !important;
+    background: rgba(3,7,10,.985) !important;
+    box-shadow: 0 -8px 22px rgba(0,0,0,.22) !important;
+  }
+
+  .nav-button {
+    font-size: 9.5px !important;
+  }
+
+  .nav-button .nav-icon .ui-icon {
+    width: 23px !important;
+    height: 23px !important;
+  }
+}
+

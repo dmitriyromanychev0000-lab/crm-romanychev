@@ -2529,17 +2529,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "tools" }));
-      const toolsPageSurface = await page.evaluate(() => ({
-        totalStat: getComputedStyle(document.querySelector(".tools-stats > .service-stat-primary")).backgroundColor,
-        activeStat: getComputedStyle(document.querySelector(".tools-stats > div:nth-child(2)")).backgroundColor,
-        available: getComputedStyle(document.querySelector(".legacy-document-row.tool.available")).backgroundColor,
-        busy: getComputedStyle(document.querySelector(".legacy-document-row.tool.busy")).backgroundColor,
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.tool strong")).fontSize
-      }));
-      if (toolsPageSurface.totalStat !== "rgb(8, 16, 25)"
-        || toolsPageSurface.activeStat !== "rgb(7, 17, 12)"
-        || toolsPageSurface.available !== "rgb(7, 16, 11)"
-        || toolsPageSurface.busy !== "rgb(19, 16, 6)"
+      const toolsPageSurface = await page.evaluate(() => {
+        const add = document.querySelector(".legacy-tools-page .legacy-service-add-wide");
+        const addRect = add?.getBoundingClientRect();
+        const pageRect = document.querySelector(".legacy-tools-page")?.getBoundingClientRect();
+        return {
+          totalStat: getComputedStyle(document.querySelector(".tools-stats > .service-stat-primary")).backgroundColor,
+          activeStat: getComputedStyle(document.querySelector(".tools-stats > div:nth-child(2)")).backgroundColor,
+          available: getComputedStyle(document.querySelector(".legacy-document-row.tool.available")).backgroundColor,
+          busy: getComputedStyle(document.querySelector(".legacy-document-row.tool.busy")).backgroundColor,
+          rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.tool strong")).fontSize,
+          addWidth: Math.round(addRect?.width || 0),
+          pageWidth: Math.round(pageRect?.width || 0),
+          addHeight: Math.round(addRect?.height || 0)
+        };
+      });
+      if (toolsPageSurface.totalStat !== "rgb(7, 12, 16)"
+        || toolsPageSurface.activeStat !== "rgb(7, 12, 16)"
+        || toolsPageSurface.available !== "rgb(9, 15, 20)"
+        || toolsPageSurface.busy !== "rgb(9, 15, 20)"
+        || toolsPageSurface.addWidth < toolsPageSurface.pageWidth - 34
+        || toolsPageSurface.addHeight < 48
         || parseFloat(toolsPageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "tools-status-hierarchy", toolsPageSurface });
       }
@@ -2576,19 +2586,29 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "receipts" }));
-      const receiptsPageSurface = await page.evaluate(() => ({
-        total: getComputedStyle(document.querySelector(".receipts-stats > .service-stat-primary")).backgroundColor,
-        amount: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(2)")).backgroundColor,
-        linkedStat: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(3)")).backgroundColor,
-        linkedRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.linked")).backgroundColor,
-        standaloneRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.standalone")).backgroundColor,
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize
-      }));
-      if (receiptsPageSurface.total !== "rgb(16, 11, 8)"
-        || receiptsPageSurface.amount !== "rgb(19, 16, 6)"
-        || receiptsPageSurface.linkedStat !== "rgb(7, 17, 12)"
-        || receiptsPageSurface.linkedRow !== "rgb(7, 16, 11)"
-        || receiptsPageSurface.standaloneRow !== "rgb(16, 11, 23)"
+      const receiptsPageSurface = await page.evaluate(() => {
+        const add = document.querySelector(".legacy-receipts-page .legacy-service-add-wide");
+        const addRect = add?.getBoundingClientRect();
+        const pageRect = document.querySelector(".legacy-receipts-page")?.getBoundingClientRect();
+        return {
+          total: getComputedStyle(document.querySelector(".receipts-stats > .service-stat-primary")).backgroundColor,
+          amount: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(2)")).backgroundColor,
+          linkedStat: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(3)")).backgroundColor,
+          linkedRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.linked")).backgroundColor,
+          standaloneRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.standalone")).backgroundColor,
+          rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize,
+          addWidth: Math.round(addRect?.width || 0),
+          pageWidth: Math.round(pageRect?.width || 0),
+          addHeight: Math.round(addRect?.height || 0)
+        };
+      });
+      if (receiptsPageSurface.total !== "rgb(7, 12, 16)"
+        || receiptsPageSurface.amount !== "rgb(7, 12, 16)"
+        || receiptsPageSurface.linkedStat !== "rgb(7, 12, 16)"
+        || receiptsPageSurface.linkedRow !== "rgb(9, 15, 20)"
+        || receiptsPageSurface.standaloneRow !== "rgb(9, 15, 20)"
+        || receiptsPageSurface.addWidth < receiptsPageSurface.pageWidth - 34
+        || receiptsPageSurface.addHeight < 48
         || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "receipts-semantic-hierarchy", receiptsPageSurface });
       }
@@ -2641,10 +2661,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           removeHeight: removeRect ? Math.round(removeRect.height) : 0
         };
       });
-      if (draftSurface.card !== "rgb(16, 11, 23)"
-        || draftSurface.note !== "rgb(16, 11, 23)"
-        || draftSurface.next !== "rgb(33, 22, 47)"
-        || draftSurface.remove !== "rgb(18, 9, 11)"
+      if (draftSurface.card !== "rgb(7, 12, 16)"
+        || draftSurface.note !== "rgb(13, 20, 25)"
+        || draftSurface.next !== "rgb(13, 20, 25)"
+        || draftSurface.remove !== "rgb(13, 20, 25)"
         || draftSurface.nextHeight < 44
         || draftSurface.removeHeight < 44) {
         report.failures.push({ width, type: "drafts-workflow-hierarchy", draftSurface });
@@ -2680,13 +2700,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         download: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="download-backup"]')).backgroundColor,
         importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor
       }));
-      if (backupSurface.primary !== "rgb(7, 17, 12)"
-        || backupSurface.auto !== "rgb(8, 16, 25)"
-        || backupSurface.orders !== "rgb(16, 11, 8)"
-        || backupSurface.warehouse !== "rgb(8, 16, 25)"
-        || backupSurface.price !== "rgb(16, 11, 23)"
-        || backupSurface.download !== "rgb(10, 33, 20)"
-        || backupSurface.importButton !== "rgb(8, 16, 25)") {
+      if (backupSurface.primary !== "rgb(7, 12, 16)"
+        || backupSurface.auto !== "rgb(7, 12, 16)"
+        || backupSurface.orders !== "rgb(7, 12, 16)"
+        || backupSurface.warehouse !== "rgb(7, 12, 16)"
+        || backupSurface.price !== "rgb(7, 12, 16)"
+        || backupSurface.download !== "rgb(255, 113, 79)"
+        || backupSurface.importButton !== "rgb(13, 20, 25)") {
         report.failures.push({ width, type: "backup-semantic-hierarchy", backupSurface });
       }
 

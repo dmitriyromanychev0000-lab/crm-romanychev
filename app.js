@@ -7,11 +7,22 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.4.3";
-const APP_BUILD = "2026.09.28.196";
+const APP_VERSION = "1.5.0";
+const APP_BUILD = "2026.09.28.197";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Исправлен каталог услуг в уже созданной заявке: полноэкранное окно больше не уезжает вверх";
+const APP_RELEASE = "Документы, инструменты, черновики и бэкапы переведены на единую спокойную графитовую систему";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.0",
+    date: "28.09.2026",
+    title: "Документы и настройки без цветной каши",
+    items: [
+      "Документы и инструменты получили полноширинное главное действие вместо одинокой квадратной кнопки.",
+      "Карточки документов, инструментов и черновиков стали нейтральными графитовыми; цвет оставлен только в важных цифрах и опасных действиях.",
+      "Бэкапы и настройки очищены от зелёных, синих и фиолетовых заливок; основное действие бэкапа выделено фирменным коралловым цветом.",
+      "Каталог услуг при редактировании существующей заявки остаётся закреплённым в видимой области экрана."
+    ]
+  },
   {
     version: "1.4.3",
     date: "28.09.2026",
@@ -3914,11 +3925,11 @@ function receiptsPage() {
   const total = receipts.reduce((sum, item) => sum + receiptSummary(item).amount, 0);
   const linked = receipts.filter((item) => receiptSummary(item).orderId).length;
   return `<main class="content legacy-service-page legacy-receipts-page">
-    <div class="legacy-subpage-head legacy-service-head-with-add">
+    <div class="legacy-subpage-head">
       <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Документы</h1><p>Квитанции, чеки и документы</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-receipt" aria-label="Новый документ">${icon("plus")}</button>
     </div>
+    <button type="button" class="legacy-service-add-wide" data-action="new-receipt">${icon("plus")}<span>Новый документ</span></button>
     <section class="legacy-service-stats receipts-stats">
       <div class="service-stat-primary"><span>ДОКУМЕНТОВ</span><strong>${receipts.length}</strong><small>всего сохранено</small></div>
       <div><span>СУММА</span><strong class="blue">${money(total)}</strong><small>по документам</small></div>
@@ -3943,11 +3954,11 @@ function toolsPage() {
     .sort((a, b) => String(a.item.name || a.item.title || a.item.tool || "").localeCompare(String(b.item.name || b.item.title || b.item.tool || ""), "ru"));
   const active = tools.filter((item) => String(item.status || item.state || "").toLowerCase() !== "списан").length;
   return `<main class="content legacy-service-page legacy-tools-page">
-    <div class="legacy-subpage-head legacy-service-head-with-add">
+    <div class="legacy-subpage-head">
       <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Инструменты</h1><p>Рабочий инструмент и оборудование</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-tool" aria-label="Добавить инструмент">${icon("plus")}</button>
     </div>
+    <button type="button" class="legacy-service-add-wide" data-action="new-tool">${icon("plus")}<span>Добавить инструмент</span></button>
     <section class="legacy-service-stats two tools-stats">
       <div class="service-stat-primary"><span>ИНСТРУМЕНТОВ</span><strong>${tools.length}</strong><small>в учёте</small></div>
       <div><span>АКТИВНЫХ</span><strong class="green">${active}</strong><small>доступно в работе</small></div>
