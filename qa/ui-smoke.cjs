@@ -1927,11 +1927,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.qtyWidth < 60
         || editorSurfaceState.costWidth < 100
         || editorSurfaceState.footerWidth < width - 2
-        || editorSurfaceState.footerCoverage < 1.8
+        || editorSurfaceState.footerCoverage < 0.9
+        || editorSurfaceState.footerButtonGap < 4
         || editorSurfaceState.footerButtonGap > 10
-        || editorSurfaceState.secondaryWidth < editorSurfaceState.footerInnerWidth - 2
-        || editorSurfaceState.primaryWidth < editorSurfaceState.footerInnerWidth - 2
-        || editorSurfaceState.primaryTop <= editorSurfaceState.secondaryTop) {
+        || editorSurfaceState.secondaryWidth < 100
+        || editorSurfaceState.primaryWidth < 140
+        || editorSurfaceState.primaryWidth <= editorSurfaceState.secondaryWidth
+        || Math.abs(editorSurfaceState.primaryTop - editorSurfaceState.secondaryTop) > 2) {
         report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
       if (width === 390) {
