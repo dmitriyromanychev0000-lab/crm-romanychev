@@ -17547,3 +17547,59 @@
     min-height: 48px !important;
   }
 }
+
+
+/* 1.7.28 · Склад: точная компактная геометрия без уменьшения рабочего текста. */
+@media screen and (max-width: 520px) {
+  .legacy-stock-main {
+    box-sizing: border-box !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .shopping-content .legacy-shopping-card {
+    box-sizing: border-box !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .stock-detail-hero {
+    box-sizing: border-box !important;
+  }
+
+  .stock-detail-kpis > div {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .stock-detail-kpis span {
+    min-height: 18px !important;
+    line-height: 1.1 !important;
+  }
+
+  .stock-detail-kpis strong {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+
+  .stock-detail-kpis small {
+    margin-top: 1px !important;
+    line-height: 1.05 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .stock-detail-hero {
+    grid-template-columns: 40px minmax(0,1fr) auto !important;
+    grid-template-rows: auto !important;
+    align-items: center !important;
+  }
+
+  .stock-detail-status {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: end !important;
+    margin-top: 0 !important;
+  }
+}

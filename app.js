@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.27";
-const APP_BUILD = "2026.09.28.245";
+const APP_VERSION = "1.7.28";
+const APP_BUILD = "2026.09.28.246";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Деталка и редактор склада стали плотнее: KPI, действия, история и секции формы занимают меньше места без уменьшения рабочего текста";
+const APP_RELEASE = "Склад доведён по геометрии: карточки, покупки и деталка стали реально компактнее без уменьшения рабочего текста и touch-targets";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.28",
+    date: "28.09.2026",
+    title: "Точная геометрия склада",
+    items: [
+      "Убрана скрытая лишняя высота карточек склада и списка покупок за счёт внутренних отступов, а не уменьшения текста.",
+      "Шапка деталки склада переведена на border-box; на 320 px статус снова помещается в одну строку рядом с названием.",
+      "KPI уплотнены по line-height и интервалам, при этом рабочие цифры и кнопки действий сохранены прежнего размера."
+    ]
+  },
   {
     version: "1.7.27",
     date: "28.09.2026",
