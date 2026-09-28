@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.17";
-const APP_BUILD = "2026.09.28.235";
+const APP_VERSION = "1.7.18";
+const APP_BUILD = "2026.09.28.236";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Календарь стал плотнее: меньше пустоты вокруг месяца и расписания, а события занимают ровно столько места, сколько требует текст";
+const APP_RELEASE = "Финансы и клиенты стали плотнее: сводки и карточки занимают меньше места, сохраняя крупные суммы и удобные действия";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.18",
+    date: "28.09.2026",
+    title: "Плотные финансы и клиенты",
+    items: [
+      "Финансовые сводки и история стали компактнее без уменьшения ключевых сумм.",
+      "Карточки клиентов и статистика занимают меньше высоты, а кнопки действий остаются не меньше 44 px.",
+      "Снижена лишняя прокрутка в двух рабочих разделах без потери читаемости."
+    ]
+  },
   {
     version: "1.7.17",
     date: "28.09.2026",

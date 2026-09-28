@@ -1023,6 +1023,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financeRowLayout.removeLeft < financeRowLayout.amountRight) {
         report.failures.push({ width, type: "finance-row-single-line", financeRowLayout });
       }
+      const financeDensity = await page.evaluate(() => {
+        const hero = document.querySelector(".legacy-finance-summary .finance-result-hero");
+        const tile = document.querySelector(".legacy-finance-summary > div:not(.finance-result-hero)");
+        const action = document.querySelector(".legacy-finance-actions > button");
+        return {
+          heroHeight: Math.round(hero?.getBoundingClientRect().height || 0),
+          tileHeight: Math.round(tile?.getBoundingClientRect().height || 0),
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (financeDensity.heroHeight > 88
+        || financeDensity.tileHeight > 70
+        || financeDensity.actionHeight < 44) {
+        report.failures.push({ width, type: "finance-compact-density", financeDensity });
+      }
     }
 
     await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
@@ -2927,6 +2942,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(clientPageSurface.actionWidths[0] - clientPageSurface.actionWidths[1]) > 2
         || clientPageSurface.totalColor !== "rgb(255, 138, 112)") {
         report.failures.push({ width, type: "clients-semantic-hierarchy", clientPageSurface });
+      }
+      const clientDensity = await page.evaluate(() => {
+        const primary = document.querySelector(".legacy-clients-stats > .clients-stat-primary");
+        const secondary = document.querySelector(".legacy-clients-stats > div:nth-child(2)");
+        const main = document.querySelector(".legacy-client-main");
+        const action = document.querySelector(".legacy-client-actions > *");
+        return {
+          primaryHeight: Math.round(primary?.getBoundingClientRect().height || 0),
+          secondaryHeight: Math.round(secondary?.getBoundingClientRect().height || 0),
+          mainHeight: Math.round(main?.getBoundingClientRect().height || 0),
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (clientDensity.primaryHeight > 82
+        || clientDensity.secondaryHeight > 68
+        || clientDensity.mainHeight > 78
+        || clientDensity.actionHeight < 44) {
+        report.failures.push({ width, type: "clients-compact-density", clientDensity });
       }
       await page.locator('[data-action="open-client"]').first().click();
       const clientProfileState = await page.evaluate(() => ({

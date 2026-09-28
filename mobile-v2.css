@@ -16845,3 +16845,114 @@
     padding-top: 8px !important;
   }
 }
+
+
+/* 1.7.18 · Финансы и клиенты: меньше пустоты, те же крупные данные и touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-page,
+  .legacy-clients-page {
+    padding-top: 10px !important;
+  }
+
+  .legacy-finance-summary {
+    gap: 6px !important;
+    margin: 8px 0 !important;
+  }
+
+  .legacy-finance-summary > div {
+    min-height: 64px !important;
+    padding: 8px 10px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-finance-summary .finance-result-hero {
+    min-height: 82px !important;
+    padding: 10px 12px !important;
+  }
+
+  .legacy-finance-summary strong {
+    margin-top: 4px !important;
+  }
+
+  .legacy-finance-summary .finance-result-hero strong {
+    margin-top: 5px !important;
+  }
+
+  .legacy-finance-summary small {
+    margin-top: 4px !important;
+  }
+
+  .legacy-finance-actions {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-finance-history {
+    padding: 10px !important;
+  }
+
+  .legacy-finance-row {
+    min-height: 58px !important;
+    padding: 6px 0 !important;
+  }
+
+  .legacy-finance-kind {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .legacy-client-search {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-clients-stats {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-clients-stats > div {
+    min-height: 62px !important;
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-clients-stats .clients-stat-primary {
+    min-height: 76px !important;
+  }
+
+  .legacy-clients-stats strong {
+    margin-top: 4px !important;
+  }
+
+  .legacy-clients-stats small {
+    margin-top: 4px !important;
+  }
+
+  .legacy-client-list {
+    gap: 6px !important;
+  }
+
+  .legacy-client-card {
+    border-radius: 13px !important;
+  }
+
+  .legacy-client-main {
+    min-height: 72px !important;
+    padding: 8px 10px 7px !important;
+  }
+
+  .legacy-client-meta {
+    gap: 5px 9px !important;
+    padding: 6px 10px !important;
+  }
+
+  .legacy-client-actions {
+    gap: 5px !important;
+    padding: 0 10px 8px !important;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    min-height: 44px !important;
+  }
+}
