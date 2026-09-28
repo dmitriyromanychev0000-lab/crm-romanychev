@@ -14714,3 +14714,46 @@
   }
 }
 
+/* 1.2.2 · Усиление специфичности для старых семантических каскадов. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-summary .finance-result-hero.positive,
+  .legacy-finance-summary .finance-result-hero.negative {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-finance-actions .legacy-orange-button[data-type="income"],
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] {
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-clients-stats > .clients-stat-primary,
+  .legacy-clients-stats > div:nth-child(2),
+  .legacy-clients-stats > div:nth-child(3) {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-hero {
+    background-color: #070c10 !important;
+    background-image: none !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(1),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(2),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(3),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(4) {
+    background-color: #090f14 !important;
+    background-image: none !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button[data-more="tools"],
+  .legacy-settings-page .settings-links > button[data-more="receipts"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="drafts"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="backup"] {
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+}
+

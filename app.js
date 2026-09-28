@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.1";
-const APP_BUILD = "2026.09.28.184";
+const APP_VERSION = "1.2.2";
+const APP_BUILD = "2026.09.28.185";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Вторичные разделы переведены на спокойные тёмные поверхности; цвет остался только как смысловой акцент";
+const APP_RELEASE = "Доведена единая тёмная иерархия финансов, клиентов и настроек без цветных заливок";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.2",
+    date: "28.09.2026",
+    title: "Финальная унификация поверхностей",
+    items: [
+      "Убраны оставшиеся цветные заливки в итогах финансов, статистике клиентов и профиле клиента.",
+      "Кнопки дохода и расхода теперь нейтральные по поверхности, а смысл сохраняется цветом рамки и текста.",
+      "Ссылки из настроек приведены к единой графитовой поверхности."
+    ]
+  },
   {
     version: "1.2.1",
     date: "28.09.2026",
