@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.40";
-const APP_BUILD = "2026.09.28.258";
+const APP_VERSION = "1.7.41";
+const APP_BUILD = "2026.09.28.259";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Диагностика и подтверждения стали плотнее: меньше пустых полей и короче строки, при этом ключевые кнопки сохранили крупные зоны нажатия"
+const APP_RELEASE = "Диагностика теперь действительно использует компактную геометрию: старые общие стили больше не перебивают её собственные размеры"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.41",
+    date: "28.09.2026",
+    title: "Точная геометрия диагностики",
+    items: [
+      "Исправлен конфликт специфичности CSS: старое правило compact-modal больше не возвращает диагностике лишние отступы.",
+      "Фактические строки диагностики теперь укладываются в компактную высоту, а заголовок и промежутки соответствуют новой сетке.",
+      "Строгая QA-проверка оставлена без послаблений и проверяет реальные размеры интерфейса."
+    ]
+  },
   {
     version: "1.7.40",
     date: "28.09.2026",
