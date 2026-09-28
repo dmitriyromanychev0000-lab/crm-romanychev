@@ -19432,3 +19432,65 @@
     border-radius: 11px !important;
   }
 }
+
+
+/* 1.7.67 · Склад: плотная верхняя рабочая панель без потери touch-targets. */
+@media screen and (max-width: 520px) {
+  .legacy-warehouse-page {
+    padding-top: 9px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-head {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-add-wide {
+    min-height: 48px !important;
+    height: 48px !important;
+    margin-bottom: 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-search {
+    margin-bottom: 5px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-search .search {
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-warehouse-page .warehouse-filter-grid {
+    gap: 5px 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .legacy-warehouse-page .warehouse-filter-control {
+    gap: 0 !important;
+  }
+
+  .legacy-warehouse-page .warehouse-filter-control > small {
+    display: none !important;
+  }
+
+  .legacy-warehouse-page .warehouse-filter-control .field {
+    min-height: 44px !important;
+    height: 44px !important;
+    padding-left: 10px !important;
+    padding-right: 28px !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-shortcuts {
+    gap: 5px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-warehouse-page .legacy-warehouse-shortcuts > button {
+    min-height: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+}

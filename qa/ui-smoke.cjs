@@ -2538,6 +2538,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filterGrid = document.querySelector(".warehouse-filter-grid");
         const filterGridRect = filterGrid?.getBoundingClientRect();
         const filterRects = [...document.querySelectorAll(".warehouse-filter-grid > .warehouse-filter-control")].map((node) => node.getBoundingClientRect());
+        const headRect = document.querySelector(".legacy-warehouse-head")?.getBoundingClientRect();
+        const addRect = document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect();
+        const searchRect = document.querySelector(".legacy-warehouse-search .search")?.getBoundingClientRect();
+        const shortcutsRect = document.querySelector(".legacy-warehouse-shortcuts")?.getBoundingClientRect();
+        const shortcutRects = [...document.querySelectorAll(".legacy-warehouse-shortcuts > button")].map((node) => node.getBoundingClientRect());
+        const firstGroupRect = document.querySelector(".legacy-warehouse-groups > .legacy-warehouse-group")?.getBoundingClientRect();
         const stockMain = document.querySelector(".legacy-stock-main");
         const stockCopy = document.querySelector(".legacy-stock-copy");
         const stockQty = document.querySelector(".legacy-stock-qty");
@@ -2563,13 +2569,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
           hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
           hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter")),
-          addWidth: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().width || 0),
+          addWidth: Math.round(addRect?.width || 0),
           pageWidth: Math.round(document.querySelector(".legacy-warehouse-page")?.getBoundingClientRect().width || 0),
-          addHeight: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().height || 0),
+          addHeight: Math.round(addRect?.height || 0),
           addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || "",
+          searchHeight: Math.round(searchRect?.height || 0),
           filterGridWidth: Math.round(filterGridRect?.width || 0),
+          filterGridHeight: Math.round(filterGridRect?.height || 0),
           filterWidths: filterRects.map((rect) => Math.round(rect.width)),
           filterHeights: filterRects.map((rect) => Math.round(rect.height)),
+          filterLabelDisplays: [...document.querySelectorAll(".warehouse-filter-control > small")].map((node) => getComputedStyle(node).display),
+          filterAriaLabels: [...document.querySelectorAll(".warehouse-filter-control select")].map((node) => node.getAttribute("aria-label") || ""),
+          shortcutHeights: shortcutRects.map((rect) => Math.round(rect.height)),
+          gapHeadAdd: headRect && addRect ? Math.round(addRect.top - headRect.bottom) : 999,
+          gapAddSearch: addRect && searchRect ? Math.round(searchRect.top - addRect.bottom) : 999,
+          gapSearchFilters: searchRect && filterGridRect ? Math.round(filterGridRect.top - searchRect.bottom) : 999,
+          gapFiltersShortcuts: filterGridRect && shortcutsRect ? Math.round(shortcutsRect.top - filterGridRect.bottom) : 999,
+          gapShortcutsGroups: shortcutsRect && firstGroupRect ? Math.round(firstGroupRect.top - shortcutsRect.bottom) : 999,
           filterLefts: filterRects.map((rect) => Math.round(rect.left)),
           filterTops: filterRects.map((rect) => Math.round(rect.top)),
           stockMainHeight: Math.round(stockMainRect?.height || 0),
@@ -2606,11 +2622,26 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.secondaryActionLabels.some((item) => !item.aria || item.textDisplay !== "none")
         || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 34
         || warehousePageSurfaces.addHeight < 48
+        || warehousePageSurfaces.addHeight > 49
+        || warehousePageSurfaces.searchHeight < 44
+        || warehousePageSurfaces.searchHeight > 45
         || !warehousePageSurfaces.addText.includes("Новая позиция")
         || warehousePageSurfaces.filterWidths.length !== 4
         || warehousePageSurfaces.filterWidths.some((value) => value < 120)
         || Math.max(...warehousePageSurfaces.filterWidths) - Math.min(...warehousePageSurfaces.filterWidths) > 3
-        || warehousePageSurfaces.filterHeights.some((value) => value < 58 || value > 64)
+        || warehousePageSurfaces.filterHeights.some((value) => value < 44 || value > 45)
+        || warehousePageSurfaces.filterGridHeight > 94
+        || warehousePageSurfaces.filterLabelDisplays.length !== 4
+        || warehousePageSurfaces.filterLabelDisplays.some((value) => value !== "none")
+        || warehousePageSurfaces.filterAriaLabels.length !== 4
+        || warehousePageSurfaces.filterAriaLabels.some((value) => !value)
+        || warehousePageSurfaces.shortcutHeights.length !== 2
+        || warehousePageSurfaces.shortcutHeights.some((value) => value < 44 || value > 45)
+        || warehousePageSurfaces.gapHeadAdd > 8
+        || warehousePageSurfaces.gapAddSearch > 7
+        || warehousePageSurfaces.gapSearchFilters > 6
+        || warehousePageSurfaces.gapFiltersShortcuts > 7
+        || warehousePageSurfaces.gapShortcutsGroups > 8
         || Math.abs(warehousePageSurfaces.filterTops[0] - warehousePageSurfaces.filterTops[1]) > 2
         || Math.abs(warehousePageSurfaces.filterTops[2] - warehousePageSurfaces.filterTops[3]) > 2
         || warehousePageSurfaces.filterTops[2] <= warehousePageSurfaces.filterTops[0]

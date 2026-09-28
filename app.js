@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.66";
-const APP_BUILD = "2026.09.28.287";
+const APP_VERSION = "1.7.67";
+const APP_BUILD = "2026.09.28.288";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Главный экран заявок стал плотнее сверху: создание, поиск и фильтры занимают меньше высоты, сохраняя полноразмерные зоны нажатия"
+const APP_RELEASE = "Верх склада стал заметно плотнее: создание, поиск, фильтры и быстрые переходы занимают меньше высоты без уменьшения touch-зон"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.67",
+    date: "28.09.2026",
+    title: "Плотный верх склада",
+    items: [
+      "Кнопка создания, поиск и быстрые переходы приведены к компактной высоте 44–48 px.",
+      "Четыре фильтра остаются сеткой 2×2, но без дублирующих подписей над селектами.",
+      "Доступные подписи фильтров сохранены через aria-label; первая группа склада начинается выше."
+    ]
+  },
   {
     version: "1.7.66",
     date: "28.09.2026",
