@@ -4524,7 +4524,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         download: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="download-backup"]')).backgroundColor,
         importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor,
         mainWidth: Math.round(document.querySelector(".legacy-backup-main-actions")?.getBoundingClientRect().width || 0),
+        mainGap: Number.parseFloat(getComputedStyle(document.querySelector(".legacy-backup-main-actions")).columnGap || "0") || 0,
         mainButtonWidths: [...document.querySelectorAll(".legacy-backup-main-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+        mainButtonHeights: [...document.querySelectorAll(".legacy-backup-main-actions > button")].map((node) => Math.round(node.getBoundingClientRect().height)),
+        primaryCardHeight: Math.round(document.querySelector(".backup-primary-card")?.getBoundingClientRect().height || 0),
         advancedTag: document.querySelector(".legacy-backup-advanced")?.tagName || "",
         advancedOpen: Boolean(document.querySelector(".legacy-backup-advanced")?.open),
         advancedSummaryHeight: Math.round(document.querySelector(".legacy-backup-advanced > summary")?.getBoundingClientRect().height || 0),
@@ -4538,7 +4541,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || backupSurface.price !== "rgb(7, 12, 16)"
         || backupSurface.download !== "rgb(255, 113, 79)"
         || backupSurface.importButton !== "rgb(13, 20, 25)"
-        || backupSurface.mainButtonWidths.some((value) => value < backupSurface.mainWidth - 2)
+        || backupSurface.mainButtonWidths.length !== 2
+        || backupSurface.mainButtonWidths.some((value) => value < Math.floor((backupSurface.mainWidth - backupSurface.mainGap) / 2) - 2 || value > Math.ceil((backupSurface.mainWidth - backupSurface.mainGap) / 2) + 2)
+        || backupSurface.mainButtonHeights.some((value) => value < 48 || value > 49)
+        || backupSurface.primaryCardHeight > 190
         || backupSurface.advancedTag !== "DETAILS"
         || backupSurface.advancedOpen
         || backupSurface.advancedSummaryHeight < 44

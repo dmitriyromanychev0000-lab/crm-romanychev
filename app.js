@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.85";
-const APP_BUILD = "2026.09.29.312";
+const APP_VERSION = "1.7.86";
+const APP_BUILD = "2026.09.29.313";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Настройки стали заметно плотнее: служебные действия приложения снова стоят в строку, а реквизиты занимают меньше вертикального места"
+const APP_RELEASE = "Бэкапы стали плотнее: скачивание и импорт стоят рядом, оставаясь полноценными 48 px действиями"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.86",
+    date: "29.09.2026",
+    title: "Плотные действия бэкапа",
+    items: [
+      "«Скачать бэкап» и «Импорт JSON» теперь стоят рядом в двух колонках вместо двух полноширинных строк.",
+      "Обе кнопки сохраняют высоту 48 px, иконки, подписи и прежнюю логику скачивания и восстановления.",
+      "Блок «Дополнительно» и автоматические бэкапы не менялись."
+    ]
+  },
   {
     version: "1.7.85",
     date: "29.09.2026",
