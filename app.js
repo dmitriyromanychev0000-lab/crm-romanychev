@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.2";
-const APP_BUILD = "2026.09.28.185";
+const APP_VERSION = "1.2.3";
+const APP_BUILD = "2026.09.28.186";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Доведена единая тёмная иерархия финансов, клиентов и настроек без цветных заливок";
+const APP_RELEASE = "Складские действия собраны в ровную сетку 2×2 — без одиноких половинчатых кнопок";
 const APP_CHANGELOG = [
+  {
+    version: "1.2.3",
+    date: "28.09.2026",
+    title: "Ровные действия склада",
+    items: [
+      "Приход и списание остаются в первой строке, Архив и Настроить — во второй.",
+      "Все четыре действия занимают одинаковую ширину и больше не висят отдельными половинчатыми кнопками.",
+      "В автоматическую мобильную проверку добавлен контроль этой сетки."
+    ]
+  },
   {
     version: "1.2.2",
     date: "28.09.2026",

@@ -1594,16 +1594,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator(".legacy-analytics-range-modal [data-close-modal]").last().click();
 
       await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
-      const warehousePageSurfaces = await page.evaluate(() => ({
+      const warehousePageSurfaces = await page.evaluate(() => {
+        const actionButtons = [...document.querySelectorAll(".legacy-stock-actions-v2 button")].slice(0, 4);
+        const actionRects = actionButtons.map((button) => button.getBoundingClientRect());
+        return {
         group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
         stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
         action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
+        actionWidths: actionRects.map((rect) => Math.round(rect.width)),
+        actionTops: actionRects.map((rect) => Math.round(rect.top)),
         filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value),
         techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
         categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
         hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
         hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter"))
-      }));
+        };
+      });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
         || warehousePageSurfaces.stock !== "rgb(6, 11, 15)"
         || warehousePageSurfaces.action !== "rgb(9, 15, 20)"
@@ -1613,7 +1619,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !warehousePageSurfaces.techGroups.includes("Холодильник")
         || warehousePageSurfaces.categoryBlocks < 1
         || !warehousePageSurfaces.hasTechFilter
-        || !warehousePageSurfaces.hasCategoryFilter) {
+        || !warehousePageSurfaces.hasCategoryFilter
+        || warehousePageSurfaces.actionWidths.length !== 4
+        || warehousePageSurfaces.actionWidths.some((value) => value < 100)
+        || Math.max(...warehousePageSurfaces.actionWidths) - Math.min(...warehousePageSurfaces.actionWidths) > 2
+        || Math.abs(warehousePageSurfaces.actionTops[0] - warehousePageSurfaces.actionTops[1]) > 2
+        || Math.abs(warehousePageSurfaces.actionTops[2] - warehousePageSurfaces.actionTops[3]) > 2
+        || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       if (width === 390) {
