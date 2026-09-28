@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.3";
-const APP_BUILD = "2026.09.28.220";
+const APP_VERSION = "1.7.4";
+const APP_BUILD = "2026.09.28.221";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Каталог услуг получил полноширинные действия без тесных половинчатых кнопок";
+const APP_RELEASE = "Склад получил полноширинные переходы к истории движения и списку покупок";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.4",
+    date: "28.09.2026",
+    title: "Полноширинные действия склада",
+    items: [
+      "«История движения» и «Список покупок» теперь занимают отдельные полноширинные строки.",
+      "На 320 px подписи больше не ломаются на две тесные строки.",
+      "Добавлен регрессионный тест геометрии основных переходов склада."
+    ]
+  },
   {
     version: "1.7.3",
     date: "28.09.2026",

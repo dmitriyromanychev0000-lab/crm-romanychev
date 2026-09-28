@@ -892,6 +892,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (result.overflow > 2) report.failures.push({ width, type: "horizontal-overflow", label, overflow: result.overflow });
     }
 
+    await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
+    const warehouseShortcutLayout = await page.evaluate(() => {
+      const container = document.querySelector(".legacy-warehouse-shortcuts");
+      const style = container ? getComputedStyle(container) : null;
+      const rect = container?.getBoundingClientRect();
+      const buttons = [...document.querySelectorAll(".legacy-warehouse-shortcuts > button")].map((button) => {
+        const buttonRect = button.getBoundingClientRect();
+        const label = button.querySelector("span");
+        return {
+          width: Math.round(buttonRect.width),
+          height: Math.round(buttonRect.height),
+          left: Math.round(buttonRect.left),
+          top: Math.round(buttonRect.top),
+          labelWrap: label ? Math.round(label.getBoundingClientRect().height) > 20 : true
+        };
+      });
+      return {
+        width: Math.round(rect?.width || 0),
+        innerWidth: rect && style
+          ? Math.round(rect.width - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0))
+          : 0,
+        buttons
+      };
+    });
+    if (warehouseShortcutLayout.buttons.length !== 2
+      || warehouseShortcutLayout.buttons.some((button) => button.width < warehouseShortcutLayout.innerWidth - 2)
+      || warehouseShortcutLayout.buttons.some((button) => button.height < 48)
+      || warehouseShortcutLayout.buttons.some((button) => button.labelWrap)
+      || warehouseShortcutLayout.buttons[1]?.top <= warehouseShortcutLayout.buttons[0]?.top) {
+      report.failures.push({ width, type: "warehouse-shortcuts-full-width", warehouseShortcutLayout });
+    }
+
     await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
     const shoppingActionLayout = await page.evaluate(() => {
       const container = document.querySelector(".shopping-page-actions-primary");
