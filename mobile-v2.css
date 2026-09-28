@@ -19018,3 +19018,12 @@
     min-height: 64px !important;
   }
 }
+
+
+/* 1.7.53 · Узкий экран: ещё 2 px плотности без уменьшения текста. */
+@media screen and (max-width: 340px) {
+  .legacy-settings-links > button {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+}
