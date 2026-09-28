@@ -1916,22 +1916,64 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('[data-stock-detail="w1"]').click();
         await page.locator('[data-stock-detail-action="correct"]').click();
         const correctionQuantity = page.locator('.stock-correction-modal [name="quantity"]');
+        const correctionComment = page.locator('.stock-correction-modal [name="comment"]');
         const physicalBeforeCorrection = Number(await correctionQuantity.inputValue()) || 0;
         await correctionQuantity.fill(String(physicalBeforeCorrection + 1));
-        await page.locator('.stock-correction-modal [name="comment"]').fill("Контрольный пересчёт");
+        await correctionComment.fill("Контрольный пересчёт");
         report.results.push(await shot(page, width, "stock-correction", false));
+        const correctionPreSubmit = await page.evaluate(() => {
+          const form = document.querySelector(".stock-correction-modal");
+          const quantity = form?.querySelector('[name="quantity"]');
+          const comment = form?.querySelector('[name="comment"]');
+          const place = form?.querySelector('[name="locationId"]');
+          return {
+            valid: form?.checkValidity?.() ?? null,
+            quantity: quantity?.value ?? "",
+            min: quantity?.min ?? "",
+            comment: comment?.value ?? "",
+            locationId: place?.value ?? ""
+          };
+        });
         await page.locator('.stock-correction-modal button[type="submit"]').click();
-        await page.locator(".stock-correction-modal").waitFor({ state: "detached" });
+        let correctionClosed = true;
+        try {
+          await page.locator(".stock-correction-modal").waitFor({ state: "detached", timeout: 1500 });
+        } catch {
+          correctionClosed = false;
+          const diagnosticData = await readStoredData(page);
+          const diagnosticItem = diagnosticData.warehouse.find((item) => item.id === "w1");
+          const toastText = await page.locator("#toast").innerText().catch(() => "");
+          const correctionAfterClick = await page.evaluate(() => {
+            const form = document.querySelector(".stock-correction-modal");
+            return {
+              quantity: form?.querySelector('[name="quantity"]')?.value ?? "",
+              comment: form?.querySelector('[name="comment"]')?.value ?? "",
+              diff: form?.querySelector("#stock-correction-diff")?.textContent ?? ""
+            };
+          });
+          report.failures.push({
+            width,
+            type: "stock-correction-submit",
+            preSubmit: correctionPreSubmit,
+            afterClick: correctionAfterClick,
+            toast: toastText,
+            quantity: diagnosticItem?.quantity,
+            locationBalances: diagnosticItem?.locationBalances,
+            batches: diagnosticItem?.batches
+          });
+          await page.locator('.stock-correction-modal [data-close-modal]').first().click().catch(() => {});
+          await page.locator(".stock-correction-modal").waitFor({ state: "detached", timeout: 1500 }).catch(() => {});
+        }
         await page.waitForTimeout(20);
         const afterCorrection = await readStoredData(page);
         const correctedItem = afterCorrection.warehouse.find((item) => item.id === "w1");
         const correctionMovement = [...afterCorrection.warehouse_movements].reverse().find((item) => item.type === "correction_in" && item.warehouseId === "w1");
-        if (Number(correctedItem?.quantity) !== physicalBeforeCorrection + 1
+        if (correctionClosed && (Number(correctedItem?.quantity) !== physicalBeforeCorrection + 1
           || Number(correctionMovement?.before) !== physicalBeforeCorrection
           || Number(correctionMovement?.after) !== physicalBeforeCorrection + 1
           || Number(correctionMovement?.difference) !== 1
           || correctionMovement?.comment !== "Контрольный пересчёт"
-          || afterCorrection.expenses.length !== expenseCountBeforeCorrection) {
+          || afterCorrection.expenses.length !== expenseCountBeforeCorrection)) {
           report.failures.push({ width, type: "stock-correction-history", correctedItem, correctionMovement, expenseCountBeforeCorrection, expenseCountAfter: afterCorrection.expenses.length });
         }
 
