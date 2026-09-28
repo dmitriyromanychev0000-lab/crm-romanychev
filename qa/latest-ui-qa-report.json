@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T19:46:19.368Z",
-  "testedSha": "ab9f5128facb27ada80cbbdd3b51490384385061",
+  "generatedAt": "2026-09-28T19:49:23.250Z",
+  "testedSha": "7ac835cc01e313312d90e28128d2774884debbee",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1580,39 +1580,112 @@
           }
         ]
       }
-    },
-    {
-      "label": "backup-roundtrip",
-      "width": 320,
-      "bodyScrollWidth": 320,
-      "viewportWidth": 320,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "backupRoundtripOk": true,
-      "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
-    },
-    {
-      "label": "backup-local-fallback",
-      "width": 320,
-      "bodyScrollWidth": 320,
-      "viewportWidth": 320,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T19:46:58.426Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "backup-semantic-hierarchy",
+      "backupSurface": {
+        "primary": "rgb(7, 12, 16)",
+        "auto": "rgb(7, 12, 16)",
+        "orders": "rgb(7, 12, 16)",
+        "warehouse": "rgb(7, 12, 16)",
+        "price": "rgb(7, 12, 16)",
+        "download": "rgb(255, 113, 79)",
+        "importButton": "rgb(13, 20, 25)",
+        "mainWidth": 274,
+        "mainButtonWidths": [
+          274,
+          274
+        ],
+        "advancedTag": "DETAILS",
+        "advancedOpen": false,
+        "advancedSummaryHeight": 48,
+        "advancedGridDisplay": "grid",
+        "advancedButtons": 7
+      }
+    },
+    {
+      "width": 320,
+      "type": "backup-advanced-open",
+      "backupAdvancedOpen": {
+        "open": true,
+        "gridDisplay": "grid",
+        "gridWidth": 272,
+        "buttonWidths": [
+          258,
+          258,
+          258,
+          258,
+          258,
+          258,
+          258
+        ],
+        "buttonHeights": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ]
+      }
+    },
+    {
+      "width": 390,
+      "type": "backup-semantic-hierarchy",
+      "backupSurface": {
+        "primary": "rgb(7, 12, 16)",
+        "auto": "rgb(7, 12, 16)",
+        "orders": "rgb(7, 12, 16)",
+        "warehouse": "rgb(7, 12, 16)",
+        "price": "rgb(7, 12, 16)",
+        "download": "rgb(255, 113, 79)",
+        "importButton": "rgb(13, 20, 25)",
+        "mainWidth": 336,
+        "mainButtonWidths": [
+          336,
+          336
+        ],
+        "advancedTag": "DETAILS",
+        "advancedOpen": false,
+        "advancedSummaryHeight": 48,
+        "advancedGridDisplay": "grid",
+        "advancedButtons": 7
+      }
+    },
+    {
+      "width": 390,
+      "type": "backup-advanced-open",
+      "backupAdvancedOpen": {
+        "open": true,
+        "gridDisplay": "grid",
+        "gridWidth": 334,
+        "buttonWidths": [
+          320,
+          320,
+          320,
+          320,
+          320,
+          320,
+          320
+        ],
+        "buttonHeights": [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ]
+      }
+    },
+    {
+      "type": "fatal",
+      "message": "locator.click: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('[data-action=\"backup-self-test\"]')\n    - locator resolved to <button type=\"button\" data-action=\"backup-self-test\">Самопроверка</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    15 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n"
+    }
+  ]
 }
