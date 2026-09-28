@@ -1401,6 +1401,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned });
       }
 
+      const calculationSummaryLayout = await page.evaluate(() => {
+        const summary = document.querySelector(".order-editor-modal .order-calculation-summary");
+        const cards = [...document.querySelectorAll(".order-editor-modal .order-calculation-summary > div")].map((el) => {
+          const rect = el.getBoundingClientRect();
+          return { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
+        });
+        const button = document.querySelector(".order-editor-modal .order-calculation-summary > button")?.getBoundingClientRect();
+        const rect = summary?.getBoundingClientRect();
+        return {
+          gridWidth: Math.round(rect?.width || 0),
+          columns: summary ? getComputedStyle(summary).gridTemplateColumns : "",
+          cards,
+          button: button ? { left: Math.round(button.left), top: Math.round(button.top), width: Math.round(button.width), height: Math.round(button.height) } : null
+        };
+      });
+      const calculationSummaryCompact = calculationSummaryLayout.cards.length === 3
+        && calculationSummaryLayout.cards.every((card) => card.height <= 56 && card.width >= 70)
+        && Math.max(...calculationSummaryLayout.cards.map((card) => card.top)) - Math.min(...calculationSummaryLayout.cards.map((card) => card.top)) <= 2
+        && calculationSummaryLayout.cards[1].left > calculationSummaryLayout.cards[0].left
+        && calculationSummaryLayout.cards[2].left > calculationSummaryLayout.cards[1].left
+        && calculationSummaryLayout.button
+        && calculationSummaryLayout.button.top > calculationSummaryLayout.cards[0].top
+        && calculationSummaryLayout.button.width >= calculationSummaryLayout.gridWidth - 2
+        && calculationSummaryLayout.button.height >= 44;
+      if (!calculationSummaryCompact) {
+        report.failures.push({ width, type: "order-calculation-summary-compact", calculationSummaryLayout });
+      }
+
       const orderEditorDensity = await page.evaluate(() => {
         const body = document.querySelector(".order-editor-body");
         const section = document.querySelector(".order-editor-section");

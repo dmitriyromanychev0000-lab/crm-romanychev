@@ -18677,3 +18677,47 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* 1.7.43 · Расчёт заявки: три итоговых показателя в одну компактную строку. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-calculation-summary {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div,
+  .order-editor-modal .order-calculation-summary .calculation-grand {
+    grid-column: auto !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    min-height: 54px !important;
+    padding: 7px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div span {
+    overflow: hidden !important;
+    font-size: 8.5px !important;
+    line-height: 1.1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > div strong,
+  .order-editor-modal .order-calculation-summary .calculation-grand strong {
+    margin-top: 4px !important;
+    font-size: 14px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
+
+  .order-editor-modal .order-calculation-summary > button {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin-top: 0 !important;
+    border-radius: 10px !important;
+  }
+}

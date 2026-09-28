@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.42";
-const APP_BUILD = "2026.09.28.260";
+const APP_VERSION = "1.7.43";
+const APP_BUILD = "2026.09.28.261";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "История версий стала плотнее и удобнее: карточки занимают меньше места, а шапка с закрытием остаётся доступной при прокрутке"
+const APP_RELEASE = "Расчёт заявки стал плотнее: три итоговых показателя собраны в одну строку, а денежные поля остаются удобной сеткой 2×N"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.43",
+    date: "28.09.2026",
+    title: "Плотный расчёт заявки",
+    items: [
+      "Услуги, расходы без склада и итог услуг теперь стоят одной компактной строкой вместо двух рядов карточек.",
+      "Сводка стала ниже без уменьшения рабочих полей и кнопки «Подставить итог».",
+      "Добавлена отдельная QA-проверка трёхколоночной геометрии расчёта на мобильных ширинах."
+    ]
+  },
   {
     version: "1.7.42",
     date: "28.09.2026",
