@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.4.2";
-const APP_BUILD = "2026.09.28.195";
+const APP_VERSION = "1.4.3";
+const APP_BUILD = "2026.09.28.196";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс и товарник очищены от последних фиолетовых, жёлтых и коричневых разделителей";
+const APP_RELEASE = "Исправлен каталог услуг в уже созданной заявке: полноэкранное окно больше не уезжает вверх";
 const APP_CHANGELOG = [
+  {
+    version: "1.4.3",
+    date: "28.09.2026",
+    title: "Каталог услуг остаётся на месте",
+    items: [
+      "При редактировании уже созданной заявки каталог услуг теперь жёстко привязан к видимой области экрана.",
+      "Исправлен Android-сценарий, в котором после прокрутки формы наверху оставались только итог и кнопки «Отмена / Применить».",
+      "Та же защита добавлена каталогу материалов, потому что он использует тот же вложенный полноэкранный механизм."
+    ]
+  },
   {
     version: "1.4.2",
     date: "28.09.2026",
@@ -4558,6 +4568,38 @@ function warrantyUntilText(order = {}) {
 }
 
 
+
+function pinNestedModalToViewport(backdrop) {
+  let frame = 0;
+  const visualViewport = window.visualViewport || null;
+  const align = () => {
+    frame = 0;
+    if (!backdrop?.isConnected) return;
+    backdrop.style.removeProperty("transform");
+    const rect = backdrop.getBoundingClientRect();
+    const targetTop = Number(visualViewport?.offsetTop) || 0;
+    const shiftY = targetTop - rect.top;
+    if (Math.abs(shiftY) > 0.5) {
+      backdrop.style.setProperty("transform", `translate3d(0, ${shiftY}px, 0)`, "important");
+    }
+  };
+  const schedule = () => {
+    if (frame) cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(align);
+  };
+  window.addEventListener("resize", schedule);
+  visualViewport?.addEventListener("resize", schedule);
+  visualViewport?.addEventListener("scroll", schedule);
+  schedule();
+  return () => {
+    if (frame) cancelAnimationFrame(frame);
+    window.removeEventListener("resize", schedule);
+    visualViewport?.removeEventListener("resize", schedule);
+    visualViewport?.removeEventListener("scroll", schedule);
+    backdrop?.style.removeProperty("transform");
+  };
+}
+
 function openServiceCatalog(orderModal, serviceCatalog) {
   const currentRows = [...orderModal.querySelectorAll("[data-service-row]")].map((row) => ({
     name: row.querySelector('[data-line="name"]').value.trim(),
@@ -4592,7 +4634,10 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     </div>
   </div>`;
   document.body.appendChild(modal);
+  syncModalScrollLock();
+  const releaseViewportPin = pinNestedModalToViewport(modal);
   const closeCatalog = () => {
+    releaseViewportPin();
     modal.remove();
     syncModalScrollLock();
   };
@@ -4641,6 +4686,7 @@ function openServiceCatalog(orderModal, serviceCatalog) {
           </label>`;
         }).join("")}
       </section>`).join("") : `<div class="empty">Услуги не найдены</div>`;
+    list.scrollTop = Math.max(0, list.scrollTop || 0);
     updateSummary();
   };
 
@@ -4728,6 +4774,8 @@ function openMaterialCatalog(orderModal) {
     <button type="button" class="material-catalog-close">${icon("check")}<span>Готово</span></button>
   </section>`;
   document.body.appendChild(modal);
+  syncModalScrollLock();
+  const releaseViewportPin = pinNestedModalToViewport(modal);
 
   const list = modal.querySelector("#material-catalog-list");
   const search = modal.querySelector("#material-catalog-search");
@@ -4795,6 +4843,7 @@ function openMaterialCatalog(orderModal) {
   });
   search.addEventListener("input", render);
   const closeMaterialCatalog = () => {
+    releaseViewportPin();
     modal.remove();
     syncModalScrollLock();
   };

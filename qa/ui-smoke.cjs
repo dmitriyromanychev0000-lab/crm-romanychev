@@ -1079,6 +1079,34 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       report.results.push(await shot(page, width, "service-catalog", false));
 
+      await page.evaluate(() => {
+        const backdrop = document.querySelector(".catalog-modal-backdrop");
+        backdrop?.style.setProperty("transform", "translate3d(0,-240px,0)", "important");
+        window.dispatchEvent(new Event("resize"));
+      });
+      await page.waitForTimeout(40);
+      const catalogViewportPin = await page.evaluate(() => {
+        const backdrop = document.querySelector(".catalog-modal-backdrop");
+        const dialog = document.querySelector(".catalog-modal");
+        const rect = backdrop?.getBoundingClientRect();
+        const dialogRect = dialog?.getBoundingClientRect();
+        const visual = window.visualViewport;
+        const top = Number(visual?.offsetTop) || 0;
+        const bottom = top + (Number(visual?.height) || window.innerHeight);
+        return {
+          backdropTop: rect ? Math.round(rect.top) : 999,
+          backdropBottom: rect ? Math.round(rect.bottom) : -999,
+          dialogTop: dialogRect ? Math.round(dialogRect.top) : 999,
+          targetTop: Math.round(top),
+          targetBottom: Math.round(bottom)
+        };
+      });
+      if (Math.abs(catalogViewportPin.backdropTop - catalogViewportPin.targetTop) > 2
+        || Math.abs(catalogViewportPin.backdropBottom - catalogViewportPin.targetBottom) > 3
+        || Math.abs(catalogViewportPin.dialogTop - catalogViewportPin.targetTop) > 2) {
+        report.failures.push({ width, type: "service-catalog-viewport-pin", catalogViewportPin });
+      }
+
       await page.locator(".catalog-service-option").first().click();
       await page.waitForTimeout(60);
       const serviceSelection = await page.evaluate(() => ({
