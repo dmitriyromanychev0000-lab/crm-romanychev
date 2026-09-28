@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.6";
-const APP_BUILD = "2026.09.28.224";
+const APP_VERSION = "1.7.7";
+const APP_BUILD = "2026.09.28.225";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Товарник очищен от большой фиолетовой заливки: цвет остался только смысловым акцентом";
+const APP_RELEASE = "Прайс и склад на 320 px сохраняют компактную правую колонку цены и остатка";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.7",
+    date: "28.09.2026",
+    title: "Компактные карточки на 320 px",
+    items: [
+      "Цена в прайсе больше не падает под название на узком экране — остаётся в правой колонке.",
+      "Остаток складской позиции снова виден справа, не растягивая карточку дополнительной строкой.",
+      "Длинные названия по-прежнему показываются до двух строк без обрезания первого слова."
+    ]
+  },
   {
     version: "1.7.6",
     date: "28.09.2026",

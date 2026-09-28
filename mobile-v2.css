@@ -15998,3 +15998,67 @@
     color: #17110f !important;
   }
 }
+
+
+/* 1.7.7 · 320 px: прайс и склад остаются компактными, без вертикального развала. */
+@media screen and (max-width: 340px) {
+  .legacy-price-row {
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 8px !important;
+    align-items: center !important;
+    min-height: 60px !important;
+  }
+
+  .legacy-price-row > span {
+    min-width: 0 !important;
+  }
+
+  .legacy-price-row > b {
+    justify-self: end !important;
+    align-self: center !important;
+    margin-left: 4px !important;
+  }
+
+  .legacy-stock-main {
+    grid-template-columns: 38px minmax(0,1fr) auto !important;
+    grid-template-rows: auto !important;
+    gap: 8px !important;
+    min-height: 86px !important;
+    align-items: center !important;
+  }
+
+  .legacy-stock-icon {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+  }
+
+  .legacy-stock-copy {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  .legacy-stock-copy em {
+    display: none !important;
+  }
+
+  .legacy-stock-qty {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    align-self: center !important;
+    justify-self: end !important;
+    justify-items: end !important;
+    gap: 3px !important;
+    margin-top: 0 !important;
+    padding-left: 4px !important;
+  }
+
+  .legacy-stock-qty strong {
+    font-size: 12.5px !important;
+  }
+
+  .legacy-stock-qty small {
+    font-size: 7.5px !important;
+  }
+}

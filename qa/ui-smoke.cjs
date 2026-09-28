@@ -1861,6 +1861,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filterGrid = document.querySelector(".warehouse-filter-grid");
         const filterGridRect = filterGrid?.getBoundingClientRect();
         const filterRects = [...document.querySelectorAll(".warehouse-filter-grid > .warehouse-filter-control")].map((node) => node.getBoundingClientRect());
+        const stockMain = document.querySelector(".legacy-stock-main");
+        const stockCopy = document.querySelector(".legacy-stock-copy");
+        const stockQty = document.querySelector(".legacy-stock-qty");
+        const stockTitle = document.querySelector(".legacy-stock-copy strong");
+        const stockMainRect = stockMain?.getBoundingClientRect();
+        const stockCopyRect = stockCopy?.getBoundingClientRect();
+        const stockQtyRect = stockQty?.getBoundingClientRect();
+        const stockTitleRect = stockTitle?.getBoundingClientRect();
         return {
           group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
           stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
@@ -1878,7 +1886,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || "",
           filterGridWidth: Math.round(filterGridRect?.width || 0),
           filterWidths: filterRects.map((rect) => Math.round(rect.width)),
-          filterTops: filterRects.map((rect) => Math.round(rect.top))
+          filterTops: filterRects.map((rect) => Math.round(rect.top)),
+          stockMainHeight: Math.round(stockMainRect?.height || 0),
+          stockCopyRight: Math.round(stockCopyRect?.right || 0),
+          stockQtyLeft: Math.round(stockQtyRect?.left || 0),
+          stockQtyRight: Math.round(stockQtyRect?.right || 0),
+          stockTitleHeight: Math.round(stockTitleRect?.height || 0)
         };
       });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
@@ -1903,6 +1916,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || warehousePageSurfaces.filterWidths.some((value) => value < warehousePageSurfaces.filterGridWidth - 2)
         || warehousePageSurfaces.filterTops.some((top, index, list) => index > 0 && top <= list[index - 1])) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
+      }
+      if (width <= 340 && (
+        warehousePageSurfaces.stockMainHeight > 90
+        || warehousePageSurfaces.stockQtyLeft < warehousePageSurfaces.stockCopyRight - 2
+        || warehousePageSurfaces.stockTitleHeight > 38
+      )) {
+        report.failures.push({ width, type: "warehouse-320-compact-card", warehousePageSurfaces });
       }
       if (width === 390) {
         await page.locator("#warehouse-tech-filter").selectOption({ label: "Холодильник" });
@@ -2451,6 +2471,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filterGrid = document.querySelector(".legacy-price-filters");
         const filterGridRect = filterGrid?.getBoundingClientRect();
         const filterRects = [...document.querySelectorAll(".legacy-price-filters > label")].map((node) => node.getBoundingClientRect());
+        const firstRow = document.querySelector(".legacy-price-row");
+        const firstCopy = firstRow?.querySelector(":scope > span");
+        const firstPrice = firstRow?.querySelector(":scope > b");
+        const rowRect = firstRow?.getBoundingClientRect();
+        const copyRect = firstCopy?.getBoundingClientRect();
+        const priceRect = firstPrice?.getBoundingClientRect();
         return {
           group: getComputedStyle(document.querySelector(".legacy-price-group")).backgroundColor,
           service: getComputedStyle(document.querySelector(".legacy-price-row.service")).backgroundColor,
@@ -2469,7 +2495,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor,
           filterGridWidth: Math.round(filterGridRect?.width || 0),
           filterWidths: filterRects.map((rect) => Math.round(rect.width)),
-          filterTops: filterRects.map((rect) => Math.round(rect.top))
+          filterTops: filterRects.map((rect) => Math.round(rect.top)),
+          firstRowHeight: Math.round(rowRect?.height || 0),
+          firstCopyRight: Math.round(copyRect?.right || 0),
+          firstPriceLeft: Math.round(priceRect?.left || 0),
+          firstPriceCenter: priceRect ? Math.round(priceRect.top + priceRect.height / 2) : 0,
+          firstRowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
@@ -2490,6 +2521,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.filterTops.length !== 2
         || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0]) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
+      }
+      if (width <= 340 && (
+        pricePageSurface.firstRowHeight > 68
+        || pricePageSurface.firstPriceLeft < pricePageSurface.firstCopyRight - 2
+        || Math.abs(pricePageSurface.firstPriceCenter - pricePageSurface.firstRowCenter) > 10
+      )) {
+        report.failures.push({ width, type: "price-320-inline-price", pricePageSurface });
       }
       await page.waitForTimeout(80);
       await page.locator("#price-search").click();
