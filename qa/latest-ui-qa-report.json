@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T19:11:35.975Z",
-  "testedSha": "19cc04a18e33636bc9b33591cdd9c1ba047a1f64",
+  "generatedAt": "2026-09-28T19:13:55.962Z",
+  "testedSha": "2ee427bedad7a3afbd4198abcb74c069c0927307",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T19:12:13.769Z"
+      "fallbackCreatedAt": "2026-09-28T19:14:33.274Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,106 +1614,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "warehouse-shortcuts-two-columns",
-      "warehouseShortcutLayout": {
-        "width": 296,
-        "innerWidth": 296,
-        "columns": "145.5px 145.5px",
-        "buttons": [
-          {
-            "width": 146,
-            "height": 44,
-            "left": 12,
-            "top": 334,
-            "labelWrap": false
-          },
-          {
-            "width": 146,
-            "height": 44,
-            "left": 163,
-            "top": 334,
-            "labelWrap": false
-          }
-        ]
-      }
-    },
-    {
-      "width": 360,
-      "type": "warehouse-shortcuts-two-columns",
-      "warehouseShortcutLayout": {
-        "width": 328,
-        "innerWidth": 328,
-        "columns": "161.5px 161.5px",
-        "buttons": [
-          {
-            "width": 162,
-            "height": 44,
-            "left": 16,
-            "top": 334,
-            "labelWrap": false
-          },
-          {
-            "width": 162,
-            "height": 44,
-            "left": 183,
-            "top": 334,
-            "labelWrap": false
-          }
-        ]
-      }
-    },
-    {
-      "width": 390,
-      "type": "warehouse-shortcuts-two-columns",
-      "warehouseShortcutLayout": {
-        "width": 358,
-        "innerWidth": 358,
-        "columns": "176.5px 176.5px",
-        "buttons": [
-          {
-            "width": 177,
-            "height": 44,
-            "left": 16,
-            "top": 334,
-            "labelWrap": false
-          },
-          {
-            "width": 177,
-            "height": 44,
-            "left": 198,
-            "top": 334,
-            "labelWrap": false
-          }
-        ]
-      }
-    },
-    {
-      "width": 430,
-      "type": "warehouse-shortcuts-two-columns",
-      "warehouseShortcutLayout": {
-        "width": 398,
-        "innerWidth": 398,
-        "columns": "196.5px 196.5px",
-        "buttons": [
-          {
-            "width": 197,
-            "height": 44,
-            "left": 16,
-            "top": 334,
-            "labelWrap": false
-          },
-          {
-            "width": 197,
-            "height": 44,
-            "left": 218,
-            "top": 334,
-            "labelWrap": false
-          }
-        ]
-      }
-    }
-  ]
+  "failures": []
 }
