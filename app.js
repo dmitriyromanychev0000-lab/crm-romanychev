@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.76";
-const APP_BUILD = "2026.09.28.299";
+const APP_VERSION = "1.7.77";
+const APP_BUILD = "2026.09.28.300";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Календарь фокусируется на визитах: показывает ближайшие часы вокруг записей, а полную шкалу 10:00–22:00 можно раскрыть одной кнопкой"
+const APP_RELEASE = "Фотографии в заявке снова всегда открыты по продуктовой концепции, но пустой блок остаётся компактным и не тратит место на лишнюю заглушку"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.77",
+    date: "28.09.2026",
+    title: "Фотографии всегда открыты",
+    items: [
+      "Блок фотографий снова нельзя сворачивать: это восстановлено по зафиксированной продуктовой концепции.",
+      "Пустая заявка показывает компактный заголовок и кнопку добавления без отдельной высокой заглушки «Фотографий пока нет».",
+      "Если фотографии есть, превью остаются сразу видимыми; просмотр и подтверждение удаления не менялись."
+    ]
+  },
   {
     version: "1.7.76",
     date: "28.09.2026",
@@ -5959,13 +5969,13 @@ function newOrderModal(existing = null, options = {}) {
     <button type="button" class="secondary-button wide direct-expense-add" id="add-manual-material">${icon("plus")}<span>Добавить расход без склада</span></button>
     </section>
 
-    <details class="order-extra-details order-photo-details order-photo-static" ${orderPhotos.length ? "open" : ""}>
-      <summary class="order-photo-static-head"><span class="order-extra-summary-icon">${icon("camera")}</span><span class="order-photo-static-copy"><span>Фотографии</span><small id="order-photo-count">${orderPhotos.length ? `${orderPhotos.length} фото` : "Нет фото"}</small></span><span class="order-photo-toggle" aria-hidden="true">${icon("chevron")}</span></summary>
+    <section class="order-extra-details order-photo-details order-photo-static">
+      <div class="order-photo-static-head"><span class="order-extra-summary-icon">${icon("camera")}</span><span class="order-photo-static-copy"><span>Фотографии</span><small id="order-photo-count">${orderPhotos.length ? `${orderPhotos.length} фото` : "Нет фото"}</small></span></div>
       <div class="order-extra-body">
         <div class="form-group full order-photo-picker"><input class="order-photo-input" id="order-photo-input" type="file" accept="image/*" multiple /><label class="order-photo-add" for="order-photo-input">${icon("camera")}<span><b>Добавить фотографии</b><small>Открыть камеру или выбрать файлы</small></span></label><div class="small">Фото хранятся только в локальной CRM и бэкапе.</div></div>
         <div class="photo-grid" id="order-photo-list"></div>
       </div>
-    </details>
+    </section>
 
     <section class="order-editor-section order-editor-payment-section">
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт</span></div>
@@ -6077,6 +6087,7 @@ function newOrderModal(existing = null, options = {}) {
   const renderPhotos = () => {
     const photoCount = modal.querySelector("#order-photo-count");
     if (photoCount) photoCount.textContent = orderPhotos.length ? `${orderPhotos.length} фото` : "Нет фото";
+    photoList.classList.toggle("is-empty", !orderPhotos.length);
     photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
       const source = photoSource(photo);
       const label = photoLabel(photo, index);

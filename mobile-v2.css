@@ -19958,3 +19958,42 @@
     background: #060b0f !important;
   }
 }
+
+
+/* 1.7.77 · Фото по продуктовой концепции всегда открыты, пустое состояние остаётся компактным. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-photo-static-head {
+    min-height: 46px !important;
+    padding: 7px 10px !important;
+    border-bottom: 1px solid #151f25 !important;
+    cursor: default !important;
+  }
+
+  .order-editor-modal .order-photo-static .order-extra-body {
+    display: block !important;
+    padding: 8px 10px 10px !important;
+  }
+
+  .order-editor-modal .order-photo-add {
+    min-height: 52px !important;
+    padding: 7px 10px !important;
+    border-radius: 11px !important;
+  }
+
+  .order-editor-modal .order-photo-picker > .small {
+    margin-top: 5px !important;
+  }
+
+  .order-editor-modal .photo-grid.is-empty {
+    display: none !important;
+    margin-top: 0 !important;
+  }
+
+  .order-editor-modal .photo-grid:not(.is-empty) {
+    margin-top: 8px !important;
+  }
+
+  .order-editor-modal .order-photo-toggle {
+    display: none !important;
+  }
+}

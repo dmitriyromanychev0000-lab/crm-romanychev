@@ -1510,26 +1510,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       const emptyPhotoState = await page.evaluate(() => {
         const block = document.querySelector(".order-photo-details");
-        const summary = block?.querySelector("summary");
+        const head = block?.querySelector(".order-photo-static-head");
         const body = block?.querySelector(".order-extra-body");
-        const summaryRect = summary?.getBoundingClientRect();
+        const add = block?.querySelector(".order-photo-add");
+        const grid = block?.querySelector("#order-photo-list");
         return {
           tag: block?.tagName || "",
-          open: Boolean(block?.open),
           summaries: block?.querySelectorAll("summary").length || 0,
-          summaryHeight: Math.round(summaryRect?.height || 0),
+          headHeight: Math.round(head?.getBoundingClientRect().height || 0),
           bodyDisplay: body ? getComputedStyle(body).display : "missing",
+          addHeight: Math.round(add?.getBoundingClientRect().height || 0),
+          gridDisplay: grid ? getComputedStyle(grid).display : "missing",
           countText: block?.querySelector("#order-photo-count")?.textContent || ""
         };
       });
-      if (emptyPhotoState.tag !== "DETAILS"
-        || emptyPhotoState.open
-        || emptyPhotoState.summaries !== 1
-        || emptyPhotoState.summaryHeight < 44
-        || emptyPhotoState.summaryHeight > 54
-        || emptyPhotoState.bodyDisplay !== "none"
+      if (emptyPhotoState.tag !== "SECTION"
+        || emptyPhotoState.summaries !== 0
+        || emptyPhotoState.headHeight < 44
+        || emptyPhotoState.headHeight > 52
+        || emptyPhotoState.bodyDisplay === "none"
+        || emptyPhotoState.addHeight < 44
+        || emptyPhotoState.addHeight > 56
+        || emptyPhotoState.gridDisplay !== "none"
         || emptyPhotoState.countText !== "Нет фото") {
-        report.failures.push({ width, type: "photos-empty-collapsed", emptyPhotoState });
+        report.failures.push({ width, type: "photos-empty-always-open", emptyPhotoState });
       }
 
       const emptyCommentState = await page.evaluate(() => {
@@ -2150,28 +2154,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const staticPhotoState = await page.evaluate(() => {
           const block = document.querySelector(".order-photo-details");
           const body = block?.querySelector(".order-extra-body");
-          const summary = block?.querySelector("summary");
-          const summaryRect = summary?.getBoundingClientRect();
+          const grid = block?.querySelector("#order-photo-list");
           return {
             tag: block?.tagName || "",
-            open: Boolean(block?.open),
             summaries: block?.querySelectorAll("summary").length || 0,
-            summaryHeight: Math.round(summaryRect?.height || 0),
             bodyDisplay: body ? getComputedStyle(body).display : "missing",
+            gridDisplay: grid ? getComputedStyle(grid).display : "missing",
             countText: block?.querySelector("#order-photo-count")?.textContent || "",
             addVisible: Boolean(block?.querySelector("#order-photo-input")),
             cards: block?.querySelectorAll("[data-view-photo]").length || 0
           };
         });
-        if (staticPhotoState.tag !== "DETAILS"
-          || !staticPhotoState.open
-          || staticPhotoState.summaries !== 1
-          || staticPhotoState.summaryHeight < 44
+        if (staticPhotoState.tag !== "SECTION"
+          || staticPhotoState.summaries !== 0
           || staticPhotoState.bodyDisplay === "none"
+          || staticPhotoState.gridDisplay === "none"
           || staticPhotoState.countText !== "1 фото"
           || !staticPhotoState.addVisible
           || staticPhotoState.cards !== 1) {
-          report.failures.push({ width, type: "photos-with-data-open", staticPhotoState });
+          report.failures.push({ width, type: "photos-with-data-always-open", staticPhotoState });
         }
         const storedCommentState = await page.evaluate(() => {
           const block = document.querySelector(".order-comment-details");
