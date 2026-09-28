@@ -16161,3 +16161,70 @@
     padding-left: 6px !important;
   }
 }
+
+
+/* 1.7.11 · Каталог услуг не сжимается; расчёт заявки снова как компактный пульт. */
+@media screen and (max-width: 520px) {
+  .catalog-modal-backdrop {
+    position: fixed !important;
+    inset: auto !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .catalog-modal-backdrop > .catalog-modal {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0,1fr) auto auto !important;
+    overflow: hidden !important;
+  }
+
+  .catalog-modal .catalog-service-list {
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+  }
+
+  .catalog-modal .catalog-fit-summary,
+  .catalog-modal .catalog-modal-actions {
+    align-self: stretch !important;
+    flex: 0 0 auto !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 8px !important;
+    align-items: start !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid > .form-group {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid > .payment-tag {
+    grid-column: 1 / -1 !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .field {
+    min-height: 48px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid .white-expense-hint {
+    margin-top: 4px !important;
+    font-size: 8.5px !important;
+    line-height: 1.15 !important;
+  }
+}

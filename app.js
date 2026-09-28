@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.10";
-const APP_BUILD = "2026.09.28.228";
+const APP_VERSION = "1.7.11";
+const APP_BUILD = "2026.09.28.229";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Сводка бэкапа на всех телефонах собрана в одну компактную строку из трёх счётчиков";
+const APP_RELEASE = "Каталог услуг жёстко привязан к viewport, а расчёт заявки снова собран в компактные две колонки";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.11",
+    date: "28.09.2026",
+    title: "Каталог услуг и компактный расчёт заявки",
+    items: [
+      "Каталог услуг теперь получает фактическую высоту visual viewport и не может сжаться по контенту после выбора услуг.",
+      "Скроллится только список услуг; итог и действия остаются у нижней границы экрана.",
+      "Итог, предоплата, скидка, процент и расходы снова собраны в две колонки; серый и белый расход стоят в одной строке."
+    ]
+  },
   {
     version: "1.7.10",
     date: "28.09.2026",
@@ -4885,12 +4895,29 @@ function pinNestedModalToViewport(backdrop) {
   const align = () => {
     frame = 0;
     if (!backdrop?.isConnected) return;
-    backdrop.style.removeProperty("transform");
-    const rect = backdrop.getBoundingClientRect();
     const targetTop = Number(visualViewport?.offsetTop) || 0;
-    const shiftY = targetTop - rect.top;
-    if (Math.abs(shiftY) > 0.5) {
-      backdrop.style.setProperty("transform", `translate3d(0, ${shiftY}px, 0)`, "important");
+    const targetLeft = Number(visualViewport?.offsetLeft) || 0;
+    const targetWidth = Math.max(1, Math.round(Number(visualViewport?.width) || window.innerWidth));
+    const targetHeight = Math.max(1, Math.round(Number(visualViewport?.height) || window.innerHeight));
+
+    backdrop.style.setProperty("position", "fixed", "important");
+    backdrop.style.setProperty("inset", "auto", "important");
+    backdrop.style.setProperty("top", "0px", "important");
+    backdrop.style.setProperty("left", "0px", "important");
+    backdrop.style.setProperty("right", "auto", "important");
+    backdrop.style.setProperty("bottom", "auto", "important");
+    backdrop.style.setProperty("width", `${targetWidth}px`, "important");
+    backdrop.style.setProperty("height", `${targetHeight}px`, "important");
+    backdrop.style.setProperty("min-height", "0px", "important");
+    backdrop.style.setProperty("max-height", `${targetHeight}px`, "important");
+    backdrop.style.setProperty("transform", `translate3d(${targetLeft}px, ${targetTop}px, 0)`, "important");
+
+    const dialog = backdrop.firstElementChild;
+    if (dialog instanceof HTMLElement) {
+      dialog.style.setProperty("height", "100%", "important");
+      dialog.style.setProperty("min-height", "0px", "important");
+      dialog.style.setProperty("max-height", "100%", "important");
+      dialog.style.setProperty("box-sizing", "border-box", "important");
     }
   };
   const schedule = () => {
@@ -5264,13 +5291,13 @@ function newOrderModal(existing = null, options = {}) {
     <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Без склада</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Итог услуг</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
 
     <div class="form-grid legacy-payment-grid">
-      <div class="form-group"><label>${warrantyAppeal ? "Получено от клиента" : "Итоговая сумма"}</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
-      <div class="form-group"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
-      <div class="form-group"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
-      <div class="form-group"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
-      <div class="form-group white-expense-group"><label>Белый расход</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /><small class="white-expense-hint" id="white-expense-minimum">Минимум: 0 ₽</small></div>
-      <div class="form-group"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
-      <div class="form-group"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
+      <div class="form-group payment-sum"><label>${warrantyAppeal ? "Получено от клиента" : "Итоговая сумма"}</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
+      <div class="form-group payment-prepay"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
+      <div class="form-group payment-discount"><label>Скидка</label><input class="field" name="discount" type="number" min="0" value="${Number(order.discount) || 0}" /></div>
+      <div class="form-group payment-percent"><label>Процент по заявке</label><input class="field" name="percent" type="number" min="0" max="100" value="${order.percent === undefined || order.percent === null || order.percent === "" ? 50 : Number(order.percent)}" /></div>
+      <div class="form-group payment-gray"><label>Серый расход</label><input class="field" name="expense_gray" type="number" min="0" value="${Number(order.expense_gray) || 0}" /></div>
+      <div class="form-group white-expense-group payment-white"><label>Белый расход</label><input class="field" name="expense_white" type="number" min="0" value="${Number(order.expense_white) || 0}" /><small class="white-expense-hint" id="white-expense-minimum">Минимум: 0 ₽</small></div>
+      <div class="form-group payment-tag full"><label>Метка</label><select class="field" name="tag"><option value="" ${!order.tag ? "selected" : ""}>Без</option>${order.tag ? `<option selected>${escapeHtml(order.tag)}</option>` : ""}</select></div>
     </div>
     </section>
 

@@ -1201,6 +1201,47 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (!modalCheck.locked || !modalCheck.fixed || modalCheck.dialogs !== 1) report.failures.push({ width, type: "order-modal-lock", modalCheck });
       report.results.push(await shot(page, width, "order-editor", false));
 
+      const paymentGridLayout = await page.evaluate(() => {
+        const grid = document.querySelector(".legacy-payment-grid");
+        const gridStyle = grid ? getComputedStyle(grid) : null;
+        const gridRect = grid?.getBoundingClientRect();
+        const group = (name) => document.querySelector(`.legacy-payment-grid [name="${name}"]`)?.closest(".form-group")?.getBoundingClientRect();
+        const sum = group("sum");
+        const prepay = group("prepay");
+        const discount = group("discount");
+        const percent = group("percent");
+        const gray = group("expense_gray");
+        const white = group("expense_white");
+        const tag = group("tag");
+        return {
+          gridWidth: Math.round(gridRect?.width || 0),
+          columns: gridStyle?.gridTemplateColumns || "",
+          sum: sum ? { left: Math.round(sum.left), top: Math.round(sum.top), width: Math.round(sum.width) } : null,
+          prepay: prepay ? { left: Math.round(prepay.left), top: Math.round(prepay.top), width: Math.round(prepay.width) } : null,
+          discount: discount ? { left: Math.round(discount.left), top: Math.round(discount.top), width: Math.round(discount.width) } : null,
+          percent: percent ? { left: Math.round(percent.left), top: Math.round(percent.top), width: Math.round(percent.width) } : null,
+          gray: gray ? { left: Math.round(gray.left), top: Math.round(gray.top), width: Math.round(gray.width) } : null,
+          white: white ? { left: Math.round(white.left), top: Math.round(white.top), width: Math.round(white.width) } : null,
+          tag: tag ? { left: Math.round(tag.left), top: Math.round(tag.top), width: Math.round(tag.width) } : null
+        };
+      });
+      const paymentPairsAligned = paymentGridLayout.sum && paymentGridLayout.prepay
+        && paymentGridLayout.discount && paymentGridLayout.percent
+        && paymentGridLayout.gray && paymentGridLayout.white
+        && Math.abs(paymentGridLayout.sum.top - paymentGridLayout.prepay.top) <= 2
+        && Math.abs(paymentGridLayout.discount.top - paymentGridLayout.percent.top) <= 2
+        && Math.abs(paymentGridLayout.gray.top - paymentGridLayout.white.top) <= 2
+        && paymentGridLayout.prepay.left > paymentGridLayout.sum.left
+        && paymentGridLayout.percent.left > paymentGridLayout.discount.left
+        && paymentGridLayout.white.left > paymentGridLayout.gray.left;
+      if (!paymentPairsAligned
+        || !paymentGridLayout.tag
+        || paymentGridLayout.tag.width < paymentGridLayout.gridWidth - 2
+        || paymentGridLayout.sum.width < 120
+        || paymentGridLayout.prepay.width < 120) {
+        report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned });
+      }
+
       await page.locator("#open-service-catalog").click();
       await page.waitForTimeout(100);
       const nested = await page.evaluate(() => {
@@ -1257,8 +1298,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const catalogViewportPin = await page.evaluate(() => {
         const backdrop = document.querySelector(".catalog-modal-backdrop");
         const dialog = document.querySelector(".catalog-modal");
+        const actions = document.querySelector(".catalog-modal-actions");
+        const list = document.querySelector(".catalog-service-list");
+        const summary = document.querySelector(".catalog-fit-summary");
         const rect = backdrop?.getBoundingClientRect();
         const dialogRect = dialog?.getBoundingClientRect();
+        const actionsRect = actions?.getBoundingClientRect();
+        const listRect = list?.getBoundingClientRect();
+        const summaryRect = summary?.getBoundingClientRect();
         const visual = window.visualViewport;
         const top = Number(visual?.offsetTop) || 0;
         const bottom = top + (Number(visual?.height) || window.innerHeight);
@@ -1266,13 +1313,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           backdropTop: rect ? Math.round(rect.top) : 999,
           backdropBottom: rect ? Math.round(rect.bottom) : -999,
           dialogTop: dialogRect ? Math.round(dialogRect.top) : 999,
+          dialogBottom: dialogRect ? Math.round(dialogRect.bottom) : -999,
+          actionsBottom: actionsRect ? Math.round(actionsRect.bottom) : -999,
+          listBottom: listRect ? Math.round(listRect.bottom) : -999,
+          summaryTop: summaryRect ? Math.round(summaryRect.top) : 999,
+          listOverflowY: list ? getComputedStyle(list).overflowY : "missing",
           targetTop: Math.round(top),
           targetBottom: Math.round(bottom)
         };
       });
       if (Math.abs(catalogViewportPin.backdropTop - catalogViewportPin.targetTop) > 2
         || Math.abs(catalogViewportPin.backdropBottom - catalogViewportPin.targetBottom) > 3
-        || Math.abs(catalogViewportPin.dialogTop - catalogViewportPin.targetTop) > 2) {
+        || Math.abs(catalogViewportPin.dialogTop - catalogViewportPin.targetTop) > 2
+        || Math.abs(catalogViewportPin.dialogBottom - catalogViewportPin.targetBottom) > 3
+        || Math.abs(catalogViewportPin.actionsBottom - catalogViewportPin.targetBottom) > 3
+        || catalogViewportPin.listBottom > catalogViewportPin.summaryTop + 2
+        || !["auto","scroll"].includes(catalogViewportPin.listOverflowY)) {
         report.failures.push({ width, type: "service-catalog-viewport-pin", catalogViewportPin });
       }
 
@@ -1285,6 +1341,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }));
       if (serviceSelection.selectedRows !== 1 || serviceSelection.checkedIcons !== 1 || !serviceSelection.countText.startsWith("1 ")) {
         report.failures.push({ width, type: "service-selection-feedback", serviceSelection });
+      }
+      const catalogAfterSelection = await page.evaluate(() => {
+        const dialogRect = document.querySelector(".catalog-modal")?.getBoundingClientRect();
+        const actionsRect = document.querySelector(".catalog-modal-actions")?.getBoundingClientRect();
+        const visual = window.visualViewport;
+        const top = Number(visual?.offsetTop) || 0;
+        const bottom = top + (Number(visual?.height) || window.innerHeight);
+        return {
+          dialogTop: dialogRect ? Math.round(dialogRect.top) : 999,
+          dialogBottom: dialogRect ? Math.round(dialogRect.bottom) : -999,
+          actionsBottom: actionsRect ? Math.round(actionsRect.bottom) : -999,
+          targetTop: Math.round(top),
+          targetBottom: Math.round(bottom)
+        };
+      });
+      if (Math.abs(catalogAfterSelection.dialogTop - catalogAfterSelection.targetTop) > 2
+        || Math.abs(catalogAfterSelection.dialogBottom - catalogAfterSelection.targetBottom) > 3
+        || Math.abs(catalogAfterSelection.actionsBottom - catalogAfterSelection.targetBottom) > 3) {
+        report.failures.push({ width, type: "service-catalog-selection-keeps-footer-pinned", catalogAfterSelection });
       }
       report.results.push(await shot(page, width, "service-catalog-selected", false));
 
