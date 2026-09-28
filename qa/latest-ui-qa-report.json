@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T21:15:30.660Z",
-  "testedSha": "5704d43b02918acb305f344380e401578fae431f",
+  "generatedAt": "2026-09-28T21:27:16.193Z",
+  "testedSha": "1b02da1f88deb7afa96a62768f5c7d91a2a2bdf1",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T21:16:05.076Z"
+      "fallbackCreatedAt": "2026-09-28T21:27:54.418Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,204 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "settings-semantic-hierarchy",
+      "settingsSurface": {
+        "profile": "rgb(7, 12, 16)",
+        "app": "rgb(7, 12, 16)",
+        "data": "rgb(7, 12, 16)",
+        "field": "rgb(9, 15, 20)",
+        "toolsLink": "rgb(13, 20, 25)",
+        "backupLink": "rgb(13, 20, 25)",
+        "linkIconBackgrounds": [
+          "rgb(13, 24, 34)",
+          "rgb(22, 17, 36)",
+          "rgb(13, 24, 34)",
+          "rgb(13, 29, 21)",
+          "rgb(13, 29, 21)",
+          "rgb(27, 23, 12)",
+          "rgb(27, 23, 12)",
+          "rgb(12, 25, 28)",
+          "rgb(28, 17, 13)"
+        ],
+        "rowTitleFont": "11.5px",
+        "gridWidth": 274,
+        "companyName": {
+          "left": 23,
+          "top": 200,
+          "width": 133,
+          "height": 62
+        },
+        "name": {
+          "left": 164,
+          "top": 200,
+          "width": 133,
+          "height": 62
+        },
+        "phone": {
+          "left": 23,
+          "top": 268,
+          "width": 133,
+          "height": 62
+        },
+        "companyAddress": {
+          "left": 23,
+          "top": 336,
+          "width": 274,
+          "height": 62
+        },
+        "inn": {
+          "left": 164,
+          "top": 268,
+          "width": 133,
+          "height": 62
+        },
+        "longLinkTitle": {
+          "whiteSpace": "normal",
+          "lineClamp": "2",
+          "textOverflow": "clip",
+          "scrollWidth": 182,
+          "clientWidth": 182
+        },
+        "longLinkDescription": {
+          "whiteSpace": "normal",
+          "lineClamp": "2"
+        },
+        "longLinkHeight": 83,
+        "appRowWidths": [
+          274,
+          274,
+          274,
+          274
+        ],
+        "appRowHeights": [
+          89,
+          83,
+          83,
+          83
+        ],
+        "appActionWidths": [
+          274,
+          274,
+          274,
+          274
+        ],
+        "appActionHeights": [
+          44,
+          44,
+          44,
+          44
+        ],
+        "appCardHeight": 405,
+        "profileCardHeight": 321
+      }
+    },
+    {
+      "width": 320,
+      "type": "settings-compact-density",
+      "settingsDensity": {
+        "cardPaddingTop": 10,
+        "rowHeight": 89,
+        "linkHeight": 69,
+        "iconHeight": 32
+      },
+      "settingsRowLimit": 64,
+      "settingsLinkLimit": 70
+    },
+    {
+      "width": 390,
+      "type": "settings-semantic-hierarchy",
+      "settingsSurface": {
+        "profile": "rgb(7, 12, 16)",
+        "app": "rgb(7, 12, 16)",
+        "data": "rgb(7, 12, 16)",
+        "field": "rgb(9, 15, 20)",
+        "toolsLink": "rgb(13, 20, 25)",
+        "backupLink": "rgb(13, 20, 25)",
+        "linkIconBackgrounds": [
+          "rgb(13, 24, 34)",
+          "rgb(22, 17, 36)",
+          "rgb(13, 24, 34)",
+          "rgb(13, 29, 21)",
+          "rgb(13, 29, 21)",
+          "rgb(27, 23, 12)",
+          "rgb(27, 23, 12)",
+          "rgb(12, 25, 28)",
+          "rgb(28, 17, 13)"
+        ],
+        "rowTitleFont": "12px",
+        "gridWidth": 336,
+        "companyName": {
+          "left": 27,
+          "top": 200,
+          "width": 164,
+          "height": 62
+        },
+        "name": {
+          "left": 199,
+          "top": 200,
+          "width": 164,
+          "height": 62
+        },
+        "phone": {
+          "left": 27,
+          "top": 268,
+          "width": 164,
+          "height": 62
+        },
+        "companyAddress": {
+          "left": 27,
+          "top": 336,
+          "width": 336,
+          "height": 62
+        },
+        "inn": {
+          "left": 199,
+          "top": 268,
+          "width": 164,
+          "height": 62
+        },
+        "longLinkTitle": {
+          "whiteSpace": "normal",
+          "lineClamp": "2",
+          "textOverflow": "clip",
+          "scrollWidth": 238,
+          "clientWidth": 238
+        },
+        "longLinkDescription": {
+          "whiteSpace": "normal",
+          "lineClamp": "2"
+        },
+        "longLinkHeight": 62,
+        "appRowWidths": [
+          336,
+          336,
+          336,
+          336
+        ],
+        "appRowHeights": [
+          58,
+          53,
+          53,
+          53
+        ],
+        "appActionWidths": [
+          86,
+          86,
+          86,
+          86
+        ],
+        "appActionHeights": [
+          44,
+          44,
+          44,
+          44
+        ],
+        "appCardHeight": 284,
+        "profileCardHeight": 321
+      }
+    }
+  ]
 }
