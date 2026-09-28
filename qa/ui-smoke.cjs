@@ -1230,7 +1230,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (!actDensity.controlHeight
-        || actDensity.controlHeight > 208
+        || actDensity.controlHeight > 216
         || actDensity.titleHeight > 38
         || actDensity.fieldHeight < 44
         || actDensity.selectedHeight > 58

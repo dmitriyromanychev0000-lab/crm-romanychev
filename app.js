@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.30";
-const APP_BUILD = "2026.09.28.248";
+const APP_VERSION = "1.7.31";
+const APP_BUILD = "2026.09.28.249";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Акт и черновики стали плотнее: меньше лишней высоты в рабочих карточках, действия остаются удобными для нажатия"
+const APP_RELEASE = "Доведена компактная геометрия акта и черновиков на 320 px без уменьшения кнопок ниже 44 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.31",
+    date: "28.09.2026",
+    title: "Точная геометрия акта и черновиков",
+    items: [
+      "Панель акта дополнительно поджата по шапке, внутренним отступам и выбранной заявке; рабочие поля и кнопка остаются 44 px.",
+      "Карточка черновика на 320 px стала ниже за счёт padding и межстрочных промежутков, а не уменьшения текста или действий.",
+      "Порог мобильного QA теперь фиксирует реальную компактную геометрию этих экранов."
+    ]
+  },
   {
     version: "1.7.30",
     date: "28.09.2026",
