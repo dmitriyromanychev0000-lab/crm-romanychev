@@ -19620,3 +19620,43 @@
     margin-top: 6px !important;
   }
 }
+
+
+/* 1.7.71 · Документы: три KPI одной компактной строкой. */
+@media screen and (max-width: 520px) {
+  .legacy-service-stats.receipts-stats {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 5px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .receipts-stats > div,
+  .receipts-stats > .service-stat-primary {
+    grid-column: auto !important;
+    min-width: 0 !important;
+    min-height: 68px !important;
+    height: auto !important;
+    padding: 6px 7px !important;
+    border-radius: 10px !important;
+  }
+
+  .receipts-stats span {
+    min-width: 0 !important;
+    font-size: 8.5px !important;
+    line-height: 1.05 !important;
+  }
+
+  .receipts-stats strong,
+  .receipts-stats > .service-stat-primary strong {
+    margin-top: 3px !important;
+    font-size: 17px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .receipts-stats small {
+    margin-top: 4px !important;
+    font-size: 8.5px !important;
+    line-height: 1.05 !important;
+  }
+}

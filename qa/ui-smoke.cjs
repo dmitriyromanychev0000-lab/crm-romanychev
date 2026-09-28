@@ -4035,6 +4035,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const add = document.querySelector(".legacy-receipts-page .legacy-service-add-wide");
         const addRect = add?.getBoundingClientRect();
         const pageRect = document.querySelector(".legacy-receipts-page")?.getBoundingClientRect();
+        const statGrid = document.querySelector(".receipts-stats");
+        const statGridRect = statGrid?.getBoundingClientRect();
+        const statRects = [...document.querySelectorAll(".receipts-stats > div")].map((node) => node.getBoundingClientRect());
         const row = document.querySelector(".legacy-document-row.receipt");
         const copyRect = row?.querySelector(":scope > span:nth-child(2)")?.getBoundingClientRect();
         const amountRect = row?.querySelector(":scope > b")?.getBoundingClientRect();
@@ -4044,6 +4047,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           total: getComputedStyle(document.querySelector(".receipts-stats > .service-stat-primary")).backgroundColor,
           amount: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(2)")).backgroundColor,
           linkedStat: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(3)")).backgroundColor,
+          statGridWidth: Math.round(statGridRect?.width || 0),
+          statRects: statRects.map((rect) => ({ left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) })),
           linkedRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.linked")).backgroundColor,
           standaloneRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.standalone")).backgroundColor,
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize,
@@ -4066,6 +4071,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptsPageSurface.standaloneRow !== "rgb(9, 15, 20)"
         || receiptsPageSurface.addWidth < receiptsPageSurface.pageWidth - 34
         || receiptsPageSurface.addHeight < 48
+        || receiptsPageSurface.statRects.length !== 3
+        || receiptsPageSurface.statRects.some((item) => item.width < 80 || item.height < 66 || item.height > 74)
+        || Math.max(...receiptsPageSurface.statRects.map((item) => item.top)) - Math.min(...receiptsPageSurface.statRects.map((item) => item.top)) > 2
+        || receiptsPageSurface.statRects[1].left <= receiptsPageSurface.statRects[0].left
+        || receiptsPageSurface.statRects[2].left <= receiptsPageSurface.statRects[1].left
         || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5
         || (width <= 340 && (
           receiptsPageSurface.rowHeight > 72
@@ -4083,7 +4093,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowHeight: Math.round(row?.getBoundingClientRect().height || 0)
         };
       });
-      if (receiptsDensity.statHeight > 66
+      if (receiptsDensity.statHeight > 74
         || receiptsDensity.rowHeight > (width <= 340 ? 72 : 64)) {
         report.failures.push({ width, type: "receipts-compact-density", receiptsDensity });
       }

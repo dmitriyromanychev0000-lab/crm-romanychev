@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.70";
-const APP_BUILD = "2026.09.28.292";
+const APP_VERSION = "1.7.71";
+const APP_BUILD = "2026.09.28.293";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Новый товарник стал компактнее: два способа создания собраны в одну строку, а выбор заявки остаётся полноширинным и понятным"
+const APP_RELEASE = "Документы стали плотнее: три ключевых показателя собраны в одну строку, поэтому список начинается выше без потери цифр и подписей"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.71",
+    date: "28.09.2026",
+    title: "Три KPI документов в одну строку",
+    items: [
+      "Документы, сумма и привязки к заявкам теперь стоят одной компактной строкой вместо двух рядов.",
+      "Цифры и подписи остаются читаемыми даже на 320 px; карточки сохраняют равную ширину.",
+      "QA закрепляет однорядную геометрию статистики на всех мобильных ширинах."
+    ]
+  },
   {
     version: "1.7.70",
     date: "28.09.2026",
