@@ -8,7 +8,7 @@ const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.7.52";
-const APP_BUILD = "2026.09.28.271";
+const APP_BUILD = "2026.09.28.272";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Реквизиты исполнителя стали компактнее: название и исполнитель, телефон и ИНН собраны попарно, адрес остаётся полноширинным"
 const APP_CHANGELOG = [
@@ -4512,8 +4512,8 @@ function settingsPage() {
         <label class="settings-company-name"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
         <label><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
         <label><span>ТЕЛЕФОН</span><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></label>
-        <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
         <label class="settings-inn"><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
+        <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>
       </div>
       <button class="legacy-settings-save" type="submit">Сохранить реквизиты</button>
     </form>
