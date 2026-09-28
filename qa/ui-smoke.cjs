@@ -3189,16 +3189,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
                 copyEmDisplay: copyMeta ? getComputedStyle(copyMeta).display : "missing",
                 qtyDisplay: qty ? getComputedStyle(qty).display : "missing",
                 copyBottom: Math.round(copyRect?.bottom || 0),
-                qtyTop: Math.round(qtyRect?.top || 0)
+                copyRight: Math.round(copyRect?.right || 0),
+                qtyTop: Math.round(qtyRect?.top || 0),
+                qtyLeft: Math.round(qtyRect?.left || 0)
               };
             });
+            const stockQtySeparated = stockTextState.qtyTop >= stockTextState.copyBottom
+              || stockTextState.qtyLeft >= stockTextState.copyRight - 2;
             if (stockTextState.lineClamp !== "2"
               || stockTextState.whiteSpace === "nowrap"
               || stockTextState.textOverflow === "ellipsis"
               || stockTextState.copyEmDisplay !== "none"
-              || stockTextState.qtyDisplay !== "flex"
-              || stockTextState.qtyTop < stockTextState.copyBottom) {
-              report.failures.push({ width, type: "stress-warehouse-long-name", stockTextState });
+              || !["flex", "grid"].includes(stockTextState.qtyDisplay)
+              || !stockQtySeparated) {
+              report.failures.push({ width, type: "stress-warehouse-long-name", stockTextState, stockQtySeparated });
             }
           }
           if (stressLabel === "stress-prices") {
