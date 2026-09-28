@@ -19166,3 +19166,22 @@
     white-space: nowrap !important;
   }
 }
+
+/* 1.7.59 · Прайс: два коротких фильтра рядом на обычных телефонах. */
+@media screen and (min-width: 361px) and (max-width: 520px) {
+  .legacy-price-filters {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-price-filters > label {
+    width: auto !important;
+    min-width: 0 !important;
+    grid-column: auto !important;
+  }
+
+  .legacy-price-filters .field {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

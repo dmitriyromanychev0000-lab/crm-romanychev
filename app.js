@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.58";
-const APP_BUILD = "2026.09.28.279";
+const APP_VERSION = "1.7.59";
+const APP_BUILD = "2026.09.28.280";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Каталог услуг стал удобнее: «Отмена» и «Применить» теперь стоят рядом и освобождают больше высоты под список услуг"
+const APP_RELEASE = "Прайс стал плотнее: на обычных телефонах фильтры «Тип» и «Техника» стоят рядом, на узких экранах остаются полноширинными"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.59",
+    date: "28.09.2026",
+    title: "Компактные фильтры прайса",
+    items: [
+      "На экранах 390–430 px фильтры «Тип» и «Техника» теперь стоят рядом в одной строке.",
+      "На 320–360 px фильтры остаются полноширинными, чтобы длинные названия не теснились.",
+      "Высота полей и читаемость сохранены; каталог начинается выше без потери удобства."
+    ]
+  },
   {
     version: "1.7.58",
     date: "28.09.2026",

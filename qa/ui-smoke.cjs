@@ -3203,6 +3203,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           customHeadBorder: getComputedStyle(document.querySelector(".legacy-custom-price-head")).borderBottomColor,
           filterGridWidth: Math.round(filterGridRect?.width || 0),
           filterWidths: filterRects.map((rect) => Math.round(rect.width)),
+          filterLefts: filterRects.map((rect) => Math.round(rect.left)),
           filterTops: filterRects.map((rect) => Math.round(rect.top)),
           firstRowHeight: Math.round(rowRect?.height || 0),
           firstCopyRight: Math.round(copyRect?.right || 0),
@@ -3235,9 +3236,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")
         || pricePageSurface.rowBorders.some((value) => value !== "rgb(32, 45, 53)")
         || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)"
-        || pricePageSurface.filterWidths.some((value) => value < pricePageSurface.filterGridWidth - 2)
         || pricePageSurface.filterTops.length !== 2
-        || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0]
+        || pricePageSurface.filterLefts.length !== 2
+        || (width <= 360
+          ? (pricePageSurface.filterWidths.some((value) => value < pricePageSurface.filterGridWidth - 2)
+            || pricePageSurface.filterTops[1] <= pricePageSurface.filterTops[0])
+          : (pricePageSurface.filterWidths.some((value) => value < 150)
+            || Math.abs(pricePageSurface.filterWidths[0] - pricePageSurface.filterWidths[1]) > 2
+            || Math.abs(pricePageSurface.filterTops[0] - pricePageSurface.filterTops[1]) > 2
+            || pricePageSurface.filterLefts[1] <= pricePageSurface.filterLefts[0]))
         || pricePageSurface.groupCounts.length < 1
         || pricePageSurface.groupCounts.some((group) => group.badge !== group.rows || group.width < 24 || group.height < 24)) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
