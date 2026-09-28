@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T20:08:39.674Z",
-  "testedSha": "1076740455731097359e998816645bb17a5c805d",
+  "generatedAt": "2026-09-28T20:13:18.925Z",
+  "testedSha": "493cd006ea590590ce3459dd8b1f1ca1f0adeb7a",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T20:09:16.955Z"
+      "fallbackCreatedAt": "2026-09-28T20:13:57.963Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,21 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "stock-detail-compact-density",
+      "stockDetailDensity": {
+        "heroHeight": 90,
+        "heroTitleLines": 2,
+        "kpiHeight": 64,
+        "incomingHeight": 50,
+        "transferHeight": 50,
+        "correctHeight": 50,
+        "archiveHeight": 44,
+        "movementHeight": 45
+      },
+      "stockDetailHeroMax": 92
+    }
+  ]
 }
