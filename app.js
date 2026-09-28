@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.72";
-const APP_BUILD = "2026.09.28.294";
+const APP_VERSION = "1.7.73";
+const APP_BUILD = "2026.09.28.295";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Список покупок стал плотнее: сводка нужного количества занимает меньше места, а действия и карточки товаров сохраняют прежнюю удобную геометрию"
+const APP_RELEASE = "Пустая заметка клиента больше не занимает большой блок: она свёрнута в компактную строку, а сохранённая заметка открывается сразу"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.73",
+    date: "28.09.2026",
+    title: "Компактная заметка клиента",
+    items: [
+      "Если заметки у клиента нет, профиль показывает только компактную строку «Нет заметки».",
+      "По нажатию строка раскрывает textarea и кнопку сохранения; сохранённая заметка открывается автоматически.",
+      "QA проверяет закрытое состояние и реальное раскрытие блока без потери touch-зоны."
+    ]
+  },
   {
     version: "1.7.72",
     date: "28.09.2026",
@@ -6529,11 +6539,13 @@ function clientModal(clientKey) {
         <div><span>Общая сумма</span><strong class="yellow">${money(total)}</strong></div>
       </section>
 
-      ${client.phone ? `<section class="client-profile-note">
-        <label for="client-profile-note">Заметка о клиенте</label>
-        <textarea class="field textarea" id="client-profile-note" placeholder="Домофон, подъезд, особенности клиента...">${escapeHtml(profile?.note || "")}</textarea>
-        <button type="button" class="secondary-button" id="save-client-profile-note">Сохранить заметку</button>
-      </section>` : ""}
+      ${client.phone ? `<details class="client-profile-note client-profile-note-details" ${String(profile?.note || "").trim() ? "open" : ""}>
+        <summary class="client-profile-note-summary"><span class="client-profile-note-summary-copy"><strong>Заметка о клиенте</strong><small id="client-profile-note-state">${String(profile?.note || "").trim() ? "Есть заметка" : "Нет заметки"}</small></span><span class="client-profile-note-toggle" aria-hidden="true">${icon("chevron")}</span></summary>
+        <div class="client-profile-note-body">
+          <textarea class="field textarea" id="client-profile-note" aria-label="Заметка о клиенте" placeholder="Домофон, подъезд, особенности клиента...">${escapeHtml(profile?.note || "")}</textarea>
+          <button type="button" class="secondary-button" id="save-client-profile-note">Сохранить заметку</button>
+        </div>
+      </details>` : ""}
 
       <section class="client-profile-history">
         <h3>История ремонтов</h3>
@@ -6551,6 +6563,13 @@ function clientModal(clientKey) {
   document.body.appendChild(modal);
   const close = () => modal.remove();
   modal.querySelector("[data-close-modal]").addEventListener("click", close);
+  const clientNoteInput = modal.querySelector("#client-profile-note");
+  const clientNoteState = modal.querySelector("#client-profile-note-state");
+  const syncClientNoteState = () => {
+    if (clientNoteState) clientNoteState.textContent = String(clientNoteInput?.value || "").trim() ? "Есть заметка" : "Нет заметки";
+  };
+  clientNoteInput?.addEventListener("input", syncClientNoteState);
+  syncClientNoteState();
   modal.querySelector("#save-client-profile-note")?.addEventListener("click", async () => {
     const phone = normalizeRussianPhone(client.phone || "");
     if (!phone) return;
@@ -6559,7 +6578,7 @@ function clientModal(clientKey) {
       currentProfile = { id: crypto.randomUUID(), phone, name: client.name || "", note: "", lastAddress: client.address || "", updatedAt: null };
       data.client_profiles.push(currentProfile);
     }
-    currentProfile.note = String(modal.querySelector("#client-profile-note")?.value || "").trim();
+    currentProfile.note = String(clientNoteInput?.value || "").trim();
     currentProfile.updatedAt = new Date().toISOString();
     await saveData();
     toast("Заметка клиента сохранена");

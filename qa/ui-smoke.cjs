@@ -3627,7 +3627,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const address = document.querySelector(".client-profile-address")?.getBoundingClientRect();
         const action = document.querySelector(".client-profile-actions > *")?.getBoundingClientRect();
         const kpi = document.querySelector(".client-profile-kpis > div")?.getBoundingClientRect();
-        const note = document.querySelector(".client-profile-note");
+        const note = document.querySelector(".client-profile-note-details");
+        const noteSummary = document.querySelector(".client-profile-note-summary")?.getBoundingClientRect();
+        const noteBody = document.querySelector(".client-profile-note-body");
         const textarea = document.querySelector(".client-profile-note .textarea")?.getBoundingClientRect();
         const order = document.querySelector(".client-profile-orders > button")?.getBoundingClientRect();
         const back = document.querySelector(".client-profile-back")?.getBoundingClientRect();
@@ -3642,7 +3644,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addressHeight: Math.round(address?.height || 0),
           actionHeight: Math.round(action?.height || 0),
           kpiHeight: Math.round(kpi?.height || 0),
-          notePaddingTop: note ? parseFloat(getComputedStyle(note).paddingTop) || 0 : 0,
+          noteTag: note?.tagName || "",
+          noteOpen: Boolean(note?.open),
+          noteSummaryHeight: Math.round(noteSummary?.height || 0),
+          noteBodyDisplay: noteBody ? getComputedStyle(noteBody).display : "missing",
+          noteStateText: document.querySelector("#client-profile-note-state")?.textContent || "",
           textareaHeight: Math.round(textarea?.height || 0),
           orderHeight: Math.round(order?.height || 0),
           backWidth: Math.round(back?.width || 0),
@@ -3661,14 +3667,37 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || (clientProfileState.addressHeight && clientProfileState.addressHeight > 60)
         || clientProfileState.actionHeight < 44
         || clientProfileState.kpiHeight > 60
-        || clientProfileState.notePaddingTop > 10
-        || (clientProfileState.textareaHeight && clientProfileState.textareaHeight > 74)
+        || clientProfileState.noteTag !== "DETAILS"
+        || clientProfileState.noteOpen
+        || clientProfileState.noteSummaryHeight < 44
+        || clientProfileState.noteSummaryHeight > 52
+        || clientProfileState.noteBodyDisplay !== "none"
+        || clientProfileState.noteStateText !== "Нет заметки"
         || (clientProfileState.orderHeight && clientProfileState.orderHeight > (width <= 340 ? 70 : 66))
         || clientProfileState.backWidth < 44
         || clientProfileState.backHeight < 44) {
         report.failures.push({ width, type: "client-profile-compact-density", clientProfileState });
       }
       report.results.push(await shot(page, width, "client-profile", false));
+      if (width === 390) {
+        await page.locator(".client-profile-note-summary").click();
+        const expandedClientNote = await page.evaluate(() => {
+          const note = document.querySelector(".client-profile-note-details");
+          const body = document.querySelector(".client-profile-note-body");
+          const textarea = document.querySelector("#client-profile-note")?.getBoundingClientRect();
+          return {
+            open: Boolean(note?.open),
+            bodyDisplay: body ? getComputedStyle(body).display : "missing",
+            textareaHeight: Math.round(textarea?.height || 0)
+          };
+        });
+        if (!expandedClientNote.open
+          || expandedClientNote.bodyDisplay === "none"
+          || expandedClientNote.textareaHeight < 70) {
+          report.failures.push({ width, type: "client-profile-note-expand", expandedClientNote });
+        }
+        await page.locator(".client-profile-note-summary").click();
+      }
       await page.keyboard.press("Escape");
 
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));

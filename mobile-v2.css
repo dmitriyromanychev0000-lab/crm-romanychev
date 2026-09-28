@@ -19699,3 +19699,82 @@
     margin-bottom: 7px !important;
   }
 }
+
+
+/* 1.7.73 · Клиент: пустая заметка свёрнута, сохранённая открывается автоматически. */
+@media screen and (max-width: 520px) {
+  .legacy-client-profile-backdrop .client-profile-note-details {
+    display: block !important;
+    gap: 0 !important;
+    margin-top: 6px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 11px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-details > summary {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 28px !important;
+    gap: 8px !important;
+    min-height: 48px !important;
+    padding: 7px 9px !important;
+    align-items: center !important;
+    list-style: none !important;
+    cursor: pointer !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-details > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-summary-copy {
+    display: grid !important;
+    min-width: 0 !important;
+    gap: 2px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-summary-copy strong {
+    color: #dce3e6 !important;
+    font-size: 11px !important;
+    line-height: 1.1 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-summary-copy small {
+    color: #71808a !important;
+    font-size: 8.5px !important;
+    font-weight: 650 !important;
+    line-height: 1.1 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-toggle {
+    display: grid !important;
+    width: 28px !important;
+    height: 28px !important;
+    place-items: center !important;
+    color: #75828a !important;
+    transition: transform .18s ease !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-toggle .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-details[open] .client-profile-note-toggle {
+    transform: rotate(90deg) !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-body {
+    display: grid !important;
+    gap: 6px !important;
+    padding: 0 9px 9px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-details:not([open]) .client-profile-note-body {
+    display: none !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-note-details .textarea {
+    min-height: 72px !important;
+  }
+}
