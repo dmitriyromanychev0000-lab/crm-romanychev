@@ -4439,7 +4439,35 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           appActionWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().width)),
           appActionHeights: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().height)),
           appCardHeight: Math.round(document.querySelector(".settings-app-card")?.getBoundingClientRect().height || 0),
-          profileCardHeight: Math.round(document.querySelector(".settings-profile-card")?.getBoundingClientRect().height || 0)
+          profileCardHeight: Math.round(document.querySelector(".settings-profile-card")?.getBoundingClientRect().height || 0),
+          profileFields: [...document.querySelectorAll(".settings-profile-card .legacy-settings-grid .field")].map((node) => {
+            const style = getComputedStyle(node);
+            return {
+              height: Math.round(node.getBoundingClientRect().height),
+              paddingTop: parseFloat(style.paddingTop) || 0,
+              paddingBottom: parseFloat(style.paddingBottom) || 0,
+              lineHeight: parseFloat(style.lineHeight) || 0
+            };
+          }),
+          linkAlignment: [...document.querySelectorAll(".legacy-settings-links > button")].map((button) => {
+            const buttonRect = button.getBoundingClientRect();
+            const iconRect = button.querySelector(".settings-link-icon")?.getBoundingClientRect();
+            const copyRect = button.querySelector(":scope > span:nth-child(2)")?.getBoundingClientRect();
+            const countRect = button.querySelector(":scope > b")?.getBoundingClientRect();
+            const chevronRect = button.querySelector(":scope > .chevron")?.getBoundingClientRect();
+            const centerY = (rect) => rect ? rect.top + rect.height / 2 : -999;
+            const buttonCenter = centerY(buttonRect);
+            return {
+              iconDelta: Math.round(Math.abs(centerY(iconRect) - buttonCenter) * 10) / 10,
+              copyDelta: Math.round(Math.abs(centerY(copyRect) - buttonCenter) * 10) / 10,
+              countDelta: Math.round(Math.abs(centerY(countRect) - buttonCenter) * 10) / 10,
+              chevronDelta: Math.round(Math.abs(centerY(chevronRect) - buttonCenter) * 10) / 10,
+              copyRight: Math.round(copyRect?.right || 0),
+              countLeft: Math.round(countRect?.left || 0),
+              countRight: Math.round(countRect?.right || 0),
+              chevronLeft: Math.round(chevronRect?.left || 0)
+            };
+          })
         };
       });
       if (settingsSurface.profile !== "rgb(7, 12, 16)"
@@ -4487,7 +4515,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.profileCardHeight > 322) {
+        || settingsSurface.profileCardHeight > 322
+        || settingsSurface.profileFields.length !== 5
+        || settingsSurface.profileFields.some((item) => item.height !== 44 || item.paddingTop !== 0 || item.paddingBottom !== 0 || item.lineHeight < 41 || item.lineHeight > 43)
+        || settingsSurface.linkAlignment.length < 9
+        || settingsSurface.linkAlignment.some((item) =>
+          item.iconDelta > 1
+          || item.copyDelta > 2
+          || item.countDelta > 1
+          || item.chevronDelta > 1
+          || item.countLeft < item.copyRight
+          || item.chevronLeft < item.countRight
+        )) {
         report.failures.push({ width, type: "settings-semantic-hierarchy", settingsSurface });
       }
       const settingsDensity = await page.evaluate(() => {

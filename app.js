@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.89";
-const APP_BUILD = "2026.09.29.319";
+const APP_VERSION = "1.7.90";
+const APP_BUILD = "2026.09.29.320";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Диагностика выровнена по сетке: статусы и иконки центрированы, кнопки читаются полностью на 320 px"
+const APP_RELEASE = "Настройки выровнены по единой оси: текст полей, иконки, счётчики и стрелки больше не смещаются на узком экране"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.90",
+    date: "29.09.2026",
+    title: "Выравнивание настроек",
+    items: [
+      "Текст в полях реквизитов закреплён по вертикальному центру 44 px поля без лишнего верхнего и нижнего отступа.",
+      "Строки «Рабочих данных» собраны в одну сетку: иконка, текст, счётчик и стрелка стоят на общей вертикальной оси.",
+      "На 320 px счётчики больше не падают под описание и остаются справа, не мешая длинным названиям."
+    ]
+  },
   {
     version: "1.7.89",
     date: "29.09.2026",
