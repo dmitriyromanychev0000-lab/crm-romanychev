@@ -19997,3 +19997,11 @@
     display: none !important;
   }
 }
+
+
+/* 1.7.77 · Старый details-override не должен скрывать статический блок фото. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-photo-static:not([open]) .order-extra-body {
+    display: block !important;
+  }
+}
