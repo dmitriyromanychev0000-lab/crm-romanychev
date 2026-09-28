@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T07:55:43.144Z",
-  "testedSha": "785dcb1f9e47ec2c91a46e573b549f58b8d43887",
+  "generatedAt": "2026-09-28T07:59:57.779Z",
+  "testedSha": "71139a657884f2034543a6803682f8925521d331",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T07:56:18.802Z"
+      "fallbackCreatedAt": "2026-09-28T08:00:30.846Z"
     },
     {
       "label": "pwa-offline",
@@ -1412,5 +1412,46 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "warehouse-deep-dark-page",
+      "warehousePageSurfaces": {
+        "group": "rgb(7, 12, 16)",
+        "stock": "rgb(6, 11, 15)",
+        "action": "rgb(9, 15, 20)",
+        "actionWidths": [
+          157,
+          157,
+          157,
+          157
+        ],
+        "actionTops": [
+          712,
+          712,
+          764,
+          764
+        ],
+        "filters": [
+          "active",
+          "out",
+          "reserved",
+          "low",
+          "archived",
+          "all"
+        ],
+        "techGroups": [
+          "Общее",
+          "Холодильник"
+        ],
+        "categoryBlocks": 3,
+        "hasTechFilter": true,
+        "hasCategoryFilter": true,
+        "addWidth": 358,
+        "pageWidth": 390,
+        "addHeight": 52,
+        "addText": "Новая позиция"
+      }
+    }
+  ]
 }
