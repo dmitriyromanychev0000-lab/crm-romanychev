@@ -15877,3 +15877,20 @@
     gap: 10px !important;
   }
 }
+
+
+/* 1.7.2 · Основные действия: полноширинная мобильная геометрия. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .modal-actions,
+  .shopping-page-actions-primary {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .order-editor-modal .modal-actions > .primary-button,
+  .order-editor-modal .modal-actions > .secondary-button,
+  .shopping-page-actions-primary > button {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

@@ -892,6 +892,31 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (result.overflow > 2) report.failures.push({ width, type: "horizontal-overflow", label, overflow: result.overflow });
     }
 
+    await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
+    const shoppingActionLayout = await page.evaluate(() => {
+      const container = document.querySelector(".shopping-page-actions-primary");
+      const containerRect = container?.getBoundingClientRect();
+      const buttons = [...document.querySelectorAll(".shopping-page-actions-primary > button")].map((button) => {
+        const rect = button.getBoundingClientRect();
+        return {
+          width: Math.round(rect.width),
+          left: Math.round(rect.left),
+          top: Math.round(rect.top)
+        };
+      });
+      return {
+        containerWidth: Math.round(containerRect?.width || 0),
+        containerLeft: Math.round(containerRect?.left || 0),
+        buttons
+      };
+    });
+    if (shoppingActionLayout.buttons.length !== 3
+      || shoppingActionLayout.buttons.some((button) => button.width < shoppingActionLayout.containerWidth - 8)
+      || shoppingActionLayout.buttons.some((button) => Math.abs(button.left - shoppingActionLayout.containerLeft) > 2)
+      || shoppingActionLayout.buttons.some((button, index, buttons) => index > 0 && button.top <= buttons[index - 1].top)) {
+      report.failures.push({ width, type: "shopping-actions-full-width", shoppingActionLayout });
+    }
+
     if (width >= 360) {
       await setState(page, uiState({ activePage: "more", moreSection: "finance" }));
       const financeRowLayout = await page.evaluate(() => {
@@ -1388,7 +1413,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0),
           footerWidth: Math.round(footerRect?.width || 0),
           footerCoverage: footerRect && secondaryRect && primaryRect ? Number(((secondaryRect.width + primaryRect.width) / footerRect.width).toFixed(3)) : 0,
-          footerButtonGap: secondaryRect && primaryRect ? Math.round(primaryRect.left - secondaryRect.right) : 999
+          footerButtonGap: secondaryRect && primaryRect ? Math.round(primaryRect.left - secondaryRect.right) : 999,
+          secondaryWidth: Math.round(secondaryRect?.width || 0),
+          primaryWidth: Math.round(primaryRect?.width || 0),
+          secondaryTop: Math.round(secondaryRect?.top || 0),
+          primaryTop: Math.round(primaryRect?.top || 0)
         };
       });
       if (editorSurfaceState.material !== "rgb(7, 12, 16)"
@@ -1399,8 +1428,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.qtyWidth < 60
         || editorSurfaceState.costWidth < 100
         || editorSurfaceState.footerWidth < width - 2
-        || editorSurfaceState.footerCoverage < 0.82
-        || editorSurfaceState.footerButtonGap > 10) {
+        || editorSurfaceState.footerCoverage < 1.8
+        || editorSurfaceState.footerButtonGap > 10
+        || editorSurfaceState.secondaryWidth < editorSurfaceState.footerWidth - 8
+        || editorSurfaceState.primaryWidth < editorSurfaceState.footerWidth - 8
+        || editorSurfaceState.primaryTop <= editorSurfaceState.secondaryTop) {
         report.failures.push({ width, type: "order-editor-polish", editorSurfaceState });
       }
       if (width === 390) {

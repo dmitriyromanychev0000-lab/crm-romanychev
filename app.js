@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.1";
-const APP_BUILD = "2026.09.28.218";
+const APP_VERSION = "1.7.2";
+const APP_BUILD = "2026.09.28.219";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинное имя клиента в деталке заявки больше не пересекается с датой и статусом на 320 px";
+const APP_RELEASE = "Основные действия редактора заявки и списка покупок теперь занимают всю ширину экрана";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.2",
+    date: "28.09.2026",
+    title: "Полноширинные основные действия",
+    items: [
+      "В редакторе заявки «Отмена» и «Сохранить» теперь идут отдельными полноширинными строками вместо двух тесных колонок.",
+      "В списке покупок «Добавить вручную», «Поделиться» и «Копировать» выровнены в одну полноширинную колонку.",
+      "На 320–430 px основные действия получили одинаковую геометрию без узких половинчатых кнопок."
+    ]
+  },
   {
     version: "1.7.1",
     date: "28.09.2026",
