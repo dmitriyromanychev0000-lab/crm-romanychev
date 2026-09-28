@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.1";
-const APP_BUILD = "2026.09.28.198";
+const APP_VERSION = "1.5.2";
+const APP_BUILD = "2026.09.28.199";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Дочищен экран черновиков и стабилизирован мобильный UI-прогон после серии перезагрузок";
+const APP_RELEASE = "Главное действие на экране заявок стало полноширинным и визуально согласованным с остальными рабочими разделами";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.2",
+    date: "28.09.2026",
+    title: "Новая заявка — главное действие",
+    items: [
+      "Маленькая квадратная кнопка в шапке заявок заменена полноширинной кнопкой «Новая заявка».",
+      "Главное действие заявок теперь совпадает по высоте, радиусу и акценту с прайсом, документами и инструментами.",
+      "Мобильная проверка контролирует ширину и высоту кнопки на 320 и 390 px, чтобы интерфейс снова не съехал к маленькой иконке."
+    ]
+  },
   {
     version: "1.5.1",
     date: "28.09.2026",
@@ -2271,8 +2281,8 @@ function ordersPage() {
   return `<main class="content orders-content legacy-orders-page">
     <div class="legacy-page-head">
       <div><h1>Заявки</h1><p>Все ремонты в одном месте</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-order" aria-label="Новая заявка">${icon("plus")}</button>
     </div>
+    <button type="button" class="legacy-orders-add-wide" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button>
 
     ${nearestVisits.length ? `<section class="legacy-nearest-visit">
       <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong><span>${nearestVisits.length}</span><button type="button" data-action="calendar-screen">Календарь</button></div>

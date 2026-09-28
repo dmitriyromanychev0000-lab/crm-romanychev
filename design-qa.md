@@ -102,3 +102,10 @@ final result: automated release QA passed
 - Published result: GitHub Pages deployment for commit `107dadee4c8b7b1feabc0f02503ddbe721de92df` passed.
 
 final result: passed
+
+
+## Release 1.5.2 — primary order action
+
+- The Orders screen now uses a full-width “Новая заявка” primary action instead of a 44 px icon-only button in the title row.
+- Geometry is shared with the existing wide primary actions used by Price, Documents and Tools.
+- Automated mobile QA now asserts the order CTA is at least 48 px high, spans the content width, and retains its visible label at 320 and 390 px.

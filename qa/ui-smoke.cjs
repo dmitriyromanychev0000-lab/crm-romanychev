@@ -1051,14 +1051,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await setState(page, uiState({ activePage: "orders" }));
-      const orderPageSurfaces = await page.evaluate(() => ({
-        card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
-        money: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-money > div")).backgroundColor,
-        action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor
-      }));
+      const orderPageSurfaces = await page.evaluate(() => {
+        const add = document.querySelector(".legacy-orders-add-wide");
+        const page = document.querySelector(".legacy-orders-page");
+        const addRect = add?.getBoundingClientRect();
+        const pageRect = page?.getBoundingClientRect();
+        return {
+          card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
+          money: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-money > div")).backgroundColor,
+          action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor,
+          addWidth: Math.round(addRect?.width || 0),
+          addHeight: Math.round(addRect?.height || 0),
+          pageWidth: Math.round(pageRect?.width || 0),
+          addText: add?.textContent?.trim() || ""
+        };
+      });
       if (orderPageSurfaces.card !== "rgb(7, 12, 16)"
         || orderPageSurfaces.money !== "rgb(9, 15, 20)"
-        || orderPageSurfaces.action !== "rgb(9, 15, 20)") {
+        || orderPageSurfaces.action !== "rgb(9, 15, 20)"
+        || orderPageSurfaces.addWidth < orderPageSurfaces.pageWidth - 34
+        || orderPageSurfaces.addHeight < 48
+        || !orderPageSurfaces.addText.includes("Новая заявка")) {
         report.failures.push({ width, type: "orders-deep-dark-page", orderPageSurfaces });
       }
       await page.locator('[data-action="new-order"]').first().click();

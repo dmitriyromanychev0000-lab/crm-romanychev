@@ -15150,7 +15150,8 @@
 
 /* 1.5.0 · Документы, инструменты, черновики и бэкапы: единая графитовая система. */
 @media screen and (max-width: 520px) {
-  .legacy-service-add-wide {
+  .legacy-service-add-wide,
+  .legacy-orders-add-wide {
     display: flex !important;
     width: 100% !important;
     min-height: 50px !important;
@@ -15168,7 +15169,8 @@
     box-shadow: 0 8px 20px rgba(255,113,79,.14) !important;
   }
 
-  .legacy-service-add-wide .ui-icon {
+  .legacy-service-add-wide .ui-icon,
+  .legacy-orders-add-wide .ui-icon {
     width: 18px !important;
     height: 18px !important;
   }
