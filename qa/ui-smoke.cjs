@@ -2533,7 +2533,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           tools: document.querySelectorAll(".legacy-more-list .menu-tools").length,
           titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize,
           versionText: document.querySelector(".more-version-button")?.innerText || "",
-          versionHeight: Math.round(document.querySelector(".more-version-button")?.getBoundingClientRect().height || 0)
+          versionHeight: Math.round(document.querySelector(".more-version-button")?.getBoundingClientRect().height || 0),
+          descriptionStyles: [...document.querySelectorAll(".legacy-more-list .menu-description")].map((node) => {
+            const style = getComputedStyle(node);
+            return {
+              whiteSpace: style.whiteSpace,
+              textOverflow: style.textOverflow,
+              lineClamp: style.webkitLineClamp
+            };
+          })
         };
       });
       const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Товарник","Акт","Календарь","Настройки"];
@@ -2559,7 +2567,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(moreMenuSurface.titleFont) < 13.5
         || !/v\d+\.\d+\.\d+/.test(moreMenuSurface.versionText)
         || !moreMenuSurface.versionText.includes("Что нового")
-        || moreMenuSurface.versionHeight < 44) {
+        || moreMenuSurface.versionHeight < 44
+        || (width <= 340 && moreMenuSurface.descriptionStyles.some((style) =>
+          style.whiteSpace === "nowrap"
+          || style.textOverflow === "ellipsis"
+          || style.lineClamp !== "2"
+        ))) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
 

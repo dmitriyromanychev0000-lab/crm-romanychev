@@ -15645,3 +15645,22 @@
     text-align: center !important;
   }
 }
+
+
+/* 1.6.4 · Ещё 320 px: описание до двух строк вместо многоточия. */
+@media screen and (max-width: 340px) {
+  .legacy-more-list .menu-item {
+    height: auto !important;
+    min-height: 76px !important;
+  }
+
+  .legacy-more-list .menu-description {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
