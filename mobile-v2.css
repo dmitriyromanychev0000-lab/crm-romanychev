@@ -20721,3 +20721,11 @@
     height: 14px !important;
   }
 }
+
+
+/* 1.7.89 fix · Диагностика 320 px: чуть больше места кнопке копирования. */
+@media screen and (max-width: 340px) {
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions {
+    grid-template-columns: .88fr 1.12fr !important;
+  }
+}
