@@ -20140,3 +20140,42 @@
     background: var(--crm-red);
   }
 }
+
+
+/* 1.7.81 · Аналитика: период остаётся читаемым, но не оттесняет показатели вниз. */
+@media screen and (max-width: 520px) {
+  .analytics-content {
+    padding-top: 8px !important;
+  }
+
+  .analytics-content .page-head {
+    margin-bottom: 6px !important;
+  }
+
+  .analytics-period-grid {
+    gap: 4px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .analytics-period-grid .chip {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .analytics-range-nav {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    margin-bottom: 6px !important;
+    padding: 1px !important;
+  }
+
+  .analytics-arrow {
+    box-sizing: border-box !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+}

@@ -2439,6 +2439,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsDensity.panelMarginBottom > 8) {
         report.failures.push({ width, type: "analytics-compact-density", analyticsDensity });
       }
+      const analyticsHeaderDensity = await page.evaluate(() => {
+        const rangeNav = document.querySelector(".analytics-range-nav");
+        const firstPanel = document.querySelector(".analytics-content .panel");
+        const chips = [...document.querySelectorAll(".analytics-period-grid .chip")];
+        const arrows = [...document.querySelectorAll(".analytics-arrow")];
+        return {
+          chipHeights: chips.map((chip) => Math.round(chip.getBoundingClientRect().height)),
+          arrowHeights: arrows.map((arrow) => Math.round(arrow.getBoundingClientRect().height)),
+          rangeHeight: Math.round(rangeNav?.getBoundingClientRect().height || 0),
+          firstPanelTop: Math.round(firstPanel?.getBoundingClientRect().top || 999)
+        };
+      });
+      if (analyticsHeaderDensity.chipHeights.length !== 6
+        || analyticsHeaderDensity.chipHeights.some((height) => height < 44)
+        || analyticsHeaderDensity.arrowHeights.length !== 2
+        || analyticsHeaderDensity.arrowHeights.some((height) => height < 44)
+        || analyticsHeaderDensity.rangeHeight < 44
+        || analyticsHeaderDensity.rangeHeight > 46
+        || analyticsHeaderDensity.firstPanelTop > 282) {
+        report.failures.push({ width, type: "analytics-compact-header", analyticsHeaderDensity });
+      }
       const analyticsModelState = await page.evaluate(() => {
         const numberFrom = (value) => Number(String(value || "").replace(/[^0-9-]/g, "")) || 0;
         const cards = [...document.querySelectorAll(".analytics-kpi")];

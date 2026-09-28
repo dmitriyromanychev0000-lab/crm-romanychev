@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.80";
-const APP_BUILD = "2026.09.28.306";
+const APP_VERSION = "1.7.81";
+const APP_BUILD = "2026.09.28.307";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансовая сводка получила сдержанные смысловые акценты: итог, доход и расход теперь сразу различимы без цветной каши"
+const APP_RELEASE = "Шапка аналитики стала плотнее: период и навигация занимают меньше высоты, а все touch-зоны сохранены"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.81",
+    date: "28.09.2026",
+    title: "Плотная шапка аналитики",
+    items: [
+      "Периоды и навигация по датам собраны плотнее, поэтому главные показатели начинаются выше.",
+      "Каждый переключатель периода и обе стрелки остаются полноценными touch-зонами 44 px.",
+      "Формулы, фильтры периода и данные аналитики не менялись."
+    ]
+  },
   {
     version: "1.7.80",
     date: "28.09.2026",
