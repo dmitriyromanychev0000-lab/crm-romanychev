@@ -20600,3 +20600,124 @@
     grid-template-columns: repeat(2,minmax(0,1fr)) !important;
   }
 }
+
+
+/* 1.7.89 · Диагностика и настройки: точное центрирование текста и иконок. */
+@media screen and (max-width: 520px) {
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .goods-sheet {
+    grid-template-columns: minmax(0,1fr) 32px !important;
+    gap: 8px !important;
+    min-height: 48px !important;
+    padding: 6px 7px 6px 9px !important;
+    align-items: center !important;
+  }
+
+  .diagnostics-modal .diagnostics-copy {
+    display: grid !important;
+    min-width: 0 !important;
+    align-content: center !important;
+    gap: 2px !important;
+  }
+
+  .diagnostics-modal .diagnostics-copy strong,
+  .diagnostics-modal .diagnostics-copy small {
+    margin: 0 !important;
+    line-height: 1.15 !important;
+  }
+
+  .diagnostics-modal .diagnostics-copy small {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .diagnostics-modal .diagnostics-status {
+    display: grid !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    place-items: center !important;
+    justify-self: end !important;
+    align-self: center !important;
+    border-radius: 9px !important;
+    background: #0d1419 !important;
+  }
+
+  .diagnostics-modal .diagnostics-status.green {
+    background: rgba(73,210,132,.08) !important;
+  }
+
+  .diagnostics-modal .diagnostics-status.red {
+    background: rgba(255,97,108,.08) !important;
+  }
+
+  .diagnostics-modal .diagnostics-status .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 2 !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > button {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    padding: 6px 8px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > button .ui-icon {
+    flex: 0 0 auto !important;
+    width: 15px !important;
+    height: 15px !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > button > span {
+    min-width: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > [data-close-modal] {
+    grid-column: 1 / -1 !important;
+  }
+
+  .settings-profile-card .legacy-settings-grid .field {
+    box-sizing: border-box !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .settings-app-card .legacy-settings-row > button:not(.toggle) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > button {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    gap: 4px !important;
+    font-size: 10px !important;
+  }
+
+  body.modal-open > .modal-backdrop > div.modal.compact-modal.diagnostics-modal .modal-actions > button .ui-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}

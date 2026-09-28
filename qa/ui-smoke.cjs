@@ -4642,23 +4642,45 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const row = modal?.querySelector(".goods-sheet");
         const footer = modal?.querySelector(".modal-actions");
         const action = footer?.querySelector("button");
+        const status = row?.querySelector(".diagnostics-status");
+        const statusIcon = status?.querySelector(".ui-icon");
+        const copy = row?.querySelector(".diagnostics-copy");
+        const buttons = [...(footer?.querySelectorAll("button") || [])];
         const px = (value) => Number.parseFloat(value || "0") || 0;
+        const rect = (node) => node?.getBoundingClientRect();
+        const rowRect = rect(row);
+        const statusRect = rect(status);
+        const copyRect = rect(copy);
         return {
           paddingTop: modal ? px(getComputedStyle(modal).paddingTop) : 999,
           titleMarginBottom: title ? px(getComputedStyle(title).marginBottom) : 999,
           listGap: list ? px(getComputedStyle(list).rowGap || getComputedStyle(list).gap) : 999,
-          rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          rowHeight: Math.round(rowRect?.height || 0),
           footerPaddingTop: footer ? px(getComputedStyle(footer).paddingTop) : 999,
-          actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+          actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          statusWidth: Math.round(statusRect?.width || 0),
+          statusHeight: Math.round(statusRect?.height || 0),
+          statusCenterDelta: rowRect && statusRect ? Math.abs((statusRect.top + statusRect.height / 2) - (rowRect.top + rowRect.height / 2)) : 999,
+          copyCenterDelta: rowRect && copyRect ? Math.abs((copyRect.top + copyRect.height / 2) - (rowRect.top + rowRect.height / 2)) : 999,
+          statusIconWidth: Math.round(statusIcon?.getBoundingClientRect().width || 0),
+          actionOverflows: buttons.map((button) => button.scrollWidth > button.clientWidth + 1),
+          actionIconWidths: buttons.map((button) => Math.round(button.querySelector(".ui-icon")?.getBoundingClientRect().width || 0))
         };
       });
       if (diagnosticsDensity.paddingTop > 10
         || diagnosticsDensity.titleMarginBottom > 8
         || diagnosticsDensity.listGap > 5.5
-        || diagnosticsDensity.rowHeight < 44
+        || diagnosticsDensity.rowHeight < 46
         || diagnosticsDensity.rowHeight > 50
         || diagnosticsDensity.footerPaddingTop > 8
-        || diagnosticsDensity.actionHeight < 44) {
+        || diagnosticsDensity.actionHeight < 44
+        || diagnosticsDensity.statusWidth < 30
+        || diagnosticsDensity.statusHeight < 30
+        || diagnosticsDensity.statusCenterDelta > 1
+        || diagnosticsDensity.copyCenterDelta > 2
+        || diagnosticsDensity.statusIconWidth < 15
+        || diagnosticsDensity.actionOverflows.some(Boolean)
+        || diagnosticsDensity.actionIconWidths.some((value) => value < 13)) {
         report.failures.push({ width, type: "diagnostics-compact-density", diagnosticsDensity });
       }
       report.results.push(await shot(page, width, "diagnostics-modal", false));
