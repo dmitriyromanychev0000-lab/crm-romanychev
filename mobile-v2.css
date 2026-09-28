@@ -16956,3 +16956,59 @@
     min-height: 44px !important;
   }
 }
+
+
+/* 1.7.19 · Прайс: меньше пустоты между рабочими элементами без мелкого текста. */
+@media screen and (max-width: 520px) {
+  .legacy-price-page {
+    padding-top: 10px !important;
+  }
+
+  .legacy-price-search {
+    margin-bottom: 6px !important;
+  }
+
+  .legacy-price-filters {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .legacy-price-filters label > span {
+    margin-bottom: 3px !important;
+  }
+
+  .legacy-price-groups {
+    gap: 7px !important;
+  }
+
+  .legacy-price-group {
+    border-radius: 12px !important;
+  }
+
+  .legacy-price-group > h3,
+  .legacy-custom-price-head {
+    min-height: 40px !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+  }
+
+  .legacy-price-row {
+    min-height: 56px !important;
+    gap: 9px !important;
+    padding: 7px 10px !important;
+  }
+
+  .legacy-price-row small {
+    margin-top: 2px !important;
+  }
+
+  .legacy-price-empty {
+    padding: 10px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-price-row {
+    min-height: 60px !important;
+  }
+}

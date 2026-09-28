@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.18";
-const APP_BUILD = "2026.09.28.236";
+const APP_VERSION = "1.7.19";
+const APP_BUILD = "2026.09.28.237";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансы и клиенты стали плотнее: сводки и карточки занимают меньше места, сохраняя крупные суммы и удобные действия";
+const APP_RELEASE = "Прайс стал плотнее: меньше воздуха между поиском, фильтрами, группами и строками при сохранении читаемых названий и цен";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.19",
+    date: "28.09.2026",
+    title: "Плотный прайс-лист",
+    items: [
+      "Уменьшены лишние вертикальные интервалы вокруг поиска, фильтров и групп прайса.",
+      "Строки услуг и материалов стали компактнее без уменьшения названий и цен.",
+      "На 320 px сохранена увеличенная высота строк для длинных названий."
+    ]
+  },
   {
     version: "1.7.18",
     date: "28.09.2026",

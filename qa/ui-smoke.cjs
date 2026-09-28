@@ -2797,6 +2797,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       )) {
         report.failures.push({ width, type: "price-320-inline-price", pricePageSurface });
       }
+      if (width > 340 && pricePageSurface.firstRowHeight > 62) {
+        report.failures.push({ width, type: "price-compact-density", pricePageSurface });
+      }
       await page.waitForTimeout(80);
       await page.locator("#price-search").click();
       await page.waitForTimeout(220);
