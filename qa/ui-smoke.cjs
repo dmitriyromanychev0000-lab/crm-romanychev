@@ -1596,7 +1596,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           bars: document.querySelectorAll(".analytics-chart-panel .bar-wrap").length,
           barWidths: [...document.querySelectorAll(".analytics-chart-panel .bar")].map((bar) => Math.round(bar.getBoundingClientRect().width)),
           hasSources: Boolean([...document.querySelectorAll(".analytics-list-panel .panel-title")].find((node) => node.textContent.includes("Источники заявок"))),
-          expenseButtonHeight: expenseRect ? Math.round(expenseRect.height) : 0
+          expenseButtonHeight: expenseRect ? Math.round(expenseRect.height) : 0,
+          expenseButtonBackground: expenseButton ? getComputedStyle(expenseButton).backgroundColor : "missing",
+          expenseButtonColor: expenseButton ? getComputedStyle(expenseButton).color : "missing",
+          pageTitle: document.querySelector(".analytics-content .page-head h1")?.textContent?.trim() || "",
+          pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || ""
         };
       });
       if (analyticsModelState.values["Получено от клиентов"] !== 10400
@@ -1608,7 +1612,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.bars !== 2
         || analyticsModelState.barWidths.some((widthValue) => widthValue < 20 || widthValue > 36)
         || !analyticsModelState.hasSources
-        || analyticsModelState.expenseButtonHeight < 44) {
+        || analyticsModelState.expenseButtonHeight < 44
+        || analyticsModelState.expenseButtonBackground !== "rgb(13, 20, 25)"
+        || analyticsModelState.expenseButtonColor !== "rgb(255, 118, 92)"
+        || analyticsModelState.pageTitle !== "Аналитический центр"
+        || analyticsModelState.pageLead !== "Финансы, эффективность, клиенты и склад") {
         report.failures.push({ width, type: "analytics-product-model", analyticsModelState });
       }
 
@@ -1652,7 +1660,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
         categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
         hasTechFilter: Boolean(document.querySelector("#warehouse-tech-filter")),
-        hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter"))
+        hasCategoryFilter: Boolean(document.querySelector("#warehouse-category-filter")),
+        addWidth: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().width || 0),
+        pageWidth: Math.round(document.querySelector(".legacy-warehouse-page")?.getBoundingClientRect().width || 0),
+        addHeight: Math.round(document.querySelector(".legacy-warehouse-add-wide")?.getBoundingClientRect().height || 0),
+        addText: document.querySelector(".legacy-warehouse-add-wide")?.textContent?.trim() || ""
         };
       });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
@@ -1670,7 +1682,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.max(...warehousePageSurfaces.actionWidths) - Math.min(...warehousePageSurfaces.actionWidths) > 2
         || Math.abs(warehousePageSurfaces.actionTops[0] - warehousePageSurfaces.actionTops[1]) > 2
         || Math.abs(warehousePageSurfaces.actionTops[2] - warehousePageSurfaces.actionTops[3]) > 2
-        || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]) {
+        || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]
+        || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 26
+        || warehousePageSurfaces.addHeight < 48
+        || !warehousePageSurfaces.addText.includes("Новая позиция")) {
         report.failures.push({ width, type: "warehouse-deep-dark-page", warehousePageSurfaces });
       }
       if (width === 390) {
@@ -1737,20 +1752,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.results.push(await shot(page, width, "stock-detail", false));
       await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
-      const stockEditorSurface = await page.evaluate(() => ({
-        modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
-        section: getComputedStyle(document.querySelector(".stock-editor-section")).backgroundColor,
-        field: getComputedStyle(document.querySelector(".stock-editor-modal .field")).backgroundColor,
-        compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor,
-        hasStockTech: Boolean(document.querySelector('.stock-editor-modal [name="stockTech"]')),
-        categoryRequired: Boolean(document.querySelector('.stock-editor-modal [name="category"]')?.required)
-      }));
+      const stockEditorSurface = await page.evaluate(() => {
+        const minimum = document.querySelector('.stock-editor-modal [name="min"]')?.closest(".form-group");
+        const grid = minimum?.closest(".form-grid");
+        return {
+          modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
+          section: getComputedStyle(document.querySelector(".stock-editor-section")).backgroundColor,
+          field: getComputedStyle(document.querySelector(".stock-editor-modal .field")).backgroundColor,
+          compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor,
+          hasStockTech: Boolean(document.querySelector('.stock-editor-modal [name="stockTech"]')),
+          categoryRequired: Boolean(document.querySelector('.stock-editor-modal [name="category"]')?.required),
+          minimumWidth: Math.round(minimum?.getBoundingClientRect().width || 0),
+          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
+        };
+      });
       if (stockEditorSurface.modal !== "rgb(3, 7, 10)"
         || stockEditorSurface.section !== "rgb(6, 11, 15)"
         || stockEditorSurface.field !== "rgb(9, 15, 20)"
         || stockEditorSurface.compat !== "rgb(9, 15, 20)"
         || !stockEditorSurface.hasStockTech
-        || !stockEditorSurface.categoryRequired) {
+        || !stockEditorSurface.categoryRequired
+        || stockEditorSurface.minimumWidth < stockEditorSurface.gridWidth * 0.92) {
         report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
       }
       report.results.push(await shot(page, width, "stock-editor", false));
@@ -2357,7 +2379,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           finance: document.querySelectorAll(".legacy-more-list .menu-finance").length,
           shopping: document.querySelectorAll(".legacy-more-list .menu-shopping").length,
           tools: document.querySelectorAll(".legacy-more-list .menu-tools").length,
-          titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize
+          titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize,
+          versionText: document.querySelector(".more-version-button")?.innerText || "",
+          versionHeight: Math.round(document.querySelector(".more-version-button")?.getBoundingClientRect().height || 0)
         };
       });
       const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Товарник","Акт","Календарь","Настройки"];
@@ -2370,7 +2394,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || JSON.stringify(moreMenuSurface.backgrounds) !== JSON.stringify(expectedMoreBackgrounds)
         || JSON.stringify(moreMenuSurface.iconBackgrounds) !== JSON.stringify(expectedMoreIconBackgrounds)
         || new Set(moreMenuSurface.backgrounds).size !== 1
-        || parseFloat(moreMenuSurface.titleFont) < 13.5) {
+        || parseFloat(moreMenuSurface.titleFont) < 13.5
+        || !/v\d+\.\d+\.\d+/.test(moreMenuSurface.versionText)
+        || !moreMenuSurface.versionText.includes("Что нового")
+        || moreMenuSurface.versionHeight < 44) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
 

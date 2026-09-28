@@ -7,11 +7,22 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.2.7";
-const APP_BUILD = "2026.09.28.190";
+const APP_VERSION = "1.3.0";
+const APP_BUILD = "2026.09.28.191";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Причины складских списаний и корректировок защищены от потери значения при быстрых повторных операциях";
+const APP_RELEASE = "Склад и аналитика ближе к прежней CRM: крупное главное действие, спокойные акценты и ровные поля";
 const APP_CHANGELOG = [
+  {
+    version: "1.3.0",
+    date: "28.09.2026",
+    title: "Цельная рабочая оболочка",
+    items: [
+      "На складе «Новая позиция» снова стала заметной полноширинной кнопкой, как в прежней версии.",
+      "Минимальный остаток больше не висит одинокой половиной поля в редакторе склада.",
+      "Аналитика снова называется «Аналитический центр», а кнопка расхода больше не выглядит случайной красной плашкой.",
+      "Версия CRM и «Что нового» теперь видны сразу в верхней части раздела «Ещё»."
+    ]
+  },
   {
     version: "1.2.7",
     date: "28.09.2026",
@@ -2303,8 +2314,8 @@ function warehousePage() {
   return `<main class="content legacy-warehouse-page">
     <div class="legacy-warehouse-head">
       <div><h1>Склад</h1><p>Запчасти и расходные материалы</p></div>
-      <button type="button" class="legacy-page-add" data-action="new-stock" aria-label="Новая позиция">${icon("plus")}</button>
     </div>
+    <button type="button" class="legacy-warehouse-add-wide" data-action="new-stock">${icon("plus")}<span>Новая позиция</span></button>
 
     <div class="legacy-warehouse-search search-row search-with-icon">
       ${icon("search")}
@@ -2619,7 +2630,7 @@ function analyticsPage() {
     </div>` : "";
 
   return `<main class="content analytics-content">
-    <div class="page-head"><div><h1>Аналитика</h1><p class="lead">Деньги, заявки, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense">${icon("minus")}<span>Расход</span></button></div>
+    <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense">${icon("minus")}<span>Расход</span></button></div>
 
     <div class="analytics-period-grid">
       <button type="button" class="chip ${analyticsPeriod === "today" ? "active" : ""}" data-analytics-period="today" aria-pressed="${analyticsPeriod === "today"}">День</button>
@@ -4276,9 +4287,8 @@ function moreMenu() {
     </button>`;
 
   return `<main class="content more-content legacy-more-page">
-    <div class="legacy-more-head"><h1>Ещё</h1><p>Рабочие разделы и настройки</p></div>
+    <div class="legacy-more-head"><div><h1>Ещё</h1><p>Финансы, документы, прайс и настройки</p></div><button type="button" class="more-version-button" data-action="release-notes"><b>v${APP_VERSION}</b><small>Что нового</small></button></div>
     <div class="menu-list legacy-more-list">${primaryItems.map(card).join("")}</div>
-    <div class="app-version-strip"><span><b>CRM ${APP_VERSION}</b><small>сборка ${APP_BUILD}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
   </main>`;
 }
 
@@ -5751,7 +5761,7 @@ function stockModal(existing = null) {
       <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
       ${existing ? `<div class="form-group"><label>Места хранения</label><div class="field readonly-field">${stockLocationsForItem(item).length || 0} мест · через карточку склада</div></div>` : `<div class="form-group"><label>Начальное место</label><select class="field" name="initialLocationId">${activeStorageLocations().map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===String(initialLocationId)?"selected":""}>${escapeHtml(location.name)}</option>`).join("")}</select></div>`}
-      <div class="form-group"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
+      <div class="form-group full"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
     </div>
     </section>
 

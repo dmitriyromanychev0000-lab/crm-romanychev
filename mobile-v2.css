@@ -14801,3 +14801,96 @@
   }
 }
 
+/* 1.3.0 · Основные рабочие экраны: полноширинные действия и спокойные акценты. */
+@media screen and (max-width: 520px) {
+  .legacy-warehouse-add-wide {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 0 10px !important;
+    padding: 0 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border: 1px solid #ff714f !important;
+    border-radius: 13px !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    font-size: 13px !important;
+    font-weight: 760 !important;
+    box-shadow: 0 9px 22px rgba(255,113,79,.15) !important;
+  }
+
+  .legacy-warehouse-add-wide .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .analytics-add-expense {
+    border-color: #2a3740 !important;
+    background: #0d1419 !important;
+    color: #ff765c !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-content .page-head h1 {
+    font-size: clamp(23px,6.2vw,27px) !important;
+  }
+
+  .legacy-more-head {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .legacy-more-head > div {
+    min-width: 0 !important;
+  }
+
+  .more-version-button {
+    display: grid !important;
+    min-width: 76px !important;
+    min-height: 48px !important;
+    padding: 6px 10px !important;
+    place-items: center !important;
+    border: 1px solid #29343c !important;
+    border-radius: 12px !important;
+    background: #0d1419 !important;
+    color: #e7ecee !important;
+    box-shadow: none !important;
+  }
+
+  .more-version-button b {
+    font-size: 11px !important;
+    font-weight: 760 !important;
+  }
+
+  .more-version-button small {
+    margin-top: 2px !important;
+    color: #87929a !important;
+    font-size: 8.5px !important;
+    line-height: 1 !important;
+  }
+
+  .legacy-more-page {
+    padding-bottom: 98px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .analytics-content .page-head {
+    grid-template-columns: minmax(0,1fr) 82px !important;
+  }
+
+  .analytics-content .page-head h1 {
+    font-size: 22px !important;
+  }
+
+  .more-version-button {
+    min-width: 70px !important;
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+}
+
