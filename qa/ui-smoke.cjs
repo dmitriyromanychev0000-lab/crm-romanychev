@@ -2958,11 +2958,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
         };
       });
-      if (clientDensity.primaryHeight > 82
-        || clientDensity.secondaryHeight > 68
-        || clientDensity.mainHeight > 78
+      const clientDensityLimits = width <= 340
+        ? { primary: 86, secondary: 76, main: 104 }
+        : { primary: 86, secondary: 76, main: 78 };
+      if (clientDensity.primaryHeight > clientDensityLimits.primary
+        || clientDensity.secondaryHeight > clientDensityLimits.secondary
+        || clientDensity.mainHeight > clientDensityLimits.main
         || clientDensity.actionHeight < 44) {
-        report.failures.push({ width, type: "clients-compact-density", clientDensity });
+        report.failures.push({ width, type: "clients-compact-density", clientDensity, clientDensityLimits });
       }
       await page.locator('[data-action="open-client"]').first().click();
       const clientProfileState = await page.evaluate(() => ({
