@@ -17072,3 +17072,55 @@
     -webkit-line-clamp: 2 !important;
   }
 }
+
+
+/* 1.7.21 · Товарник: плотнее панели и строки, основные действия остаются крупными. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-page { padding-top: 10px !important; }
+
+  .legacy-goods-panel {
+    margin-bottom: 7px !important;
+    padding: 10px !important;
+    border-radius: 13px !important;
+  }
+
+  .legacy-goods-create-grid { gap: 6px !important; }
+  .legacy-goods-order-source { margin-top: 7px !important; }
+
+  .legacy-goods-help,
+  .legacy-goods-intro { margin-top: 6px !important; }
+
+  .legacy-goods-current-summary {
+    min-height: 54px !important;
+    margin-bottom: 7px !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-goods-current-summary small { margin-top: 2px !important; }
+
+  .legacy-goods-position {
+    min-height: 48px !important;
+    padding: 5px 0 !important;
+  }
+
+  .legacy-goods-position small,
+  .legacy-product-price-list small { margin-top: 2px !important; }
+
+  .legacy-open-editor { margin-top: 6px !important; }
+
+  .legacy-product-price > summary { min-height: 44px !important; }
+
+  .legacy-product-price-list > div {
+    min-height: 48px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-goods-position,
+  .legacy-product-price-list > div {
+    min-height: 54px !important;
+  }
+}

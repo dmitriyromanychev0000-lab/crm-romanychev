@@ -3091,6 +3091,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
         report.failures.push({ width, type: "goods-semantic-hierarchy", goodsPageSurface });
       }
+      const goodsDensity = await page.evaluate(() => {
+        const panel = document.querySelector(".legacy-goods-panel");
+        const summary = document.querySelector(".legacy-goods-current-summary");
+        const row = document.querySelector(".legacy-goods-position");
+        const edit = document.querySelector(".legacy-open-editor");
+        const panelStyle = panel ? getComputedStyle(panel) : null;
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        return {
+          panelPaddingTop: panelStyle ? px(panelStyle.paddingTop) : 999,
+          summaryHeight: Math.round(summary?.getBoundingClientRect().height || 0),
+          rowHeight: Math.round(row?.getBoundingClientRect().height || 0),
+          editHeight: Math.round(edit?.getBoundingClientRect().height || 0)
+        };
+      });
+      const goodsRowLimit = width <= 340 ? 66 : 58;
+      if (goodsDensity.panelPaddingTop > 10
+        || goodsDensity.summaryHeight > 62
+        || goodsDensity.rowHeight > goodsRowLimit
+        || goodsDensity.editHeight < 44) {
+        report.failures.push({ width, type: "goods-compact-density", goodsDensity, goodsRowLimit });
+      }
       await page.locator('[data-action="new-goods-sheet"]').click();
       const goodsEditorState = await page.evaluate(() => {
         const field = document.querySelector(".legacy-goods-editor .field");

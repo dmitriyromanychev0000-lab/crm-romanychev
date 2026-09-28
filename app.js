@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.20";
-const APP_BUILD = "2026.09.28.238";
+const APP_VERSION = "1.7.21";
+const APP_BUILD = "2026.09.28.239";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Меню «Ещё» стало плотнее и собраннее: меньше пустоты между разделами, компактнее иконки и версия, описания остаются читаемыми";
+const APP_RELEASE = "Товарник стал плотнее: панели, сводки и строки позиций занимают меньше места, основные действия остались удобными для нажатия";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.21",
+    date: "28.09.2026",
+    title: "Плотный товарник",
+    items: [
+      "Сокращены лишние отступы внутри панелей создания и текущего документа.",
+      "Сводка и строки товаров стали ниже без уменьшения названий и сумм.",
+      "Основные кнопки создания, добавления и редактирования сохранены крупными и удобными."
+    ]
+  },
   {
     version: "1.7.20",
     date: "28.09.2026",
