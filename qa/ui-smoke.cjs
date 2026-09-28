@@ -379,9 +379,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const grid = document.querySelector(".order-editor-modal .form-grid");
         const source = document.querySelector('.order-editor-modal [name="sourceId"]')?.closest(".form-group");
         const status = document.querySelector('.order-editor-modal [name="status"]')?.closest(".form-group");
+        const client = document.querySelector('.order-editor-modal [name="name"]')?.closest(".form-group");
+        const phone = document.querySelector('.order-editor-modal [name="phone"]')?.closest(".form-group");
         const gridRect = grid?.getBoundingClientRect();
         const sourceRect = source?.getBoundingClientRect();
         const statusRect = status?.getBoundingClientRect();
+        const clientRect = client?.getBoundingClientRect();
+        const phoneRect = phone?.getBoundingClientRect();
         return {
           sourceOptions: document.querySelectorAll('.order-editor-modal [name="sourceId"] option').length,
           hasVisitDate: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDate"]')),
@@ -389,7 +393,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           hasVisitDuration: Boolean(document.querySelector('.order-editor-modal [name="nextVisitDuration"]')),
           gridWidth: Math.round(gridRect?.width || 0),
           sourceWidth: Math.round(sourceRect?.width || 0),
-          statusWidth: Math.round(statusRect?.width || 0)
+          statusWidth: Math.round(statusRect?.width || 0),
+          clientWidth: Math.round(clientRect?.width || 0),
+          phoneWidth: Math.round(phoneRect?.width || 0)
         };
       });
       if (sourceVisitFields.sourceOptions < 3
@@ -397,7 +403,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !sourceVisitFields.hasVisitTime
         || !sourceVisitFields.hasVisitDuration
         || sourceVisitFields.sourceWidth < sourceVisitFields.gridWidth * 0.92
-        || sourceVisitFields.statusWidth < sourceVisitFields.gridWidth * 0.92) {
+        || sourceVisitFields.statusWidth < sourceVisitFields.gridWidth * 0.92
+        || sourceVisitFields.clientWidth < sourceVisitFields.gridWidth * 0.92
+        || sourceVisitFields.phoneWidth < sourceVisitFields.gridWidth * 0.92) {
         report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
       }
 
@@ -1832,6 +1840,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator('[data-action="new-stock"]').click();
       const stockEditorSurface = await page.evaluate(() => {
         const minimum = document.querySelector('.stock-editor-modal [name="min"]')?.closest(".form-group");
+        const stockTech = document.querySelector('.stock-editor-modal [name="stockTech"]')?.closest(".form-group");
+        const category = document.querySelector('.stock-editor-modal [name="category"]')?.closest(".form-group");
         const grid = minimum?.closest(".form-grid");
         return {
           modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
@@ -1841,6 +1851,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           hasStockTech: Boolean(document.querySelector('.stock-editor-modal [name="stockTech"]')),
           categoryRequired: Boolean(document.querySelector('.stock-editor-modal [name="category"]')?.required),
           minimumWidth: Math.round(minimum?.getBoundingClientRect().width || 0),
+          stockTechWidth: Math.round(stockTech?.getBoundingClientRect().width || 0),
+          categoryWidth: Math.round(category?.getBoundingClientRect().width || 0),
           gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
         };
       });
@@ -1850,7 +1862,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorSurface.compat !== "rgb(9, 15, 20)"
         || !stockEditorSurface.hasStockTech
         || !stockEditorSurface.categoryRequired
-        || stockEditorSurface.minimumWidth < stockEditorSurface.gridWidth * 0.92) {
+        || stockEditorSurface.minimumWidth < stockEditorSurface.gridWidth * 0.92
+        || stockEditorSurface.stockTechWidth < stockEditorSurface.gridWidth * 0.92
+        || stockEditorSurface.categoryWidth < stockEditorSurface.gridWidth * 0.92) {
         report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
       }
       report.results.push(await shot(page, width, "stock-editor", false));

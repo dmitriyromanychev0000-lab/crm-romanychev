@@ -15420,3 +15420,23 @@
     justify-content: center !important;
   }
 }
+
+
+/* 1.5.6 · Основные редакторы: одно полноширинное поле на строку на телефоне. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .form-grid,
+  .stock-editor-modal .form-grid,
+  .legacy-finance-entry-backdrop .form-grid,
+  .legacy-service-editor-backdrop .form-grid,
+  .legacy-price-editor-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .order-editor-modal .form-group.full,
+  .stock-editor-modal .form-group.full,
+  .legacy-finance-entry-backdrop .form-group.full,
+  .legacy-service-editor-backdrop .form-group.full,
+  .legacy-price-editor-grid .full {
+    grid-column: auto !important;
+  }
+}
