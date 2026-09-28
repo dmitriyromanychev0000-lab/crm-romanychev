@@ -805,6 +805,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || calendarState.eventNameStyle.lineClamp !== "2") {
         report.failures.push({ width, type: "calendar-month-day-timeline", calendarState });
       }
+      const calendarDensity = await page.evaluate(() => {
+        const pageNode = document.querySelector(".legacy-calendar-page");
+        const month = document.querySelector(".calendar-month-card");
+        const dayCard = document.querySelector(".calendar-day-card");
+        const dayHead = document.querySelector(".calendar-day-head");
+        const firstHour = document.querySelector(".calendar-hour-row");
+        const event = document.querySelector('.calendar-event[data-calendar-order="0060"]');
+        const px = (value) => Number.parseFloat(value || "0") || 0;
+        const pageStyle = pageNode ? getComputedStyle(pageNode) : null;
+        const monthStyle = month ? getComputedStyle(month) : null;
+        const dayStyle = dayCard ? getComputedStyle(dayCard) : null;
+        const headStyle = dayHead ? getComputedStyle(dayHead) : null;
+        return {
+          pagePaddingTop: pageStyle ? px(pageStyle.paddingTop) : 999,
+          monthMarginBottom: monthStyle ? px(monthStyle.marginBottom) : 999,
+          monthPaddingTop: monthStyle ? px(monthStyle.paddingTop) : 999,
+          dayPaddingTop: dayStyle ? px(dayStyle.paddingTop) : 999,
+          dayHeadMarginBottom: headStyle ? px(headStyle.marginBottom) : 999,
+          firstHourHeight: Math.round(firstHour?.getBoundingClientRect().height || 0),
+          eventHeight: Math.round(event?.getBoundingClientRect().height || 0)
+        };
+      });
+      if (calendarDensity.pagePaddingTop > 10
+        || calendarDensity.monthMarginBottom > 9
+        || calendarDensity.monthPaddingTop > 10
+        || calendarDensity.dayPaddingTop > 10
+        || calendarDensity.dayHeadMarginBottom > 8
+        || calendarDensity.firstHourHeight > 50
+        || calendarDensity.eventHeight < 44
+        || calendarDensity.eventHeight > 60) {
+        report.failures.push({ width, type: "calendar-compact-density", calendarDensity });
+      }
       report.results.push(await shot(page, width, "calendar-selected-day", false));
 
       await page.locator('.calendar-event[data-calendar-order="0060"]').click();

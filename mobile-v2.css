@@ -16773,3 +16773,75 @@
     margin-top: 2px !important;
   }
 }
+
+
+/* 1.7.17 · Календарь: меньше пустоты, те же 44px точки нажатия. */
+@media screen and (max-width: 520px) {
+  .legacy-calendar-page {
+    padding-top: 10px !important;
+  }
+
+  .calendar-page-head {
+    margin-bottom: 9px !important;
+  }
+
+  .calendar-month-card {
+    margin-bottom: 8px !important;
+    padding-top: 9px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .calendar-month-head {
+    padding-bottom: 7px !important;
+  }
+
+  .calendar-legend {
+    padding-top: 6px !important;
+  }
+
+  .calendar-day-card {
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .calendar-day-head {
+    gap: 8px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .calendar-all-day {
+    gap: 5px !important;
+    margin-bottom: 7px !important;
+    padding: 7px !important;
+    border-radius: 10px !important;
+  }
+
+  .calendar-hour-row {
+    min-height: 48px !important;
+    gap: 6px !important;
+  }
+
+  .calendar-hour-row > time {
+    padding-top: 7px !important;
+  }
+
+  .calendar-hour-row > div {
+    gap: 4px !important;
+    padding: 3px 0 !important;
+  }
+
+  .calendar-event {
+    box-sizing: border-box !important;
+    min-height: 54px !important;
+    padding: 6px 8px !important;
+    border-radius: 9px !important;
+  }
+
+  .calendar-event.compact {
+    min-height: 50px !important;
+  }
+
+  .calendar-empty {
+    padding-top: 8px !important;
+  }
+}

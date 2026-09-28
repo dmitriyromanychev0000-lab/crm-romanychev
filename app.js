@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.16";
-const APP_BUILD = "2026.09.28.234";
+const APP_VERSION = "1.7.17";
+const APP_BUILD = "2026.09.28.235";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Аналитика доведена по мобильной геометрии: фильтры снова удобные 44 px, KPI плотнее без потери читаемости";
+const APP_RELEASE = "Календарь стал плотнее: меньше пустоты вокруг месяца и расписания, а события занимают ровно столько места, сколько требует текст";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.17",
+    date: "28.09.2026",
+    title: "Компактный календарь без тесноты",
+    items: [
+      "Сокращены внешние отступы месяца и выбранного дня, при этом дни и стрелки остались полноценными 44 px.",
+      "Пустые часы дневной шкалы занимают меньше высоты и быстрее просматриваются.",
+      "Карточки визитов стали ниже в обычном случае, но автоматически растут для длинного имени и типа техники."
+    ]
+  },
   {
     version: "1.7.16",
     date: "28.09.2026",
