@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.25";
-const APP_BUILD = "2026.09.28.243";
+const APP_VERSION = "1.7.26";
+const APP_BUILD = "2026.09.28.244";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Статистика документов и инструмента теперь действительно компактная: высота включает padding, цифры и подписи не обрезаются";
+const APP_RELEASE = "Склад и список покупок стали плотнее: меньше пустой высоты в группах и карточках, действия остаются удобными для нажатия";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.26",
+    date: "28.09.2026",
+    title: "Плотный склад и список покупок",
+    items: [
+      "Группы и карточки склада стали ниже за счёт внутренних отступов, а не уменьшения рабочего текста.",
+      "Кнопки действий склада сохранены не меньше 44 px, основные переходы — не меньше 48 px.",
+      "Карточки списка покупок занимают меньше высоты и по-прежнему растут для длинных названий."
+    ]
+  },
   {
     version: "1.7.25",
     date: "28.09.2026",

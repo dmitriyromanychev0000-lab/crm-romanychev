@@ -975,6 +975,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       report.failures.push({ width, type: "warehouse-shortcuts-full-width", warehouseShortcutLayout });
     }
 
+    const warehouseDensity = await page.evaluate(() => {
+      const groupHead = document.querySelector(".legacy-warehouse-group > summary");
+      const main = document.querySelector(".legacy-stock-main");
+      const action = document.querySelector(".legacy-stock-actions-v2 > button");
+      return {
+        groupHeadHeight: Math.round(groupHead?.getBoundingClientRect().height || 0),
+        mainHeight: Math.round(main?.getBoundingClientRect().height || 0),
+        actionHeight: Math.round(action?.getBoundingClientRect().height || 0)
+      };
+    });
+    const warehouseMainMax = width <= 340 ? 88 : 78;
+    if (warehouseDensity.groupHeadHeight > 56
+      || warehouseDensity.mainHeight > warehouseMainMax
+      || warehouseDensity.actionHeight < 44
+      || warehouseDensity.actionHeight > 48) {
+      report.failures.push({ width, type: "warehouse-compact-density", warehouseDensity, warehouseMainMax });
+    }
+
     await setState(page, uiState({ activePage: "warehouse", warehouseSection: "shopping" }));
     const shoppingActionLayout = await page.evaluate(() => {
       const container = document.querySelector(".shopping-page-actions-primary");
@@ -1090,6 +1108,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || shoppingCardLayout.needLeft < shoppingCardLayout.copyRight - 1
       || shoppingCardLayout.needRight > shoppingCardLayout.cardRight + 1) {
       report.failures.push({ width, type: "shopping-card-single-row", shoppingCardLayout });
+    }
+    const shoppingCompactMax = width <= 340 ? 82 : 76;
+    if (shoppingCardLayout.cardHeight > shoppingCompactMax) {
+      report.failures.push({ width, type: "shopping-compact-density", shoppingCardLayout, shoppingCompactMax });
     }
 
     if (width === 390) {
