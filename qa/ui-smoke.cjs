@@ -2722,6 +2722,42 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         )) {
         report.failures.push({ width, type: "warehouse-movement-hierarchy", movementSurface });
       }
+
+      const movementDensity = await page.evaluate(() => {
+        const card = document.querySelector(".movement-card");
+        const icon = card?.querySelector(".movement-icon");
+        const copy = card?.querySelector(".movement-copy");
+        const value = card?.querySelector(":scope > b");
+        const filter = document.querySelector(".movement-filter-chips button");
+        const cr = card?.getBoundingClientRect();
+        const ir = icon?.getBoundingClientRect();
+        const xr = copy?.getBoundingClientRect();
+        const vr = value?.getBoundingClientRect();
+        const fr = filter?.getBoundingClientRect();
+        return {
+          cardHeight: Math.round(cr?.height || 0),
+          iconWidth: Math.round(ir?.width || 0),
+          iconHeight: Math.round(ir?.height || 0),
+          filterHeight: Math.round(fr?.height || 0),
+          copyLeft: Math.round(xr?.left || 0),
+          copyRight: Math.round(xr?.right || 0),
+          valueLeft: Math.round(vr?.left || 0),
+          valueRight: Math.round(vr?.right || 0),
+          cardRight: Math.round(cr?.right || 0),
+          cardCenterY: cr ? Math.round(cr.top + cr.height / 2) : 0,
+          valueCenterY: vr ? Math.round(vr.top + vr.height / 2) : 0
+        };
+      });
+      const movementCardMax = width <= 340 ? 86 : 82;
+      if (movementDensity.cardHeight > movementCardMax
+        || movementDensity.iconWidth > 38
+        || movementDensity.iconHeight > 38
+        || movementDensity.filterHeight < 44
+        || movementDensity.valueLeft < movementDensity.copyRight - 1
+        || movementDensity.valueRight > movementDensity.cardRight + 1
+        || Math.abs(movementDensity.cardCenterY - movementDensity.valueCenterY) > 18) {
+        report.failures.push({ width, type: "warehouse-movement-compact-density", movementDensity, movementCardMax });
+      }
       report.results.push(await shot(page, width, "warehouse-movements", false));
 
       await page.locator('[data-movement-filter="in"]').click();

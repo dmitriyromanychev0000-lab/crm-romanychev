@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.28";
-const APP_BUILD = "2026.09.28.246";
+const APP_VERSION = "1.7.29";
+const APP_BUILD = "2026.09.28.247";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад доведён по геометрии: карточки, покупки и деталка стали реально компактнее без уменьшения рабочего текста и touch-targets";
+const APP_RELEASE = "История движения склада стала плотнее: количество остаётся справа даже на 320 px, длинные названия сохраняют до двух строк"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.29",
+    date: "28.09.2026",
+    title: "Плотная история движения",
+    items: [
+      "Количество прихода или списания остаётся в правой колонке даже на экране 320 px и больше не раздувает карточку отдельной строкой.",
+      "Карточки движений, иконки и интервалы стали компактнее за счёт геометрии без уменьшения рабочего текста.",
+      "Длинные названия по-прежнему могут занимать до двух строк, а фильтры сохраняют touch-target не меньше 44 px."
+    ]
+  },
   {
     version: "1.7.28",
     date: "28.09.2026",
