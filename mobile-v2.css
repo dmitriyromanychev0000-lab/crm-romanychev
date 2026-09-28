@@ -19027,3 +19027,51 @@
     padding-bottom: 4px !important;
   }
 }
+
+
+/* 1.7.54 · Склад: четыре действия позиции в одной компактной строке. */
+@media screen and (max-width: 520px) {
+  .legacy-stock-actions-v2 {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) 44px 44px !important;
+    gap: 4px !important;
+    padding: 5px 7px 7px !important;
+  }
+
+  .legacy-stock-actions-v2 > button,
+  .legacy-stock-actions-v2 > button:nth-child(1),
+  .legacy-stock-actions-v2 > button:nth-child(2),
+  .legacy-stock-actions-v2 > button:nth-child(3),
+  .legacy-stock-actions-v2 > button:nth-child(4) {
+    grid-column: auto !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    margin: 0 !important;
+    border-radius: 9px !important;
+  }
+
+  .legacy-stock-actions-v2 > button:nth-child(1),
+  .legacy-stock-actions-v2 > button:nth-child(2) {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .legacy-stock-actions-v2 > button:nth-child(3),
+  .legacy-stock-actions-v2 > button:nth-child(4) {
+    display: grid !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    place-items: center !important;
+  }
+
+  .legacy-stock-actions-v2 > button:nth-child(3) > span,
+  .legacy-stock-actions-v2 > button:nth-child(4) > span {
+    display: none !important;
+  }
+
+  .legacy-stock-actions-v2 > button:nth-child(3) > .ui-icon,
+  .legacy-stock-actions-v2 > button:nth-child(4) > .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+  }
+}

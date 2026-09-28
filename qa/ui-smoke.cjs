@@ -2405,6 +2405,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const warehousePageSurfaces = await page.evaluate(() => {
         const actionButtons = [...document.querySelectorAll(".legacy-stock-actions-v2 button")].slice(0, 4);
         const actionRects = actionButtons.map((button) => button.getBoundingClientRect());
+        const actionAreaRect = document.querySelector(".legacy-stock-actions-v2")?.getBoundingClientRect();
         const filterGrid = document.querySelector(".warehouse-filter-grid");
         const filterGridRect = filterGrid?.getBoundingClientRect();
         const filterRects = [...document.querySelectorAll(".warehouse-filter-grid > .warehouse-filter-control")].map((node) => node.getBoundingClientRect());
@@ -2421,7 +2422,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
           action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
           actionWidths: actionRects.map((rect) => Math.round(rect.width)),
+          actionHeights: actionRects.map((rect) => Math.round(rect.height)),
           actionTops: actionRects.map((rect) => Math.round(rect.top)),
+          actionAreaHeight: Math.round(actionAreaRect?.height || 0),
+          secondaryActionLabels: actionButtons.slice(2).map((button) => ({
+            aria: button.getAttribute("aria-label") || "",
+            textDisplay: getComputedStyle(button.querySelector("span")).display
+          })),
           filters: [...document.querySelectorAll("#warehouse-filter-select option")].map((option) => option.value),
           techGroups: [...document.querySelectorAll(".warehouse-tech-group > summary .legacy-group-copy strong")].map((node) => node.textContent.trim()),
           categoryBlocks: document.querySelectorAll(".warehouse-category-block").length,
@@ -2456,11 +2463,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !warehousePageSurfaces.hasTechFilter
         || !warehousePageSurfaces.hasCategoryFilter
         || warehousePageSurfaces.actionWidths.length !== 4
-        || warehousePageSurfaces.actionWidths.some((value) => value < 100)
-        || Math.max(...warehousePageSurfaces.actionWidths) - Math.min(...warehousePageSurfaces.actionWidths) > 2
-        || Math.abs(warehousePageSurfaces.actionTops[0] - warehousePageSurfaces.actionTops[1]) > 2
-        || Math.abs(warehousePageSurfaces.actionTops[2] - warehousePageSurfaces.actionTops[3]) > 2
-        || warehousePageSurfaces.actionTops[2] <= warehousePageSurfaces.actionTops[0]
+        || warehousePageSurfaces.actionWidths[0] < 70
+        || warehousePageSurfaces.actionWidths[1] < 70
+        || Math.abs(warehousePageSurfaces.actionWidths[0] - warehousePageSurfaces.actionWidths[1]) > 2
+        || warehousePageSurfaces.actionWidths[2] < 44
+        || warehousePageSurfaces.actionWidths[2] > 45
+        || warehousePageSurfaces.actionWidths[3] < 44
+        || warehousePageSurfaces.actionWidths[3] > 45
+        || warehousePageSurfaces.actionHeights.some((value) => value < 44 || value > 45)
+        || Math.max(...warehousePageSurfaces.actionTops) - Math.min(...warehousePageSurfaces.actionTops) > 2
+        || warehousePageSurfaces.actionAreaHeight > 58
+        || warehousePageSurfaces.secondaryActionLabels.length !== 2
+        || warehousePageSurfaces.secondaryActionLabels.some((item) => !item.aria || item.textDisplay !== "none")
         || warehousePageSurfaces.addWidth < warehousePageSurfaces.pageWidth - 34
         || warehousePageSurfaces.addHeight < 48
         || !warehousePageSurfaces.addText.includes("Новая позиция")

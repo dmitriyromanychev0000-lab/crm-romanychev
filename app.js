@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.53";
-const APP_BUILD = "2026.09.28.274";
+const APP_VERSION = "1.7.54";
+const APP_BUILD = "2026.09.28.275";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Рабочие данные в настройках стали плотнее: девять справочников занимают меньше места, но длинные названия и описания остаются читаемыми"
+const APP_RELEASE = "Карточки склада стали короче: приход и списание остаются текстовыми, архив и настройка собраны компактными иконками в той же строке"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.54",
+    date: "28.09.2026",
+    title: "Компактные действия склада",
+    items: [
+      "Четыре действия позиции теперь помещаются в одну строку вместо сетки 2×2.",
+      "Приход и списание остаются подписанными кнопками, архив и настройка используют понятные иконки 44×44.",
+      "Карточка стала заметно ниже без потери доступности действий на 320–430 px."
+    ]
+  },
   {
     version: "1.7.53",
     date: "28.09.2026",
@@ -3093,8 +3103,8 @@ function warehousePage() {
       <div class="legacy-stock-actions-v2">
         <button type="button" data-stock="in" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("plus")}</span>Приход</button>
         <button type="button" data-stock="out" data-id="${escapeHtml(item.id)}"><span class="stock-action-mini-icon">${icon("minus")}</span>Списать</button>
-        <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}">${icon(item.archived?"restore":"archive")}<span>${item.archived?"Вернуть":"Архив"}</span></button>
-        <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}">${icon("edit")}<span>Настроить</span></button>
+        <button type="button" data-action="archive-stock" data-id="${escapeHtml(item.id)}" aria-label="${item.archived?"Вернуть из архива":"Переместить в архив"}" title="${item.archived?"Вернуть из архива":"Переместить в архив"}">${icon(item.archived?"restore":"archive")}<span>${item.archived?"Вернуть":"Архив"}</span></button>
+        <button type="button" data-action="edit-stock" data-id="${escapeHtml(item.id)}" aria-label="Настроить позицию" title="Настроить позицию">${icon("edit")}<span>Настроить</span></button>
       </div>
     </article>`;
   };
