@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T13:42:05.211Z",
-  "testedSha": "dacd651718f8c5cff282677ccd0660b5b36de32f",
+  "generatedAt": "2026-09-28T13:47:09.783Z",
+  "testedSha": "8048467336d1923452437984c48bd39409d858fe",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,97 +1476,13 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T13:42:42.083Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-28T13:47:45.203Z"
     }
   ],
   "failures": [
     {
-      "width": 320,
-      "type": "stock-detail-compact-density",
-      "stockDetailDensity": {
-        "heroHeight": 90,
-        "kpiHeight": 63,
-        "incomingHeight": 48,
-        "correctHeight": 48,
-        "archiveHeight": 44,
-        "movementHeight": 45
-      },
-      "stockDetailHeroMax": 82
-    },
-    {
-      "width": 360,
-      "type": "shopping-compact-density",
-      "shoppingCardLayout": {
-        "cardHeight": 80,
-        "iconCenterY": 427,
-        "copyCenterY": 427,
-        "needCenterY": 427,
-        "copyLeft": 73,
-        "iconRight": 61,
-        "needLeft": 233,
-        "copyRight": 225,
-        "needRight": 337,
-        "cardRight": 348
-      },
-      "shoppingCompactMax": 76
-    },
-    {
-      "width": 390,
-      "type": "shopping-compact-density",
-      "shoppingCardLayout": {
-        "cardHeight": 80,
-        "iconCenterY": 430,
-        "copyCenterY": 430,
-        "needCenterY": 430,
-        "copyLeft": 73,
-        "iconRight": 61,
-        "needLeft": 263,
-        "copyRight": 255,
-        "needRight": 367,
-        "cardRight": 378
-      },
-      "shoppingCompactMax": 76
-    },
-    {
-      "width": 390,
-      "type": "stock-detail-compact-density",
-      "stockDetailDensity": {
-        "heroHeight": 90,
-        "kpiHeight": 64,
-        "incomingHeight": 50,
-        "correctHeight": 50,
-        "archiveHeight": 44,
-        "movementHeight": 45
-      },
-      "stockDetailHeroMax": 76
-    },
-    {
-      "width": 430,
-      "type": "shopping-compact-density",
-      "shoppingCardLayout": {
-        "cardHeight": 80,
-        "iconCenterY": 430,
-        "copyCenterY": 430,
-        "needCenterY": 430,
-        "copyLeft": 73,
-        "iconRight": 61,
-        "needLeft": 303,
-        "copyRight": 295,
-        "needRight": 407,
-        "cardRight": 418
-      },
-      "shoppingCompactMax": 76
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
     }
   ]
 }
