@@ -17012,3 +17012,63 @@
     min-height: 60px !important;
   }
 }
+
+
+/* 1.7.20 · Ещё: плотнее рабочее меню без мелкого текста и без потери описаний. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list {
+    gap: 6px !important;
+  }
+
+  .legacy-more-list .menu-item {
+    grid-template-columns: 40px minmax(0,1fr) 18px !important;
+    gap: 9px !important;
+    min-height: 66px !important;
+    padding: 8px 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .legacy-more-list .menu-icon,
+  .legacy-more-list .menu-icon-finance,
+  .legacy-more-list .menu-icon-shopping,
+  .legacy-more-list .menu-icon-clients,
+  .legacy-more-list .menu-icon-prices,
+  .legacy-more-list .menu-icon-act,
+  .legacy-more-list .menu-icon-goods,
+  .legacy-more-list .menu-icon-calendar,
+  .legacy-more-list .menu-icon-tools,
+  .legacy-more-list .menu-icon-settings {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+
+  .legacy-more-list .menu-icon .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .legacy-more-list .menu-description {
+    margin-top: 2px !important;
+  }
+
+  .app-version-strip {
+    min-height: 52px !important;
+    margin-top: 8px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-more-list .menu-item {
+    height: auto !important;
+    min-height: 72px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .legacy-more-list .menu-description {
+    -webkit-line-clamp: 2 !important;
+  }
+}

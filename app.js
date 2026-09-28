@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.19";
-const APP_BUILD = "2026.09.28.237";
+const APP_VERSION = "1.7.20";
+const APP_BUILD = "2026.09.28.238";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс стал плотнее: меньше воздуха между поиском, фильтрами, группами и строками при сохранении читаемых названий и цен";
+const APP_RELEASE = "Меню «Ещё» стало плотнее и собраннее: меньше пустоты между разделами, компактнее иконки и версия, описания остаются читаемыми";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.20",
+    date: "28.09.2026",
+    title: "Компактное меню «Ещё»",
+    items: [
+      "Карточки разделов стали ниже и ближе друг к другу без уменьшения основного текста.",
+      "Иконки и внутренние отступы поджаты, чтобы меню быстрее просматривалось одним взглядом.",
+      "На 320 px описания по-прежнему получают до двух строк, а блок версии остаётся отдельным и заметным."
+    ]
+  },
   {
     version: "1.7.19",
     date: "28.09.2026",

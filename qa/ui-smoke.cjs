@@ -3039,6 +3039,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         ))) {
         report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
       }
+      const moreMenuDensity = await page.evaluate(() => {
+        const list = document.querySelector(".legacy-more-list");
+        const item = document.querySelector(".legacy-more-list .menu-item");
+        const icon = document.querySelector(".legacy-more-list .menu-icon");
+        const listStyle = list ? getComputedStyle(list) : null;
+        return {
+          gap: listStyle ? Number.parseFloat(listStyle.gap || "0") || 0 : 999,
+          itemHeight: Math.round(item?.getBoundingClientRect().height || 0),
+          iconHeight: Math.round(icon?.getBoundingClientRect().height || 0)
+        };
+      });
+      const moreItemLimit = width <= 340 ? 86 : 78;
+      if (moreMenuDensity.gap > 6
+        || moreMenuDensity.itemHeight > moreItemLimit
+        || moreMenuDensity.itemHeight < 60
+        || moreMenuDensity.iconHeight > 40) {
+        report.failures.push({ width, type: "more-menu-compact-density", moreMenuDensity, moreItemLimit });
+      }
 
       await setState(page, uiState({ activePage: "more", moreSection: "goods" }));
       const goodsPageSurface = await page.evaluate(() => ({
