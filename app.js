@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.22";
-const APP_BUILD = "2026.09.28.240";
+const APP_VERSION = "1.7.23";
+const APP_BUILD = "2026.09.28.241";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Настройки и бэкап стали плотнее: меньше пустых зон в карточках и строках, длинные подписи сохранены, основные действия остались крупными";
+const APP_RELEASE = "Каталог услуг больше не пропадает после выбора услуги внизу списка: выбор обновляется без пересборки прокрученного окна";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.23",
+    date: "28.09.2026",
+    title: "Каталог услуг не исчезает после выбора",
+    items: [
+      "Выбор услуги больше не пересобирает весь прокрученный каталог через innerHTML.",
+      "Положение списка сохраняется, а кнопки «Отмена» и «Применить» остаются доступными после выбора внизу каталога.",
+      "Добавлен отдельный QA-сценарий: прокрутка каталога вниз → выбор услуги → модальное окно остаётся видимым и закреплённым."
+    ]
+  },
   {
     version: "1.7.22",
     date: "28.09.2026",
@@ -5167,7 +5177,17 @@ function openServiceCatalog(orderModal, serviceCatalog) {
     } else {
       selected.delete(index);
     }
-    renderCatalog();
+
+    const option = checkbox.closest(".catalog-service-option");
+    if (option) {
+      option.classList.toggle("selected", checkbox.checked);
+      const check = option.querySelector(".catalog-check");
+      if (check) check.innerHTML = checkbox.checked ? icon("check") : "";
+      const price = option.querySelector(".catalog-service-price");
+      const value = selected.get(index) || item;
+      if (price) price.textContent = money(value.price || 0);
+    }
+    updateSummary();
   });
   modal.querySelector(".catalog-close").addEventListener("click", closeCatalog);
   modal.querySelector(".catalog-cancel").addEventListener("click", closeCatalog);

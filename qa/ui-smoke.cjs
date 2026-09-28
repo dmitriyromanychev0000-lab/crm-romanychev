@@ -1438,7 +1438,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "service-catalog-viewport-pin", catalogViewportPin });
       }
 
-      await page.locator(".catalog-service-option").first().click();
+      const catalogScrollBeforeSelection = await page.evaluate(() => {
+        const list = document.querySelector(".catalog-service-list");
+        if (list) list.scrollTop = list.scrollHeight;
+        return {
+          scrollTop: Math.round(list?.scrollTop || 0),
+          maxScroll: Math.round((list?.scrollHeight || 0) - (list?.clientHeight || 0))
+        };
+      });
+      await page.locator(".catalog-service-option").last().scrollIntoViewIfNeeded();
+      await page.locator(".catalog-service-option").last().click();
       await page.waitForTimeout(60);
       const serviceSelection = await page.evaluate(() => ({
         selectedRows: document.querySelectorAll(".catalog-service-option.selected").length,
@@ -1449,12 +1458,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "service-selection-feedback", serviceSelection });
       }
       const catalogAfterSelection = await page.evaluate(() => {
-        const dialogRect = document.querySelector(".catalog-modal")?.getBoundingClientRect();
-        const actionsRect = document.querySelector(".catalog-modal-actions")?.getBoundingClientRect();
+        const modal = document.querySelector(".catalog-modal-backdrop");
+        const dialog = document.querySelector(".catalog-modal");
+        const actions = document.querySelector(".catalog-modal-actions");
+        const list = document.querySelector(".catalog-service-list");
+        const dialogRect = dialog?.getBoundingClientRect();
+        const actionsRect = actions?.getBoundingClientRect();
         const visual = window.visualViewport;
         const top = Number(visual?.offsetTop) || 0;
         const bottom = top + (Number(visual?.height) || window.innerHeight);
         return {
+          modalConnected: Boolean(modal?.isConnected),
+          modalLayers: document.querySelectorAll(".modal-backdrop").length,
+          scrollTop: Math.round(list?.scrollTop || 0),
+          maxScroll: Math.round((list?.scrollHeight || 0) - (list?.clientHeight || 0)),
           dialogTop: dialogRect ? Math.round(dialogRect.top) : 999,
           dialogBottom: dialogRect ? Math.round(dialogRect.bottom) : -999,
           actionsBottom: actionsRect ? Math.round(actionsRect.bottom) : -999,
@@ -1462,10 +1479,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           targetBottom: Math.round(bottom)
         };
       });
-      if (Math.abs(catalogAfterSelection.dialogTop - catalogAfterSelection.targetTop) > 2
+      if (!catalogAfterSelection.modalConnected
+        || catalogAfterSelection.modalLayers !== 2
+        || (catalogScrollBeforeSelection.maxScroll > 24 && catalogAfterSelection.scrollTop < Math.max(0, catalogScrollBeforeSelection.scrollTop - 24))
+        || Math.abs(catalogAfterSelection.dialogTop - catalogAfterSelection.targetTop) > 2
         || Math.abs(catalogAfterSelection.dialogBottom - catalogAfterSelection.targetBottom) > 3
         || Math.abs(catalogAfterSelection.actionsBottom - catalogAfterSelection.targetBottom) > 3) {
-        report.failures.push({ width, type: "service-catalog-selection-keeps-footer-pinned", catalogAfterSelection });
+        report.failures.push({
+          width,
+          type: "service-catalog-scrolled-selection-stays-open",
+          catalogScrollBeforeSelection,
+          catalogAfterSelection
+        });
       }
       report.results.push(await shot(page, width, "service-catalog-selected", false));
 
