@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.6";
-const APP_BUILD = "2026.09.28.203";
+const APP_VERSION = "1.5.7";
+const APP_BUILD = "2026.09.28.204";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Основные мобильные формы переведены на полноширинные поля вместо тесных половинок";
+const APP_RELEASE = "Основные действия финансов и бэкапов стали полноширинными и визуально последовательными";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.7",
+    date: "28.09.2026",
+    title: "Основные действия без половинок",
+    items: [
+      "Кнопки «Добавить доход» и «Добавить расход» теперь идут отдельными полноширинными строками.",
+      "Скачать бэкап, импорт и вспомогательные операции бэкапа тоже занимают полную ширину карточки.",
+      "Контекстные действия внутри карточек и вторичные пары вроде «Поделиться / Копировать» оставлены компактными."
+    ]
+  },
   {
     version: "1.5.6",
     date: "28.09.2026",

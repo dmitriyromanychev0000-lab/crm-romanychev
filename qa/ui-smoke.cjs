@@ -2240,6 +2240,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         expenseActionBorder: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).borderTopColor,
         incomeActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).color,
         expenseActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).color,
+        actionsWidth: Math.round(document.querySelector(".legacy-finance-actions")?.getBoundingClientRect().width || 0),
         actionWidths: [...document.querySelectorAll(".legacy-finance-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
@@ -2255,7 +2256,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financePageSurface.incomeActionColor !== "rgb(101, 217, 149)"
         || financePageSurface.expenseActionColor !== "rgb(255, 113, 123)"
         || financePageSurface.actionWidths.length !== 2
-        || Math.abs(financePageSurface.actionWidths[0] - financePageSurface.actionWidths[1]) > 2
+        || financePageSurface.actionWidths.some((value) => value < financePageSurface.actionsWidth - 2)
         || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }
@@ -2772,7 +2773,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         warehouse: getComputedStyle(document.querySelector(".legacy-service-stats.backup > div:nth-child(2)")).backgroundColor,
         price: getComputedStyle(document.querySelector(".legacy-service-stats.backup > div:nth-child(3)")).backgroundColor,
         download: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="download-backup"]')).backgroundColor,
-        importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor
+        importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor,
+        mainWidth: Math.round(document.querySelector(".legacy-backup-main-actions")?.getBoundingClientRect().width || 0),
+        mainButtonWidths: [...document.querySelectorAll(".legacy-backup-main-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+        gridWidth: Math.round(document.querySelector(".legacy-backup-grid")?.getBoundingClientRect().width || 0),
+        gridButtonWidths: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width))
       }));
       if (backupSurface.primary !== "rgb(7, 12, 16)"
         || backupSurface.auto !== "rgb(7, 12, 16)"
@@ -2780,7 +2785,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || backupSurface.warehouse !== "rgb(7, 12, 16)"
         || backupSurface.price !== "rgb(7, 12, 16)"
         || backupSurface.download !== "rgb(255, 113, 79)"
-        || backupSurface.importButton !== "rgb(13, 20, 25)") {
+        || backupSurface.importButton !== "rgb(13, 20, 25)"
+        || backupSurface.mainButtonWidths.some((value) => value < backupSurface.mainWidth - 2)
+        || backupSurface.gridButtonWidths.some((value) => value < backupSurface.gridWidth - 2)) {
         report.failures.push({ width, type: "backup-semantic-hierarchy", backupSurface });
       }
 

@@ -15440,3 +15440,25 @@
     grid-column: auto !important;
   }
 }
+
+
+/* 1.5.7 · Основные действия финансов и бэкапа — полноширинные строки. */
+@media screen and (max-width: 520px) {
+  .legacy-finance-actions,
+  .legacy-backup-main-actions,
+  .legacy-backup-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-finance-actions > button,
+  .legacy-backup-main-actions > button,
+  .legacy-backup-grid > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+  }
+
+  .legacy-backup-grid > button:last-child {
+    grid-column: auto !important;
+  }
+}
