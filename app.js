@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.75";
-const APP_BUILD = "2026.09.28.298";
+const APP_VERSION = "1.7.76";
+const APP_BUILD = "2026.09.28.299";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Бэкапы стали спокойнее: два главных действия остаются на виду, редкие проверки, папка, страховка и откат собраны в «Дополнительно»"
+const APP_RELEASE = "Календарь фокусируется на визитах: показывает ближайшие часы вокруг записей, а полную шкалу 10:00–22:00 можно раскрыть одной кнопкой"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.76",
+    date: "28.09.2026",
+    title: "Фокус календаря на визитах",
+    items: [
+      "При одном или нескольких близких визитах календарь показывает только ближайшие часы вокруг записей вместо всей пустой шкалы.",
+      "Кнопка «Показать весь день» мгновенно возвращает полную сетку 10:00–22:00, поэтому свободные окна по-прежнему доступны.",
+      "Дни без визитов больше не рисуют пустую часовую сетку и показывают компактное пустое состояние."
+    ]
+  },
   {
     version: "1.7.75",
     date: "28.09.2026",
@@ -5250,9 +5260,17 @@ function calendarPage() {
     </button>`;
   };
 
-  const timeline = Array.from({ length: 13 }, (_, i) => 10 + i).map((hour) => {
+  const timelineHours = Array.from({ length: 13 }, (_, i) => 10 + i);
+  const timedHoursInRange = timed
+    .map((order) => Number(visitDateParts(order).time.slice(0, 2)))
+    .filter((hour) => Number.isFinite(hour) && hour >= 10 && hour <= 22);
+  const focusStart = timedHoursInRange.length ? Math.max(10, Math.min(...timedHoursInRange) - 1) : null;
+  const focusEnd = timedHoursInRange.length ? Math.min(22, Math.max(...timedHoursInRange) + 2) : null;
+  const hasCompactTimeline = focusStart !== null && (focusStart > 10 || focusEnd < 22);
+  const timeline = focusStart === null ? "" : timelineHours.map((hour) => {
     const events = timed.filter((order) => Number(visitDateParts(order).time.slice(0, 2)) === hour);
-    return `<div class="calendar-hour-row">
+    const outsideFocus = hasCompactTimeline && (hour < focusStart || hour > focusEnd);
+    return `<div class="calendar-hour-row ${outsideFocus ? "is-outside-focus" : ""}">
       <time>${String(hour).padStart(2, "0")}:00</time>
       <div>${events.map((order) => eventButton(order)).join("")}</div>
     </div>`;
@@ -5282,7 +5300,8 @@ function calendarPage() {
       <div class="calendar-day-head"><div><small>РАСПИСАНИЕ</small><h2>${escapeHtml(selectedDateText)}</h2></div><b>${selectedOrders.length}</b></div>
       ${allDay.length ? `<div class="calendar-all-day"><span>Без времени</span><div>${allDay.map((order)=>eventButton(order,true)).join("")}</div></div>` : ""}
       ${outsideTimeline.length ? `<div class="calendar-all-day outside"><span>Вне шкалы 10:00–22:00</span><div>${outsideTimeline.map((order)=>eventButton(order,true)).join("")}</div></div>` : ""}
-      <div class="calendar-timeline">${timeline}</div>
+      ${timeline ? `<div class="calendar-timeline">${timeline}</div>` : ""}
+      ${hasCompactTimeline ? `<button type="button" class="calendar-full-day-toggle" data-calendar-full-day aria-expanded="false">${icon("calendar")}<span>Показать весь день 10:00–22:00</span></button>` : ""}
       ${!selectedOrders.length ? `<div class="calendar-empty">На этот день визитов нет.</div>` : ""}
     </section>
   </main>`;
@@ -7692,6 +7711,15 @@ app.addEventListener("click", async (event) => {
     saveUiState();
     await render();
     document.querySelector(".calendar-day-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const calendarFullDay = event.target.closest("[data-calendar-full-day]");
+  if (calendarFullDay) {
+    const card = calendarFullDay.closest(".calendar-day-card");
+    const expanded = card?.classList.toggle("show-full-day");
+    calendarFullDay.setAttribute("aria-expanded", String(Boolean(expanded)));
+    const label = calendarFullDay.querySelector("span");
+    if (label) label.textContent = expanded ? "Свернуть весь день" : "Показать весь день 10:00–22:00";
     return;
   }
   const calendarOrder = event.target.closest("[data-calendar-order]");

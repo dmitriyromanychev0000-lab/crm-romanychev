@@ -909,6 +909,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           selectedText: selected?.innerText || "",
           eventText: event?.innerText || "",
           timelineRows: timelineRows.length,
+          visibleTimelineRows: [...timelineRows].filter((node) => getComputedStyle(node).display !== "none").length,
+          hiddenTimelineRows: [...timelineRows].filter((node) => getComputedStyle(node).display === "none").length,
+          fullDayToggle: Boolean(document.querySelector("[data-calendar-full-day]")),
+          fullDayExpanded: document.querySelector("[data-calendar-full-day]")?.getAttribute("aria-expanded") || "",
           overflow: Math.max(root.scrollWidth, document.body.scrollWidth) - window.innerWidth,
           gridWidth: Math.round(grid?.getBoundingClientRect().width || 0),
           eventNameStyle: (() => {
@@ -928,6 +932,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !calendarState.eventText.includes("11:30")
         || !calendarState.eventText.includes("Анна Смирнова")
         || calendarState.timelineRows !== 13
+        || calendarState.visibleTimelineRows < 3
+        || calendarState.visibleTimelineRows > 5
+        || calendarState.hiddenTimelineRows < 8
+        || !calendarState.fullDayToggle
+        || calendarState.fullDayExpanded !== "false"
         || calendarState.overflow > 0
         || calendarState.eventNameStyle.whiteSpace === "nowrap"
         || calendarState.eventNameStyle.textOverflow === "ellipsis"
@@ -939,7 +948,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const month = document.querySelector(".calendar-month-card");
         const dayCard = document.querySelector(".calendar-day-card");
         const dayHead = document.querySelector(".calendar-day-head");
-        const firstHour = document.querySelector(".calendar-hour-row");
+        const firstHour = [...document.querySelectorAll(".calendar-hour-row")].find((node) => getComputedStyle(node).display !== "none");
         const event = document.querySelector('.calendar-event[data-calendar-order="0060"]');
         const px = (value) => Number.parseFloat(value || "0") || 0;
         const pageStyle = pageNode ? getComputedStyle(pageNode) : null;
@@ -967,6 +976,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "calendar-compact-density", calendarDensity });
       }
       report.results.push(await shot(page, width, "calendar-selected-day", false));
+
+      await page.locator("[data-calendar-full-day]").click();
+      const calendarFullDayState = await page.evaluate(() => ({
+        visibleRows: [...document.querySelectorAll(".calendar-hour-row")].filter((node) => getComputedStyle(node).display !== "none").length,
+        expanded: document.querySelector("[data-calendar-full-day]")?.getAttribute("aria-expanded") || "",
+        label: document.querySelector("[data-calendar-full-day]")?.textContent?.replace(/\s+/g, " ").trim() || ""
+      }));
+      if (calendarFullDayState.visibleRows !== 13
+        || calendarFullDayState.expanded !== "true"
+        || !calendarFullDayState.label.includes("Свернуть весь день")) {
+        report.failures.push({ width, type: "calendar-full-day-toggle", calendarFullDayState });
+      }
+      await page.locator("[data-calendar-full-day]").click();
 
       await page.locator('.calendar-event[data-calendar-order="0060"]').click();
       await page.waitForTimeout(30);

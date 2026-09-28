@@ -19915,3 +19915,46 @@
     display: none !important;
   }
 }
+
+
+/* 1.7.76 · Календарь: ближайшие часы видны сразу, полный день раскрывается по требованию. */
+@media screen and (max-width: 520px) {
+  .calendar-day-card:not(.show-full-day) .calendar-hour-row.is-outside-focus {
+    display: none !important;
+  }
+
+  .calendar-full-day-toggle {
+    box-sizing: border-box !important;
+    display: flex !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    margin-top: 6px !important;
+    padding: 0 10px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    border: 1px solid #202d35 !important;
+    border-radius: 10px !important;
+    background: #0a1116 !important;
+    color: #9aa6ad !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  .calendar-full-day-toggle .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    color: #78bfff !important;
+  }
+
+  .calendar-empty {
+    min-height: 52px !important;
+    padding: 14px 8px !important;
+    display: grid !important;
+    place-items: center !important;
+    border: 1px dashed #202d35 !important;
+    border-radius: 10px !important;
+    background: #060b0f !important;
+  }
+}
