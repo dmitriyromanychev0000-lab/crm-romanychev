@@ -2443,7 +2443,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           pageTitleScrollWidth: document.querySelector(".analytics-content .page-head h1")?.scrollWidth || 0,
           pageTitleClientWidth: document.querySelector(".analytics-content .page-head h1")?.clientWidth || 0,
           pageTitleFontSize: parseFloat(getComputedStyle(document.querySelector(".analytics-content .page-head h1")).fontSize) || 0,
-          pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || ""
+          pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || "",
+          comparisonItems: document.querySelectorAll(".analytics-comparison-strip > span").length,
+          comparisonEmptyText: document.querySelector(".analytics-comparison-empty")?.textContent?.replace(/\s+/g, " ").trim() || "",
+          comparisonEmptyHeight: Math.round(document.querySelector(".analytics-comparison-empty")?.getBoundingClientRect().height || 0)
         };
       });
       if (analyticsModelState.values["Получено от клиентов"] !== 10400
@@ -2464,7 +2467,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.expenseButtonBackground !== "rgb(13, 20, 25)"
         || analyticsModelState.expenseButtonColor !== "rgb(255, 118, 92)"
         || analyticsModelState.pageTitle !== "Аналитический центр"
-        || analyticsModelState.pageLead !== "Финансы, эффективность, клиенты и склад") {
+        || analyticsModelState.pageLead !== "Финансы, эффективность, клиенты и склад"
+        || analyticsModelState.comparisonItems !== 0
+        || !analyticsModelState.comparisonEmptyText.includes("Нет данных за прошлый период")
+        || analyticsModelState.comparisonEmptyHeight < 44
+        || analyticsModelState.comparisonEmptyHeight > 54) {
         report.failures.push({ width, type: "analytics-product-model", analyticsModelState });
       }
 

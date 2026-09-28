@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.73";
-const APP_BUILD = "2026.09.28.295";
+const APP_VERSION = "1.7.74";
+const APP_BUILD = "2026.09.28.296";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустая заметка клиента больше не занимает большой блок: она свёрнута в компактную строку, а сохранённая заметка открывается сразу"
+const APP_RELEASE = "Аналитика больше не повторяет четыре «новый период»: без прошлой финансовой истории показывается один компактный статус сравнения"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.74",
+    date: "28.09.2026",
+    title: "Чистое сравнение периодов",
+    items: [
+      "Если в предыдущем периоде нет заявок, доходов и расходов, четыре одинаковых «новый период» заменены одной компактной строкой.",
+      "Как только появляется финансовая история, проценты и сравнения по четырём показателям отображаются полностью.",
+      "Главные показатели и формулы аналитики не менялись — убрана только дублирующая пустая информация."
+    ]
+  },
   {
     version: "1.7.73",
     date: "28.09.2026",
@@ -3609,13 +3619,22 @@ function analyticsPage() {
     return sum;
   }, 0);
 
-  const comparison = previous ? `
-    <div class="analytics-comparison-strip">
-      <span><small>Получено к прошлому</small><b>${analyticsDelta(finance.received, previous.received)}</b></span>
-      <span><small>Потрачено к прошлому</small><b>${analyticsDelta(finance.spent, previous.spent)}</b></span>
-      <span><small>Заработал к прошлому</small><b>${analyticsDelta(finance.earned, previous.earned)}</b></span>
-      <span><small>Чистыми к прошлому</small><b>${analyticsDelta(finance.cashNet, previous.cashNet)}</b></span>
-    </div>` : "";
+  const previousHasFinancialHistory = Boolean(previous && (
+    previous.finishedOrders.length
+    || previous.manualExpenses.length
+    || previous.manualIncomes.length
+  ));
+  const comparison = previous
+    ? previousHasFinancialHistory
+      ? `
+        <div class="analytics-comparison-strip">
+          <span><small>Получено к прошлому</small><b>${analyticsDelta(finance.received, previous.received)}</b></span>
+          <span><small>Потрачено к прошлому</small><b>${analyticsDelta(finance.spent, previous.spent)}</b></span>
+          <span><small>Заработал к прошлому</small><b>${analyticsDelta(finance.earned, previous.earned)}</b></span>
+          <span><small>Чистыми к прошлому</small><b>${analyticsDelta(finance.cashNet, previous.cashNet)}</b></span>
+        </div>`
+      : `<div class="analytics-comparison-empty">${icon("refresh")}<span><strong>Нет данных за прошлый период</strong><small>Сравнение появится, когда накопится история</small></span></div>`
+    : "";
 
   return `<main class="content analytics-content">
     <div class="page-head"><div><h1>Аналитический центр</h1><p class="lead">Финансы, эффективность, клиенты и склад</p></div><button type="button" class="analytics-add-expense" data-action="add-finance" data-type="expense" aria-label="Добавить расход" title="Добавить расход">${icon("minus")}<span>Расход</span></button></div>
