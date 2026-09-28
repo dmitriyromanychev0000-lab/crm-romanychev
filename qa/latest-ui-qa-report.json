@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T10:49:26.824Z",
-  "testedSha": "ef3aa5968aa62d96012e0672570f1f480e54c429",
+  "generatedAt": "2026-09-28T10:52:34.126Z",
+  "testedSha": "504e3dc0923d2fdb7a5f2ce5b9b6df8976dba4bc",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1326,7 +1326,7 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 464,
         "bottom": 512,
@@ -1340,7 +1340,7 @@
         "actionsInnerWidth": 300,
         "actionButtons": [
           {
-            "width": 132,
+            "width": 300,
             "height": 48,
             "top": 409
           },
@@ -1396,11 +1396,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 463,
         "bottom": 511,
-        "width": 135,
+        "width": 252,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1410,12 +1410,12 @@
         "actionsInnerWidth": 252,
         "actionButtons": [
           {
-            "width": 110,
+            "width": 252,
             "height": 48,
-            "top": 463
+            "top": 408
           },
           {
-            "width": 135,
+            "width": 252,
             "height": 48,
             "top": 463
           }
@@ -1431,11 +1431,11 @@
       "overflow": 0,
       "modalOpen": true,
       "tooSmall": [],
-      "keyboardReachable": false,
+      "keyboardReachable": true,
       "keyboardMetrics": {
         "top": 463,
         "bottom": 511,
-        "width": 135,
+        "width": 252,
         "height": 48,
         "viewportHeight": 520,
         "backdropCount": 1,
@@ -1445,12 +1445,12 @@
         "actionsInnerWidth": 252,
         "actionButtons": [
           {
-            "width": 110,
+            "width": 252,
             "height": 48,
-            "top": 463
+            "top": 408
           },
           {
-            "width": 135,
+            "width": 252,
             "height": 48,
             "top": 463
           }
@@ -1476,7 +1476,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T10:50:04.766Z"
+      "fallbackCreatedAt": "2026-09-28T10:53:05.199Z"
     },
     {
       "label": "pwa-offline",
@@ -1490,93 +1490,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "type": "keyboard-height-editor",
-      "label": "price-editor",
-      "metrics": {
-        "top": 464,
-        "bottom": 512,
-        "width": 300,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 300,
-        "actionButtons": [
-          {
-            "width": 132,
-            "height": 48,
-            "top": 409
-          },
-          {
-            "width": 300,
-            "height": 48,
-            "top": 464
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "tool-editor",
-      "metrics": {
-        "top": 463,
-        "bottom": 511,
-        "width": 135,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 252,
-        "actionButtons": [
-          {
-            "width": 110,
-            "height": 48,
-            "top": 463
-          },
-          {
-            "width": 135,
-            "height": 48,
-            "top": 463
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    },
-    {
-      "type": "keyboard-height-editor",
-      "label": "receipt-editor",
-      "metrics": {
-        "top": 463,
-        "bottom": 511,
-        "width": 135,
-        "height": 48,
-        "viewportHeight": 520,
-        "backdropCount": 1,
-        "backdropOverflow": "hidden",
-        "locked": true,
-        "bodyFixed": true,
-        "actionsInnerWidth": 252,
-        "actionButtons": [
-          {
-            "width": 110,
-            "height": 48,
-            "top": 463
-          },
-          {
-            "width": 135,
-            "height": 48,
-            "top": 463
-          }
-        ]
-      },
-      "actionsFullWidth": false
-    }
-  ]
+  "failures": []
 }
