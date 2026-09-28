@@ -1366,6 +1366,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (!modalCheck.locked || !modalCheck.fixed || modalCheck.dialogs !== 1) report.failures.push({ width, type: "order-modal-lock", modalCheck });
       report.results.push(await shot(page, width, "order-editor", false));
 
+      const emptyPhotoState = await page.evaluate(() => {
+        const block = document.querySelector(".order-photo-details");
+        const summary = block?.querySelector("summary");
+        const body = block?.querySelector(".order-extra-body");
+        const summaryRect = summary?.getBoundingClientRect();
+        return {
+          tag: block?.tagName || "",
+          open: Boolean(block?.open),
+          summaries: block?.querySelectorAll("summary").length || 0,
+          summaryHeight: Math.round(summaryRect?.height || 0),
+          bodyDisplay: body ? getComputedStyle(body).display : "missing",
+          countText: block?.querySelector("#order-photo-count")?.textContent || ""
+        };
+      });
+      if (emptyPhotoState.tag !== "DETAILS"
+        || emptyPhotoState.open
+        || emptyPhotoState.summaries !== 1
+        || emptyPhotoState.summaryHeight < 44
+        || emptyPhotoState.summaryHeight > 54
+        || emptyPhotoState.bodyDisplay !== "none"
+        || emptyPhotoState.countText !== "Нет фото") {
+        report.failures.push({ width, type: "photos-empty-collapsed", emptyPhotoState });
+      }
+
       const paymentGridLayout = await page.evaluate(() => {
         const grid = document.querySelector(".legacy-payment-grid");
         const gridStyle = grid ? getComputedStyle(grid) : null;
@@ -1930,20 +1954,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const staticPhotoState = await page.evaluate(() => {
           const block = document.querySelector(".order-photo-details");
           const body = block?.querySelector(".order-extra-body");
+          const summary = block?.querySelector("summary");
+          const summaryRect = summary?.getBoundingClientRect();
           return {
             tag: block?.tagName || "",
+            open: Boolean(block?.open),
             summaries: block?.querySelectorAll("summary").length || 0,
+            summaryHeight: Math.round(summaryRect?.height || 0),
             bodyDisplay: body ? getComputedStyle(body).display : "missing",
+            countText: block?.querySelector("#order-photo-count")?.textContent || "",
             addVisible: Boolean(block?.querySelector("#order-photo-input")),
             cards: block?.querySelectorAll("[data-view-photo]").length || 0
           };
         });
-        if (staticPhotoState.tag !== "SECTION"
-          || staticPhotoState.summaries !== 0
+        if (staticPhotoState.tag !== "DETAILS"
+          || !staticPhotoState.open
+          || staticPhotoState.summaries !== 1
+          || staticPhotoState.summaryHeight < 44
           || staticPhotoState.bodyDisplay === "none"
+          || staticPhotoState.countText !== "1 фото"
           || !staticPhotoState.addVisible
           || staticPhotoState.cards !== 1) {
-          report.failures.push({ width, type: "photos-always-open", staticPhotoState });
+          report.failures.push({ width, type: "photos-with-data-open", staticPhotoState });
         }
         await page.locator("#open-service-catalog").scrollIntoViewIfNeeded();
         report.results.push(await shot(page, width, "order-editor-restored", false));

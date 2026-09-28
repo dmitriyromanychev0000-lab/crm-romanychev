@@ -18768,3 +18768,72 @@
     margin-top: 2px !important;
   }
 }
+
+
+/* 1.7.46 · Фотографии: пустой блок не раздувает редактор заявки. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-photo-static > summary {
+    list-style: none !important;
+    cursor: pointer !important;
+  }
+
+  .order-editor-modal .order-photo-static > summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  .order-editor-modal .order-photo-static-head {
+    box-sizing: border-box !important;
+    min-height: 48px !important;
+    padding: 7px 10px !important;
+    border-bottom: 0 !important;
+  }
+
+  .order-editor-modal .order-photo-static[open] .order-photo-static-head {
+    border-bottom: 1px solid #151f25 !important;
+  }
+
+  .order-editor-modal .order-photo-static-copy {
+    display: grid !important;
+    min-width: 0 !important;
+    gap: 2px !important;
+  }
+
+  .order-editor-modal .order-photo-static-copy > span {
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .order-photo-static-copy > small {
+    color: #71808a !important;
+    font-size: 8.5px !important;
+    font-weight: 650 !important;
+    line-height: 1.1 !important;
+  }
+
+  .order-editor-modal .order-photo-toggle {
+    display: grid !important;
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: auto !important;
+    place-items: center !important;
+    color: #75828a !important;
+    transition: transform .18s ease !important;
+  }
+
+  .order-editor-modal .order-photo-toggle .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .order-editor-modal .order-photo-static[open] .order-photo-toggle {
+    transform: rotate(90deg) !important;
+  }
+
+  .order-editor-modal .order-photo-static:not([open]) .order-extra-body {
+    display: none !important;
+  }
+
+  .order-editor-modal .order-photo-static[open] .order-extra-body {
+    display: block !important;
+    padding: 9px 10px 10px !important;
+  }
+}
