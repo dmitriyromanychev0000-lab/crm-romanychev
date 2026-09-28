@@ -2203,7 +2203,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           incomingLabel: incoming?.querySelector(".movement-copy small")?.textContent || "",
           outgoingLabel: outgoing?.querySelector(".movement-copy small")?.textContent || "",
           inCount: document.querySelector('[data-movement-filter="in"] span')?.textContent || "",
-          outCount: document.querySelector('[data-movement-filter="out"] span')?.textContent || ""
+          outCount: document.querySelector('[data-movement-filter="out"] span')?.textContent || "",
+          titleStyles: [...document.querySelectorAll(".movement-copy strong")].map((node) => {
+            const style = getComputedStyle(node);
+            return { whiteSpace: style.whiteSpace, textOverflow: style.textOverflow, lineClamp: style.webkitLineClamp };
+          })
         };
       });
       if (movementSurface.filter !== "rgb(6, 11, 15)"
@@ -2212,7 +2216,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !movementSurface.incomingLabel.includes("Приход")
         || !movementSurface.outgoingLabel.includes("Списание")
         || movementSurface.inCount.trim() !== "1"
-        || movementSurface.outCount.trim() !== "1") {
+        || movementSurface.outCount.trim() !== "1"
+        || movementSurface.titleStyles.some((style) =>
+          style.whiteSpace === "nowrap"
+          || style.textOverflow === "ellipsis"
+          || style.lineClamp !== "2"
+        )) {
         report.failures.push({ width, type: "warehouse-movement-hierarchy", movementSurface });
       }
       report.results.push(await shot(page, width, "warehouse-movements", false));
@@ -2237,14 +2246,26 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           card: card ? getComputedStyle(card).backgroundColor : "missing",
           critical: card?.classList.contains("critical") || false,
           needBackground: need ? getComputedStyle(need).backgroundColor : "missing",
-          needWidth: needRect ? Math.round(needRect.width) : 0
+          needWidth: needRect ? Math.round(needRect.width) : 0,
+          titleStyle: (() => {
+            const node = card?.querySelector(".stock-name");
+            const style = node ? getComputedStyle(node) : null;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              textOverflow: style?.textOverflow || "missing",
+              lineClamp: style?.webkitLineClamp || "missing"
+            };
+          })()
         };
       });
       if (shoppingSurface.summary !== "rgb(16, 13, 6)"
         || shoppingSurface.card !== "rgb(22, 9, 12)"
         || !shoppingSurface.critical
         || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.067)"
-        || shoppingSurface.needWidth < 60) {
+        || shoppingSurface.needWidth < 60
+        || shoppingSurface.titleStyle.whiteSpace === "nowrap"
+        || shoppingSurface.titleStyle.textOverflow === "ellipsis"
+        || shoppingSurface.titleStyle.lineClamp !== "2") {
         report.failures.push({ width, type: "warehouse-shopping-hierarchy", shoppingSurface });
       }
       report.results.push(await shot(page, width, "warehouse-shopping", false));

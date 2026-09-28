@@ -15679,3 +15679,29 @@
     letter-spacing: -.035em !important;
   }
 }
+
+
+/* 1.6.6 · Материалы: длинные названия читаются в движениях и покупках. */
+@media screen and (max-width: 520px) {
+  .movement-copy strong,
+  .shopping-card .stock-name {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.2 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .movement-card {
+    height: auto !important;
+    min-height: 78px !important;
+  }
+
+  .shopping-content .legacy-shopping-card {
+    height: auto !important;
+    min-height: 82px !important;
+  }
+}

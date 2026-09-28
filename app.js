@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.5";
-const APP_BUILD = "2026.09.28.212";
+const APP_VERSION = "1.6.6";
+const APP_BUILD = "2026.09.28.213";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Заголовок аналитики полностью помещается на 320 px рядом с быстрым добавлением расхода";
+const APP_RELEASE = "Длинные названия материалов в покупках и истории движения больше не обрезаются на первой строке";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.6",
+    date: "28.09.2026",
+    title: "Длинные названия материалов читаются",
+    items: [
+      "В истории движения название позиции может занимать до двух строк вместо раннего многоточия.",
+      "В списке покупок длинное название материала тоже показывается до двух строк без развала количества справа.",
+      "Карточки автоматически увеличиваются по высоте только когда это действительно нужно."
+    ]
+  },
   {
     version: "1.6.5",
     date: "28.09.2026",
