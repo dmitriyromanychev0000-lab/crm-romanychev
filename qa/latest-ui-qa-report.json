@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T11:44:07.848Z",
-  "testedSha": "32f64ae0dbb1e49f41230ccb0b373a637c3c573f",
+  "generatedAt": "2026-09-28T11:47:06.046Z",
+  "testedSha": "e8930e1faafad5505f244eb49115219642844319",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,72 +1476,13 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T11:44:44.156Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-28T11:47:38.676Z"
     }
   ],
   "failures": [
     {
-      "width": 320,
-      "type": "orders-density",
-      "orderDensity": {
-        "paddingTop": 11,
-        "paddingBottom": 9,
-        "listGap": 7,
-        "deviceHeight": 39,
-        "moneyHeight": 62,
-        "actionHeight": 44,
-        "actionsMarginTop": 7,
-        "actionsPaddingTop": 6
-      }
-    },
-    {
-      "width": 320,
-      "type": "order-detail-compact-density",
-      "orderDetailDensity": {
-        "cardPaddingTop": 11,
-        "moneyHeight": 82,
-        "actionHeight": 44,
-        "sectionMarginTop": 7,
-        "sectionPaddingTop": 10,
-        "lineHeight": 48
-      }
-    },
-    {
-      "width": 390,
-      "type": "orders-density",
-      "orderDensity": {
-        "paddingTop": 11,
-        "paddingBottom": 9,
-        "listGap": 7,
-        "deviceHeight": 39,
-        "moneyHeight": 58,
-        "actionHeight": 44,
-        "actionsMarginTop": 7,
-        "actionsPaddingTop": 6
-      }
-    },
-    {
-      "width": 390,
-      "type": "order-detail-compact-density",
-      "orderDetailDensity": {
-        "cardPaddingTop": 11,
-        "moneyHeight": 82,
-        "actionHeight": 46,
-        "sectionMarginTop": 7,
-        "sectionPaddingTop": 10,
-        "lineHeight": 48
-      }
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
     }
   ]
 }
