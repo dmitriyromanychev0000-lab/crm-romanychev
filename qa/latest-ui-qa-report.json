@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T19:17:43.130Z",
-  "testedSha": "8c2a99352431cbf8c1a68db1f56c2cb216b020f7",
+  "generatedAt": "2026-09-28T19:21:04.585Z",
+  "testedSha": "95554d8e6e0fa1a4e2f1b78195e3eb6475c9d65c",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T19:18:22.833Z"
+      "fallbackCreatedAt": "2026-09-28T19:21:42.516Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,68 +1614,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "clients-compact-density",
-      "clientDensity": {
-        "primaryHeight": 77,
-        "secondaryHeight": 77,
-        "mainHeight": 97,
-        "actionHeight": 44,
-        "columns": "95.3281px 95.3281px 95.3438px",
-        "statWidths": [
-          95,
-          95,
-          95
-        ],
-        "statHeights": [
-          77,
-          77,
-          77
-        ],
-        "statTops": [
-          195,
-          195,
-          195
-        ]
-      },
-      "clientDensityLimits": {
-        "primary": 86,
-        "secondary": 76,
-        "main": 104
-      }
-    },
-    {
-      "width": 390,
-      "type": "clients-compact-density",
-      "clientDensity": {
-        "primaryHeight": 77,
-        "secondaryHeight": 77,
-        "mainHeight": 72,
-        "actionHeight": 44,
-        "columns": "116px 116px 116px",
-        "statWidths": [
-          116,
-          116,
-          116
-        ],
-        "statHeights": [
-          77,
-          77,
-          77
-        ],
-        "statTops": [
-          195,
-          195,
-          195
-        ]
-      },
-      "clientDensityLimits": {
-        "primary": 86,
-        "secondary": 76,
-        "main": 78
-      }
-    }
-  ]
+  "failures": []
 }
