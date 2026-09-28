@@ -4396,8 +4396,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         importButton: getComputedStyle(document.querySelector('.legacy-backup-main-actions [data-action="import"]')).backgroundColor,
         mainWidth: Math.round(document.querySelector(".legacy-backup-main-actions")?.getBoundingClientRect().width || 0),
         mainButtonWidths: [...document.querySelectorAll(".legacy-backup-main-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
-        gridWidth: Math.round(document.querySelector(".legacy-backup-grid")?.getBoundingClientRect().width || 0),
-        gridButtonWidths: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width))
+        advancedTag: document.querySelector(".legacy-backup-advanced")?.tagName || "",
+        advancedOpen: Boolean(document.querySelector(".legacy-backup-advanced")?.open),
+        advancedSummaryHeight: Math.round(document.querySelector(".legacy-backup-advanced > summary")?.getBoundingClientRect().height || 0),
+        advancedGridDisplay: getComputedStyle(document.querySelector(".legacy-backup-grid")).display,
+        advancedButtons: document.querySelectorAll(".legacy-backup-grid > button").length
       }));
       if (backupSurface.primary !== "rgb(7, 12, 16)"
         || backupSurface.auto !== "rgb(7, 12, 16)"
@@ -4407,9 +4410,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || backupSurface.download !== "rgb(255, 113, 79)"
         || backupSurface.importButton !== "rgb(13, 20, 25)"
         || backupSurface.mainButtonWidths.some((value) => value < backupSurface.mainWidth - 2)
-        || backupSurface.gridButtonWidths.some((value) => value < backupSurface.gridWidth - 2)) {
+        || backupSurface.advancedTag !== "DETAILS"
+        || backupSurface.advancedOpen
+        || backupSurface.advancedSummaryHeight < 44
+        || backupSurface.advancedSummaryHeight > 52
+        || backupSurface.advancedGridDisplay !== "none"
+        || backupSurface.advancedButtons !== 7) {
         report.failures.push({ width, type: "backup-semantic-hierarchy", backupSurface });
       }
+
+      await page.locator(".legacy-backup-advanced > summary").click();
+      const backupAdvancedOpen = await page.evaluate(() => {
+        const details = document.querySelector(".legacy-backup-advanced");
+        const grid = document.querySelector(".legacy-backup-grid");
+        const gridRect = grid?.getBoundingClientRect();
+        return {
+          open: Boolean(details?.open),
+          gridDisplay: grid ? getComputedStyle(grid).display : "missing",
+          gridWidth: Math.round(gridRect?.width || 0),
+          buttonWidths: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+          buttonHeights: [...document.querySelectorAll(".legacy-backup-grid > button")].map((node) => Math.round(node.getBoundingClientRect().height))
+        };
+      });
+      if (!backupAdvancedOpen.open
+        || backupAdvancedOpen.gridDisplay === "none"
+        || backupAdvancedOpen.buttonWidths.length !== 7
+        || backupAdvancedOpen.buttonWidths.some((value) => value < backupAdvancedOpen.gridWidth - 2)
+        || backupAdvancedOpen.buttonHeights.some((value) => value < 44)) {
+        report.failures.push({ width, type: "backup-advanced-open", backupAdvancedOpen });
+      }
+      await page.locator(".legacy-backup-advanced > summary").click();
       const backupDensity = await page.evaluate(() => {
         const card = document.querySelector(".legacy-backup-page .backup-primary-card");
         const stat = document.querySelector(".legacy-service-stats.backup > div");

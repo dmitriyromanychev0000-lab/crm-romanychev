@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.74";
-const APP_BUILD = "2026.09.28.296";
+const APP_VERSION = "1.7.75";
+const APP_BUILD = "2026.09.28.297";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Аналитика больше не повторяет четыре «новый период»: без прошлой финансовой истории показывается один компактный статус сравнения"
+const APP_RELEASE = "Бэкапы стали спокойнее: два главных действия остаются на виду, редкие проверки, папка, страховка и откат собраны в «Дополнительно»"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.75",
+    date: "28.09.2026",
+    title: "Компактный экран бэкапов",
+    items: [
+      "«Скачать бэкап» и «Импорт JSON» остаются сразу доступными как главные действия.",
+      "Проверка файла, папка, самопроверка, локальная страховка и откат импорта собраны в раскрываемый блок «Дополнительно».",
+      "Все семь служебных операций сохранены без изменений логики и доступны одним нажатием."
+    ]
+  },
   {
     version: "1.7.74",
     date: "28.09.2026",
@@ -4955,15 +4965,18 @@ async function backupSettings() {
         <button type="button" class="legacy-orange-button" data-action="download-backup">${icon("backup")}<span>Скачать бэкап</span></button>
         <button type="button" class="legacy-dark-button" data-action="import">${icon("document")}<span>Импорт JSON</span></button>
       </div>
-      <div class="legacy-backup-grid">
-        <button type="button" data-action="inspect-backup-file">Проверить файл</button>
-        <button type="button" data-action="choose-folder">Выбрать папку</button>
-        <button type="button" data-action="folder-backup">Сохранить в папку</button>
-        <button type="button" data-action="backup-self-test">Самопроверка</button>
-        <button type="button" data-action="download-local-backup" ${fallback?.payload ? "" : "disabled"}>Скачать страховку</button>
-        <button type="button" data-action="restore-local-backup" ${fallback?.payload ? "" : "disabled"}>Восстановить страховку</button>
-        <button type="button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
-      </div>
+      <details class="legacy-backup-advanced">
+        <summary><span class="legacy-backup-advanced-icon">${icon("settings")}</span><span><strong>Дополнительно</strong><small>Проверка, папка, страховка и откат</small></span><span class="legacy-backup-advanced-chevron" aria-hidden="true">${icon("chevron")}</span></summary>
+        <div class="legacy-backup-grid">
+          <button type="button" data-action="inspect-backup-file">Проверить файл</button>
+          <button type="button" data-action="choose-folder">Выбрать папку</button>
+          <button type="button" data-action="folder-backup">Сохранить в папку</button>
+          <button type="button" data-action="backup-self-test">Самопроверка</button>
+          <button type="button" data-action="download-local-backup" ${fallback?.payload ? "" : "disabled"}>Скачать страховку</button>
+          <button type="button" data-action="restore-local-backup" ${fallback?.payload ? "" : "disabled"}>Восстановить страховку</button>
+          <button type="button" data-action="restore-pre-import" ${rollback ? "" : "disabled"}>Откатить импорт</button>
+        </div>
+      </details>
     </section>
 
     <section class="legacy-settings-card backup-auto-card">
