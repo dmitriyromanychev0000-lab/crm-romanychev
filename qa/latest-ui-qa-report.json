@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T18:25:05.639Z",
-  "testedSha": "6ad777429df1b2f60eedfd32c32119676bdb4ea3",
+  "generatedAt": "2026-09-28T18:27:25.834Z",
+  "testedSha": "503775c6f25c43b5dacf4375e0d4b20cdcba5d97",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1494,7 +1494,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T18:25:42.739Z"
+      "fallbackCreatedAt": "2026-09-28T18:27:55.067Z"
     },
     {
       "label": "pwa-offline",
@@ -1508,5 +1508,52 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "service-catalog-actions-two-columns",
+      "serviceCatalogActions": {
+        "width": 320,
+        "left": 0,
+        "innerWidth": 302,
+        "buttons": [
+          {
+            "width": 118,
+            "height": 48,
+            "left": 9,
+            "top": 844
+          },
+          {
+            "width": 177,
+            "height": 48,
+            "left": 134,
+            "top": 844
+          }
+        ]
+      }
+    },
+    {
+      "width": 390,
+      "type": "service-catalog-actions-two-columns",
+      "serviceCatalogActions": {
+        "width": 390,
+        "left": 0,
+        "innerWidth": 366,
+        "buttons": [
+          {
+            "width": 144,
+            "height": 48,
+            "left": 12,
+            "top": 844
+          },
+          {
+            "width": 215,
+            "height": 48,
+            "left": 163,
+            "top": 844
+          }
+        ]
+      }
+    }
+  ]
 }
