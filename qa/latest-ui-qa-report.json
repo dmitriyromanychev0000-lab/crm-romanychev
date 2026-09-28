@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T16:52:20.563Z",
-  "testedSha": "6bc0028276abdf1dbff4b4fe92d5a29e1021c6a7",
+  "generatedAt": "2026-09-28T16:59:50.320Z",
+  "testedSha": "eeaf4413f4702988fd83d0cd9ce7052eb54680e1",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1494,7 +1494,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T16:52:54.983Z"
+      "fallbackCreatedAt": "2026-09-28T17:00:27.507Z"
     },
     {
       "label": "pwa-offline",
@@ -1508,5 +1508,69 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "order-source-visit-fields",
+      "sourceVisitFields": {
+        "sourceOptions": 3,
+        "gridWidth": 366,
+        "client": {
+          "left": 12,
+          "top": 106,
+          "width": 180
+        },
+        "phone": {
+          "left": 199,
+          "top": 106,
+          "width": 180
+        },
+        "tech": {
+          "left": 12,
+          "top": 176,
+          "width": 180
+        },
+        "brand": {
+          "left": 199,
+          "top": 176,
+          "width": 180
+        },
+        "createdDate": {
+          "left": 12,
+          "top": 627,
+          "width": 180
+        },
+        "visitDate": {
+          "left": 199,
+          "top": 627,
+          "width": 180
+        },
+        "visitTime": {
+          "left": 12,
+          "top": 697,
+          "width": 180
+        },
+        "visitDuration": {
+          "left": 199,
+          "top": 697,
+          "width": 180
+        },
+        "source": {
+          "left": 12,
+          "top": 315,
+          "width": 180
+        },
+        "status": {
+          "left": 12,
+          "top": 767,
+          "width": 180
+        },
+        "issue": {
+          "left": 12,
+          "top": 385,
+          "width": 366
+        }
+      }
+    }
+  ]
 }
