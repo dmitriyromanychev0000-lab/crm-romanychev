@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.90";
-const APP_BUILD = "2026.09.29.320";
+const APP_VERSION = "1.7.91";
+const APP_BUILD = "2026.09.29.321";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Настройки выровнены по единой оси: текст полей, иконки, счётчики и стрелки больше не смещаются на узком экране"
+const APP_RELEASE = "Меню «Ещё» выровнено: пиктограммы, подписи и стрелки сидят на общей вертикальной оси"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.91",
+    date: "29.09.2026",
+    title: "Ровные иконки меню",
+    items: [
+      "Иконки в меню «Ещё» получили одинаковый визуальный размер и точное центрирование внутри своих контейнеров.",
+      "Текстовый блок каждой карточки центрируется по вертикали относительно иконки, без ощущения смещения вверх или вниз.",
+      "Стрелки справа также закреплены по центру строки; QA проверяет фактические координаты всех трёх зон."
+    ]
+  },
   {
     version: "1.7.90",
     date: "29.09.2026",

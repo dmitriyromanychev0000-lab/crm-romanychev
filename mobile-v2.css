@@ -20835,3 +20835,53 @@
     width: 18px !important;
   }
 }
+
+
+/* 1.7.91 · Ещё: одинаковый центр и визуальный размер пиктограмм. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-item {
+    align-items: center !important;
+  }
+
+  .legacy-more-list .menu-icon {
+    display: grid !important;
+    width: 38px !important;
+    height: 38px !important;
+    place-items: center !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+
+  .legacy-more-list .menu-icon .ui-icon {
+    display: block !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .legacy-more-list .menu-copy {
+    display: grid !important;
+    min-width: 0 !important;
+    align-content: center !important;
+    align-self: center !important;
+    gap: 2px !important;
+  }
+
+  .legacy-more-list .menu-name,
+  .legacy-more-list .menu-description {
+    margin: 0 !important;
+  }
+
+  .legacy-more-list .menu-item > .chevron {
+    display: grid !important;
+    width: 18px !important;
+    height: 38px !important;
+    place-items: center !important;
+    align-self: center !important;
+    justify-self: end !important;
+  }
+
+  .legacy-more-list .menu-item > .chevron .ui-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}

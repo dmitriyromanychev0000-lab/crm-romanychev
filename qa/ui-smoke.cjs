@@ -3839,6 +3839,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               textOverflow: style.textOverflow,
               lineClamp: style.webkitLineClamp
             };
+          }),
+          alignments: items.map((item) => {
+            const itemRect = item.getBoundingClientRect();
+            const iconRect = item.querySelector(".menu-icon")?.getBoundingClientRect();
+            const copyRect = item.querySelector(".menu-copy")?.getBoundingClientRect();
+            const chevronRect = item.querySelector(":scope > .chevron")?.getBoundingClientRect();
+            const svgRect = item.querySelector(".menu-icon .ui-icon")?.getBoundingClientRect();
+            const centerY = (rect) => rect ? rect.top + rect.height / 2 : -999;
+            const itemCenter = centerY(itemRect);
+            return {
+              iconDelta: Math.round(Math.abs(centerY(iconRect) - itemCenter) * 10) / 10,
+              copyDelta: Math.round(Math.abs(centerY(copyRect) - itemCenter) * 10) / 10,
+              chevronDelta: Math.round(Math.abs(centerY(chevronRect) - itemCenter) * 10) / 10,
+              svgWidth: Math.round(svgRect?.width || 0),
+              svgHeight: Math.round(svgRect?.height || 0)
+            };
           })
         };
       });
@@ -3866,6 +3882,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !/v\d+\.\d+\.\d+/.test(moreMenuSurface.versionText)
         || !moreMenuSurface.versionText.includes("Что нового")
         || moreMenuSurface.versionHeight < 44
+        || moreMenuSurface.alignments.length !== expectedMoreNames.length
+        || moreMenuSurface.alignments.some((item) =>
+          item.iconDelta > 1
+          || item.copyDelta > 2
+          || item.chevronDelta > 1
+          || item.svgWidth !== 18
+          || item.svgHeight !== 18
+        )
         || (width <= 340 && moreMenuSurface.descriptionStyles.some((style) =>
           style.whiteSpace === "nowrap"
           || style.textOverflow === "ellipsis"
