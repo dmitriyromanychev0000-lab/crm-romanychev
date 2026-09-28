@@ -2538,7 +2538,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Товарник","Акт","Календарь","Настройки"];
       const expectedMoreBackgrounds = Array(expectedMoreNames.length).fill("rgb(13, 20, 25)");
-      const expectedMoreIconBackgrounds = Array(expectedMoreNames.length).fill("rgb(17, 25, 30)");
+      const expectedMoreIconBackgrounds = [
+        "rgb(13, 29, 21)",
+        "rgb(27, 23, 12)",
+        "rgb(13, 24, 34)",
+        "rgb(22, 17, 36)",
+        "rgb(28, 17, 13)",
+        "rgb(12, 25, 28)",
+        "rgb(13, 23, 31)",
+        "rgb(17, 25, 30)"
+      ];
       if (JSON.stringify(moreMenuSurface.names) !== JSON.stringify(expectedMoreNames)
         || moreMenuSurface.finance !== 1
         || moreMenuSurface.shopping !== 1
@@ -2546,6 +2555,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || JSON.stringify(moreMenuSurface.backgrounds) !== JSON.stringify(expectedMoreBackgrounds)
         || JSON.stringify(moreMenuSurface.iconBackgrounds) !== JSON.stringify(expectedMoreIconBackgrounds)
         || new Set(moreMenuSurface.backgrounds).size !== 1
+        || new Set(moreMenuSurface.iconBackgrounds).size < 6
         || parseFloat(moreMenuSurface.titleFont) < 13.5
         || !/v\d+\.\d+\.\d+/.test(moreMenuSurface.versionText)
         || !moreMenuSurface.versionText.includes("Что нового")

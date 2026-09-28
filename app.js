@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.9";
-const APP_BUILD = "2026.09.28.206";
+const APP_VERSION = "1.6.0";
+const APP_BUILD = "2026.09.28.207";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Реквизиты исполнителя в настройках переведены на полноценную одноколоночную мобильную форму";
+const APP_RELEASE = "Меню «Ещё» получило спокойные смысловые акценты в иконках без цветных карточек";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.0",
+    date: "28.09.2026",
+    title: "Смысловые акценты без цветной каши",
+    items: [
+      "Все карточки меню «Ещё» остаются одинаковыми графитовыми и не спорят друг с другом.",
+      "Финансы, покупки, клиенты, прайс, товарник, акт и календарь получили приглушённые цветовые акценты только внутри иконок.",
+      "Настройки оставлены нейтральными, чтобы служебный раздел визуально не конкурировал с рабочими."
+    ]
+  },
   {
     version: "1.5.9",
     date: "28.09.2026",

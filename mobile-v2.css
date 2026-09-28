@@ -15506,3 +15506,55 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.6.0 · Ещё: смысловой цвет только в компактных иконках, карточки остаются графитовыми. */
+@media screen and (max-width: 520px) {
+  .legacy-more-list .menu-icon-finance {
+    border-color: #244b35 !important;
+    background: #0d1d15 !important;
+    color: var(--crm-green) !important;
+  }
+
+  .legacy-more-list .menu-icon-shopping {
+    border-color: #51411f !important;
+    background: #1b170c !important;
+    color: var(--crm-yellow) !important;
+  }
+
+  .legacy-more-list .menu-icon-clients {
+    border-color: #254565 !important;
+    background: #0d1822 !important;
+    color: var(--crm-blue) !important;
+  }
+
+  .legacy-more-list .menu-icon-prices {
+    border-color: #493b68 !important;
+    background: #161124 !important;
+    color: var(--crm-purple) !important;
+  }
+
+  .legacy-more-list .menu-icon-goods {
+    border-color: #5a3529 !important;
+    background: #1c110d !important;
+    color: #ff8066 !important;
+  }
+
+  .legacy-more-list .menu-icon-act {
+    border-color: #28505a !important;
+    background: #0c191c !important;
+    color: #55cee1 !important;
+  }
+
+  .legacy-more-list .menu-icon-calendar {
+    border-color: #294556 !important;
+    background: #0d171f !important;
+    color: #78b9e7 !important;
+  }
+
+  .legacy-more-list .menu-icon-settings {
+    border-color: #29343c !important;
+    background: #11191e !important;
+    color: #b6c0c6 !important;
+  }
+}

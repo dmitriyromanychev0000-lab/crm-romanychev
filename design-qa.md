@@ -123,3 +123,10 @@ final result: passed
 - The two Goods creation choices now stack as full-width actions across the supported 320–430 px range.
 - The Goods editor picker and its add button also stack full-width instead of squeezing into one row.
 - Automated QA asserts both layouts fill their containers and remain vertically ordered.
+
+
+## Release 1.6.0 — semantic icon accents in More
+
+- Menu cards stay on one neutral graphite surface.
+- Meaningful section identity is carried only by the compact icon tiles: finance, shopping, clients, price, goods, act and calendar use restrained semantic tints; settings remains neutral.
+- Automated QA asserts all card backgrounds remain identical while icon tiles retain distinct semantic surfaces.
