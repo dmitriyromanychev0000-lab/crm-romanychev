@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T07:21:53.943Z",
-  "testedSha": "34b14def13c2c107854ed1df0da13ee52344bd6c",
+  "generatedAt": "2026-09-28T07:26:05.043Z",
+  "testedSha": "41db415ebae9325a1bf27c46845e1ee20747bf01",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T07:22:27.166Z"
+      "fallbackCreatedAt": "2026-09-28T07:26:40.387Z"
     },
     {
       "label": "pwa-offline",
@@ -1412,5 +1412,104 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "finance-semantic-hierarchy",
+      "financePageSurface": {
+        "result": "rgb(7, 19, 13)",
+        "income": "rgb(7, 12, 16)",
+        "expense": "rgb(7, 12, 16)",
+        "incomeRow": "rgb(7, 12, 16)",
+        "expenseRow": "rgb(7, 12, 16)",
+        "incomeAction": "rgb(10, 33, 20)",
+        "expenseAction": "rgb(38, 13, 17)",
+        "rowTitleFont": "12px"
+      }
+    },
+    {
+      "width": 320,
+      "type": "clients-semantic-hierarchy",
+      "clientPageSurface": {
+        "background": "rgb(7, 12, 16)",
+        "primaryStat": "rgb(7, 12, 16)",
+        "activeStat": "rgb(8, 16, 25)",
+        "closedStat": "rgb(7, 17, 12)",
+        "titleFont": "11.5px"
+      }
+    },
+    {
+      "width": 320,
+      "type": "client-profile-semantic-hierarchy",
+      "clientProfileState": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(8, 16, 25)",
+        "totalKpi": "rgb(19, 16, 6)",
+        "closedKpi": "rgb(7, 17, 12)",
+        "activeKpi": "rgb(8, 16, 25)"
+      }
+    },
+    {
+      "width": 320,
+      "type": "settings-semantic-hierarchy",
+      "settingsSurface": {
+        "profile": "rgb(7, 12, 16)",
+        "app": "rgb(7, 12, 16)",
+        "data": "rgb(7, 12, 16)",
+        "field": "rgb(9, 15, 20)",
+        "toolsLink": "rgb(8, 16, 25)",
+        "backupLink": "rgb(7, 17, 12)",
+        "rowTitleFont": "11.5px"
+      }
+    },
+    {
+      "width": 390,
+      "type": "finance-semantic-hierarchy",
+      "financePageSurface": {
+        "result": "rgb(7, 19, 13)",
+        "income": "rgb(7, 12, 16)",
+        "expense": "rgb(7, 12, 16)",
+        "incomeRow": "rgb(7, 12, 16)",
+        "expenseRow": "rgb(7, 12, 16)",
+        "incomeAction": "rgb(10, 33, 20)",
+        "expenseAction": "rgb(38, 13, 17)",
+        "rowTitleFont": "12px"
+      }
+    },
+    {
+      "width": 390,
+      "type": "clients-semantic-hierarchy",
+      "clientPageSurface": {
+        "background": "rgb(7, 12, 16)",
+        "primaryStat": "rgb(7, 12, 16)",
+        "activeStat": "rgb(8, 16, 25)",
+        "closedStat": "rgb(7, 17, 12)",
+        "titleFont": "12.5px"
+      }
+    },
+    {
+      "width": 390,
+      "type": "client-profile-semantic-hierarchy",
+      "clientProfileState": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(8, 16, 25)",
+        "totalKpi": "rgb(19, 16, 6)",
+        "closedKpi": "rgb(7, 17, 12)",
+        "activeKpi": "rgb(8, 16, 25)"
+      }
+    },
+    {
+      "width": 390,
+      "type": "settings-semantic-hierarchy",
+      "settingsSurface": {
+        "profile": "rgb(7, 12, 16)",
+        "app": "rgb(7, 12, 16)",
+        "data": "rgb(7, 12, 16)",
+        "field": "rgb(9, 15, 20)",
+        "toolsLink": "rgb(8, 16, 25)",
+        "backupLink": "rgb(7, 17, 12)",
+        "rowTitleFont": "12px"
+      }
+    }
+  ]
 }
