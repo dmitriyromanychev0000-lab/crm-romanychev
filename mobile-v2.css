@@ -20005,3 +20005,23 @@
     display: block !important;
   }
 }
+
+
+/* 1.7.78 · Фото: кнопка добавления стабильно компактна на 320–430 px. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .order-photo-add {
+    box-sizing: border-box !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    padding: 5px 10px !important;
+    gap: 9px !important;
+  }
+
+  .order-editor-modal .order-photo-add b {
+    line-height: 1.15 !important;
+  }
+
+  .order-editor-modal .order-photo-add small {
+    line-height: 1.15 !important;
+  }
+}

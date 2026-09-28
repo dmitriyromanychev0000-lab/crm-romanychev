@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.77";
-const APP_BUILD = "2026.09.28.301";
+const APP_VERSION = "1.7.78";
+const APP_BUILD = "2026.09.28.302";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Фотографии в заявке снова всегда открыты по продуктовой концепции, но пустой блок остаётся компактным и не тратит место на лишнюю заглушку"
+const APP_RELEASE = "Пустой блок фотографий снова проходит мобильную геометрию: кнопка добавления стала компактнее без потери подписи и touch-зоны"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.78",
+    date: "28.09.2026",
+    title: "Компактная кнопка фотографий",
+    items: [
+      "Кнопка добавления фотографий теперь укладывается в компактную высоту даже на 320 px.",
+      "Основная подпись и пояснение сохранены, touch-зона остаётся выше минимальных 44 px.",
+      "Исправлен последний QA-хвост после возврата всегда открытого блока фотографий."
+    ]
+  },
   {
     version: "1.7.77",
     date: "28.09.2026",
