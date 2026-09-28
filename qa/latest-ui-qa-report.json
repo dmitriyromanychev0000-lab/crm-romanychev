@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T12:05:44.837Z",
-  "testedSha": "7698d189bed3bfafead86e52295639ba6bf5b8ed",
+  "generatedAt": "2026-09-28T12:08:50.250Z",
+  "testedSha": "279a0c370a9c65a39447708a8bbe8e7a78ba0786",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1476,19 +1476,46 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T12:06:23.836Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-28T12:09:23.225Z"
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 360,
+      "type": "goods-position-surface",
+      "goodsRowSurface": {
+        "background": "rgb(9, 15, 20)",
+        "radius": "11px",
+        "height": 48,
+        "priceRight": 331,
+        "rowRight": 332
+      }
+    },
+    {
+      "width": 390,
+      "type": "goods-position-surface",
+      "goodsRowSurface": {
+        "background": "rgb(9, 15, 20)",
+        "radius": "11px",
+        "height": 48,
+        "priceRight": 361,
+        "rowRight": 362
+      }
+    },
+    {
+      "width": 430,
+      "type": "goods-position-surface",
+      "goodsRowSurface": {
+        "background": "rgb(9, 15, 20)",
+        "radius": "11px",
+        "height": 48,
+        "priceRight": 401,
+        "rowRight": 402
+      }
+    },
+    {
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
+    }
+  ]
 }
