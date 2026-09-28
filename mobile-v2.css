@@ -14930,3 +14930,158 @@
   }
 }
 
+/* 1.4.0 · Финансы, клиенты, прайс и товарник: единая графитовая система. */
+@media screen and (max-width: 520px) {
+  .legacy-price-head {
+    grid-template-columns: 44px minmax(0,1fr) !important;
+  }
+
+  .legacy-price-add-wide {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    margin: 0 0 9px !important;
+    padding: 0 15px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border: 1px solid #ff714f !important;
+    border-radius: 13px !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    font-size: 12px !important;
+    font-weight: 780 !important;
+    box-shadow: 0 8px 20px rgba(255,113,79,.14) !important;
+  }
+
+  .legacy-price-add-wide .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .legacy-price-row > b,
+  .legacy-price-row.service > b,
+  .legacy-price-row.material > b,
+  .legacy-price-row.custom > b {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-custom-price-head button {
+    border-color: #2a3740 !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+  }
+
+  .legacy-custom-price-head button .ui-icon {
+    color: #ff765c !important;
+  }
+
+  .legacy-client-card,
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    border-color: #26323a !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-clients-stats > .clients-stat-primary {
+    border-color: #31343a !important;
+  }
+
+  .legacy-client-side > b {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-client-copy em,
+  .legacy-client-copy em .ui-icon {
+    color: #87939a !important;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-actions a .ui-icon,
+  .legacy-client-actions button .ui-icon {
+    color: #ff765c !important;
+  }
+
+  .legacy-finance-actions > button,
+  .legacy-finance-actions .legacy-orange-button[data-type="income"],
+  .legacy-finance-actions .legacy-dark-button[data-type="expense"] {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-finance-actions [data-type="income"] {
+    color: #65d995 !important;
+  }
+
+  .legacy-finance-actions [data-type="expense"] {
+    color: #ff717b !important;
+  }
+
+  .legacy-goods-panel,
+  .legacy-goods-panel.legacy-goods-new,
+  .legacy-goods-panel.legacy-goods-current,
+  .legacy-goods-panel.legacy-product-price {
+    border-color: #26323a !important;
+    background-color: #070c10 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-goods-new .legacy-purple-button {
+    border-color: #ff714f !important;
+    background: #ff714f !important;
+    color: #1b100d !important;
+    box-shadow: 0 8px 18px rgba(255,113,79,.12) !important;
+  }
+
+  .legacy-goods-new .legacy-purple-button .ui-icon {
+    color: #1b100d !important;
+  }
+
+  .legacy-goods-new .legacy-dark-button {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+    color: #dce3e6 !important;
+  }
+
+  .legacy-goods-current-summary {
+    border-color: #27343c !important;
+    background: #0d1419 !important;
+  }
+
+  .legacy-goods-current-summary > b {
+    color: #ff8a70 !important;
+  }
+
+  .legacy-goods-position > b {
+    color: #e7ecee !important;
+  }
+
+  .legacy-open-editor {
+    border-color: #3a302d !important;
+    background: #0d1419 !important;
+    color: #ff9a82 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-product-price .legacy-section-icon,
+  .legacy-goods-current .legacy-section-icon,
+  .legacy-goods-new .legacy-section-icon {
+    border-color: #31363a !important;
+    background: #11191e !important;
+    color: #ff765c !important;
+  }
+
+  .legacy-product-price-list b {
+    color: #ff8a70 !important;
+  }
+}
+

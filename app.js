@@ -7,11 +7,22 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.3.1";
-const APP_BUILD = "2026.09.28.192";
+const APP_VERSION = "1.4.0";
+const APP_BUILD = "2026.09.28.193";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Шапка аналитики стала компактнее: заголовок больше не ломается, расход — аккуратная иконка";
+const APP_RELEASE = "Финансы, клиенты, прайс и товарник приведены к единой спокойной визуальной системе";
 const APP_CHANGELOG = [
+  {
+    version: "1.4.0",
+    date: "28.09.2026",
+    title: "Единая рабочая система",
+    items: [
+      "Прайс получил полноширинную кнопку «Добавить позицию» вместо одинокой квадратной кнопки в шапке.",
+      "Клиентские карточки стали спокойнее: действия и рамки больше не раскрашивают экран в разные цвета.",
+      "Товарник очищен от фиолетовых, жёлтых и красных поверхностей — основной акцент теперь единый.",
+      "Финансовые действия получили одинаковую геометрию и нейтральные поверхности; цвет остался только у смысла дохода и расхода."
+    ]
+  },
   {
     version: "1.3.1",
     date: "28.09.2026",
@@ -2776,8 +2787,8 @@ function priceList() {
     <div class="legacy-subpage-head legacy-price-head">
       <button type="button" class="legacy-back-button" data-action="more-menu" aria-label="Назад">${icon("back")}</button>
       <div><h1>${escapeHtml(scopeTitle)}</h1><p>${prices.length + customServices.length} позиций · услуги и материалы</p></div>
-      <button type="button" class="legacy-price-add" data-action="new-price" aria-label="Добавить позицию">${icon("plus")}</button>
     </div>
+    <button type="button" class="legacy-price-add-wide" data-action="new-price">${icon("plus")}<span>Добавить позицию</span></button>
 
     <div class="legacy-price-search search-row search-with-icon">${icon("search")}<input class="search" id="price-search" value="${escapeHtml(priceSearch)}" placeholder="Название товара или услуги" aria-label="Поиск по прайсу" /></div>
 

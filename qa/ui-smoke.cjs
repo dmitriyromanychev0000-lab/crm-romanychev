@@ -2149,6 +2149,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         expenseRow: getComputedStyle(document.querySelector(".legacy-finance-row.expense")).backgroundColor,
         incomeAction: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).backgroundColor,
         expenseAction: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).backgroundColor,
+        incomeActionBorder: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).borderTopColor,
+        expenseActionBorder: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).borderTopColor,
+        incomeActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="income"]')).color,
+        expenseActionColor: getComputedStyle(document.querySelector('.legacy-finance-actions [data-type="expense"]')).color,
+        actionWidths: [...document.querySelectorAll(".legacy-finance-actions > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
       if (financePageSurface.result !== "rgb(7, 12, 16)"
@@ -2158,6 +2163,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financePageSurface.expenseRow !== "rgb(7, 12, 16)"
         || financePageSurface.incomeAction !== "rgb(13, 20, 25)"
         || financePageSurface.expenseAction !== "rgb(13, 20, 25)"
+        || financePageSurface.incomeActionBorder !== "rgb(39, 52, 60)"
+        || financePageSurface.expenseActionBorder !== "rgb(39, 52, 60)"
+        || financePageSurface.incomeActionColor !== "rgb(101, 217, 149)"
+        || financePageSurface.expenseActionColor !== "rgb(255, 113, 123)"
+        || financePageSurface.actionWidths.length !== 2
+        || Math.abs(financePageSurface.actionWidths[0] - financePageSurface.actionWidths[1]) > 2
         || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
         report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }
@@ -2206,7 +2217,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-price-row strong")).fontSize,
           searchBackground: searchStyle.backgroundColor,
           searchBorder: searchStyle.borderTopColor,
-          searchShadow: searchStyle.boxShadow
+          searchShadow: searchStyle.boxShadow,
+          addWidth: Math.round(document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect().width || 0),
+          searchWidth: Math.round(search?.getBoundingClientRect().width || 0),
+          addHeight: Math.round(document.querySelector(".legacy-price-add-wide")?.getBoundingClientRect().height || 0),
+          addBackground: getComputedStyle(document.querySelector(".legacy-price-add-wide")).backgroundColor,
+          priceColors: [...document.querySelectorAll(".legacy-price-row > b")].map((node) => getComputedStyle(node).color)
         };
       });
       if (pricePageSurface.group !== "rgb(7, 12, 16)"
@@ -2216,7 +2232,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(pricePageSurface.rowTitleFont) < 11.5
         || pricePageSurface.searchBackground !== "rgb(9, 15, 20)"
         || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
-        || pricePageSurface.searchShadow !== "none") {
+        || pricePageSurface.searchShadow !== "none"
+        || Math.abs(pricePageSurface.addWidth - pricePageSurface.searchWidth) > 2
+        || pricePageSurface.addHeight < 48
+        || pricePageSurface.addBackground !== "rgb(255, 113, 79)"
+        || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")) {
         report.failures.push({ width, type: "price-semantic-hierarchy", pricePageSurface });
       }
       await page.waitForTimeout(80);
@@ -2347,13 +2367,22 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         primaryStat: getComputedStyle(document.querySelector(".legacy-clients-stats > .clients-stat-primary")).backgroundColor,
         activeStat: getComputedStyle(document.querySelector(".legacy-clients-stats > div:nth-child(2)")).backgroundColor,
         closedStat: getComputedStyle(document.querySelector(".legacy-clients-stats > div:nth-child(3)")).backgroundColor,
-        titleFont: getComputedStyle(document.querySelector(".legacy-client-copy strong")).fontSize
+        titleFont: getComputedStyle(document.querySelector(".legacy-client-copy strong")).fontSize,
+        actionBackgrounds: [...document.querySelectorAll(".legacy-client-actions > *")].slice(0,2).map((node) => getComputedStyle(node).backgroundColor),
+        actionBorders: [...document.querySelectorAll(".legacy-client-actions > *")].slice(0,2).map((node) => getComputedStyle(node).borderTopColor),
+        actionWidths: [...document.querySelectorAll(".legacy-client-actions > *")].slice(0,2).map((node) => Math.round(node.getBoundingClientRect().width)),
+        totalColor: getComputedStyle(document.querySelector(".legacy-client-side > b")).color
       }));
       if (clientPageSurface.background !== "rgb(7, 12, 16)"
         || clientPageSurface.primaryStat !== "rgb(7, 12, 16)"
         || clientPageSurface.activeStat !== "rgb(7, 12, 16)"
         || clientPageSurface.closedStat !== "rgb(7, 12, 16)"
-        || parseFloat(clientPageSurface.titleFont) < 11.5) {
+        || parseFloat(clientPageSurface.titleFont) < 11.5
+        || clientPageSurface.actionBackgrounds.some((value) => value !== "rgb(13, 20, 25)")
+        || clientPageSurface.actionBorders.some((value) => value !== "rgb(39, 52, 60)")
+        || clientPageSurface.actionWidths.length !== 2
+        || Math.abs(clientPageSurface.actionWidths[0] - clientPageSurface.actionWidths[1]) > 2
+        || clientPageSurface.totalColor !== "rgb(255, 138, 112)") {
         report.failures.push({ width, type: "clients-semantic-hierarchy", clientPageSurface });
       }
       await page.locator('[data-action="open-client"]').first().click();
@@ -2412,12 +2441,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         current: getComputedStyle(document.querySelector(".legacy-goods-current")).backgroundColor,
         currentSummary: getComputedStyle(document.querySelector(".legacy-goods-current-summary")).backgroundColor,
         productPrice: getComputedStyle(document.querySelector(".legacy-product-price")).backgroundColor,
-        itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize
+        itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize,
+        manualBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-sheet"]')).backgroundColor,
+        fromOrderBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-from-order"]')).backgroundColor,
+        createWidths: [...document.querySelectorAll(".legacy-goods-create-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
+        rowAmountColors: [...document.querySelectorAll(".legacy-goods-position > b")].map((node) => getComputedStyle(node).color),
+        currentTotalColor: getComputedStyle(document.querySelector(".legacy-goods-current-summary > b")).color
       }));
       if (goodsPageSurface.create !== "rgb(7, 12, 16)"
         || goodsPageSurface.current !== "rgb(7, 12, 16)"
         || goodsPageSurface.currentSummary !== "rgb(13, 20, 25)"
         || goodsPageSurface.productPrice !== "rgb(7, 12, 16)"
+        || goodsPageSurface.manualBackground !== "rgb(255, 113, 79)"
+        || goodsPageSurface.fromOrderBackground !== "rgb(13, 20, 25)"
+        || goodsPageSurface.createWidths.length !== 2
+        || Math.abs(goodsPageSurface.createWidths[0] - goodsPageSurface.createWidths[1]) > 2
+        || goodsPageSurface.rowAmountColors.some((value) => value !== "rgb(231, 236, 238)")
+        || goodsPageSurface.currentTotalColor !== "rgb(255, 138, 112)"
         || parseFloat(goodsPageSurface.itemTitleFont) < 11) {
         report.failures.push({ width, type: "goods-semantic-hierarchy", goodsPageSurface });
       }
