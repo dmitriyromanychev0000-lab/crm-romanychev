@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T07:37:36.633Z",
-  "testedSha": "6c3fe673b0da1f58f262992c8c3e5595540be5e9",
+  "generatedAt": "2026-09-28T07:42:49.658Z",
+  "testedSha": "11cc18dca568a37b543c0fdd70610df7e7442286",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1240,7 +1240,7 @@
       "keyboardMetrics": {
         "top": 463,
         "bottom": 511,
-        "width": 304,
+        "width": 161,
         "height": 48,
         "viewportHeight": 520,
         "locked": true,
@@ -1398,7 +1398,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T07:38:13.087Z"
+      "fallbackCreatedAt": "2026-09-28T07:43:26.306Z"
     },
     {
       "label": "pwa-offline",
