@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.5.3";
-const APP_BUILD = "2026.09.28.200";
+const APP_VERSION = "1.5.4";
+const APP_BUILD = "2026.09.28.201";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Поля добавления в справочниках получили полную ширину, а кнопки вынесены в отдельную полноширинную строку";
+const APP_RELEASE = "Создание товарника и добавление позиций переведены на полноширинную мобильную компоновку";
 const APP_CHANGELOG = [
+  {
+    version: "1.5.4",
+    date: "28.09.2026",
+    title: "Товарник без тесных половинок",
+    items: [
+      "«Создать вручную» и «Из закрытой заявки» теперь идут отдельными полноширинными действиями.",
+      "В редакторе товарника выбор позиции из прайса и кнопка «Добавить» больше не делят одну узкую строку.",
+      "Автопроверка контролирует ширину и вертикальную компоновку обоих блоков на мобильном экране."
+    ]
+  },
   {
     version: "1.5.3",
     date: "28.09.2026",

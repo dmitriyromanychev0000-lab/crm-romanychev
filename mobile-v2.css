@@ -15376,3 +15376,27 @@
   }
 }
 
+
+
+/* 1.5.4 · Товарник: полноширинные основные действия и добавление позиции. */
+@media screen and (max-width: 520px) {
+  .legacy-goods-create-grid,
+  .legacy-goods-add-line {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-goods-create-grid > button,
+  .legacy-goods-add-line > .field,
+  .legacy-goods-add-line > button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .legacy-goods-create-grid > button {
+    min-height: 50px !important;
+  }
+
+  .legacy-goods-add-line > button {
+    min-height: 46px !important;
+  }
+}

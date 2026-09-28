@@ -2521,6 +2521,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         itemTitleFont: getComputedStyle(document.querySelector(".legacy-goods-position strong")).fontSize,
         manualBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-sheet"]')).backgroundColor,
         fromOrderBackground: getComputedStyle(document.querySelector('.legacy-goods-new [data-action="new-goods-from-order"]')).backgroundColor,
+        createGridWidth: Math.round(document.querySelector(".legacy-goods-create-grid")?.getBoundingClientRect().width || 0),
         createWidths: [...document.querySelectorAll(".legacy-goods-create-grid > button")].map((node) => Math.round(node.getBoundingClientRect().width)),
         rowAmountColors: [...document.querySelectorAll(".legacy-goods-position > b")].map((node) => getComputedStyle(node).color),
         currentTotalColor: getComputedStyle(document.querySelector(".legacy-goods-current-summary > b")).color,
@@ -2535,7 +2536,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsPageSurface.manualBackground !== "rgb(255, 113, 79)"
         || goodsPageSurface.fromOrderBackground !== "rgb(13, 20, 25)"
         || goodsPageSurface.createWidths.length !== 2
-        || Math.abs(goodsPageSurface.createWidths[0] - goodsPageSurface.createWidths[1]) > 2
+        || goodsPageSurface.createWidths.some((value) => value < goodsPageSurface.createGridWidth - 2)
         || goodsPageSurface.rowAmountColors.some((value) => value !== "rgb(231, 236, 238)")
         || goodsPageSurface.currentTotalColor !== "rgb(255, 138, 112)"
         || goodsPageSurface.currentSummaryBorder !== "rgb(39, 52, 60)"
@@ -2551,6 +2552,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const backRect = back?.getBoundingClientRect();
         const action = document.querySelector(".legacy-goods-savebar button");
         const actionRect = action?.getBoundingClientRect();
+        const addLine = document.querySelector(".legacy-goods-add-line");
+        const picker = document.querySelector("#goods-picker");
+        const addButton = document.querySelector("#add-goods-line");
+        const addLineRect = addLine?.getBoundingClientRect();
+        const pickerRect = picker?.getBoundingClientRect();
+        const addButtonRect = addButton?.getBoundingClientRect();
         return {
           modal: getComputedStyle(document.querySelector(".legacy-goods-editor")).backgroundColor,
           panel: getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).backgroundColor,
@@ -2558,7 +2565,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           fieldFont: getComputedStyle(field).fontSize,
           backWidth: backRect ? Math.round(backRect.width) : 0,
           backHeight: backRect ? Math.round(backRect.height) : 0,
-          actionHeight: actionRect ? Math.round(actionRect.height) : 0
+          actionHeight: actionRect ? Math.round(actionRect.height) : 0,
+          addLineWidth: Math.round(addLineRect?.width || 0),
+          pickerWidth: Math.round(pickerRect?.width || 0),
+          addButtonWidth: Math.round(addButtonRect?.width || 0),
+          pickerBottom: Math.round(pickerRect?.bottom || 0),
+          addButtonTop: Math.round(addButtonRect?.top || 0)
         };
       });
       if (goodsEditorState.modal !== "rgb(3, 7, 10)"
@@ -2567,7 +2579,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(goodsEditorState.fieldFont) < 13.5
         || goodsEditorState.backWidth < 44
         || goodsEditorState.backHeight < 44
-        || goodsEditorState.actionHeight < 48) {
+        || goodsEditorState.actionHeight < 48
+        || goodsEditorState.pickerWidth < goodsEditorState.addLineWidth - 2
+        || goodsEditorState.addButtonWidth < goodsEditorState.addLineWidth - 2
+        || goodsEditorState.addButtonTop < goodsEditorState.pickerBottom) {
         report.failures.push({ width, type: "goods-editor-deep-dark", goodsEditorState });
       }
       report.results.push(await shot(page, width, "goods-editor", false));

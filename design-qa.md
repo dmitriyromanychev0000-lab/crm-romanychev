@@ -116,3 +116,10 @@ final result: passed
 - Shared directory managers now stack the creation field and primary action vertically.
 - The input and “Добавить” button each occupy the available modal width with a 48 px minimum height.
 - Automated QA checks the appliance-type manager geometry as the representative shared layout.
+
+
+## Release 1.5.4 — full-width Goods creation flow
+
+- The two Goods creation choices now stack as full-width actions across the supported 320–430 px range.
+- The Goods editor picker and its add button also stack full-width instead of squeezing into one row.
+- Automated QA asserts both layouts fill their containers and remain vertically ordered.
