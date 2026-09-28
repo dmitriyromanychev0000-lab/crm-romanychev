@@ -3000,6 +3000,38 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           const stressResult = await shot(page, width, stressLabel, true);
           report.results.push(stressResult);
           if (stressResult.overflow > 2) report.failures.push({ width, type: "stress-horizontal-overflow", label: stressLabel, overflow: stressResult.overflow });
+          if (stressLabel === "stress-orders") {
+            const orderTextState = await page.evaluate(() => {
+              const name = document.querySelector(".legacy-order-title > strong");
+              const model = document.querySelector(".legacy-order-device small");
+              const address = document.querySelector(".legacy-order-meta .address");
+              const ns = name ? getComputedStyle(name) : null;
+              const ms = model ? getComputedStyle(model) : null;
+              const as = address ? getComputedStyle(address) : null;
+              return {
+                nameWhiteSpace: ns?.whiteSpace || "missing",
+                nameLineClamp: ns?.webkitLineClamp || "missing",
+                nameTextOverflow: ns?.textOverflow || "missing",
+                modelWhiteSpace: ms?.whiteSpace || "missing",
+                modelLineClamp: ms?.webkitLineClamp || "missing",
+                modelTextOverflow: ms?.textOverflow || "missing",
+                addressWhiteSpace: as?.whiteSpace || "missing",
+                addressTextOverflow: as?.textOverflow || "missing",
+                addressHeight: Math.round(address?.getBoundingClientRect().height || 0)
+              };
+            });
+            if (orderTextState.nameWhiteSpace === "nowrap"
+              || orderTextState.nameLineClamp !== "2"
+              || orderTextState.nameTextOverflow === "ellipsis"
+              || orderTextState.modelWhiteSpace === "nowrap"
+              || orderTextState.modelLineClamp !== "2"
+              || orderTextState.modelTextOverflow === "ellipsis"
+              || orderTextState.addressWhiteSpace === "nowrap"
+              || orderTextState.addressTextOverflow === "ellipsis"
+              || orderTextState.addressHeight < 44) {
+              report.failures.push({ width, type: "stress-order-readable-text", orderTextState });
+            }
+          }
           if (stressLabel === "stress-warehouse") {
             const stockTextState = await page.evaluate(() => ({
               lineClamp: getComputedStyle(document.querySelector(".legacy-stock-copy strong")).webkitLineClamp,

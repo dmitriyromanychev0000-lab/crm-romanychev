@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.6.7";
-const APP_BUILD = "2026.09.28.214";
+const APP_VERSION = "1.6.8";
+const APP_BUILD = "2026.09.28.215";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки визитов в календаре показывают клиента и технику до двух строк без раннего многоточия";
+const APP_RELEASE = "Карточки заявок на 320 px сохраняют длинные имя клиента, модель техники и адрес читаемыми";
 const APP_CHANGELOG = [
+  {
+    version: "1.6.8",
+    date: "28.09.2026",
+    title: "Длинные данные заявки не теряются",
+    items: [
+      "Имя клиента и модель техники на 320–340 px показываются до двух строк вместо одной обрезанной.",
+      "Длинный адрес переносится внутри своей touch-зоны и больше не режется на первых словах.",
+      "Короткие заявки сохраняют прежнюю компактную высоту."
+    ]
+  },
   {
     version: "1.6.7",
     date: "28.09.2026",

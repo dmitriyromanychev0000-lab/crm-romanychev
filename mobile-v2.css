@@ -15729,3 +15729,29 @@
     min-height: 56px !important;
   }
 }
+
+
+/* 1.6.8 · Заявки 320 px: длинные рабочие данные читаются, а не режутся. */
+@media screen and (max-width: 340px) {
+  .legacy-order-title > strong,
+  .legacy-order-device small {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.2 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .legacy-order-meta .address {
+    overflow: hidden !important;
+    max-height: 58px !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.25 !important;
+    align-items: flex-start !important;
+  }
+}
