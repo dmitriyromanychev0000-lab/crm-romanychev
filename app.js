@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.9";
-const APP_BUILD = "2026.09.28.227";
+const APP_VERSION = "1.7.10";
+const APP_BUILD = "2026.09.28.228";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Инструменты и документы на 320 px снова показывают сумму справа в одной строке";
+const APP_RELEASE = "Сводка бэкапа на всех телефонах собрана в одну компактную строку из трёх счётчиков";
 const APP_CHANGELOG = [
+  {
+    version: "1.7.10",
+    date: "28.09.2026",
+    title: "Компактная сводка бэкапа",
+    items: [
+      "Счётчики «Заявки / Склад / Прайс» теперь стоят в одну строку и на 320–360 px.",
+      "Убрана случайная раскладка 2+1, которая растягивала низ страницы.",
+      "QA проверяет одинаковую ширину и одну горизонтальную линию трёх счётчиков."
+    ]
+  },
   {
     version: "1.7.9",
     date: "28.09.2026",

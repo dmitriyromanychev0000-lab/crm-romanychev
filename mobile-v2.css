@@ -16144,3 +16144,20 @@
     justify-self: end !important;
   }
 }
+
+
+/* 1.7.10 · Бэкап: три итоговых счётчика всегда в одну строку. */
+@media screen and (max-width: 360px) {
+  .legacy-backup-page .legacy-service-stats.backup {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-backup-page .legacy-service-stats.backup > div,
+  .legacy-backup-page .legacy-service-stats.backup > div:last-child {
+    grid-column: auto !important;
+    min-width: 0 !important;
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+  }
+}

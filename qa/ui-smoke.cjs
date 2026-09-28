@@ -892,6 +892,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (result.overflow > 2) report.failures.push({ width, type: "horizontal-overflow", label, overflow: result.overflow });
     }
 
+    await setState(page, uiState({ activePage: "more", moreSection: "backup" }));
+    const backupStatsLayout = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll(".legacy-service-stats.backup > div")];
+      const rects = cards.map((card) => card.getBoundingClientRect());
+      return {
+        count: rects.length,
+        widths: rects.map((rect) => Math.round(rect.width)),
+        tops: rects.map((rect) => Math.round(rect.top)),
+        heights: rects.map((rect) => Math.round(rect.height))
+      };
+    });
+    if (backupStatsLayout.count !== 3
+      || Math.max(...backupStatsLayout.widths) - Math.min(...backupStatsLayout.widths) > 2
+      || Math.max(...backupStatsLayout.tops) - Math.min(...backupStatsLayout.tops) > 2
+      || backupStatsLayout.widths.some((value) => value < 80)
+      || backupStatsLayout.heights.some((value) => value < 60)) {
+      report.failures.push({ width, type: "backup-stats-single-row", backupStatsLayout });
+    }
+
     await setState(page, uiState({ activePage: "warehouse", warehouseSection: "list" }));
     const warehouseShortcutLayout = await page.evaluate(() => {
       const container = document.querySelector(".legacy-warehouse-shortcuts");
