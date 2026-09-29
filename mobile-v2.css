@@ -23750,3 +23750,14 @@
     backdrop-filter: none !important;
   }
 }
+
+
+/* 1.8.17 fix · перекрываем старый :has backdrop из styles.css */
+@media screen and (max-width: 520px) {
+  body.modal-open > .modal-backdrop.legacy-finance-entry-backdrop,
+  body.modal-open > .modal-backdrop.legacy-service-editor-backdrop,
+  body.modal-open > .modal-backdrop.legacy-price-editor-backdrop {
+    background: #020507 !important;
+    backdrop-filter: none !important;
+  }
+}
