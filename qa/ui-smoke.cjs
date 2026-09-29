@@ -2908,6 +2908,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const titleLineHeight = titleStyle ? parseFloat(titleStyle.lineHeight) || 0 : 0;
         const titleHeight = title?.getBoundingClientRect().height || 0;
         return {
+          titleLineClamp: titleStyle?.webkitLineClamp || "missing",
+          titleTextOverflow: titleStyle?.textOverflow || "missing",
+          titleScrollHeight: Math.round(title?.scrollHeight || 0),
+          titleClientHeight: Math.round(title?.clientHeight || 0),
           heroHeight: Math.round(hero?.getBoundingClientRect().height || 0),
           heroTitleLines: titleLineHeight > 0 ? Math.max(1, Math.round(titleHeight / titleLineHeight)) : 1,
           kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
@@ -2918,8 +2922,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           movementHeight: Math.round(movement?.getBoundingClientRect().height || 0)
         };
       });
-      const stockDetailHeroMax = stockDetailDensity.heroTitleLines > 1 ? 92 : (width <= 340 ? 82 : 76);
+      const stockDetailHeroMax = width <= 340 && stockDetailDensity.heroTitleLines > 2 ? 104 : (stockDetailDensity.heroTitleLines > 1 ? 92 : (width <= 340 ? 82 : 76));
       if (stockDetailDensity.heroHeight > stockDetailHeroMax
+        || (width <= 340 && stockDetailDensity.titleLineClamp !== "3")
+        || (width <= 340 && stockDetailDensity.titleTextOverflow === "ellipsis")
+        || (width <= 340 && stockDetailDensity.titleScrollHeight > stockDetailDensity.titleClientHeight + 1)
         || stockDetailDensity.kpiHeight > 66
         || stockDetailDensity.incomingHeight < 44
         || stockDetailDensity.incomingHeight > 54

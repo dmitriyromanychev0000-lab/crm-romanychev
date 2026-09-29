@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.23";
-const APP_BUILD = "2026.09.29.356";
+const APP_VERSION = "1.8.24";
+const APP_BUILD = "2026.09.29.357";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Сводка позиции склада стала плотнее без пустых половин строки"
+const APP_RELEASE = "Полное название позиции склада читается в деталке даже на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.24",
+    date: "29.09.2026",
+    title: "Название позиции без обрезания",
+    items: [
+      "В полной деталке склада длинное название на 320 px может занимать до трёх строк.",
+      "Шрифт заголовка не уменьшался; статус, остатки и действия сохраняют прежнюю компоновку.",
+      "Список склада остаётся компактным — изменение касается только экрана полного просмотра."
+    ]
+  },
   {
     version: "1.8.23",
     date: "29.09.2026",

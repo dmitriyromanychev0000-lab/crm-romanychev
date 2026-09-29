@@ -23905,3 +23905,18 @@
     font-size: 11.5px !important;
   }
 }
+
+
+/* 1.8.24 · Полное название позиции в деталке склада на 320 px */
+@media screen and (max-width: 340px) {
+  .stock-detail-hero h2 {
+    -webkit-line-clamp: 3 !important;
+    line-height: 1.1 !important;
+    overflow-wrap: anywhere !important;
+    text-overflow: clip !important;
+  }
+
+  .stock-detail-hero p {
+    margin-top: 2px !important;
+  }
+}
