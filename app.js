@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.91";
-const APP_BUILD = "2026.09.29.321";
+const APP_VERSION = "1.7.92";
+const APP_BUILD = "2026.09.29.322";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Меню «Ещё» выровнено: пиктограммы, подписи и стрелки сидят на общей вертикальной оси"
+const APP_RELEASE = "Форма заявки выровнена: текст основных полей и пиктограммы сидят по единой вертикальной оси"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.92",
+    date: "29.09.2026",
+    title: "Ровные поля заявки",
+    items: [
+      "Текст в основных input-полях формы заявки центрируется внутри 46 px контроля без лишнего вертикального padding.",
+      "Иконки шапки, секций, закрытия и кнопок каталога закреплены точно по центру своих контейнеров.",
+      "Нативные иконки даты и времени получили одинаковую посадку и размер на мобильном Chromium."
+    ]
+  },
   {
     version: "1.7.91",
     date: "29.09.2026",

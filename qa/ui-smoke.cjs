@@ -1653,6 +1653,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const bodyStyle = body ? getComputedStyle(body) : null;
         const sectionStyle = section ? getComputedStyle(section) : null;
         const titleStyle = title ? getComputedStyle(title) : null;
+        const centerDelta = (box, child) => {
+          const boxRect = box?.getBoundingClientRect();
+          const childRect = child?.getBoundingClientRect();
+          if (!boxRect || !childRect) return 999;
+          return Math.round(Math.abs((boxRect.top + boxRect.height / 2) - (childRect.top + childRect.height / 2)) * 10) / 10;
+        };
+        const headerIcon = document.querySelector(".order-editor-title-icon");
+        const closeButton = document.querySelector(".order-editor-close");
+        const sectionIcons = [...document.querySelectorAll(".order-editor-section-icon")];
+        const catalogButton = document.querySelector(".order-editor-modal .legacy-catalog-button");
         return {
           bodyPaddingTop: bodyStyle ? px(bodyStyle.paddingTop) : 999,
           sectionMarginBottom: sectionStyle ? px(sectionStyle.marginBottom) : 999,
@@ -1661,7 +1671,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           textareaHeight: Math.round(textarea?.getBoundingClientRect().height || 0),
           issueHeight: Math.round(issue?.getBoundingClientRect().height || 0),
           diagnosisHeight: Math.round(diagnosis?.getBoundingClientRect().height || 0),
-          defectsHeight: Math.round(defects?.getBoundingClientRect().height || 0)
+          defectsHeight: Math.round(defects?.getBoundingClientRect().height || 0),
+          primaryControls: [...document.querySelectorAll('.order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]), .order-editor-modal .form-grid .form-group > select.field')].map((node) => {
+            const style = getComputedStyle(node);
+            return {
+              height: Math.round(node.getBoundingClientRect().height),
+              paddingTop: px(style.paddingTop),
+              paddingBottom: px(style.paddingBottom)
+            };
+          }),
+          headerIconDelta: centerDelta(headerIcon, headerIcon?.querySelector(".ui-icon")),
+          closeIconDelta: centerDelta(closeButton, closeButton?.querySelector(".ui-icon")),
+          sectionIconDeltas: sectionIcons.map((node) => centerDelta(node, node.querySelector(".ui-icon"))),
+          catalogIconDelta: centerDelta(catalogButton, catalogButton?.querySelector(".ui-icon"))
         };
       });
       if (orderEditorDensity.bodyPaddingTop > 12
@@ -1675,7 +1697,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderEditorDensity.diagnosisHeight < 46
         || orderEditorDensity.diagnosisHeight > 50
         || orderEditorDensity.defectsHeight < 42
-        || orderEditorDensity.defectsHeight > 46) {
+        || orderEditorDensity.defectsHeight > 46
+        || orderEditorDensity.primaryControls.length < 8
+        || orderEditorDensity.primaryControls.some((item) => item.height !== 46 || item.paddingTop !== 0 || item.paddingBottom !== 0)
+        || orderEditorDensity.headerIconDelta > 1
+        || orderEditorDensity.closeIconDelta > 1
+        || orderEditorDensity.sectionIconDeltas.length < 2
+        || orderEditorDensity.sectionIconDeltas.some((value) => value > 1)
+        || orderEditorDensity.catalogIconDelta > 1) {
         report.failures.push({ width, type: "order-editor-compact-density", orderEditorDensity });
       }
 

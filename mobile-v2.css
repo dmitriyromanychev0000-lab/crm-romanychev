@@ -20885,3 +20885,71 @@
     height: 14px !important;
   }
 }
+
+
+/* 1.7.92 · Заявка: единая вертикальная посадка полей и пиктограмм. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]),
+  .order-editor-modal .form-grid .form-group > select.field {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    vertical-align: middle !important;
+  }
+
+  .order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]) {
+    line-height: 44px !important;
+  }
+
+  .order-editor-modal .form-grid .form-group > select.field {
+    line-height: 1.2 !important;
+  }
+
+  .order-editor-modal input[type="date"].field,
+  .order-editor-modal input[type="time"].field {
+    padding-right: 10px !important;
+  }
+
+  .order-editor-modal input[type="date"].field::-webkit-calendar-picker-indicator,
+  .order-editor-modal input[type="time"].field::-webkit-calendar-picker-indicator {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: .88 !important;
+  }
+
+  .order-editor-title-icon,
+  .order-editor-close,
+  .order-editor-modal .order-editor-section-icon {
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .order-editor-title-icon .ui-icon,
+  .order-editor-close .ui-icon,
+  .order-editor-modal .order-editor-section-icon .ui-icon {
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .order-editor-modal .legacy-catalog-button,
+  .order-editor-modal .legacy-stock-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+  }
+
+  .order-editor-modal .legacy-catalog-button .ui-icon,
+  .order-editor-modal .legacy-stock-button .ui-icon {
+    flex: 0 0 auto !important;
+    width: 17px !important;
+    height: 17px !important;
+    margin: 0 !important;
+  }
+}
