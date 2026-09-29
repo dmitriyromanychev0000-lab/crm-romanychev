@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T07:58:28.443Z",
-  "testedSha": "1752e456f567a78f14fbb8f5eb287fc0ed161290",
+  "generatedAt": "2026-09-29T08:09:32.359Z",
+  "testedSha": "4b934a29d2b14dbf1031a9c71aa527600221ed01",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T07:59:09.333Z"
+      "fallbackCreatedAt": "2026-09-29T08:10:11.633Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,126 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "finance-semantic-hierarchy",
+      "financePageSurface": {
+        "result": "rgb(17, 24, 29)",
+        "income": "rgb(17, 24, 29)",
+        "expense": "rgb(17, 24, 29)",
+        "incomeRow": "rgb(17, 24, 29)",
+        "expenseRow": "rgb(17, 24, 29)",
+        "incomeAction": "rgb(13, 20, 25)",
+        "expenseAction": "rgb(13, 20, 25)",
+        "incomeActionBorder": "rgb(39, 52, 60)",
+        "expenseActionBorder": "rgb(39, 52, 60)",
+        "incomeActionColor": "rgb(101, 217, 149)",
+        "expenseActionColor": "rgb(255, 113, 123)",
+        "resultBorder": "rgb(48, 58, 65)",
+        "incomeBorder": "rgb(48, 58, 65)",
+        "expenseBorder": "rgb(48, 58, 65)",
+        "actionsWidth": 296,
+        "actionRects": [
+          {
+            "left": 12,
+            "top": 417,
+            "width": 145,
+            "height": 48
+          },
+          {
+            "left": 163,
+            "top": 417,
+            "width": 145,
+            "height": 48
+          }
+        ],
+        "rowTitleFont": "12px"
+      }
+    },
+    {
+      "width": 320,
+      "type": "clients-semantic-hierarchy",
+      "clientPageSurface": {
+        "background": "rgb(17, 24, 29)",
+        "primaryStat": "rgb(17, 24, 29)",
+        "activeStat": "rgb(7, 12, 16)",
+        "closedStat": "rgb(7, 12, 16)",
+        "titleFont": "11.5px",
+        "actionBackgrounds": [
+          "rgb(13, 20, 25)",
+          "rgb(13, 20, 25)"
+        ],
+        "actionBorders": [
+          "rgb(39, 52, 60)",
+          "rgb(39, 52, 60)"
+        ],
+        "actionWidths": [
+          127,
+          127
+        ],
+        "totalColor": "rgb(255, 138, 112)"
+      }
+    },
+    {
+      "width": 390,
+      "type": "finance-semantic-hierarchy",
+      "financePageSurface": {
+        "result": "rgb(17, 24, 29)",
+        "income": "rgb(17, 24, 29)",
+        "expense": "rgb(17, 24, 29)",
+        "incomeRow": "rgb(17, 24, 29)",
+        "expenseRow": "rgb(17, 24, 29)",
+        "incomeAction": "rgb(13, 20, 25)",
+        "expenseAction": "rgb(13, 20, 25)",
+        "incomeActionBorder": "rgb(39, 52, 60)",
+        "expenseActionBorder": "rgb(39, 52, 60)",
+        "incomeActionColor": "rgb(101, 217, 149)",
+        "expenseActionColor": "rgb(255, 113, 123)",
+        "resultBorder": "rgb(48, 58, 65)",
+        "incomeBorder": "rgb(48, 58, 65)",
+        "expenseBorder": "rgb(48, 58, 65)",
+        "actionsWidth": 358,
+        "actionRects": [
+          {
+            "left": 16,
+            "top": 369,
+            "width": 176,
+            "height": 48
+          },
+          {
+            "left": 198,
+            "top": 369,
+            "width": 176,
+            "height": 48
+          }
+        ],
+        "rowTitleFont": "12px"
+      }
+    },
+    {
+      "width": 390,
+      "type": "clients-semantic-hierarchy",
+      "clientPageSurface": {
+        "background": "rgb(17, 24, 29)",
+        "primaryStat": "rgb(17, 24, 29)",
+        "activeStat": "rgb(7, 12, 16)",
+        "closedStat": "rgb(7, 12, 16)",
+        "titleFont": "12.5px",
+        "actionBackgrounds": [
+          "rgb(13, 20, 25)",
+          "rgb(13, 20, 25)"
+        ],
+        "actionBorders": [
+          "rgb(39, 52, 60)",
+          "rgb(39, 52, 60)"
+        ],
+        "actionWidths": [
+          158,
+          158
+        ],
+        "totalColor": "rgb(255, 138, 112)"
+      }
+    }
+  ]
 }
