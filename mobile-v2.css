@@ -23790,7 +23790,7 @@
   .settings-profile-card .legacy-settings-grid > .settings-provider-name {
     grid-column: 1 / -1 !important;
     display: grid !important;
-    grid-template-columns: 78px minmax(0,1fr) !important;
+    grid-template-columns: 96px minmax(0,1fr) !important;
     grid-template-rows: 44px !important;
     gap: 6px !important;
     align-items: center !important;
@@ -23809,5 +23809,18 @@
     padding-left: 8px !important;
     font-size: 13px !important;
     letter-spacing: -.01em !important;
+  }
+}
+
+
+/* 1.8.19 · 320 px текст без обрезания в KPI документов */
+@media screen and (max-width: 340px) {
+  .legacy-service-stats.receipts-stats {
+    grid-template-columns: minmax(0,.88fr) minmax(0,1.34fr) minmax(0,.88fr) !important;
+  }
+
+  .receipts-stats > div:nth-child(2) {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
   }
 }

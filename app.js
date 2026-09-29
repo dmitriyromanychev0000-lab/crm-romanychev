@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.18";
-const APP_BUILD = "2026.09.29.351";
+const APP_VERSION = "1.8.19";
+const APP_BUILD = "2026.09.29.352";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинные реквизиты исполнителя больше не обрезаются на узких экранах"
+const APP_RELEASE = "Узкие экраны больше не режут подписи реквизитов и сумму в документах"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.19",
+    date: "29.09.2026",
+    title: "Текст без обрезания на 320 px",
+    items: [
+      "Подпись «Исполнитель» в реквизитах полностью помещается на самом узком поддерживаемом экране.",
+      "В документах центральный KPI «Сумма» получил больше ширины, поэтому 10 100 ₽ больше не превращается в многоточие.",
+      "Высота карточек и общая плотность интерфейса не увеличивались."
+    ]
+  },
   {
     version: "1.8.18",
     date: "29.09.2026",

@@ -4342,6 +4342,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           linkedStat: getComputedStyle(document.querySelector(".receipts-stats > div:nth-child(3)")).backgroundColor,
           statGridWidth: Math.round(statGridRect?.width || 0),
           statRects: statRects.map((rect) => ({ left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) })),
+          amountStatFit: (() => {
+            const node = document.querySelector(".receipts-stats > div:nth-child(2) strong");
+            return { scrollWidth: node?.scrollWidth || 0, clientWidth: node?.clientWidth || 0 };
+          })(),
           linkedRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.linked")).backgroundColor,
           standaloneRow: getComputedStyle(document.querySelector(".legacy-document-row.receipt.standalone")).backgroundColor,
           rowTitleFont: getComputedStyle(document.querySelector(".legacy-document-row.receipt strong")).fontSize,
@@ -4366,6 +4370,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptsPageSurface.addHeight < 48
         || receiptsPageSurface.statRects.length !== 3
         || receiptsPageSurface.statRects.some((item) => item.width < 80 || item.height < 66 || item.height > 74)
+        || receiptsPageSurface.amountStatFit.scrollWidth > receiptsPageSurface.amountStatFit.clientWidth + 1
         || Math.max(...receiptsPageSurface.statRects.map((item) => item.top)) - Math.min(...receiptsPageSurface.statRects.map((item) => item.top)) > 2
         || receiptsPageSurface.statRects[1].left <= receiptsPageSurface.statRects[0].left
         || receiptsPageSurface.statRects[2].left <= receiptsPageSurface.statRects[1].left
@@ -4542,6 +4547,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           phone: field("phone"),
           companyAddress: field("companyAddress"),
           inn: field("inn"),
+          profileLabelFit: [".settings-company-name > span",".settings-provider-name > span"].map((selector) => {
+            const node = document.querySelector(selector);
+            return {
+              selector,
+              scrollWidth: node?.scrollWidth || 0,
+              clientWidth: node?.clientWidth || 0
+            };
+          }),
           profileTextFit: ["companyName","name"].map((name) => {
             const node = document.querySelector(`.settings-profile-card [name="${name}"]`);
             if (!node) return { name, required: 999, available: 0, fontSize: 0 };
@@ -4647,6 +4660,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.name.width < 120
         || settingsSurface.phone.width < 120
         || settingsSurface.inn.width < 120
+        || settingsSurface.profileLabelFit.length !== 2
+        || settingsSurface.profileLabelFit.some((item) => item.scrollWidth > item.clientWidth + 1)
         || settingsSurface.profileTextFit.length !== 2
         || settingsSurface.profileTextFit.some((item) => item.required > item.available + 1 || item.fontSize < 12.5)
         || settingsSurface.companyAddress.width < settingsSurface.gridWidth - 2
