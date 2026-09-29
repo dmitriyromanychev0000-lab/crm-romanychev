@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T22:53:11.007Z",
-  "testedSha": "61fa18bca47d8f6e9631b9a18eba858a11190df0",
+  "generatedAt": "2026-09-29T22:57:39.580Z",
+  "testedSha": "b274b55e11ec6ce9d585812a4ea63d648bef4c26",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1961,7 +1961,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T22:53:44.494Z"
+      "fallbackCreatedAt": "2026-09-29T22:58:20.169Z"
     },
     {
       "label": "pwa-offline",
@@ -1975,26 +1975,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "drafts-compact-density",
-      "draftSurface": {
-        "card": "rgb(17, 24, 29)",
-        "note": "rgb(21, 29, 35)",
-        "next": "rgb(21, 29, 35)",
-        "remove": "rgb(21, 29, 35)",
-        "cardHeight": 136,
-        "noteHeight": 49,
-        "nextHeight": 44,
-        "removeHeight": 44,
-        "noteText": "Незавершённые заявки — продолжи или удали ненужное.",
-        "metaLineCount": 2,
-        "metaFirst": "Посудомоечная машина · Bosch Serie 4",
-        "metaSecond": "+79991112233 · 26.09.2026",
-        "metaSecondOverflow": 0
-      },
-      "draftHeightLimit": 132
-    }
-  ]
+  "failures": []
 }
