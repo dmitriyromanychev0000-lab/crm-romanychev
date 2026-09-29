@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.44";
-const APP_BUILD = "2026.09.30.379";
+const APP_VERSION = "1.8.45";
+const APP_BUILD = "2026.09.30.380";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор инструментов стал компактнее"
+const APP_RELEASE = "Редактор документов стал компактнее"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.45",
+    date: "30.09.2026",
+    title: "Компактный редактор документов",
+    items: [
+      "На 360–430 px дата и сумма документа теперь стоят рядом и не растягивают форму лишней строкой.",
+      "Номер, привязка к заявке и комментарий остаются полноширинными; на 320 px все поля по-прежнему идут одной колонкой.",
+      "Пустой раздел документов получил компактную иконку, заголовок и короткое пояснение."
+    ]
+  },
   {
     version: "1.8.44",
     date: "30.09.2026",
@@ -5556,7 +5566,7 @@ function receiptsPage() {
         <b>${view.amount ? money(view.amount) : "—"}</b>
         <span class="chevron">${icon("chevron")}</span>
       </button>`;
-    }).join("")}</div>` : `<div class="legacy-service-empty">Документов пока нет.</div>`}
+    }).join("")}</div>` : `<div class="legacy-service-empty legacy-receipt-empty"><span class="legacy-receipt-empty-icon">${icon("receipt")}</span><strong>Документов пока нет</strong><small>Создай первый документ, квитанцию или чек.</small></div>`}
   </main>`;
 }
 
@@ -7003,10 +7013,10 @@ function receiptModal(existing = null, receiptIndex = -1) {
     <div class="receipt-editor-type">${icon("receipt")}<span>Квитанция, чек, заказ-наряд или другой документ</span></div>
     <div class="form-grid">
       <div class="form-group full"><label>Тип / название</label><input class="field" name="title" value="${escapeHtml(view.title)}" required placeholder="Квитанция" /></div>
-      <div class="form-group"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" placeholder="Необязательно" /></div>
-      <div class="form-group"><label>Дата</label><input class="field" name="date" type="date" value="${escapeHtml(dateValue)}" /></div>
-      <div class="form-group"><label>Сумма</label><input class="field receipt-editor-amount" name="amount" type="number" min="0" step="1" value="${view.amount}" inputmode="decimal" /></div>
-      <div class="form-group"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
+      <div class="form-group full receipt-field-number"><label>Номер</label><input class="field" name="number" value="${escapeHtml(view.number)}" placeholder="Необязательно" /></div>
+      <div class="form-group receipt-field-date"><label>Дата</label><input class="field" name="date" type="date" value="${escapeHtml(dateValue)}" /></div>
+      <div class="form-group receipt-field-amount"><label>Сумма</label><input class="field receipt-editor-amount" name="amount" type="number" min="0" step="1" value="${view.amount}" inputmode="decimal" /></div>
+      <div class="form-group full receipt-field-order"><label>Заявка</label><select class="field" name="orderId"><option value="">— Не привязана —</option>${orderOptions}</select></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Комментарий к документу">${escapeHtml(view.note)}</textarea></div>
     </div>
     <div class="modal-actions">${isStored ? `<button type="button" class="danger-button editor-danger-icon" id="delete-receipt" aria-label="Удалить документ" title="Удалить документ">${icon("trash")}<span>Удалить</span></button>` : ""}<button type="button" class="secondary-button" data-close-modal>Отмена</button><button class="primary-button" type="submit">Сохранить</button></div>

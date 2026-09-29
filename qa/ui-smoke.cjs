@@ -4769,7 +4769,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const head = document.querySelector(".receipt-editor-head")?.getBoundingClientRect();
         const hero = document.querySelector(".receipt-editor-type")?.getBoundingClientRect();
         const textarea = document.querySelector(".receipt-editor-modal textarea")?.getBoundingClientRect();
-        const gridStyle = getComputedStyle(document.querySelector(".receipt-editor-modal .form-grid"));
+        const grid = document.querySelector(".receipt-editor-modal .form-grid");
+        const gridStyle = getComputedStyle(grid);
+        const box = (name) => {
+          const rect = document.querySelector(`.receipt-editor-modal [name="${name}"]`)?.closest(".form-group")?.getBoundingClientRect();
+          return rect ? { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) } : null;
+        };
         return {
           modal: getComputedStyle(document.querySelector(".receipt-editor-modal")).backgroundColor,
           backdrop: getComputedStyle(document.querySelector(".receipt-editor-backdrop")).backgroundColor,
@@ -4786,7 +4791,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           footerBottom: rect ? Math.round(rect.bottom) : 0,
           modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
           blankGap: rect && gridRect ? Math.round(rect.top - gridRect.bottom) : 999,
-          viewportHeight: window.innerHeight
+          viewportHeight: window.innerHeight,
+          gridColumns: gridStyle.gridTemplateColumns,
+          titleBox: box("title"),
+          numberBox: box("number"),
+          dateBox: box("date"),
+          amountBox: box("amount"),
+          orderBox: box("orderId"),
+          noteBox: box("note")
         };
       });
       if (receiptEditorState.modal !== "rgb(7, 12, 15)"
@@ -4797,7 +4809,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptEditorState.closeHeight < 44
         || receiptEditorState.actionHeight < 48
         || receiptEditorState.modalBottom > receiptEditorState.viewportHeight + 1
-        || receiptEditorState.blankGap > 20) {
+        || receiptEditorState.blankGap > 20
+        || (width <= 340 && receiptEditorState.gridColumns.split(" ").filter(Boolean).length !== 1)
+        || (width > 340 && (
+          receiptEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
+          || !receiptEditorState.dateBox || !receiptEditorState.amountBox
+          || Math.abs(receiptEditorState.dateBox.top - receiptEditorState.amountBox.top) > 2
+          || Math.abs(receiptEditorState.dateBox.width - receiptEditorState.amountBox.width) > 2
+          || !receiptEditorState.titleBox || !receiptEditorState.numberBox || !receiptEditorState.orderBox || !receiptEditorState.noteBox
+          || receiptEditorState.numberBox.width < receiptEditorState.dateBox.width * 1.9
+          || receiptEditorState.orderBox.width < receiptEditorState.dateBox.width * 1.9
+          || receiptEditorState.noteBox.width < receiptEditorState.dateBox.width * 1.9
+        ))) {
         report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
       }
       if (receiptEditorState.headHeight > 60
@@ -5046,7 +5069,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Редактор инструментов стал компактнее"
+        || settingsSurface.versionSummaryFit.text !== "Редактор документов стал компактнее"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5505,9 +5528,35 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           ["empty-warehouse", uiState({ activePage: "warehouse", warehouseSection: "list" })],
           ["empty-clients", uiState({ activePage: "more", moreSection: "clients" })],
           ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })],
-          ["empty-tools", uiState({ activePage: "more", moreSection: "tools" })]
+          ["empty-tools", uiState({ activePage: "more", moreSection: "tools" })],
+          ["empty-receipts", uiState({ activePage: "more", moreSection: "receipts" })]
         ]) {
           await setState(page, emptyState);
+          if (emptyLabel === "empty-receipts") {
+            const receiptEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".legacy-receipt-empty");
+              const icon = root?.querySelector(".legacy-receipt-empty-icon");
+              const title = root?.querySelector("strong");
+              const copy = root?.querySelector("small");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const lineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                copyLines: copy && lineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / lineHeight) : 0
+              };
+            });
+            if (receiptEmptyState.height < 100
+              || receiptEmptyState.height > 120
+              || receiptEmptyState.iconWidth !== 36
+              || receiptEmptyState.iconHeight !== 36
+              || receiptEmptyState.title !== "Документов пока нет"
+              || receiptEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-receipts-layout", receiptEmptyState });
+            }
+          }
           const emptySurface = await page.evaluate(() => {
             const node = document.querySelector(".panel.empty, .legacy-client-empty, .legacy-goods-empty, .legacy-price-empty.standalone, .legacy-finance-empty, .legacy-service-empty");
             if (!node) return { found: false };

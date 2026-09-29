@@ -24410,3 +24410,71 @@
     grid-column: auto !important;
   }
 }
+
+
+
+/* 1.8.45 · Документы: компактная форма и единое пустое состояние */
+@media screen and (min-width: 360px) and (max-width: 520px) {
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    column-gap: 7px !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-group.full,
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-number,
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-order {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-group.full {
+    grid-column: auto !important;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .legacy-receipt-empty {
+    display: grid !important;
+    min-height: 108px !important;
+    padding: 14px !important;
+    place-items: center !important;
+    align-content: center !important;
+    gap: 4px !important;
+    text-align: center !important;
+  }
+
+  .legacy-receipt-empty-icon {
+    display: grid !important;
+    width: 36px !important;
+    height: 36px !important;
+    margin-bottom: 3px !important;
+    place-items: center !important;
+    border: 1px solid #26343d !important;
+    border-radius: 10px !important;
+    background: #11181d !important;
+    color: #ff8068 !important;
+  }
+
+  .legacy-receipt-empty-icon .ui-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
+
+  .legacy-receipt-empty > strong {
+    color: #eef2f4 !important;
+    font-size: 13px !important;
+    line-height: 1.15 !important;
+  }
+
+  .legacy-receipt-empty > small {
+    max-width: 250px !important;
+    color: #8c979f !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+}
