@@ -1425,7 +1425,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         contract: document.querySelector(".act-contract-line")?.textContent || "",
         saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || "",
         bottomNavCount: document.querySelectorAll(".bottom-nav").length,
-        backButtonCount: document.querySelectorAll(".legacy-act-head .legacy-back-button").length
+        backButtonCount: document.querySelectorAll(".legacy-act-head .legacy-back-button").length,
+        actSelectFit: (() => {
+          const node = document.querySelector("#act-order-select");
+          if (!node) return { text: "", required: 999, available: 0 };
+          const style = getComputedStyle(node);
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+          const text = node.selectedOptions?.[0]?.textContent?.trim() || "";
+          return {
+            text,
+            required: Math.ceil(ctx.measureText(text).width),
+            available: Math.floor(node.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0) - 24)
+          };
+        })()
       }));
       if (actScreenSurface.control !== "rgb(7, 12, 16)"
         || actScreenSurface.field !== "rgb(9, 15, 20)"
@@ -1438,7 +1452,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !actScreenSurface.contract.includes("№0060")
         || !actScreenSurface.saveButton.includes("Сохранить картинку")
         || actScreenSurface.bottomNavCount !== 0
-        || actScreenSurface.backButtonCount !== 1) {
+        || actScreenSurface.backButtonCount !== 1
+        || actScreenSurface.actSelectFit.text.includes("Холодильник")
+        || actScreenSurface.actSelectFit.required > actScreenSurface.actSelectFit.available + 1) {
         report.failures.push({ width, type: "act-semantic-hierarchy", actScreenSurface });
       }
       const actDensity = await page.evaluate(() => {

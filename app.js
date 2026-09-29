@@ -4536,7 +4536,7 @@ function actPage() {
 
     <section class="legacy-act-control no-print">
       <div class="legacy-act-control-title"><span>${icon("document")}</span><div><h2>Акт выполненных работ</h2><small>Предпросмотр · сохранение картинкой</small></div></div>
-      <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} ${escapeHtml(item.name || "Без имени")} — ${escapeHtml(item.tech || "Техника")} (${shortDate(orderDateValue(item))})</option>`).join("")}</select></label>
+      <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} · ${escapeHtml(item.name || "Без имени")} · ${shortDate(orderDateValue(item))}</option>`).join("")}</select></label>
       ${order ? `<div class="legacy-act-selected">
         <span class="legacy-act-selected-icon">${icon(applianceIconName(order.tech))}</span>
         <span><small>В АКТЕ</small><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.name || "Клиент")}</strong><em>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" · ") || "Техника")} · ${money(actTotal)}</em></span>
