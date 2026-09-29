@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.20";
-const APP_BUILD = "2026.09.29.353";
+const APP_VERSION = "1.8.21";
+const APP_BUILD = "2026.09.29.354";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинные названия документов и инструмента читаются до двух строк на 320 px"
+const APP_RELEASE = "Длинный тип техники в карточке заявки читается до двух строк на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.21",
+    date: "29.09.2026",
+    title: "Тип техники без раннего обрезания",
+    items: [
+      "На 320 px длинный тип техники в карточке заявки может занимать две строки.",
+      "Модель, сумма и действия сохраняют прежнее компактное расположение.",
+      "Горизонтальный overflow и высота карточек продолжают контролироваться Mobile UI QA."
+    ]
+  },
   {
     version: "1.8.20",
     date: "29.09.2026",

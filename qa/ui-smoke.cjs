@@ -4979,15 +4979,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           if (stressLabel === "stress-orders") {
             const orderTextState = await page.evaluate(() => {
               const name = document.querySelector(".legacy-order-title > strong");
+              const deviceTitle = document.querySelector(".legacy-order-device-copy > strong");
               const model = document.querySelector(".legacy-order-device small");
               const address = document.querySelector(".legacy-order-meta .address");
               const ns = name ? getComputedStyle(name) : null;
+              const ds = deviceTitle ? getComputedStyle(deviceTitle) : null;
               const ms = model ? getComputedStyle(model) : null;
               const as = address ? getComputedStyle(address) : null;
               return {
                 nameWhiteSpace: ns?.whiteSpace || "missing",
                 nameLineClamp: ns?.webkitLineClamp || "missing",
                 nameTextOverflow: ns?.textOverflow || "missing",
+                deviceTitleWhiteSpace: ds?.whiteSpace || "missing",
+                deviceTitleLineClamp: ds?.webkitLineClamp || "missing",
+                deviceTitleTextOverflow: ds?.textOverflow || "missing",
                 modelWhiteSpace: ms?.whiteSpace || "missing",
                 modelLineClamp: ms?.webkitLineClamp || "missing",
                 modelTextOverflow: ms?.textOverflow || "missing",
