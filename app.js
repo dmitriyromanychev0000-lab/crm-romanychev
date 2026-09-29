@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.1";
-const APP_BUILD = "2026.09.29.333";
+const APP_VERSION = "1.8.2";
+const APP_BUILD = "2026.09.29.334";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Календарь, инструменты и настройки получили более мягкие графитовые поверхности"
+const APP_RELEASE = "Документы, черновики и бэкапы приведены к той же мягкой графитовой системе"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.2",
+    date: "29.09.2026",
+    title: "Единый стиль служебных разделов",
+    items: [
+      "Документы получили более мягкие карточки и статистику без жёстких тёмных плиток.",
+      "Черновики стали спокойнее визуально, но кнопки продолжения и удаления сохранили прежнее поведение.",
+      "Бэкапы и сводка данных переведены на те же графитовые поверхности; главное действие скачивания осталось оранжевым."
+    ]
+  },
   {
     version: "1.8.1",
     date: "29.09.2026",

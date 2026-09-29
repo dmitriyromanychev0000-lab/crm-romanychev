@@ -22613,3 +22613,102 @@
     box-shadow: none !important;
   }
 }
+
+
+/* 1.8.2 · Единый стиль документов и данных */
+@media screen and (max-width: 520px) {
+  .receipts-stats > .service-stat-primary,
+  .receipts-stats > div:nth-child(2),
+  .receipts-stats > div:nth-child(3) {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-document-row.receipt,
+  .legacy-document-row.receipt.linked,
+  .legacy-document-row.receipt.standalone {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .legacy-document-row.receipt .legacy-document-icon,
+  .legacy-document-row.receipt.linked .legacy-document-icon,
+  .legacy-document-row.receipt.standalone .legacy-document-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-drafts-page .legacy-service-note {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    background-image: none !important;
+    color: #aeb8be !important;
+  }
+
+  .legacy-draft-card {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .legacy-draft-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-draft-actions [data-action="continue-draft"],
+  .legacy-drafts-page .legacy-draft-actions button.danger[data-action="delete-draft"] {
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-draft-actions [data-action="continue-draft"] {
+    border-color: #303b42 !important;
+    color: #e2e7e9 !important;
+  }
+
+  .legacy-drafts-page .legacy-draft-actions button.danger[data-action="delete-draft"] {
+    border-color: rgba(255,113,123,.24) !important;
+    color: #ff7b84 !important;
+  }
+
+  .legacy-backup-page .backup-primary-card,
+  .legacy-backup-page .backup-auto-card,
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(1),
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(2),
+  .legacy-backup-page .legacy-service-stats.backup > div:nth-child(3) {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-backup-page .backup-primary-card .legacy-section-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-backup-page .legacy-backup-main-actions .legacy-dark-button,
+  .legacy-backup-page .legacy-backup-grid button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-backup-page .legacy-backup-advanced {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+  }
+}

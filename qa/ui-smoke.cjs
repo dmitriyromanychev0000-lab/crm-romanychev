@@ -4318,11 +4318,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           chevronLeft: Math.round(chevronRect?.left || 0)
         };
       });
-      if (receiptsPageSurface.total !== "rgb(7, 12, 16)"
-        || receiptsPageSurface.amount !== "rgb(7, 12, 16)"
-        || receiptsPageSurface.linkedStat !== "rgb(7, 12, 16)"
-        || receiptsPageSurface.linkedRow !== "rgb(9, 15, 20)"
-        || receiptsPageSurface.standaloneRow !== "rgb(9, 15, 20)"
+      if (receiptsPageSurface.total !== "rgb(17, 24, 29)"
+        || receiptsPageSurface.amount !== "rgb(17, 24, 29)"
+        || receiptsPageSurface.linkedStat !== "rgb(17, 24, 29)"
+        || receiptsPageSurface.linkedRow !== "rgb(17, 24, 29)"
+        || receiptsPageSurface.standaloneRow !== "rgb(17, 24, 29)"
         || receiptsPageSurface.addWidth < receiptsPageSurface.pageWidth - 34
         || receiptsPageSurface.addHeight < 48
         || receiptsPageSurface.statRects.length !== 3
@@ -4457,10 +4457,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           removeHeight: removeRect ? Math.round(removeRect.height) : 0
         };
       });
-      if (draftSurface.card !== "rgb(7, 12, 16)"
-        || draftSurface.note !== "rgb(13, 20, 25)"
-        || draftSurface.next !== "rgb(13, 20, 25)"
-        || draftSurface.remove !== "rgb(13, 20, 25)"
+      if (draftSurface.card !== "rgb(17, 24, 29)"
+        || draftSurface.note !== "rgb(21, 29, 35)"
+        || draftSurface.next !== "rgb(21, 29, 35)"
+        || draftSurface.remove !== "rgb(21, 29, 35)"
         || draftSurface.nextHeight < 44
         || draftSurface.removeHeight < 44) {
         report.failures.push({ width, type: "drafts-workflow-hierarchy", draftSurface });
@@ -4655,13 +4655,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         advancedGridDisplay: getComputedStyle(document.querySelector(".legacy-backup-grid")).display,
         advancedButtons: document.querySelectorAll(".legacy-backup-grid > button").length
       }));
-      if (backupSurface.primary !== "rgb(7, 12, 16)"
-        || backupSurface.auto !== "rgb(7, 12, 16)"
-        || backupSurface.orders !== "rgb(7, 12, 16)"
-        || backupSurface.warehouse !== "rgb(7, 12, 16)"
-        || backupSurface.price !== "rgb(7, 12, 16)"
+      if (backupSurface.primary !== "rgb(17, 24, 29)"
+        || backupSurface.auto !== "rgb(17, 24, 29)"
+        || backupSurface.orders !== "rgb(17, 24, 29)"
+        || backupSurface.warehouse !== "rgb(17, 24, 29)"
+        || backupSurface.price !== "rgb(17, 24, 29)"
         || backupSurface.download !== "rgb(255, 113, 79)"
-        || backupSurface.importButton !== "rgb(13, 20, 25)"
+        || backupSurface.importButton !== "rgb(21, 29, 35)"
         || backupSurface.mainButtonWidths.length !== 2
         || backupSurface.mainButtonWidths.some((value) => value < Math.floor((backupSurface.mainWidth - backupSurface.mainGap) / 2) - 2 || value > Math.ceil((backupSurface.mainWidth - backupSurface.mainGap) / 2) + 2)
         || backupSurface.mainButtonHeights.some((value) => value < 48 || value > 49)
