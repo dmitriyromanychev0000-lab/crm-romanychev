@@ -3033,6 +3033,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const correct = document.querySelector(".stock-detail-actions .stock-detail-correct");
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const movement = document.querySelector(".stock-detail-movement");
+        const history = document.querySelector(".stock-detail-history");
+        const historyEmpty = document.querySelector(".stock-detail-history > .detail-empty");
+        const historyEmptyStyle = historyEmpty ? getComputedStyle(historyEmpty) : null;
         const titleStyle = title ? getComputedStyle(title) : null;
         const titleLineHeight = titleStyle ? parseFloat(titleStyle.lineHeight) || 0 : 0;
         const titleHeight = title?.getBoundingClientRect().height || 0;
@@ -3048,7 +3051,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           transferHeight: Math.round(transfer?.getBoundingClientRect().height || 0),
           correctHeight: Math.round(correct?.getBoundingClientRect().height || 0),
           archiveHeight: Math.round(archive?.getBoundingClientRect().height || 0),
-          movementHeight: Math.round(movement?.getBoundingClientRect().height || 0)
+          movementHeight: Math.round(movement?.getBoundingClientRect().height || 0),
+          historyHeight: Math.round(history?.getBoundingClientRect().height || 0),
+          hasEmptyHistory: Boolean(historyEmpty),
+          emptyMarginTop: historyEmptyStyle ? parseFloat(historyEmptyStyle.marginTop) || 0 : 0,
+          emptyMarginBottom: historyEmptyStyle ? parseFloat(historyEmptyStyle.marginBottom) || 0 : 0
         };
       });
       const stockDetailHeroMax = width <= 340 && stockDetailDensity.heroTitleLines > 2 ? 104 : (stockDetailDensity.heroTitleLines > 1 ? 92 : (width <= 340 ? 82 : 76));
@@ -3065,7 +3072,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailDensity.correctHeight > 48
         || stockDetailDensity.archiveHeight < 44
         || stockDetailDensity.archiveHeight > 48
-        || stockDetailDensity.movementHeight > 50) {
+        || stockDetailDensity.movementHeight > 50
+        || (stockDetailDensity.hasEmptyHistory && stockDetailDensity.historyHeight > 58)
+        || (stockDetailDensity.hasEmptyHistory && stockDetailDensity.emptyMarginTop > 2.5)
+        || (stockDetailDensity.hasEmptyHistory && stockDetailDensity.emptyMarginBottom > 0.5)) {
         report.failures.push({ width, type: "stock-detail-compact-density", stockDetailDensity, stockDetailHeroMax });
       }
       report.results.push(await shot(page, width, "stock-detail", false));

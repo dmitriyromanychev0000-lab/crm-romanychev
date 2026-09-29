@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.34";
-const APP_BUILD = "2026.09.30.369";
+const APP_VERSION = "1.8.35";
+const APP_BUILD = "2026.09.30.370";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Действия склада больше не рвут слова на 320 px"
+const APP_RELEASE = "Пустая история позиции склада больше не оставляет лишний вертикальный блок"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.35",
+    date: "30.09.2026",
+    title: "Плотнее пустая история склада",
+    items: [
+      "Если у позиции ещё нет движений, блок «Последние движения» больше не оставляет большой пустой прямоугольник.",
+      "Заголовок и сообщение «Движений пока нет» остаются читаемыми, но занимают только необходимую высоту.",
+      "История с реальными движениями и логика склада не менялись."
+    ]
+  },
   {
     version: "1.8.34",
     date: "30.09.2026",
