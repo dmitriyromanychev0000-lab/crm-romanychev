@@ -22442,3 +22442,35 @@
     color: #ff8068 !important;
   }
 }
+
+
+/* 1.8.0 fix · Старые семантические каскады */
+@media screen and (max-width: 520px) {
+  .legacy-finance-page .legacy-finance-actions > button[data-type="income"],
+  .legacy-finance-page .legacy-finance-actions > button[data-type="expense"] {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-clients-page .legacy-clients-stats > div:nth-child(2),
+  .legacy-clients-page .legacy-clients-stats > div:nth-child(3) {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-clients-page .legacy-client-actions > a:first-child,
+  .legacy-clients-page .legacy-client-actions > button:last-child {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-clients-page .legacy-client-actions > a:first-child .ui-icon,
+  .legacy-clients-page .legacy-client-actions > button:last-child .ui-icon {
+    color: #ff8068 !important;
+  }
+}
