@@ -3871,14 +3871,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await setState(page, uiState({ activePage: "more", moreSection: "menu" }));
       const moreMenuSurface = await page.evaluate(() => {
         const items = [...document.querySelectorAll(".legacy-more-list .menu-item")];
+        const page = document.querySelector(".legacy-more-page");
+        const pageStyle = page ? getComputedStyle(page) : null;
         return {
           names: items.map((item) => item.querySelector(".menu-name")?.textContent?.trim() || ""),
-          backgrounds: items.map((item) => getComputedStyle(item).backgroundColor),
           iconBackgrounds: items.map((item) => getComputedStyle(item.querySelector(".menu-icon")).backgroundColor),
+          iconBorders: items.map((item) => parseFloat(getComputedStyle(item.querySelector(".menu-icon")).borderTopWidth) || 0),
           finance: document.querySelectorAll(".legacy-more-list .menu-finance").length,
           shopping: document.querySelectorAll(".legacy-more-list .menu-shopping").length,
           tools: document.querySelectorAll(".legacy-more-list .menu-tools").length,
-          titleFont: getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize,
+          titleFont: parseFloat(getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontSize) || 0,
+          titleWeight: parseFloat(getComputedStyle(document.querySelector(".legacy-more-list .menu-name")).fontWeight) || 0,
+          pagePaddingLeft: pageStyle ? parseFloat(pageStyle.paddingLeft) || 0 : 999,
+          pagePaddingRight: pageStyle ? parseFloat(pageStyle.paddingRight) || 0 : 999,
           versionText: document.querySelector(".more-version-button")?.innerText || "",
           versionHeight: Math.round(document.querySelector(".more-version-button")?.getBoundingClientRect().height || 0),
           descriptionStyles: [...document.querySelectorAll(".legacy-more-list .menu-description")].map((node) => {
@@ -3907,27 +3912,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           })
         };
       });
-      const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Товарник","Акт","Календарь","Настройки"];
-      const expectedMoreBackgrounds = Array(expectedMoreNames.length).fill("rgb(13, 20, 25)");
-      const expectedMoreIconBackgrounds = [
-        "rgb(13, 29, 21)",
-        "rgb(27, 23, 12)",
-        "rgb(13, 24, 34)",
-        "rgb(22, 17, 36)",
-        "rgb(28, 17, 13)",
-        "rgb(12, 25, 28)",
-        "rgb(13, 23, 31)",
-        "rgb(17, 25, 30)"
-      ];
+      const expectedMoreNames = ["Финансы","Список покупок","Клиенты","Прайс-лист","Акт","Товарник","Календарь","Настройки"];
       if (JSON.stringify(moreMenuSurface.names) !== JSON.stringify(expectedMoreNames)
         || moreMenuSurface.finance !== 1
         || moreMenuSurface.shopping !== 1
         || moreMenuSurface.tools !== 0
-        || JSON.stringify(moreMenuSurface.backgrounds) !== JSON.stringify(expectedMoreBackgrounds)
-        || JSON.stringify(moreMenuSurface.iconBackgrounds) !== JSON.stringify(expectedMoreIconBackgrounds)
-        || new Set(moreMenuSurface.backgrounds).size !== 1
         || new Set(moreMenuSurface.iconBackgrounds).size < 6
-        || parseFloat(moreMenuSurface.titleFont) < 13.5
+        || moreMenuSurface.iconBorders.some((value) => value > 0.1)
+        || moreMenuSurface.titleFont < 14
+        || moreMenuSurface.titleWeight > 650
+        || moreMenuSurface.pagePaddingLeft > 9
+        || moreMenuSurface.pagePaddingRight > 9
         || !/v\d+\.\d+\.\d+/.test(moreMenuSurface.versionText)
         || !moreMenuSurface.versionText.includes("Что нового")
         || moreMenuSurface.versionHeight < 44
@@ -3936,16 +3931,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           item.iconDelta > 1
           || item.copyDelta > 2
           || item.chevronDelta > 1
-          || item.svgWidth !== 18
-          || item.svgHeight !== 18
+          || item.svgWidth < 20
+          || item.svgWidth > 22
+          || item.svgHeight < 20
+          || item.svgHeight > 22
         )
         || (width <= 340 && moreMenuSurface.descriptionStyles.some((style) =>
           style.whiteSpace === "nowrap"
           || style.textOverflow === "ellipsis"
           || style.lineClamp !== "2"
         ))) {
-        report.failures.push({ width, type: "more-menu-hierarchy", moreMenuSurface });
+        report.failures.push({ width, type: "more-menu-first-version-hierarchy", moreMenuSurface });
       }
+
       const moreMenuDensity = await page.evaluate(() => {
         const list = document.querySelector(".legacy-more-list");
         const item = document.querySelector(".legacy-more-list .menu-item");
@@ -3957,12 +3955,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           iconHeight: Math.round(icon?.getBoundingClientRect().height || 0)
         };
       });
-      const moreItemLimit = width <= 340 ? 86 : 78;
-      if (moreMenuDensity.gap > 6
-        || moreMenuDensity.itemHeight > moreItemLimit
-        || moreMenuDensity.itemHeight < 60
-        || moreMenuDensity.iconHeight > 40) {
-        report.failures.push({ width, type: "more-menu-compact-density", moreMenuDensity, moreItemLimit });
+      if (moreMenuDensity.gap > 9
+        || moreMenuDensity.itemHeight < 76
+        || moreMenuDensity.itemHeight > 84
+        || moreMenuDensity.iconHeight < 44
+        || moreMenuDensity.iconHeight > 47) {
+        report.failures.push({ width, type: "more-menu-first-version-density", moreMenuDensity });
       }
 
       await page.locator('.more-version-button[data-action="release-notes"]').click();

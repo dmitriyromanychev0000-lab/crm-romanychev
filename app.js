@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.96";
-const APP_BUILD = "2026.09.29.328";
+const APP_VERSION = "1.7.97";
+const APP_BUILD = "2026.09.29.329";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Аналитика возвращена к визуальному языку первой версии"
+const APP_RELEASE = "Меню «Ещё» возвращено к мягкому визуальному стилю первой версии"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.97",
+    date: "29.09.2026",
+    title: "Мягкое меню первой версии",
+    items: [
+      "Карточки меню «Ещё» снова почти доходят до краёв экрана и получили более мягкую рамку и спокойный фон.",
+      "Цветные иконки увеличены, лишняя обводка вокруг них убрана; остались только полупрозрачные цветовые подложки.",
+      "Текст стал легче по насыщенности, а порядок и подписи пунктов снова ближе к первой версии CRM."
+    ]
+  },
   {
     version: "1.7.96",
     date: "29.09.2026",
@@ -5479,14 +5489,14 @@ function calendarPage() {
 
 function moreMenu() {
   const primaryItems = [
-    ["finance", "finance", "Финансы", "Доходы и рабочие расходы"],
-    ["shopping", "shopping", "Список покупок", "Что нужно докупить по складу"],
+    ["finance", "finance", "Финансы", "Личные расходы вне заявок"],
+    ["shopping", "shopping", "Список покупок", "Позиции ниже минимального остатка"],
     ["clients", "clients", "Клиенты", "История обращений и ремонтов"],
-    ["prices", "price", "Прайс-лист", "Каталог услуг и цены"],
-    ["goods", "tag", "Товарник", "Расчёт товаров и материалов"],
-    ["act", "printer", "Акт", "Предпросмотр и сохранение картинкой"],
+    ["prices", "price", "Прайс-лист", "Каталог услуг и свои позиции"],
+    ["act", "printer", "Акт", "Подготовка и печать документа"],
+    ["goods", "tag", "Товарник", "Товары из заявок или вручную"],
     ["calendar", "calendar", "Календарь", "Визиты и расписание"],
-    ["settings", "settings", "Настройки", "Справочники, данные и приложение"]
+    ["settings", "settings", "Настройки", "Бэкапы и оформление приложения"]
   ];
 
   const card = ([id, iconName, name, description]) => `<button type="button" class="menu-item menu-${id}" data-more="${id}">
