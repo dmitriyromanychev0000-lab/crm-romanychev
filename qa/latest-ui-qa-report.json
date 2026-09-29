@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:41:35.078Z",
-  "testedSha": "8266c30f30ec3c657c1a35b9e3212270dfeb3fd0",
+  "generatedAt": "2026-09-29T08:44:16.092Z",
+  "testedSha": "8b1a7413ed3dfccc608aeed1e5cbf4eb70bb4882",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -946,14 +946,7 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": [
-        {
-          "tag": "BUTTON",
-          "text": "Удалить",
-          "w": 42,
-          "h": 42
-        }
-      ]
+      "tooSmall": []
     },
     {
       "label": "order-editor-restored",
@@ -1607,33 +1600,13 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:42:10.279Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-29T08:44:51.220Z"
     }
   ],
   "failures": [
     {
-      "width": 390,
-      "type": "small-touch-target",
-      "label": "order-editor-direct-expense",
-      "items": [
-        {
-          "tag": "BUTTON",
-          "text": "Удалить",
-          "w": 42,
-          "h": 42
-        }
-      ]
+      "type": "fatal",
+      "message": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
     }
   ]
 }
