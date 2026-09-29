@@ -217,6 +217,30 @@ async function inspect(page, label, width) {
       })
       .filter((item) => item.text && item.scrollWidth > item.width + 1)
       .slice(0, 30);
+    const misalignedActionIcons = [...document.querySelectorAll("button .ui-icon, a .ui-icon, summary .ui-icon")]
+      .filter(visible)
+      .map((icon) => {
+        const action = icon.closest("button, a, summary");
+        if (!action || !visible(action)) return null;
+        const actionStyle = getComputedStyle(action);
+        const iconStyle = getComputedStyle(icon);
+        const display = actionStyle.display;
+        const centeredLayout = (display.includes("flex") && !String(actionStyle.flexDirection || "").startsWith("column") && actionStyle.alignItems === "center")
+          || (display.includes("grid") && actionStyle.alignItems === "center");
+        if (!centeredLayout || iconStyle.position === "absolute") return null;
+        const actionRect = action.getBoundingClientRect();
+        const iconRect = icon.getBoundingClientRect();
+        const delta = Math.abs((actionRect.top + actionRect.height / 2) - (iconRect.top + iconRect.height / 2));
+        return {
+          text: (action.innerText || action.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 60),
+          delta: Math.round(delta * 10) / 10,
+          actionHeight: Math.round(actionRect.height),
+          iconHeight: Math.round(iconRect.height),
+          className: String(action.className || "").slice(0, 100)
+        };
+      })
+      .filter((item) => item && item.delta > 2.5)
+      .slice(0, 30);
     return {
       label: labelValue,
       width: widthValue,
@@ -225,7 +249,8 @@ async function inspect(page, label, width) {
       overflow,
       modalOpen: body.classList.contains("modal-open"),
       tooSmall,
-      clippedFieldLabels
+      clippedFieldLabels,
+      misalignedActionIcons
     };
   }, { labelValue: label, widthValue: width });
 }
@@ -237,6 +262,9 @@ async function shot(page, width, label, fullPage = true) {
   }
   if (result.clippedFieldLabels.length) {
     report.failures.push({ width, type: "clipped-field-label", label, items: result.clippedFieldLabels });
+  }
+  if (result.misalignedActionIcons.length) {
+    report.failures.push({ width, type: "misaligned-action-icon", label, items: result.misalignedActionIcons });
   }
   await page.screenshot({ path: outDir + "/" + width + "-" + label + ".png", fullPage });
   return result;
