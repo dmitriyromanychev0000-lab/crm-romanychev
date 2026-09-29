@@ -4855,6 +4855,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           appActionWidths: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().width)),
           appActionHeights: [...document.querySelectorAll(".settings-app-card .legacy-settings-row > button:not(.toggle)")].map((node) => Math.round(node.getBoundingClientRect().height)),
           appCardHeight: Math.round(document.querySelector(".settings-app-card")?.getBoundingClientRect().height || 0),
+          versionSummaryFit: (() => {
+            const node = document.querySelector(".settings-app-card .app-version-row small");
+            return {
+              text: node?.textContent?.trim() || "",
+              clientHeight: node?.clientHeight || 0,
+              scrollHeight: node?.scrollHeight || 0,
+              lineClamp: node ? getComputedStyle(node).webkitLineClamp : "missing"
+            };
+          })(),
           profileCardHeight: Math.round(document.querySelector(".settings-profile-card")?.getBoundingClientRect().height || 0),
           profileFields: [...document.querySelectorAll(".settings-profile-card .legacy-settings-grid .field")].map((node) => {
             const style = getComputedStyle(node);
@@ -4938,6 +4947,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
+        || settingsSurface.versionSummaryFit.text !== "Адрес клиента без обрезания"
+        || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
+        || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
         || settingsSurface.profileFields.length !== 5
         || settingsSurface.profileFields.some((item) => item.height !== 44 || item.paddingTop !== 0 || item.paddingBottom !== 0 || item.lineHeight < 41 || item.lineHeight > 43)

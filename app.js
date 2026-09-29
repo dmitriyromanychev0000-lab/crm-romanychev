@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.32";
-const APP_BUILD = "2026.09.29.367";
+const APP_VERSION = "1.8.33";
+const APP_BUILD = "2026.09.29.368";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Подпись адреса клиента больше не обрезает действие открытия карты"
+const APP_RELEASE = "Адрес клиента без обрезания"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.33",
+    date: "29.09.2026",
+    title: "Короткая сводка версии",
+    items: [
+      "Описание под номером версии в настройках теперь короткое и полностью читается даже на 320 px.",
+      "Полный список изменений по-прежнему открывается кнопкой «Что нового».",
+      "Размер карточки приложения и кнопок не менялся."
+    ]
+  },
   {
     version: "1.8.32",
     date: "29.09.2026",
