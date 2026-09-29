@@ -4601,7 +4601,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const head = document.querySelector(".tool-editor-head")?.getBoundingClientRect();
         const hero = document.querySelector(".tool-editor-hero")?.getBoundingClientRect();
         const textarea = document.querySelector(".tool-editor-modal textarea")?.getBoundingClientRect();
-        const gridStyle = getComputedStyle(document.querySelector(".tool-editor-modal .form-grid"));
+        const grid = document.querySelector(".tool-editor-modal .form-grid");
+        const gridStyle = getComputedStyle(grid);
+        const box = (name) => {
+          const rect = document.querySelector(`.tool-editor-modal [name="${name}"]`)?.closest(".form-group")?.getBoundingClientRect();
+          return rect ? { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) } : null;
+        };
+        const statusField = document.querySelector('.tool-editor-modal [name="status"]');
         return {
           modal: getComputedStyle(document.querySelector(".tool-editor-modal")).backgroundColor,
           backdrop: getComputedStyle(document.querySelector(".tool-editor-backdrop")).backgroundColor,
@@ -4618,7 +4624,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           footerBottom: rect ? Math.round(rect.bottom) : 0,
           modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
           blankGap: rect && gridRect ? Math.round(rect.top - gridRect.bottom) : 999,
-          viewportHeight: window.innerHeight
+          viewportHeight: window.innerHeight,
+          gridColumns: gridStyle.gridTemplateColumns,
+          nameBox: box("name"),
+          categoryBox: box("category"),
+          statusBox: box("status"),
+          priceBox: box("price"),
+          serialBox: box("serial"),
+          noteBox: box("note"),
+          statusTag: statusField?.tagName || "",
+          statusOptions: [...(statusField?.options || [])].map((option) => option.value),
+          statusValue: statusField?.value || ""
         };
       });
       if (toolEditorState.modal !== "rgb(7, 12, 15)"
@@ -4629,7 +4645,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolEditorState.closeHeight < 44
         || toolEditorState.actionHeight < 48
         || toolEditorState.modalBottom > toolEditorState.viewportHeight + 1
-        || toolEditorState.blankGap > 20) {
+        || toolEditorState.blankGap > 20
+        || toolEditorState.statusTag !== "SELECT"
+        || toolEditorState.statusOptions.length < 4
+        || toolEditorState.statusValue !== "В наличии"
+        || (width <= 340 && toolEditorState.gridColumns.split(" ").filter(Boolean).length !== 1)
+        || (width > 340 && (
+          toolEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
+          || !toolEditorState.categoryBox || !toolEditorState.statusBox
+          || !toolEditorState.priceBox || !toolEditorState.serialBox
+          || Math.abs(toolEditorState.categoryBox.top - toolEditorState.statusBox.top) > 2
+          || Math.abs(toolEditorState.priceBox.top - toolEditorState.serialBox.top) > 2
+          || Math.abs(toolEditorState.categoryBox.width - toolEditorState.statusBox.width) > 2
+          || Math.abs(toolEditorState.priceBox.width - toolEditorState.serialBox.width) > 2
+          || !toolEditorState.nameBox || !toolEditorState.noteBox
+          || toolEditorState.nameBox.width < toolEditorState.categoryBox.width * 1.9
+          || toolEditorState.noteBox.width < toolEditorState.categoryBox.width * 1.9
+        ))) {
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
       }
       if (toolEditorState.headHeight > 60
@@ -5014,7 +5046,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Карточки инструментов читаются лучше"
+        || settingsSurface.versionSummaryFit.text !== "Редактор инструментов стал компактнее"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)

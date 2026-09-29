@@ -24386,3 +24386,27 @@
     line-height: 1.3 !important;
   }
 }
+
+
+
+/* 1.8.44 · Редактор инструментов: короткие поля парами на 360–430 px */
+@media screen and (min-width: 360px) and (max-width: 520px) {
+  .legacy-service-editor-backdrop .tool-editor-modal .form-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    column-gap: 7px !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .form-group.full {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-service-editor-backdrop .tool-editor-modal .form-grid {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .form-group.full {
+    grid-column: auto !important;
+  }
+}

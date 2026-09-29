@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.43";
-const APP_BUILD = "2026.09.30.378";
+const APP_VERSION = "1.8.44";
+const APP_BUILD = "2026.09.30.379";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки инструментов читаются лучше"
+const APP_RELEASE = "Редактор инструментов стал компактнее"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.44",
+    date: "30.09.2026",
+    title: "Компактный редактор инструментов",
+    items: [
+      "На 360–430 px категория и состояние, а также стоимость и серийный номер собраны в две компактные пары.",
+      "На 320 px поля остаются полноширинными, чтобы ввод не был тесным.",
+      "Состояние инструмента теперь выбирается из понятного списка; старое нестандартное значение сохраняется отдельным вариантом."
+    ]
+  },
   {
     version: "1.8.43",
     date: "30.09.2026",
@@ -7033,6 +7043,9 @@ function receiptModal(existing = null, receiptIndex = -1) {
 }
 function toolModal(existing = null, toolIndex = -1) {
   const item = existing || {};
+  const toolStatuses = ["В наличии", "В ремонте", "На выезде", "Списан"];
+  const currentToolStatus = String(item.status || item.state || "В наличии").trim() || "В наличии";
+  const statusOptions = toolStatuses.includes(currentToolStatus) ? toolStatuses : [...toolStatuses, currentToolStatus];
   const modal = document.createElement("div");
   modal.className = "modal-backdrop tool-editor-backdrop legacy-service-editor-backdrop";
   modal.innerHTML = `<form class="modal compact-modal tool-editor-modal" id="tool-form">
@@ -7041,7 +7054,7 @@ function toolModal(existing = null, toolIndex = -1) {
     <div class="form-grid">
       <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || item.title || item.tool || "")}" required placeholder="Например, мультиметр" /></div>
       <div class="form-group"><label>Категория</label><input class="field" name="category" value="${escapeHtml(item.category || item.type || "")}" placeholder="Измерительный" /></div>
-      <div class="form-group"><label>Состояние</label><input class="field" name="status" value="${escapeHtml(item.status || item.state || "В наличии")}" list="tool-status-options" /><datalist id="tool-status-options"><option value="В наличии"></option><option value="В ремонте"></option><option value="На выезде"></option><option value="Списан"></option></datalist></div>
+      <div class="form-group"><label>Состояние</label><select class="field" name="status">${statusOptions.map((value) => `<option value="${escapeHtml(value)}" ${value === currentToolStatus ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
       <div class="form-group"><label>Стоимость</label><input class="field tool-editor-price" name="price" type="number" min="0" step="1" value="${Number(item.price || item.purchasePrice) || 0}" inputmode="decimal" /></div>
       <div class="form-group"><label>Серийный номер</label><input class="field" name="serial" value="${escapeHtml(item.serial || item.serialNumber || "")}" /></div>
       <div class="form-group full"><label>Комментарий</label><textarea class="field textarea" name="note" placeholder="Необязательно">${escapeHtml(item.note || item.comment || "")}</textarea></div>
