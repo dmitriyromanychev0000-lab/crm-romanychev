@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.48";
-const APP_BUILD = "2026.09.30.383";
+const APP_VERSION = "1.8.49";
+const APP_BUILD = "2026.09.30.384";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Выбор услуг больше не прыгает"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.49",
+    date: "30.09.2026",
+    title: "Пустые заявки без большого пустого блока",
+    items: [
+      "Пустое состояние заявок стало заметно ниже: иконка, заголовок и пояснение собраны плотнее.",
+      "«Новая заявка» и «Импортировать» остаются в одной строке даже на 320 px и сохраняют удобные touch-зоны.",
+      "Поиск, фильтры и логика создания заявок не менялись."
+    ]
+  },
   {
     version: "1.8.48",
     date: "30.09.2026",
@@ -3956,8 +3966,8 @@ function ordersPage() {
 
     <section class="legacy-orders-list">
       ${filtered.length ? filtered.map(orderCard).join("") : data.orders.length
-        ? `<div class="panel empty"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button type="button" class="secondary-button" data-action="reset-order-filters">Сбросить</button><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button></div></div>`
-        : `<div class="panel empty"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button><button type="button" class="secondary-button" data-action="import">Импортировать</button></div></div>`}
+        ? `<div class="panel empty orders-empty-state"><div class="empty-icon">${icon("search")}</div><h2>Ничего не найдено</h2><p>Измени поиск или фильтр.</p><div class="empty-actions"><button type="button" class="secondary-button" data-action="reset-order-filters">Сбросить</button><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button></div></div>`
+        : `<div class="panel empty orders-empty-state"><div class="empty-icon">${icon("orders")}</div><h2>Заявок пока нет</h2><p>Создай первую заявку или восстанови бэкап.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button><button type="button" class="secondary-button" data-action="import">Импортировать</button></div></div>`}
     </section>
   </main>`;
 }

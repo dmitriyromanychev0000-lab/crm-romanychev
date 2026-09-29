@@ -5624,6 +5624,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             || parseFloat(emptySurface.radius) < 12) {
             report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
           }
+          if (emptyLabel === "empty-orders") {
+            const ordersEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".orders-empty-state");
+              const icon = root?.querySelector(".empty-icon");
+              const title = root?.querySelector("h2");
+              const actions = root?.querySelector(".empty-actions");
+              const actionButtons = [...(actions?.querySelectorAll("button") || [])];
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                titleFont: title ? parseFloat(getComputedStyle(title).fontSize) || 0 : 0,
+                actionDisplay: actions ? getComputedStyle(actions).display : "missing",
+                actionColumns: actions ? getComputedStyle(actions).gridTemplateColumns : "missing",
+                actionHeights: actionButtons.map((node) => Math.round(node.getBoundingClientRect().height))
+              };
+            });
+            const ordersEmptyHeightLimit = width <= 340 ? 185 : 175;
+            if (ordersEmptyState.height < 145
+              || ordersEmptyState.height > ordersEmptyHeightLimit
+              || ordersEmptyState.iconWidth !== 36
+              || ordersEmptyState.iconHeight !== 36
+              || ordersEmptyState.titleFont < 13.5
+              || ordersEmptyState.actionDisplay !== "grid"
+              || ordersEmptyState.actionHeights.length !== 2
+              || ordersEmptyState.actionHeights.some((value) => value < 44 || value > 48)
+              || !ordersEmptyState.actionColumns.includes("px")) {
+              report.failures.push({ width, type: "empty-orders-layout", ordersEmptyState, ordersEmptyHeightLimit });
+            }
+          }
           if (emptyLabel === "empty-warehouse") {
             const warehouseEmptyState = await page.evaluate(() => {
               const root = document.querySelector(".warehouse-list-empty");
