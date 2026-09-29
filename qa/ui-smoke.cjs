@@ -4411,6 +4411,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsDensity.editHeight < 44) {
         report.failures.push({ width, type: "goods-compact-density", goodsDensity, goodsRowLimit });
       }
+
+      await page.locator("#product-price-panel > summary").click();
+      const goodsProductPrice = await page.evaluate(() => {
+        const row = document.querySelector(".legacy-product-price-list > div");
+        const copy = row?.querySelector(":scope > span");
+        const amount = row?.querySelector(":scope > b");
+        const rowRect = row?.getBoundingClientRect();
+        const copyRect = copy?.getBoundingClientRect();
+        const amountRect = amount?.getBoundingClientRect();
+        const countCopy = document.querySelector(".legacy-goods-current-summary small")?.textContent?.trim() || "";
+        return {
+          open: document.querySelector("#product-price-panel")?.open === true,
+          rowColumns: row ? getComputedStyle(row).gridTemplateColumns : "",
+          rowHeight: Math.round(rowRect?.height || 0),
+          copyRight: Math.round(copyRect?.right || 0),
+          amountLeft: Math.round(amountRect?.left || 0),
+          amountRight: Math.round(amountRect?.right || 0),
+          rowRight: Math.round(rowRect?.right || 0),
+          countCopy
+        };
+      });
+      if (!goodsProductPrice.open
+        || goodsProductPrice.rowColumns.split(" ").filter(Boolean).length !== 2
+        || goodsProductPrice.rowHeight > 64
+        || goodsProductPrice.amountLeft <= goodsProductPrice.copyRight - 2
+        || Math.abs(goodsProductPrice.rowRight - goodsProductPrice.amountRight) > 12
+        || goodsProductPrice.countCopy !== "Позиций: 2") {
+        report.failures.push({ width, type: "goods-product-price-layout", goodsProductPrice });
+      }
+      report.results.push(await shot(page, width, "goods-product-price", false));
       await page.locator('[data-action="new-goods-sheet"]').click();
       const goodsEditorState = await page.evaluate(() => {
         const field = document.querySelector(".legacy-goods-editor .field");
@@ -4967,7 +4997,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Пустой Товарник оформлен единообразно"
+        || settingsSurface.versionSummaryFit.text !== "Прайс товаров плотнее на 320 px"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)

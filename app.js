@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.40";
-const APP_BUILD = "2026.09.30.375";
+const APP_VERSION = "1.8.41";
+const APP_BUILD = "2026.09.30.376";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустой Товарник оформлен единообразно"
+const APP_RELEASE = "Прайс товаров плотнее на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.41",
+    date: "30.09.2026",
+    title: "Плотный прайс товаров на узком экране",
+    items: [
+      "На 320 px цена в раскрытом прайсе товаров остаётся справа от названия вместо отдельной строки снизу.",
+      "Длинное название товара по-прежнему может занимать до двух строк без наложения на цену.",
+      "Счётчик последнего товарника теперь написан нейтрально: «Позиций: N», без ошибки склонения."
+    ]
+  },
   {
     version: "1.8.40",
     date: "30.09.2026",
@@ -4739,7 +4749,7 @@ function goodsPage() {
     <section class="legacy-goods-panel legacy-goods-current">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("edit")}</span><h2>${latest ? "Последний товарник" : "Товарник"}</h2></div>
       ${latest ? `
-        <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>${latestItems.length} позиций</small></span><b>${money(latest.total || 0)}</b></div>
+        <div class="legacy-goods-current-summary"><span><strong>${escapeHtml(latest.title || "Товарник")}</strong><small>Позиций: ${latestItems.length}</small></span><b>${money(latest.total || 0)}</b></div>
         <div class="legacy-section-subtitle"><span class="legacy-section-icon small">${icon("document")}</span><h3>Позиции</h3></div>
         <div class="legacy-goods-position-list">
           ${latestItems.slice(0,6).map((item) => `<div class="legacy-goods-position"><span><strong>${escapeHtml(item.name || "Товар")}</strong><small>${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(Number(item.qty)||0)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))} · ${money(item.price || 0)} / ед.</small></span><b>${money((Number(item.qty)||0)*(Number(item.price)||0))}</b></div>`).join("")}
