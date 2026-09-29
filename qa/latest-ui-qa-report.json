@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T10:50:05.901Z",
-  "testedSha": "39abb6184e96e46400408f5d506e008d8249e3a5",
+  "generatedAt": "2026-09-29T10:53:21.209Z",
+  "testedSha": "8281e20dcabbd15fd65b0498dadb325f3325926b",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1610,7 +1610,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T10:50:44.982Z"
+      "fallbackCreatedAt": "2026-09-29T10:54:00.521Z"
     },
     {
       "label": "pwa-offline",
@@ -1624,136 +1624,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "finance-editor-layout",
-      "financeEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "13.5px",
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "headHeight": 59,
-        "typeHeight": 50,
-        "fieldHeight": 46,
-        "rowGap": 7,
-        "footerBottom": 512,
-        "modalBottom": 512,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 320,
-      "type": "tool-editor-layout",
-      "toolEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "13.5px",
-        "fieldHeight": 46,
-        "headHeight": 59,
-        "heroHeight": 57,
-        "textareaHeight": 80,
-        "rowGap": 7,
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "footerBottom": 677,
-        "modalBottom": 677,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 320,
-      "type": "receipt-editor-layout",
-      "receiptEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "13.5px",
-        "fieldHeight": 46,
-        "headHeight": 59,
-        "heroHeight": 50,
-        "textareaHeight": 80,
-        "rowGap": 7,
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "footerBottom": 670,
-        "modalBottom": 670,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 390,
-      "type": "finance-editor-layout",
-      "financeEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "14px",
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "headHeight": 59,
-        "typeHeight": 50,
-        "fieldHeight": 46,
-        "rowGap": 7,
-        "footerBottom": 512,
-        "modalBottom": 512,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 390,
-      "type": "tool-editor-layout",
-      "toolEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "14px",
-        "fieldHeight": 46,
-        "headHeight": 59,
-        "heroHeight": 50,
-        "textareaHeight": 80,
-        "rowGap": 7,
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "footerBottom": 670,
-        "modalBottom": 670,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    },
-    {
-      "width": 390,
-      "type": "receipt-editor-layout",
-      "receiptEditorState": {
-        "modal": "rgb(7, 12, 15)",
-        "backdrop": "rgba(3, 7, 10, 0.92)",
-        "field": "rgb(21, 29, 35)",
-        "fieldFont": "14px",
-        "fieldHeight": 46,
-        "headHeight": 59,
-        "heroHeight": 50,
-        "textareaHeight": 80,
-        "rowGap": 7,
-        "closeWidth": 44,
-        "closeHeight": 44,
-        "actionHeight": 48,
-        "footerBottom": 670,
-        "modalBottom": 670,
-        "blankGap": 0,
-        "viewportHeight": 900
-      }
-    }
-  ]
+  "failures": []
 }
