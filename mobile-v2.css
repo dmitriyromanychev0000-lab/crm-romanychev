@@ -20953,3 +20953,16 @@
     margin: 0 !important;
   }
 }
+
+
+/* 1.7.92 fix · Расчёт заявки сохраняет прежнюю плотность 44 px. */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .legacy-payment-grid .field {
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .order-editor-modal .legacy-payment-grid input.field {
+    line-height: 42px !important;
+  }
+}
