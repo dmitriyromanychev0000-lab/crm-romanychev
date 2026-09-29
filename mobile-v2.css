@@ -23303,3 +23303,56 @@
     box-shadow: none !important;
   }
 }
+
+
+/* 1.8.10 fix · сильные селекторы служебных редакторов */
+@media screen and (max-width: 520px) {
+  .legacy-finance-entry-backdrop > form.modal.compact-modal.finance-entry-modal,
+  .legacy-service-editor-backdrop > form.modal.compact-modal.receipt-editor-modal,
+  .legacy-service-editor-backdrop > form.modal.compact-modal.tool-editor-modal {
+    background-color: #070c0f !important;
+    background-image: none !important;
+  }
+
+  .stock-adjust-backdrop > form.modal.stock-adjust-modal,
+  .stock-transfer-backdrop > form.modal.stock-adjust-modal {
+    background-color: #070c0f !important;
+    background-image: none !important;
+  }
+
+  .stock-adjust-backdrop .stock-adjust-head,
+  .stock-transfer-backdrop .stock-adjust-head {
+    border-color: #29343b !important;
+    background: #070c0f !important;
+    box-shadow: none !important;
+  }
+
+  .stock-adjust-backdrop .stock-adjust-balance,
+  .stock-adjust-backdrop .stock-adjust-preview,
+  .stock-transfer-backdrop .stock-adjust-preview {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: none !important;
+  }
+
+  .stock-adjust-backdrop .stock-adjust-field .field,
+  .stock-transfer-backdrop .stock-adjust-field .field {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #eef2f4 !important;
+  }
+
+  .stock-adjust-backdrop .stock-adjust-actions,
+  .stock-transfer-backdrop .stock-adjust-actions {
+    border-top-color: #29343b !important;
+    background: rgba(7,12,15,.99) !important;
+  }
+
+  .stock-adjust-backdrop .stock-adjust-actions .legacy-dark-button,
+  .stock-transfer-backdrop .stock-adjust-actions .legacy-dark-button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #e3e8ea !important;
+    box-shadow: none !important;
+  }
+}

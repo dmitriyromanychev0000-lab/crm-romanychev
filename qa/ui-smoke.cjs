@@ -2996,10 +2996,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           closeHeight: closeRect ? Math.round(closeRect.height) : 0
         };
       });
-      if (stockAdjustSurface.modal !== "rgb(6, 11, 15)"
-        || stockAdjustSurface.balance !== "rgb(9, 15, 20)"
-        || !["rgb(9, 15, 20)", "rgb(10, 17, 22)", "rgb(11, 17, 22)", "rgb(11, 18, 23)"].includes(stockAdjustSurface.field)
-        || stockAdjustSurface.cancel !== "rgb(10, 17, 22)"
+      if (stockAdjustSurface.modal !== "rgb(7, 12, 15)"
+        || stockAdjustSurface.balance !== "rgb(17, 24, 29)"
+        || stockAdjustSurface.field !== "rgb(21, 29, 35)"
+        || stockAdjustSurface.cancel !== "rgb(21, 29, 35)"
         || stockAdjustSurface.closeWidth < 44
         || stockAdjustSurface.closeHeight < 44) {
         report.failures.push({ width, type: "stock-adjust-deep-dark", stockAdjustSurface });
