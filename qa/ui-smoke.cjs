@@ -2741,6 +2741,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
           field: field ? getComputedStyle(field).backgroundColor : "missing",
+          commentFontSize: parseFloat(commentStyle?.fontSize || "0") || 0,
+          commentFontWeight: parseFloat(commentStyle?.fontWeight || "0") || 0,
+          commentTextAlign: commentStyle?.textAlign || "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
@@ -3200,6 +3203,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const modal = document.querySelector(".stock-adjust-modal");
         const balance = modal?.querySelector(".stock-adjust-balance");
         const field = modal?.querySelector(".stock-adjust-field .field");
+        const comment = modal?.querySelector('.stock-adjust-field [name="comment"]');
+        const commentStyle = comment ? getComputedStyle(comment) : null;
         const cancel = modal?.querySelector(".stock-adjust-actions .legacy-dark-button");
         const close = modal?.querySelector(".stock-adjust-head > button");
         const closeRect = close?.getBoundingClientRect();
@@ -3215,6 +3220,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (stockAdjustSurface.modal !== "rgb(7, 12, 15)"
         || stockAdjustSurface.balance !== "rgb(17, 24, 29)"
         || stockAdjustSurface.field !== "rgb(21, 29, 35)"
+        || stockAdjustSurface.commentFontSize < 13.5
+        || stockAdjustSurface.commentFontSize > 14.5
+        || stockAdjustSurface.commentFontWeight > 600
+        || stockAdjustSurface.commentTextAlign !== "left"
         || stockAdjustSurface.cancel !== "rgb(21, 29, 35)"
         || stockAdjustSurface.closeWidth < 44
         || stockAdjustSurface.closeHeight < 44) {

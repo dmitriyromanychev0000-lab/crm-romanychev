@@ -24062,3 +24062,24 @@
     line-height: 1.05 !important;
   }
 }
+
+
+/* 1.8.31 · Текстовые комментарии складских действий */
+@media screen and (max-width: 520px) {
+  .stock-adjust-modal .stock-adjust-field input.field[name="comment"] {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 44px !important;
+    letter-spacing: 0 !important;
+    text-align: left !important;
+  }
+
+  .stock-adjust-modal .stock-adjust-field input.field[name="comment"]::placeholder {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    text-align: left !important;
+  }
+}
