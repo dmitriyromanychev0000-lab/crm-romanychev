@@ -24201,3 +24201,14 @@
     line-height: 1.15 !important;
   }
 }
+
+
+/* 1.8.38 · Длинный тип техники полностью читается на 320 px */
+@media screen and (max-width: 340px) {
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) > .order-tech,
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) > .order-brand {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}

@@ -556,9 +556,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             };
             const brand = document.querySelector('.order-editor-modal [name="brand"]');
             const source = document.querySelector('.order-editor-modal [name="sourceId"]');
+            const tech = document.querySelector('.order-editor-modal [name="tech"]');
+            const techOptions = [...(tech?.options || [])].map((option) => option.textContent?.trim() || "").filter(Boolean);
+            const longestTech = techOptions.sort((a, b) => b.length - a.length)[0] || "";
             return {
               brand: measure(brand, brand?.placeholder || ""),
-              source: measure(source, source?.selectedOptions?.[0]?.textContent?.trim() || "", 20)
+              source: measure(source, source?.selectedOptions?.[0]?.textContent?.trim() || "", 20),
+              techLongest: measure(tech, longestTech, 20)
             };
           })()
         };
@@ -571,7 +575,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const fullWidthField = (field) => field && field.width >= sourceVisitFields.gridWidth * 0.92;
       if (sourceVisitFields.sourceOptions < 3
         || !pairAligned(sourceVisitFields.client, sourceVisitFields.phone)
-        || !pairAligned(sourceVisitFields.tech, sourceVisitFields.brand)
+        || (width > 340 && !pairAligned(sourceVisitFields.tech, sourceVisitFields.brand))
+        || (width <= 340 && (!fullWidthField(sourceVisitFields.tech) || !fullWidthField(sourceVisitFields.brand)))
+        || (width <= 340 && sourceVisitFields.compactTextFit.techLongest.required > sourceVisitFields.compactTextFit.techLongest.available)
         || !pairAligned(sourceVisitFields.createdDate, sourceVisitFields.visitDate)
         || !pairAligned(sourceVisitFields.visitTime, sourceVisitFields.visitDuration)
         || !pairAligned(sourceVisitFields.source, sourceVisitFields.status)
