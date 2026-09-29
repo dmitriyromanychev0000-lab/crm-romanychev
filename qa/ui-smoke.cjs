@@ -2827,7 +2827,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
-        || stockDetailSurface.hero !== "rgb(6, 11, 15)"
+        || stockDetailSurface.hero !== "rgb(11, 17, 21)"
         || stockDetailSurface.primaryKpi !== "rgb(7, 17, 12)"
         || stockDetailSurface.reservedKpi !== "rgb(12, 18, 22)"
         || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
