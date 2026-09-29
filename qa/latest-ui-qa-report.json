@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T23:17:04.119Z",
-  "testedSha": "b2d10ec035dff7387adf81ab9c9d9babb2918b9c",
+  "generatedAt": "2026-09-29T23:20:50.264Z",
+  "testedSha": "ff2927e6f527dbbb6699076d94222cf6ea7993dd",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -555,6 +555,28 @@
     },
     {
       "label": "empty-warehouse",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "empty-movements",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "empty-shopping",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -1961,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T23:17:43.331Z"
+      "fallbackCreatedAt": "2026-09-29T23:21:26.331Z"
     },
     {
       "label": "pwa-offline",
