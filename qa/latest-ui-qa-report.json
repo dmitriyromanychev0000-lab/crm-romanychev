@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T22:44:28.506Z",
-  "testedSha": "12c75f4e0816c927e3199ad1ba8be679ff00b81d",
+  "generatedAt": "2026-09-29T22:53:11.007Z",
+  "testedSha": "61fa18bca47d8f6e9631b9a18eba858a11190df0",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -599,6 +599,17 @@
     },
     {
       "label": "empty-receipts",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "empty-drafts",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -1950,7 +1961,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T22:45:11.398Z"
+      "fallbackCreatedAt": "2026-09-29T22:53:44.494Z"
     },
     {
       "label": "pwa-offline",
@@ -1964,5 +1975,26 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "drafts-compact-density",
+      "draftSurface": {
+        "card": "rgb(17, 24, 29)",
+        "note": "rgb(21, 29, 35)",
+        "next": "rgb(21, 29, 35)",
+        "remove": "rgb(21, 29, 35)",
+        "cardHeight": 136,
+        "noteHeight": 49,
+        "nextHeight": 44,
+        "removeHeight": 44,
+        "noteText": "Незавершённые заявки — продолжи или удали ненужное.",
+        "metaLineCount": 2,
+        "metaFirst": "Посудомоечная машина · Bosch Serie 4",
+        "metaSecond": "+79991112233 · 26.09.2026",
+        "metaSecondOverflow": 0
+      },
+      "draftHeightLimit": 132
+    }
+  ]
 }
