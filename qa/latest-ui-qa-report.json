@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T23:09:26.767Z",
-  "testedSha": "49a80ef614328848f1321175ca57e24e7628cacf",
+  "generatedAt": "2026-09-29T23:12:04.722Z",
+  "testedSha": "0a568eacac4f312c430950b9b77f63b58132de08",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1961,7 +1961,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T23:10:07.980Z"
+      "fallbackCreatedAt": "2026-09-29T23:12:44.034Z"
     },
     {
       "label": "pwa-offline",
@@ -1975,18 +1975,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "empty-warehouse-layout",
-      "warehouseEmptyState": {
-        "height": 165,
-        "iconWidth": 52,
-        "iconHeight": 52,
-        "title": "Ничего не найдено",
-        "titleFont": 18,
-        "copyLines": 1
-      }
-    }
-  ]
+  "failures": []
 }
