@@ -2591,7 +2591,6 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const rangeRects = [...(rangeGrid?.querySelectorAll("label") || [])].map((node) => node.getBoundingClientRect());
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
-          backdrop: getComputedStyle(document.querySelector(".legacy-finance-entry-backdrop")).backgroundColor,
           field: field ? getComputedStyle(field).backgroundColor : "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
@@ -3453,6 +3452,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const actionRect = action?.getBoundingClientRect();
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          backdrop: getComputedStyle(document.querySelector(".legacy-finance-entry-backdrop")).backgroundColor,
           field: field ? getComputedStyle(field).backgroundColor : "missing",
           fieldFont: field ? getComputedStyle(field).fontSize : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
@@ -4419,6 +4419,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
           actionHeight: actionRect ? Math.round(actionRect.height) : 0,
           footerBottom: rect ? Math.round(rect.bottom) : 0,
+          modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
+          blankGap: rect && gridRect ? Math.round(rect.top - gridRect.bottom) : 999,
           viewportHeight: window.innerHeight
         };
       });
