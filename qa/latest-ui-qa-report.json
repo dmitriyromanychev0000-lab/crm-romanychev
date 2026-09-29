@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T07:56:42.377Z",
-  "testedSha": "ea5bdb9de7520d6e86a41a7654a87cde55573c69",
+  "generatedAt": "2026-09-29T07:58:28.443Z",
+  "testedSha": "1752e456f567a78f14fbb8f5eb287fc0ed161290",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T07:57:14.444Z"
+      "fallbackCreatedAt": "2026-09-29T07:59:09.333Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,176 +1614,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "price-semantic-hierarchy",
-      "pricePageSurface": {
-        "group": "rgb(17, 24, 29)",
-        "service": "rgb(17, 24, 29)",
-        "material": "rgb(17, 24, 29)",
-        "custom": "rgb(17, 24, 29)",
-        "rowTitleFont": "11.5px",
-        "searchBackground": "rgb(21, 29, 35)",
-        "searchBorder": "rgb(32, 45, 53)",
-        "searchShadow": "none",
-        "addWidth": 296,
-        "searchWidth": 296,
-        "addHeight": 48,
-        "searchHeight": 44,
-        "addBackground": "rgb(255, 113, 79)",
-        "filterFieldHeights": [
-          44,
-          44
-        ],
-        "gapAddSearch": 6,
-        "gapSearchFilters": 5,
-        "priceColors": [
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)"
-        ],
-        "rowBorders": [
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)"
-        ],
-        "customHeadBorder": "rgb(40, 51, 58)",
-        "filterGridWidth": 296,
-        "filterWidths": [
-          145,
-          145
-        ],
-        "filterLefts": [
-          12,
-          163
-        ],
-        "filterTops": [
-          236,
-          236
-        ],
-        "firstRowHeight": 54,
-        "firstCopyRight": 236,
-        "firstPriceLeft": 248,
-        "firstPriceCenter": 364,
-        "firstRowCenter": 364,
-        "groupHeaderHeights": [
-          34,
-          34,
-          34
-        ],
-        "customHeadHeight": 51,
-        "customActionHeight": 44,
-        "groupCounts": [
-          {
-            "badge": 1,
-            "rows": 1,
-            "width": 24,
-            "height": 24
-          },
-          {
-            "badge": 1,
-            "rows": 1,
-            "width": 24,
-            "height": 24
-          },
-          {
-            "badge": 2,
-            "rows": 2,
-            "width": 24,
-            "height": 24
-          }
-        ]
-      }
-    },
-    {
-      "width": 390,
-      "type": "price-semantic-hierarchy",
-      "pricePageSurface": {
-        "group": "rgb(17, 24, 29)",
-        "service": "rgb(17, 24, 29)",
-        "material": "rgb(17, 24, 29)",
-        "custom": "rgb(17, 24, 29)",
-        "rowTitleFont": "12px",
-        "searchBackground": "rgb(21, 29, 35)",
-        "searchBorder": "rgb(32, 45, 53)",
-        "searchShadow": "none",
-        "addWidth": 358,
-        "searchWidth": 358,
-        "addHeight": 48,
-        "searchHeight": 44,
-        "addBackground": "rgb(255, 113, 79)",
-        "filterFieldHeights": [
-          44,
-          44
-        ],
-        "gapAddSearch": 6,
-        "gapSearchFilters": 5,
-        "priceColors": [
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)",
-          "rgb(255, 138, 112)"
-        ],
-        "rowBorders": [
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)",
-          "rgb(40, 51, 58)"
-        ],
-        "customHeadBorder": "rgb(40, 51, 58)",
-        "filterGridWidth": 358,
-        "filterWidths": [
-          176,
-          176
-        ],
-        "filterLefts": [
-          16,
-          198
-        ],
-        "filterTops": [
-          236,
-          236
-        ],
-        "firstRowHeight": 52,
-        "firstCopyRight": 306,
-        "firstPriceLeft": 314,
-        "firstPriceCenter": 363,
-        "firstRowCenter": 363,
-        "groupHeaderHeights": [
-          34,
-          34,
-          34
-        ],
-        "customHeadHeight": 51,
-        "customActionHeight": 44,
-        "groupCounts": [
-          {
-            "badge": 1,
-            "rows": 1,
-            "width": 24,
-            "height": 24
-          },
-          {
-            "badge": 1,
-            "rows": 1,
-            "width": 24,
-            "height": 24
-          },
-          {
-            "badge": 2,
-            "rows": 2,
-            "width": 24,
-            "height": 24
-          }
-        ]
-      }
-    }
-  ]
+  "failures": []
 }
