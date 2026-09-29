@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:32:17.073Z",
-  "testedSha": "1db453ca0c1b524441766c8466af16d5813cfb24",
+  "generatedAt": "2026-09-29T08:36:22.867Z",
+  "testedSha": "1730c11ce19afed83613eaea78064cd9f2aab572",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:32:48.714Z"
+      "fallbackCreatedAt": "2026-09-29T08:36:55.110Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,21 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stress-order-readable-text",
+      "orderTextState": {
+        "nameWhiteSpace": "normal",
+        "nameLineClamp": "2",
+        "nameTextOverflow": "clip",
+        "modelWhiteSpace": "nowrap",
+        "modelLineClamp": "2",
+        "modelTextOverflow": "ellipsis",
+        "addressWhiteSpace": "missing",
+        "addressTextOverflow": "missing",
+        "addressHeight": 0
+      }
+    }
+  ]
 }
