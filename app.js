@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.39";
-const APP_BUILD = "2026.09.30.374";
+const APP_VERSION = "1.8.40";
+const APP_BUILD = "2026.09.30.375";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустые Клиенты оформлены единообразно"
+const APP_RELEASE = "Пустой Товарник оформлен единообразно"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.40",
+    date: "30.09.2026",
+    title: "Аккуратное пустое состояние товарника",
+    items: [
+      "Пустой блок «Товарник» теперь использует компактную иконку, заголовок и короткое пояснение вместо одиночной строки.",
+      "Состояние остаётся плотным и не растягивает экран лишней пустотой.",
+      "Создание товарника, автозаполнение и прайс товаров не менялись."
+    ]
+  },
   {
     version: "1.8.39",
     date: "30.09.2026",
@@ -4736,7 +4746,7 @@ function goodsPage() {
           ${latestItems.length > 6 ? `<div class="legacy-goods-more">Ещё ${latestItems.length - 6} поз.</div>` : ""}
         </div>
         <button type="button" class="legacy-open-editor" data-action="edit-goods-sheet" data-id="${escapeHtml(latest.id)}">Открыть редактирование</button>
-      ` : `<div class="legacy-goods-empty">Создай товарник вручную или выбери закрытую заявку для автозаполнения.</div>`}
+      ` : `<div class="legacy-goods-empty"><span class="legacy-goods-empty-icon">${icon("goods")}</span><strong>Товарников пока нет</strong><small>Создай вручную или выбери закрытую заявку для автозаполнения.</small></div>`}
     </section>
 
     <details class="legacy-goods-panel legacy-product-price" id="product-price-panel">

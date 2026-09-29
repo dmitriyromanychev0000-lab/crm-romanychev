@@ -5472,6 +5472,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               report.failures.push({ width, type: "empty-client-layout", clientEmptyState });
             }
           }
+          if (emptyLabel === "empty-goods") {
+            const goodsEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".legacy-goods-empty");
+              const icon = root?.querySelector(".legacy-goods-empty-icon");
+              const title = root?.querySelector("strong");
+              const copy = root?.querySelector("small");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const copyLineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                titleFont: title ? parseFloat(getComputedStyle(title).fontSize) || 0 : 0,
+                copyLines: copy && copyLineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / copyLineHeight) : 0
+              };
+            });
+            if (goodsEmptyState.height < 100
+              || goodsEmptyState.height > 124
+              || goodsEmptyState.iconWidth !== 36
+              || goodsEmptyState.iconHeight !== 36
+              || goodsEmptyState.title !== "Товарников пока нет"
+              || goodsEmptyState.titleFont < 12.5
+              || goodsEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-goods-layout", goodsEmptyState });
+            }
+          }
           const emptyResult = await shot(page, width, emptyLabel, true);
           report.results.push(emptyResult);
           if (emptyResult.overflow > 2) report.failures.push({ width, type: "empty-horizontal-overflow", label: emptyLabel, overflow: emptyResult.overflow });
