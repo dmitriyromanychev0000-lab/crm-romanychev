@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:29:55.082Z",
-  "testedSha": "a6c0f3466c040a5c88ef71e86dc5a89501027ad8",
+  "generatedAt": "2026-09-29T08:32:17.073Z",
+  "testedSha": "1db453ca0c1b524441766c8466af16d5813cfb24",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:30:34.521Z"
+      "fallbackCreatedAt": "2026-09-29T08:32:48.714Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,32 +1614,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "analytics-first-version-surface",
-      "analyticsRestoredSurface": {
-        "firstCards": 6,
-        "workCards": 2,
-        "focusBlocks": 0,
-        "firstCardBackground": "rgb(23, 30, 35)",
-        "firstPanelRadius": 15,
-        "workCardBackground": "rgb(20, 27, 32)",
-        "workPanelRadius": 15
-      }
-    },
-    {
-      "width": 390,
-      "type": "analytics-first-version-surface",
-      "analyticsRestoredSurface": {
-        "firstCards": 6,
-        "workCards": 2,
-        "focusBlocks": 0,
-        "firstCardBackground": "rgb(23, 30, 35)",
-        "firstPanelRadius": 15,
-        "workCardBackground": "rgb(20, 27, 32)",
-        "workPanelRadius": 15
-      }
-    }
-  ]
+  "failures": []
 }
