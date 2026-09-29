@@ -2158,6 +2158,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       if (width === 390) {
         await page.locator("#material-lines [data-material-row]").scrollIntoViewIfNeeded();
+        const toastSafeState = await page.evaluate(() => {
+          const toast = document.querySelector("#toast.toast.show");
+          const footer = document.querySelector(".order-editor-modal .modal-actions");
+          const tr = toast?.getBoundingClientRect();
+          const fr = footer?.getBoundingClientRect();
+          return {
+            visible: Boolean(toast),
+            toastBottom: tr ? Math.round(tr.bottom) : 0,
+            footerTop: fr ? Math.round(fr.top) : 0,
+            gap: tr && fr ? Math.round(fr.top - tr.bottom) : -999
+          };
+        });
+        if (!toastSafeState.visible || toastSafeState.gap < 12) {
+          report.failures.push({ width, type: "modal-toast-overlap", toastSafeState });
+        }
         report.results.push(await shot(page, width, "order-editor-material-row", false));
       }
       await page.locator("#material-lines [data-remove-line]").first().click();

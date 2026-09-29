@@ -23931,3 +23931,11 @@
     line-height: 1.35 !important;
   }
 }
+
+
+/* 1.8.26 · Toast не перекрывает рабочие кнопки в полноэкранных редакторах */
+@media screen and (max-width: 520px) {
+  body.modal-open #toast.toast {
+    bottom: calc(164px + env(safe-area-inset-bottom)) !important;
+  }
+}

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.25";
-const APP_BUILD = "2026.09.29.358";
+const APP_VERSION = "1.8.26";
+const APP_BUILD = "2026.09.29.359";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пояснения в справочниках стали плотнее и больше не раздувают модальные окна"
+const APP_RELEASE = "Всплывающие сообщения больше не перекрывают рабочие кнопки внутри редакторов"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.26",
+    date: "29.09.2026",
+    title: "Toast выше рабочих кнопок",
+    items: [
+      "В полноэкранных редакторах всплывающие сообщения подняты выше нижней панели действий.",
+      "«Материал добавлен» больше не накрывает кнопку добавления фотографии и footer Отмена/Сохранить.",
+      "На обычных экранах положение toast не менялось."
+    ]
+  },
   {
     version: "1.8.25",
     date: "29.09.2026",
