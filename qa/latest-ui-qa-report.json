@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:44:16.092Z",
-  "testedSha": "8b1a7413ed3dfccc608aeed1e5cbf4eb70bb4882",
+  "generatedAt": "2026-09-29T08:51:22.836Z",
+  "testedSha": "3799d5de6aa31bd61bf34f0576eb77905afd507b",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,13 +1600,19 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:44:51.220Z"
+      "fallbackCreatedAt": "2026-09-29T08:52:01.818Z"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "type": "fatal",
-      "message": "page.evaluate: Execution context was destroyed, most likely because of a navigation"
-    }
-  ]
+  "failures": []
 }
