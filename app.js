@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.98";
-const APP_BUILD = "2026.09.29.330";
+const APP_VERSION = "1.7.99";
+const APP_BUILD = "2026.09.29.331";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Склад получил единую тёплую акцентную систему без чужеродных синих иконок"
+const APP_RELEASE = "Прайс и каталог услуг получили мягкие графитовые поверхности в стиле первой версии"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.99",
+    date: "29.09.2026",
+    title: "Мягкий прайс и каталог",
+    items: [
+      "Полноэкранный каталог услуг сохранил фиксированную кнопку закрытия и нижние действия, но больше не выглядит сплошным чёрным экраном.",
+      "Карточки услуг, поиск и итоговая панель получили мягкие графитовые поверхности с аккуратным оранжевым акцентом.",
+      "Прайс-лист стал визуально ближе к первой версии: группы и строки светлее, границы мягче, цены остаются главным акцентом."
+    ]
+  },
   {
     version: "1.7.98",
     date: "29.09.2026",

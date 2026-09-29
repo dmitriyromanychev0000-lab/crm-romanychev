@@ -1734,10 +1734,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         option: getComputedStyle(document.querySelector(".catalog-service-option")).backgroundColor,
         summary: getComputedStyle(document.querySelector(".catalog-fit-summary")).backgroundColor
       }));
-      if (serviceCatalogSurface.modal !== "rgb(3, 7, 10)"
-        || serviceCatalogSurface.option !== "rgb(9, 15, 20)"
-        || serviceCatalogSurface.summary !== "rgb(6, 11, 15)") {
-        report.failures.push({ width, type: "service-catalog-deep-dark", serviceCatalogSurface });
+      if (serviceCatalogSurface.modal !== "rgb(16, 23, 27)"
+        || serviceCatalogSurface.option !== "rgb(23, 30, 35)"
+        || serviceCatalogSurface.summary !== "rgb(18, 25, 30)") {
+        report.failures.push({ width, type: "service-catalog-restored-surface", serviceCatalogSurface });
       }
       const serviceCatalogActions = await page.evaluate(() => {
         const actions = document.querySelector(".catalog-modal-actions");
@@ -3527,13 +3527,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           })
         };
       });
-      if (pricePageSurface.group !== "rgb(7, 12, 16)"
-        || pricePageSurface.service !== "rgb(7, 12, 16)"
-        || pricePageSurface.material !== "rgb(7, 12, 16)"
-        || pricePageSurface.custom !== "rgb(7, 12, 16)"
+      if (pricePageSurface.group !== "rgb(17, 24, 29)"
+        || pricePageSurface.service !== "rgb(17, 24, 29)"
+        || pricePageSurface.material !== "rgb(17, 24, 29)"
+        || pricePageSurface.custom !== "rgb(17, 24, 29)"
         || parseFloat(pricePageSurface.rowTitleFont) < 11.5
-        || pricePageSurface.searchBackground !== "rgb(9, 15, 20)"
-        || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
+        || pricePageSurface.searchBackground !== "rgb(21, 29, 35)"
+        || pricePageSurface.searchBorder !== "rgb(48, 59, 66)"
         || pricePageSurface.searchShadow !== "none"
         || Math.abs(pricePageSurface.addWidth - pricePageSurface.searchWidth) > 2
         || pricePageSurface.addHeight < 48
@@ -3546,8 +3546,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.gapSearchFilters > 7
         || pricePageSurface.addBackground !== "rgb(255, 113, 79)"
         || pricePageSurface.priceColors.some((value) => value !== "rgb(255, 138, 112)")
-        || pricePageSurface.rowBorders.some((value) => value !== "rgb(32, 45, 53)")
-        || pricePageSurface.customHeadBorder !== "rgb(32, 45, 53)"
+        || pricePageSurface.rowBorders.some((value) => value !== "rgb(40, 51, 58)")
+        || pricePageSurface.customHeadBorder !== "rgb(40, 51, 58)"
         || pricePageSurface.filterTops.length !== 2
         || pricePageSurface.filterLefts.length !== 2
         || pricePageSurface.filterWidths.some((value) => value < 130)
