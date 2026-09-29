@@ -5134,6 +5134,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "settings-compact-density", settingsDensity, settingsRowLimit, settingsLinkLimit });
       }
 
+      const settingsReleaseText = await page.evaluate(() => ({
+        version: document.querySelector(".settings-app-card .app-version-row strong")?.textContent?.trim() || "",
+        subtitle: document.querySelector(".settings-app-card .app-version-row small")?.textContent?.trim() || ""
+      }));
+      await page.locator('.settings-app-card .app-version-row [data-action="release-notes"]').click();
+      await page.waitForTimeout(40);
+      const currentReleaseText = await page.evaluate(() => ({
+        version: document.querySelector(".release-current strong")?.textContent?.trim() || "",
+        noteVersion: document.querySelector(".release-note.current > div > strong")?.textContent?.trim() || "",
+        noteTitle: document.querySelector(".release-note.current h3")?.textContent?.trim() || ""
+      }));
+      if (settingsReleaseText.version !== `Версия ${currentReleaseText.version}`
+        || currentReleaseText.noteVersion !== currentReleaseText.version
+        || settingsReleaseText.subtitle !== currentReleaseText.noteTitle) {
+        report.failures.push({ width, type: "settings-release-sync", settingsReleaseText, currentReleaseText });
+      }
+      await page.locator(".release-notes-head [data-close-modal]").click();
+
       await setState(page, uiState({ activePage: "more", moreSection: "backup" }));
       const backupSurface = await page.evaluate(() => ({
         primary: getComputedStyle(document.querySelector(".backup-primary-card")).backgroundColor,

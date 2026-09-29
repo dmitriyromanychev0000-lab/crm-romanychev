@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.51";
-const APP_BUILD = "2026.09.30.386";
+const APP_VERSION = "1.8.52";
+const APP_BUILD = "2026.09.30.387";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Выбор услуг больше не прыгает"
+const APP_RELEASE = "Подпись версии всегда соответствует текущему changelog";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.52",
+    date: "30.09.2026",
+    title: "Подпись версии всегда актуальна",
+    items: [
+      "Подпись под номером версии в Настройках теперь берётся из changelog текущей версии.",
+      "Старая подпись больше не может остаться от предыдущего релиза после обновления.",
+      "Mobile UI QA сверяет номер и подпись версии с текущей записью «Что нового»."
+    ]
+  },
   {
     version: "1.8.51",
     date: "30.09.2026",
@@ -5485,7 +5495,7 @@ function settingsPage() {
     <section class="legacy-settings-card settings-app-card">
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("document")}</span><h2>Приложение</h2></div>
       <div class="legacy-settings-list">
-        <div class="legacy-settings-row app-version-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>Версия ${APP_VERSION}</strong><small>${APP_RELEASE}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
+        <div class="legacy-settings-row app-version-row"><span class="legacy-settings-row-icon">${icon("document")}</span><span><strong>Версия ${APP_VERSION}</strong><small>${escapeHtml(APP_CHANGELOG.find((release) => release.version === APP_VERSION)?.title || APP_RELEASE)}</small></span><button type="button" data-action="release-notes">Что нового</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("refresh")}</span><span><strong>Проверка обновления</strong><small>Сборка ${APP_BUILD}</small></span><button type="button" data-action="check-update">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("analytics")}</span><span><strong>Диагностика</strong><small>Кэш, база и хранилище</small></span><button type="button" data-action="run-diagnostics">Проверить</button></div>
         <div class="legacy-settings-row"><span class="legacy-settings-row-icon">${icon("backup")}</span><span><strong>Локальные данные</strong><small>${settings.lastBackupAt ? `Последний бэкап: ${new Date(settings.lastBackupAt).toLocaleString("ru-RU")}` : "Бэкап ещё не создавался"}</small></span><button type="button" data-action="protect-storage">Защитить</button></div>
