@@ -22868,3 +22868,110 @@
     padding: 7px 9px !important;
   }
 }
+
+
+/* 1.8.4 · Карточки заявок первой версии */
+@media screen and (max-width: 520px) {
+  .legacy-order-card {
+    padding: 13px 12px 11px 16px !important;
+    border-color: #2c363d !important;
+    border-radius: 18px !important;
+    background: linear-gradient(155deg,#11181d 0%,#0d1317 100%) !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.07) !important;
+  }
+
+  .legacy-order-device {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0,1fr) auto !important;
+    gap: 10px !important;
+    min-height: 52px !important;
+    align-items: center !important;
+    margin-top: 10px !important;
+  }
+
+  .legacy-order-device-copy {
+    min-width: 0 !important;
+  }
+
+  .legacy-order-device-copy > strong,
+  .legacy-order-device-copy > small {
+    display: block !important;
+    min-width: 0 !important;
+  }
+
+  .legacy-order-device-copy > strong {
+    overflow: hidden !important;
+    color: #eef2f4 !important;
+    font-size: 13px !important;
+    font-weight: 590 !important;
+    line-height: 1.15 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-device-copy > small {
+    overflow: hidden !important;
+    margin-top: 4px !important;
+    color: #879198 !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-sum {
+    align-self: center !important;
+    color: #f1f3f4 !important;
+    font-size: clamp(18px,5vw,21px) !important;
+    font-weight: 620 !important;
+    line-height: 1 !important;
+    letter-spacing: -.02em !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+    min-height: 34px !important;
+    align-items: center !important;
+    margin-top: 9px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid #263137 !important;
+    color: #8d979d !important;
+  }
+
+  .legacy-order-meta > span {
+    display: inline-flex !important;
+    gap: 5px !important;
+    align-items: center !important;
+    min-width: 0 !important;
+    font-size: 9px !important;
+  }
+
+  .legacy-order-meta .ui-icon {
+    width: 13px !important;
+    height: 13px !important;
+    flex: 0 0 13px !important;
+  }
+
+  .legacy-order-actions {
+    margin-top: 9px !important;
+    padding-top: 8px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-device {
+    grid-template-columns: 42px minmax(0,1fr) auto !important;
+    gap: 8px !important;
+  }
+
+  .legacy-order-sum {
+    font-size: 17px !important;
+  }
+
+  .legacy-order-meta {
+    gap: 7px 12px !important;
+  }
+}

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.3";
-const APP_BUILD = "2026.09.29.335";
+const APP_VERSION = "1.8.4";
+const APP_BUILD = "2026.09.29.336";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Главные показатели аналитики уплотнены по визуальному ритму первой версии"
+const APP_RELEASE = "Карточки заявок возвращены к композиции первой версии"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.4",
+    date: "29.09.2026",
+    title: "Карточки заявок как раньше",
+    items: [
+      "На главной заявок техника и сумма снова собраны в одну строку, как в первой версии.",
+      "Убран тяжёлый двойной блок «Сумма клиента / На руки» и лишний адрес из карточки списка — подробности остались внутри заявки.",
+      "Телефон, гарантия, визит и быстрые действия сохранены, но карточка стала ниже и визуально спокойнее."
+    ]
+  },
   {
     version: "1.8.3",
     date: "29.09.2026",
@@ -3410,17 +3420,12 @@ function orderCard(order) {
 
     <div class="legacy-order-device">
       <div class="legacy-device-icon">${icon(applianceIcon)}</div>
-      <div><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || order.issue || "Модель не указана")}</small></div>
-    </div>
-
-    <div class="legacy-order-money">
-      <div><span>СУММА КЛИЕНТА</span><strong>${money(order.sum)}</strong></div>
-      <div><span class="legacy-net-label">${icon("goods")} НА РУКИ</span><strong class="${isFinished ? (net >= 0 ? "green" : "red") : "pending"}">${isFinished ? money(net) : "После закрытия"}</strong></div>
+      <div class="legacy-order-device-copy"><strong>${escapeHtml(order.tech || "Техника")}</strong><small>${escapeHtml(order.brand || order.issue || "Модель не указана")}</small></div>
+      <strong class="legacy-order-sum">${money(order.sum)}</strong>
     </div>
 
     <div class="legacy-order-meta">
       ${order.phone ? `<span>${icon("phone")}${escapeHtml(order.phone)}</span>` : ""}
-      ${order.address ? `<a class="address" href="${escapeHtml(yandexMapsUrl(order.address))}" target="_blank" rel="noopener">${icon("location")}${escapeHtml(order.address)}</a>` : ""}
       <span>${icon("shield")}${guaranteeText}</span>
     </div>
     ${nextVisit ? `<div class="legacy-next-visit ${overdueVisit ? "overdue" : ""}">${icon("calendar")}<span>${overdueVisit ? "Визит просрочен" : "Следующий визит"}: ${escapeHtml(nextVisit)}</span></div>` : ""}

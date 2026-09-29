@@ -1457,7 +1457,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const visit = document.querySelector(".legacy-visit-filter .field")?.getBoundingClientRect();
         return {
           card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
-          money: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-money > div")).backgroundColor,
+          sumColor: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-sum")).color,
+          moneyBlocks: document.querySelectorAll(".legacy-order-card .legacy-order-money").length,
           action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor,
           addWidth: Math.round(addRect?.width || 0),
           addHeight: Math.round(addRect?.height || 0),
@@ -1487,7 +1488,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && orderPageSurfaces.gapFiltersVisit <= 8
         && orderPageSurfaces.addLabel.includes("Новая заявка");
       if (!restoredOrdersLayout
-        || orderPageSurfaces.money !== "rgb(20, 27, 32)"
+        || orderPageSurfaces.moneyBlocks !== 0
+        || orderPageSurfaces.sumColor !== "rgb(241, 243, 244)"
         || orderPageSurfaces.action !== "rgb(20, 27, 32)") {
         report.failures.push({ width, type: "orders-restored-layout", orderPageSurfaces, restoredOrdersLayout });
       }
@@ -1495,7 +1497,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const card = document.querySelector(".legacy-order-card");
         const list = document.querySelector(".legacy-orders-list");
         const device = card?.querySelector(".legacy-device-icon");
-        const money = card?.querySelector(".legacy-order-money > div");
+        const deviceRow = card?.querySelector(".legacy-order-device");
+        const meta = card?.querySelector(".legacy-order-meta");
         const actions = card?.querySelector(".legacy-order-actions");
         const action = actions?.querySelector("button, a");
         const cardStyle = card ? getComputedStyle(card) : null;
@@ -1506,7 +1509,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           paddingBottom: parseFloat(cardStyle?.paddingBottom || "999"),
           listGap: parseFloat(listStyle?.rowGap || listStyle?.gap || "999"),
           deviceHeight: Math.round(device?.getBoundingClientRect().height || 999),
-          moneyHeight: Math.round(money?.getBoundingClientRect().height || 999),
+          deviceRowHeight: Math.round(deviceRow?.getBoundingClientRect().height || 999),
+          metaHeight: Math.round(meta?.getBoundingClientRect().height || 999),
           actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
           actionsMarginTop: parseFloat(actionsStyle?.marginTop || "999"),
           actionsPaddingTop: parseFloat(actionsStyle?.paddingTop || "999")
@@ -1516,7 +1520,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDensity.paddingBottom > 12
         || orderDensity.listGap > 11
         || orderDensity.deviceHeight > 45
-        || orderDensity.moneyHeight > 61
+        || orderDensity.deviceRowHeight < 50
+        || orderDensity.deviceRowHeight > 56
+        || orderDensity.metaHeight > 38
         || orderDensity.actionHeight < 48
         || orderDensity.actionHeight > 51
         || orderDensity.actionsMarginTop > 11
