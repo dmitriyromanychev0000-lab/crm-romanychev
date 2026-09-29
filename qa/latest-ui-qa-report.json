@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T09:44:45.288Z",
-  "testedSha": "691a441fe2ce66713b073531e01624beea3e6c2d",
+  "generatedAt": "2026-09-29T10:07:09.800Z",
+  "testedSha": "7d71ce372f94db1d535cffa298885996e06fc18e",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1593,6 +1593,16 @@
       "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
     },
     {
+      "label": "backup-legacy-v18-import",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "legacyV18ImportOk": true
+    },
+    {
       "label": "backup-local-fallback",
       "width": 320,
       "bodyScrollWidth": 320,
@@ -1600,7 +1610,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T09:45:23.486Z"
+      "fallbackCreatedAt": "2026-09-29T10:07:48.936Z"
     },
     {
       "label": "pwa-offline",
