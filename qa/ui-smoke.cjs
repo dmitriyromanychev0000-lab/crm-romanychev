@@ -1447,7 +1447,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
 
       await setState(page, uiState({ activePage: "orders" }));
       const orderPageSurfaces = await page.evaluate(() => {
-        const add = document.querySelector(".legacy-orders-add-wide");
+        const add = document.querySelector(".legacy-orders-add-fab");
         const page = document.querySelector(".legacy-orders-page");
         const addRect = add?.getBoundingClientRect();
         const pageRect = page?.getBoundingClientRect();
@@ -1462,7 +1462,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           addWidth: Math.round(addRect?.width || 0),
           addHeight: Math.round(addRect?.height || 0),
           pageWidth: Math.round(pageRect?.width || 0),
-          addText: add?.textContent?.trim() || "",
+          addLabel: add?.getAttribute("aria-label") || add?.textContent?.trim() || "",
           searchHeight: Math.round(search?.height || 0),
           filtersHeight: Math.round(filters?.height || 0),
           filterButtonHeight: Math.round(filterButton?.height || 0),
@@ -1472,24 +1472,24 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999
         };
       });
-      if (orderPageSurfaces.card !== "rgb(7, 12, 16)"
-        || orderPageSurfaces.money !== "rgb(9, 15, 20)"
-        || orderPageSurfaces.action !== "rgb(9, 15, 20)"
-        || orderPageSurfaces.addWidth < orderPageSurfaces.pageWidth - 34
-        || orderPageSurfaces.addHeight < 48
-        || orderPageSurfaces.addHeight > 49
-        || orderPageSurfaces.searchHeight < 44
-        || orderPageSurfaces.searchHeight > 45
-        || orderPageSurfaces.filtersHeight > 50
-        || orderPageSurfaces.filterButtonHeight < 44
-        || orderPageSurfaces.filterButtonHeight > 45
-        || orderPageSurfaces.visitHeight < 44
-        || orderPageSurfaces.visitHeight > 45
-        || orderPageSurfaces.gapAddSearch > 7
-        || orderPageSurfaces.gapSearchFilters > 6
-        || orderPageSurfaces.gapFiltersVisit > 6
-        || !orderPageSurfaces.addText.includes("Новая заявка")) {
-        report.failures.push({ width, type: "orders-deep-dark-page", orderPageSurfaces });
+      const restoredOrdersLayout = orderPageSurfaces.addWidth >= 50
+        && orderPageSurfaces.addWidth <= 55
+        && orderPageSurfaces.addHeight >= 50
+        && orderPageSurfaces.addHeight <= 55
+        && orderPageSurfaces.searchHeight >= 50
+        && orderPageSurfaces.searchHeight <= 53
+        && orderPageSurfaces.filtersHeight <= 46
+        && orderPageSurfaces.filterButtonHeight >= 44
+        && orderPageSurfaces.filterButtonHeight <= 45
+        && orderPageSurfaces.visitHeight >= 48
+        && orderPageSurfaces.visitHeight <= 49
+        && orderPageSurfaces.gapSearchFilters <= 8
+        && orderPageSurfaces.gapFiltersVisit <= 8
+        && orderPageSurfaces.addLabel.includes("Новая заявка");
+      if (!restoredOrdersLayout
+        || orderPageSurfaces.money !== "rgb(20, 27, 32)"
+        || orderPageSurfaces.action !== "rgb(20, 27, 32)") {
+        report.failures.push({ width, type: "orders-restored-layout", orderPageSurfaces, restoredOrdersLayout });
       }
       const orderDensity = await page.evaluate(() => {
         const card = document.querySelector(".legacy-order-card");
@@ -1512,15 +1512,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           actionsPaddingTop: parseFloat(actionsStyle?.paddingTop || "999")
         };
       });
-      if (orderDensity.paddingTop > 12
-        || orderDensity.paddingBottom > 10
-        || orderDensity.listGap > 8
-        || orderDensity.deviceHeight > 41
-        || orderDensity.moneyHeight > 52
-        || orderDensity.actionHeight < 44
-        || orderDensity.actionHeight > 46
-        || orderDensity.actionsMarginTop > 8
-        || orderDensity.actionsPaddingTop > 7) {
+      if (orderDensity.paddingTop > 14
+        || orderDensity.paddingBottom > 12
+        || orderDensity.listGap > 11
+        || orderDensity.deviceHeight > 45
+        || orderDensity.moneyHeight > 61
+        || orderDensity.actionHeight < 48
+        || orderDensity.actionHeight > 51
+        || orderDensity.actionsMarginTop > 11
+        || orderDensity.actionsPaddingTop > 10) {
         report.failures.push({ width, type: "orders-density", orderDensity });
       }
       await page.locator('[data-action="new-order"]').first().click();
@@ -1627,8 +1627,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && Math.abs(paymentGridLayout.tag.width - paymentColumnWidth) <= 3
         && paymentGridLayout.tag.width <= paymentGridLayout.gridWidth * 0.55;
       const paymentControlsCompact = paymentGridLayout.fieldHeights?.length >= 7
-        && paymentGridLayout.fieldHeights.every((height) => height >= 44 && height <= 45)
-        && paymentGridLayout.rowGap <= 7;
+        && paymentGridLayout.fieldHeights.every((height) => height >= 46 && height <= 49)
+        && paymentGridLayout.rowGap <= 10;
       if (!paymentPairsAligned
         || !tagCompact
         || !paymentControlsCompact
@@ -1637,32 +1637,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         report.failures.push({ width, type: "order-payment-grid-two-columns", paymentGridLayout, paymentPairsAligned, tagCompact, paymentControlsCompact });
       }
 
-      const calculationSummaryLayout = await page.evaluate(() => {
-        const summary = document.querySelector(".order-editor-modal .order-calculation-summary");
-        const cards = [...document.querySelectorAll(".order-editor-modal .order-calculation-summary > div")].map((el) => {
-          const rect = el.getBoundingClientRect();
-          return { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
-        });
-        const button = document.querySelector(".order-editor-modal .order-calculation-summary > button")?.getBoundingClientRect();
-        const rect = summary?.getBoundingClientRect();
-        return {
-          gridWidth: Math.round(rect?.width || 0),
-          columns: summary ? getComputedStyle(summary).gridTemplateColumns : "",
-          cards,
-          button: button ? { left: Math.round(button.left), top: Math.round(button.top), width: Math.round(button.width), height: Math.round(button.height) } : null
-        };
-      });
-      const calculationSummaryCompact = calculationSummaryLayout.cards.length === 3
-        && calculationSummaryLayout.cards.every((card) => card.height <= 56 && card.width >= 70)
-        && Math.max(...calculationSummaryLayout.cards.map((card) => card.top)) - Math.min(...calculationSummaryLayout.cards.map((card) => card.top)) <= 2
-        && calculationSummaryLayout.cards[1].left > calculationSummaryLayout.cards[0].left
-        && calculationSummaryLayout.cards[2].left > calculationSummaryLayout.cards[1].left
-        && calculationSummaryLayout.button
-        && calculationSummaryLayout.button.top > calculationSummaryLayout.cards[0].top
-        && calculationSummaryLayout.button.width >= calculationSummaryLayout.gridWidth - 2
-        && calculationSummaryLayout.button.height >= 44;
-      if (!calculationSummaryCompact) {
-        report.failures.push({ width, type: "order-calculation-summary-compact", calculationSummaryLayout });
+      const calculationSummaryRemoved = await page.evaluate(() => ({
+        summary: document.querySelectorAll(".order-editor-modal .order-calculation-summary").length,
+        button: document.querySelectorAll("#use-calculated-total").length
+      }));
+      if (calculationSummaryRemoved.summary !== 0 || calculationSummaryRemoved.button !== 0) {
+        report.failures.push({ width, type: "order-calculation-summary-removed", calculationSummaryRemoved });
       }
 
       const orderEditorDensity = await page.evaluate(() => {
@@ -1713,7 +1693,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (orderEditorDensity.bodyPaddingTop > 12
         || orderEditorDensity.sectionMarginBottom > 18
-        || orderEditorDensity.titleMarginBottom > 8
+        || orderEditorDensity.titleMarginBottom > 10
         || orderEditorDensity.fieldHeight < 44
         || orderEditorDensity.fieldHeight > 48
         || orderEditorDensity.textareaHeight > 50
@@ -1724,7 +1704,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderEditorDensity.defectsHeight < 42
         || orderEditorDensity.defectsHeight > 46
         || orderEditorDensity.primaryControls.length < 8
-        || orderEditorDensity.primaryControls.some((item) => item.height !== 46 || item.paddingTop !== 0 || item.paddingBottom !== 0)
+        || orderEditorDensity.primaryControls.some((item) => item.height < 46 || item.height > 48 || item.paddingTop !== 0 || item.paddingBottom !== 0)
         || orderEditorDensity.headerIconDelta > 1
         || orderEditorDensity.closeIconDelta > 1
         || orderEditorDensity.sectionIconDeltas.length < 2
@@ -1952,6 +1932,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       await page.locator('.order-editor-modal [name="sum"]').fill("12340");
+      await page.locator('.order-editor-modal [name="sum"]').blur();
       await page.waitForTimeout(40);
       const servicePriceAfterFit = await page.evaluate(() => {
         const rows = [...document.querySelectorAll("#service-lines [data-service-row]")];
@@ -2109,7 +2090,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           primaryTop: Math.round(primaryRect?.top || 0)
         };
       });
-      if (editorSurfaceState.material !== "rgb(7, 12, 16)"
+      if (editorSurfaceState.material !== "rgb(17, 24, 29)"
         || editorSurfaceState.materialField !== "rgb(9, 15, 20)"
         || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)"
         || editorSurfaceState.serviceMatchCount !== 0

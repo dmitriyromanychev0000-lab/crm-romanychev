@@ -6373,9 +6373,9 @@ function newOrderModal(existing = null, options = {}) {
     }
     if (event.target.closest("[data-material-row]")) calculateLines();
   });
-  formElement.elements.sum?.addEventListener("change", () => {
-    refitServices();
-  });
+  const syncTotalToServices = () => refitServices();
+  formElement.elements.sum?.addEventListener("change", syncTotalToServices);
+  formElement.elements.sum?.addEventListener("blur", syncTotalToServices);
   formElement.elements.expense_white?.addEventListener("change", () => {
     const minimum = syncWhiteExpenseMinimum({ raise: false });
     if ((Number(formElement.elements.expense_white.value) || 0) < minimum) {
