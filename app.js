@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.21";
-const APP_BUILD = "2026.09.29.354";
+const APP_VERSION = "1.8.22";
+const APP_BUILD = "2026.09.29.355";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинный тип техники в карточке заявки читается до двух строк на 320 px"
+const APP_RELEASE = "Подсказки полей заявки больше не режутся в двухколоночной сетке на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.22",
+    date: "29.09.2026",
+    title: "Чистые подсказки в полях заявки",
+    items: [
+      "Подсказка названия техники сокращена до «Марка / модель», без обрезания на 320 px.",
+      "Пустой источник показывает короткое «Выбери», потому что назначение уже указано в подписи поля.",
+      "Логика заявки и реальные сохранённые значения не менялись."
+    ]
+  },
   {
     version: "1.8.21",
     date: "29.09.2026",
@@ -6332,10 +6342,10 @@ function newOrderModal(existing = null, options = {}) {
       <div class="form-group"><label>Клиент</label><input class="field" name="name" value="${escapeHtml(order.name || "")}" placeholder="Необязательно" /></div>
       <div class="form-group"><label>Телефон</label><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(order.phone || "") || order.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></div>
       <div class="form-group"><label>Техника</label><select class="field" name="tech">${orderTechOptions.map((value) => `<option value="${escapeHtml(value)}" ${order.tech === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
-      <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Samsung или Samsung RB37" /></div>
+      <div class="form-group"><label>Название техники</label><input class="field" name="brand" value="${escapeHtml(order.brand || "")}" placeholder="Марка / модель" /></div>
       <div class="client-match-slot full" id="client-match-slot"></div>
       <div class="form-group full"><label>Адрес</label><input class="field" name="address" value="${escapeHtml(order.address || "")}" /></div>
-      <div class="form-group order-source"><label>Источник заявки *</label><select class="field" name="sourceId"><option value="">Выбери источник</option>${sourceOptions}${archivedSourceOption}</select></div>
+      <div class="form-group order-source"><label>Источник заявки *</label><select class="field" name="sourceId"><option value="">Выбери</option>${sourceOptions}${archivedSourceOption}</select></div>
       <div class="form-group order-status"><label>Статус</label><select class="field" name="status">${["В работе","Закрыта","Отказ"].map((value) => `<option ${normalizeStatus(order.status) === normalizeStatus(value) ? "selected" : ""}>${value}</option>`).join("")}</select></div>
       <div class="form-group full"><label>Неисправность со слов клиента</label><textarea class="field textarea" name="issue">${escapeHtml(order.issue || "")}</textarea></div>
       <div class="form-group full"><label>Результат диагностики</label><textarea class="field textarea" name="diagnosis">${escapeHtml(order.diagnosis || "")}</textarea></div>

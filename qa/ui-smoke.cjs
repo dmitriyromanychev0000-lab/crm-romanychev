@@ -489,7 +489,27 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           visitDuration: rect("nextVisitDuration"),
           source: rect("sourceId"),
           status: rect("status"),
-          issue: rect("issue")
+          issue: rect("issue"),
+          compactTextFit: (() => {
+            const measure = (node, text, extra = 0) => {
+              if (!node) return { required: 999, available: 0, text: "" };
+              const style = getComputedStyle(node);
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
+              ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+              return {
+                text,
+                required: Math.ceil(ctx.measureText(text).width) + extra,
+                available: Math.floor(node.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0))
+              };
+            };
+            const brand = document.querySelector('.order-editor-modal [name="brand"]');
+            const source = document.querySelector('.order-editor-modal [name="sourceId"]');
+            return {
+              brand: measure(brand, brand?.placeholder || ""),
+              source: measure(source, source?.selectedOptions?.[0]?.textContent?.trim() || "", 20)
+            };
+          })()
         };
       });
       const pairAligned = (left, right) => left && right
@@ -504,6 +524,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !pairAligned(sourceVisitFields.createdDate, sourceVisitFields.visitDate)
         || !pairAligned(sourceVisitFields.visitTime, sourceVisitFields.visitDuration)
         || !pairAligned(sourceVisitFields.source, sourceVisitFields.status)
+        || sourceVisitFields.compactTextFit.brand.text !== "Марка / модель"
+        || sourceVisitFields.compactTextFit.source.text !== "Выбери"
+        || sourceVisitFields.compactTextFit.brand.required > sourceVisitFields.compactTextFit.brand.available
+        || sourceVisitFields.compactTextFit.source.required > sourceVisitFields.compactTextFit.source.available
         || !fullWidthField(sourceVisitFields.issue)) {
         report.failures.push({ width, type: "order-source-visit-fields", sourceVisitFields });
       }
