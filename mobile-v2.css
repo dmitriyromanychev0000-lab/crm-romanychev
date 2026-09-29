@@ -23790,7 +23790,7 @@
   .settings-profile-card .legacy-settings-grid > .settings-provider-name {
     grid-column: 1 / -1 !important;
     display: grid !important;
-    grid-template-columns: 96px minmax(0,1fr) !important;
+    grid-template-columns: 100px minmax(0,1fr) !important;
     grid-template-rows: 44px !important;
     gap: 6px !important;
     align-items: center !important;
