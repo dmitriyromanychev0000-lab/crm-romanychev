@@ -222,6 +222,8 @@ async function inspect(page, label, width) {
       .map((icon) => {
         const action = icon.closest("button, a, summary");
         if (!action || !visible(action)) return null;
+        if (action.matches(".nav-button, .legacy-client-main")) return null;
+        if (action.closest(".legacy-order-actions, .legacy-expanded-actions")) return null;
         const actionStyle = getComputedStyle(action);
         const iconStyle = getComputedStyle(icon);
         const display = actionStyle.display;
