@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T14:41:17.762Z",
-  "testedSha": "f8f0baaa6aa8fad8b54e9e2da3171d1b8f103ea9",
+  "generatedAt": "2026-09-29T15:24:27.736Z",
+  "testedSha": "7fc91d6f37a13cf3f69b07cf8cd24f3a550ab536",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1610,7 +1610,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T14:41:56.804Z"
+      "fallbackCreatedAt": "2026-09-29T15:25:06.726Z"
     },
     {
       "label": "pwa-offline",
@@ -1624,5 +1624,18 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "stock-editor-compact-density",
+      "stockEditorDensity": {
+        "headHeight": 59,
+        "bodyGap": 8,
+        "sectionPaddingTop": 9,
+        "fieldHeight": 46,
+        "compatHeight": 44,
+        "firstSectionHeight": 425
+      }
+    }
+  ]
 }
