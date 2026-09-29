@@ -2478,12 +2478,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           panelMarginBottom: panelStyle ? px(panelStyle.marginBottom) : 999
         };
       });
-      if (analyticsDensity.kpiHeight < 82
-        || analyticsDensity.kpiHeight > 94
-        || analyticsDensity.workHeight < 72
-        || analyticsDensity.workHeight > 82
-        || analyticsDensity.panelPaddingTop < 10
-        || analyticsDensity.panelPaddingTop > 15
+      if (analyticsDensity.kpiHeight < 70
+        || analyticsDensity.kpiHeight > 78
+        || analyticsDensity.workHeight < 64
+        || analyticsDensity.workHeight > 70
+        || analyticsDensity.panelPaddingTop < 8
+        || analyticsDensity.panelPaddingTop > 11
         || analyticsDensity.panelMarginBottom > 8) {
         report.failures.push({ width, type: "analytics-first-version-density", analyticsDensity });
       }

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.2";
-const APP_BUILD = "2026.09.29.334";
+const APP_VERSION = "1.8.3";
+const APP_BUILD = "2026.09.29.335";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Документы, черновики и бэкапы приведены к той же мягкой графитовой системе"
+const APP_RELEASE = "Главные показатели аналитики уплотнены по визуальному ритму первой версии"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.3",
+    date: "29.09.2026",
+    title: "Утончённая аналитика",
+    items: [
+      "Блок «Главные показатели» стал заметно ниже и легче: меньше внутренние отступы, тоньше рамки и спокойнее фон.",
+      "KPI-карточки теперь ближе по плотности к первой версии и показывают больше аналитики без лишней прокрутки.",
+      "«Работа сейчас» уплотнена в той же системе, без изменения расчётов и данных."
+    ]
+  },
   {
     version: "1.8.2",
     date: "29.09.2026",
