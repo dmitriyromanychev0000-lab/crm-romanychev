@@ -21874,3 +21874,22 @@
     border-radius: 18px !important;
   }
 }
+
+
+/* 1.7.96 title fix */
+@media screen and (max-width: 520px) {
+  .analytics-first-title > strong {
+    white-space: nowrap !important;
+  }
+
+  .analytics-first-title > small {
+    max-width: 118px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .analytics-first-title > small {
+    max-width: 88px !important;
+    font-size: 7px !important;
+  }
+}
