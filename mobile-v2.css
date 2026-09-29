@@ -24322,3 +24322,12 @@
     white-space: nowrap !important;
   }
 }
+
+
+
+/* 1.8.42 · Стрелка прайса товаров отражает состояние раскрытия */
+@media screen and (max-width: 520px) {
+  .legacy-product-price[open] > summary .legacy-price-chevron {
+    transform: rotate(90deg) !important;
+  }
+}

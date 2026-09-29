@@ -4429,10 +4429,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           amountLeft: Math.round(amountRect?.left || 0),
           amountRight: Math.round(amountRect?.right || 0),
           rowRight: Math.round(rowRect?.right || 0),
-          countCopy
+          countCopy,
+          chevronTransform: getComputedStyle(document.querySelector(".legacy-product-price .legacy-price-chevron")).transform
         };
       });
       if (!goodsProductPrice.open
+        || goodsProductPrice.chevronTransform === "none"
         || goodsProductPrice.rowColumns.split(" ").filter(Boolean).length !== 2
         || goodsProductPrice.rowHeight > 64
         || goodsProductPrice.amountLeft <= goodsProductPrice.copyRight - 2
@@ -4997,7 +4999,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Прайс товаров плотнее на 320 px"
+        || settingsSurface.versionSummaryFit.text !== "Стрелка прайса показывает раскрытие"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)

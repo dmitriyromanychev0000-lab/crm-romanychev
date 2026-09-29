@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.41";
-const APP_BUILD = "2026.09.30.376";
+const APP_VERSION = "1.8.42";
+const APP_BUILD = "2026.09.30.377";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Прайс товаров плотнее на 320 px"
+const APP_RELEASE = "Стрелка прайса показывает раскрытие"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.42",
+    date: "30.09.2026",
+    title: "Понятное раскрытие прайса товаров",
+    items: [
+      "Стрелка прайса товаров теперь поворачивается вниз, когда список раскрыт.",
+      "В закрытом состоянии стрелка снова смотрит вправо.",
+      "Список, цены и логика товарника не менялись."
+    ]
+  },
   {
     version: "1.8.41",
     date: "30.09.2026",
