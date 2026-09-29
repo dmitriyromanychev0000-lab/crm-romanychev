@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T07:21:11.559Z",
-  "testedSha": "5198d7e2e64cf6dcd1ce4de21e0a21909951c115",
+  "generatedAt": "2026-09-29T07:23:33.298Z",
+  "testedSha": "0c1c693b4aa1a68c79a63ee6070959a83c56542f",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T07:21:51.776Z"
+      "fallbackCreatedAt": "2026-09-29T07:24:11.486Z"
     },
     {
       "label": "pwa-offline",
