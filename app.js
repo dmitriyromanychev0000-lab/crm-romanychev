@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.93";
-const APP_BUILD = "2026.09.29.325";
+const APP_VERSION = "1.7.95";
+const APP_BUILD = "2026.09.29.327";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Акт получил чистый режим предпросмотра без нижней навигации и с выровненными мобильными контролами"
+const APP_RELEASE = "Заявки и редактор возвращены к визуальному ритму первой версии; цены услуг снова подгоняются автоматически после изменения итоговой суммы"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.95",
+    date: "29.09.2026",
+    title: "Заявки снова как в первой версии",
+    items: [
+      "Главная заявок вернулась к старой композиции: заголовок и компактный плюс в одной строке, мягкие карточки и меньше пустого места по краям.",
+      "Редактор заявки стал спокойнее и тоньше: меньше тяжёлых рамок и карточек, услуги снова читаются как аккуратный список.",
+      "Кнопка «Подставить итог» удалена: после изменения итоговой суммы и выхода из поля цены выбранных услуг автоматически перераспределяются под неё."
+    ]
+  },
   {
     version: "1.7.93",
     date: "29.09.2026",
@@ -3389,10 +3399,10 @@ function ordersPage() {
     .slice(0, 3);
 
   return `<main class="content orders-content legacy-orders-page">
-    <div class="legacy-page-head">
+    <div class="legacy-page-head legacy-orders-head">
       <div><h1>Заявки</h1><p>Все ремонты в одном месте</p></div>
+      <button type="button" class="legacy-orders-add-fab" data-action="new-order" aria-label="Новая заявка">${icon("plus")}</button>
     </div>
-    <button type="button" class="legacy-orders-add-wide" data-action="new-order">${icon("plus")}<span>Новая заявка</span></button>
 
     ${nearestVisits.length ? `<section class="legacy-nearest-visit">
       <div class="legacy-nearest-title">${icon("calendar")}<strong>Ближайшие визиты</strong><span>${nearestVisits.length}</span><button type="button" data-action="calendar-screen">Календарь</button></div>
@@ -6140,8 +6150,6 @@ function newOrderModal(existing = null, options = {}) {
 
     <section class="order-editor-section order-editor-payment-section">
     <div class="form-section-title"><span class="order-editor-section-icon">${icon("finance")}</span><span>Расчёт</span></div>
-    <div class="calculated-total order-calculation-summary"><div><span>Услуги</span><strong id="service-total">0 ₽</strong></div><div><span>Без склада</span><strong id="material-total">0 ₽</strong></div><div class="calculation-grand"><span>Итог услуг</span><strong id="calculated-total">0 ₽</strong></div><button type="button" class="secondary-button" id="use-calculated-total">Подставить итог</button></div>
-
     <div class="form-grid legacy-payment-grid">
       <div class="form-group payment-sum"><label>${warrantyAppeal ? "Получено от клиента" : "Итоговая сумма"}</label><input class="field" name="sum" type="number" min="0" value="${Number(order.sum) || 0}" /></div>
       <div class="form-group payment-prepay"><label>Предоплата</label><input class="field" name="prepay" type="number" min="0" value="${Number(order.prepay) || 0}" /></div>
@@ -6252,7 +6260,7 @@ function newOrderModal(existing = null, options = {}) {
     photoList.innerHTML = orderPhotos.length ? orderPhotos.map((photo, index) => {
       const source = photoSource(photo);
       const label = photoLabel(photo, index);
-      return `<button type="button" class="photo-card" data-view-photo="${index}" aria-label="Открыть ${escapeHtml(label)}">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<span class="photo-missing">${icon("camera")}<small>Старый формат</small></span>`}<span class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</span><span class="photo-open-icon">${icon("eye")}</span></button>`;
+      return `<button type="button" class="photo-card" data-view-photo="${index}" aria-label="Открыть ${escapeHtml(label)}">${source ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(label)}" loading="lazy" />` : `<span class="photo-missing">${icon("camera")}<small>Старый формат</small></span>`}<span class="photo-caption" title="${escapeHtml(label)}">${escapeHtml(label)}</span></button>`;
     }).join("") : `<div class="photo-empty">${icon("camera")}<span>Фотографий пока нет</span></div>`;
   };
   const openPhotoViewer = (index) => {
@@ -6328,9 +6336,12 @@ function newOrderModal(existing = null, options = {}) {
   const calculateLines = () => {
     const serviceTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => sum + (Number(row.querySelector('[data-line="qty"]').value) || 0) * (Number(row.querySelector('[data-line="price"]').value) || 0), 0);
     const directTotal = directExpenseTotal();
-    modal.querySelector("#service-total").textContent = money(serviceTotal);
-    modal.querySelector("#material-total").textContent = money(directTotal);
-    modal.querySelector("#calculated-total").textContent = money(serviceTotal);
+    const serviceTotalNode = modal.querySelector("#service-total");
+    const materialTotalNode = modal.querySelector("#material-total");
+    const calculatedTotalNode = modal.querySelector("#calculated-total");
+    if (serviceTotalNode) serviceTotalNode.textContent = money(serviceTotal);
+    if (materialTotalNode) materialTotalNode.textContent = money(directTotal);
+    if (calculatedTotalNode) calculatedTotalNode.textContent = money(serviceTotal);
     const legacyServiceTotal = modal.querySelector("#legacy-service-total");
     if (legacyServiceTotal) legacyServiceTotal.textContent = money(serviceTotal);
     syncWhiteExpenseMinimum();
@@ -6356,11 +6367,14 @@ function newOrderModal(existing = null, options = {}) {
     }
   });
   modal.addEventListener("input", (event) => {
-    if (event.target.name === "sum" || event.target.closest("[data-service-row]")) {
+    if (event.target.closest("[data-service-row]")) {
       refitServices();
       return;
     }
     if (event.target.closest("[data-material-row]")) calculateLines();
+  });
+  formElement.elements.sum?.addEventListener("change", () => {
+    refitServices();
   });
   formElement.elements.expense_white?.addEventListener("change", () => {
     const minimum = syncWhiteExpenseMinimum({ raise: false });
@@ -6368,15 +6382,6 @@ function newOrderModal(existing = null, options = {}) {
       formElement.elements.expense_white.value = String(minimum);
       toast(`Белый расход не может быть меньше ${money(minimum)}`);
     }
-  });
-  modal.querySelector("#use-calculated-total").addEventListener("click", () => {
-    const baseTotal = [...modal.querySelectorAll("[data-service-row]")].reduce((sum, row) => {
-      const qty = Number(row.querySelector('[data-line="qty"]').value) || 0;
-      const basePrice = Number(row.dataset.basePrice) || Number(row.querySelector('[data-line="price"]').value) || 0;
-      return sum + qty * basePrice;
-    }, 0);
-    formElement.elements.sum.value = baseTotal;
-    formElement.elements.sum.dispatchEvent(new Event("input", { bubbles: true }));
   });
   calculateLines();
   modal.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", () => modal.remove()));
