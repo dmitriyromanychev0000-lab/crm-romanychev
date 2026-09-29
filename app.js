@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.36";
-const APP_BUILD = "2026.09.30.371";
+const APP_VERSION = "1.8.37";
+const APP_BUILD = "2026.09.30.372";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустая история склада стала компактнее"
+const APP_RELEASE = "Длинные услуги в прайсе читаются лучше"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.37",
+    date: "30.09.2026",
+    title: "Длинные услуги в прайсе читаются лучше",
+    items: [
+      "На 320 px длинное название услуги в прайсе может занимать до трёх строк вместо раннего обрезания после двух.",
+      "Короткие позиции сохраняют прежнюю высоту и плотность.",
+      "Стресс-QA контролирует отсутствие горизонтального overflow и чрезмерного роста строки."
+    ]
+  },
   {
     version: "1.8.36",
     date: "30.09.2026",

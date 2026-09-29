@@ -4961,7 +4961,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Пустая история склада стала компактнее"
+        || settingsSurface.versionSummaryFit.text !== "Длинные услуги в прайсе читаются лучше"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5315,6 +5315,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             }
           }
           if (stressLabel === "stress-prices") {
+            const priceLongTitle = await page.evaluate(() => {
+              const row = document.querySelector(".legacy-price-row.service");
+              const title = row?.querySelector("strong");
+              const style = title ? getComputedStyle(title) : null;
+              return {
+                lineClamp: style?.webkitLineClamp || "missing",
+                whiteSpace: style?.whiteSpace || "missing",
+                textOverflow: style?.textOverflow || "missing",
+                rowHeight: Math.round(row?.getBoundingClientRect().height || 0)
+              };
+            });
+            if (priceLongTitle.lineClamp !== "3"
+              || priceLongTitle.whiteSpace === "nowrap"
+              || priceLongTitle.textOverflow === "ellipsis"
+              || priceLongTitle.rowHeight > 84) {
+              report.failures.push({ width, type: "stress-price-long-title", priceLongTitle });
+            }
             await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
             await page.waitForTimeout(60);
             const bottomClearance = await page.evaluate(() => {
