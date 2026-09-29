@@ -5444,22 +5444,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           if (emptyResult.overflow > 2) report.failures.push({ width, type: "empty-horizontal-overflow", label: emptyLabel, overflow: emptyResult.overflow });
         }
 
-        const toastFeedback = await page.evaluate(() => {
+        await page.evaluate(() => {
           const toast = document.querySelector("#toast");
           toast.textContent = "Изменения сохранены";
           toast.classList.add("show");
+        });
+        await page.waitForTimeout(220);
+        const toastFeedback = await page.evaluate(() => {
+          const toast = document.querySelector("#toast");
           const style = getComputedStyle(toast);
           const rect = toast.getBoundingClientRect();
           const nav = document.querySelector(".bottom-nav")?.getBoundingClientRect();
           return {
             background: style.backgroundColor,
             radius: style.borderRadius,
+            opacity: parseFloat(style.opacity) || 0,
             bottom: Math.round(rect.bottom),
             navTop: nav ? Math.round(nav.top) : 0
           };
         });
         if (toastFeedback.background !== "rgb(10, 17, 22)"
           || parseFloat(toastFeedback.radius) < 12
+          || toastFeedback.opacity < 0.95
           || (toastFeedback.navTop && toastFeedback.bottom > toastFeedback.navTop - 2)) {
           report.failures.push({ width, type: "toast-feedback-surface", toastFeedback });
         }
