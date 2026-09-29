@@ -21865,3 +21865,12 @@
     gap: 6px !important;
   }
 }
+
+
+/* 1.7.96 fix · analytics panel radius */
+@media screen and (max-width: 520px) {
+  .analytics-content .analytics-first-kpi,
+  .analytics-content .analytics-work-now {
+    border-radius: 18px !important;
+  }
+}
