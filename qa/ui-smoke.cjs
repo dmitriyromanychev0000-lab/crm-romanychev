@@ -4636,8 +4636,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !settingsSurface.phone
         || !settingsSurface.companyAddress
         || !settingsSurface.inn
-        || Math.abs(settingsSurface.companyName.top - settingsSurface.name.top) > 2
-        || settingsSurface.name.left <= settingsSurface.companyName.left
+        || (width > 340 && Math.abs(settingsSurface.companyName.top - settingsSurface.name.top) > 2)
+        || (width > 340 && settingsSurface.name.left <= settingsSurface.companyName.left)
+        || (width <= 340 && settingsSurface.companyName.width < settingsSurface.gridWidth - 2)
+        || (width <= 340 && settingsSurface.name.width < settingsSurface.gridWidth - 2)
+        || (width <= 340 && settingsSurface.name.top <= settingsSurface.companyName.top)
         || Math.abs(settingsSurface.phone.top - settingsSurface.inn.top) > 2
         || settingsSurface.inn.left <= settingsSurface.phone.left
         || settingsSurface.companyName.width < 120
@@ -4659,7 +4662,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.profileCardHeight > 322
+        || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
         || settingsSurface.profileFields.length !== 5
         || settingsSurface.profileFields.some((item) => item.height !== 44 || item.paddingTop !== 0 || item.paddingBottom !== 0 || item.lineHeight < 41 || item.lineHeight > 43)
         || settingsSurface.linkAlignment.length < 9
