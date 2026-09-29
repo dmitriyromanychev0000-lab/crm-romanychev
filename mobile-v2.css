@@ -23081,3 +23081,18 @@
     color: #8b959b !important;
   }
 }
+
+
+/* 1.8.6 · Touch-зона удаления расхода без склада */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .direct-expense-card .material-card-head {
+    grid-template-columns: minmax(0,1fr) 44px !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-remove {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}

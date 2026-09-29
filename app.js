@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.5";
-const APP_BUILD = "2026.09.29.337";
+const APP_VERSION = "1.8.6";
+const APP_BUILD = "2026.09.29.338";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор заявки получил мягкие расходы без склада и фотографии без синего и красного визуального шума"
+const APP_RELEASE = "Редактор заявки доведён по touch-зонам: удаление расхода без склада теперь не меньше 44 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.6",
+    date: "29.09.2026",
+    title: "Финальная touch-доводка редактора",
+    items: [
+      "Кнопка удаления расхода без склада увеличена до безопасной зоны 44×44 px без визуального утяжеления карточки.",
+      "Ширина правой колонки карточки синхронизирована с кнопкой, чтобы заголовок и поле названия не сдвигались.",
+      "Логика расходов, расчётов и сохранения не менялась."
+    ]
+  },
   {
     version: "1.8.5",
     date: "29.09.2026",
