@@ -5550,6 +5550,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         for (const [emptyLabel, emptyState] of [
           ["empty-orders", uiState({ activePage: "orders" })],
           ["empty-warehouse", uiState({ activePage: "warehouse", warehouseSection: "list" })],
+          ["empty-movements", uiState({ activePage: "warehouse", warehouseSection: "movements", warehouseMovementFilter: "all" })],
+          ["empty-shopping", uiState({ activePage: "warehouse", warehouseSection: "shopping" })],
           ["empty-clients", uiState({ activePage: "more", moreSection: "clients" })],
           ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })],
           ["empty-tools", uiState({ activePage: "more", moreSection: "tools" })],
