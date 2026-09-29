@@ -1357,7 +1357,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         sheet: getComputedStyle(document.querySelector(".legacy-act-preview .act-sheet")).backgroundColor,
         headers: [...document.querySelectorAll(".act-work-table th")].map((node) => node.textContent.trim()),
         contract: document.querySelector(".act-contract-line")?.textContent || "",
-        saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || ""
+        saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || "",
+        bottomNavCount: document.querySelectorAll(".bottom-nav").length,
+        backButtonCount: document.querySelectorAll(".legacy-act-head .legacy-back-button").length
       }));
       if (actScreenSurface.control !== "rgb(7, 12, 16)"
         || actScreenSurface.field !== "rgb(9, 15, 20)"
@@ -1368,7 +1370,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || actScreenSurface.headers.length !== 5
         || actScreenSurface.headers.includes("Гарантия")
         || !actScreenSurface.contract.includes("№0060")
-        || !actScreenSurface.saveButton.includes("Сохранить картинку")) {
+        || !actScreenSurface.saveButton.includes("Сохранить картинку")
+        || actScreenSurface.bottomNavCount !== 0
+        || actScreenSurface.backButtonCount !== 1) {
         report.failures.push({ width, type: "act-semantic-hierarchy", actScreenSurface });
       }
       const actDensity = await page.evaluate(() => {
@@ -1376,21 +1380,42 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const title = document.querySelector(".legacy-act-control-title")?.getBoundingClientRect();
         const field = document.querySelector(".legacy-act-control .field")?.getBoundingClientRect();
         const selected = document.querySelector(".legacy-act-selected")?.getBoundingClientRect();
-        const action = document.querySelector(".legacy-act-control-actions button")?.getBoundingClientRect();
+        const actionNode = document.querySelector(".legacy-act-control-actions button");
+        const action = actionNode?.getBoundingClientRect();
+        const fieldNode = document.querySelector(".legacy-act-control .field");
+        const fieldStyle = fieldNode ? getComputedStyle(fieldNode) : null;
+        const titleIcon = document.querySelector(".legacy-act-control-title > span");
+        const selectedIcon = document.querySelector(".legacy-act-selected-icon");
+        const centerDelta = (box, child) => {
+          const boxRect = box?.getBoundingClientRect();
+          const childRect = child?.getBoundingClientRect();
+          if (!boxRect || !childRect) return 999;
+          return Math.round(Math.abs((boxRect.top + boxRect.height / 2) - (childRect.top + childRect.height / 2)) * 10) / 10;
+        };
         return {
           controlHeight: Math.round(control?.height || 0),
           titleHeight: Math.round(title?.height || 0),
           fieldHeight: Math.round(field?.height || 0),
+          fieldPaddingTop: parseFloat(fieldStyle?.paddingTop || "0") || 0,
+          fieldPaddingBottom: parseFloat(fieldStyle?.paddingBottom || "0") || 0,
           selectedHeight: Math.round(selected?.height || 0),
-          actionHeight: Math.round(action?.height || 0)
+          actionHeight: Math.round(action?.height || 0),
+          titleIconDelta: centerDelta(titleIcon, titleIcon?.querySelector(".ui-icon")),
+          selectedIconDelta: centerDelta(selectedIcon, selectedIcon?.querySelector(".ui-icon")),
+          actionIconDelta: centerDelta(actionNode, actionNode?.querySelector(".ui-icon"))
         };
       });
       if (!actDensity.controlHeight
         || actDensity.controlHeight > 216
         || actDensity.titleHeight > 38
-        || actDensity.fieldHeight < 44
+        || actDensity.fieldHeight !== 46
+        || actDensity.fieldPaddingTop !== 0
+        || actDensity.fieldPaddingBottom !== 0
         || actDensity.selectedHeight > 58
-        || actDensity.actionHeight < 44) {
+        || actDensity.actionHeight < 44
+        || actDensity.titleIconDelta > 1
+        || actDensity.selectedIconDelta > 1
+        || actDensity.actionIconDelta > 1) {
         report.failures.push({ width, type: "act-compact-density", actDensity });
       }
       const actPreviewState = await page.evaluate(() => {

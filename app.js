@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.92";
-const APP_BUILD = "2026.09.29.324";
+const APP_VERSION = "1.7.93";
+const APP_BUILD = "2026.09.29.325";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Форма заявки выровнена: текст основных полей и пиктограммы сидят по единой вертикальной оси"
+const APP_RELEASE = "Акт получил чистый режим предпросмотра без нижней навигации и с выровненными мобильными контролами"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.93",
+    date: "29.09.2026",
+    title: "Чистый предпросмотр Акта",
+    items: [
+      "На экране Акта нижняя навигация скрыта: она больше не перекрывает белый лист предпросмотра, возврат остаётся через штатную кнопку «Назад».",
+      "Селект заявки фиксирован по высоте и вертикальной посадке текста.",
+      "Иконки заголовка, выбранной заявки и кнопки сохранения выровнены по центру своих контейнеров."
+    ]
+  },
   {
     version: "1.7.92",
     date: "29.09.2026",
@@ -5513,7 +5523,8 @@ async function render() {
   if (activePage === "warehouse") page = warehouseSection === "movements" ? warehouseMovementsPage() : warehouseSection === "shopping" ? shoppingPage("warehouse-list") : warehousePage();
   if (activePage === "analytics") page = analyticsPage();
   if (activePage === "more") page = await morePage();
-  app.innerHTML = `<div class="shell">${header()}${page}${nav()}</div>`;
+  const navigation = activePage === "more" && moreSection === "act" ? "" : nav();
+  app.innerHTML = `<div class="shell">${header()}${page}${navigation}</div>`;
 }
 
 const orderServiceRow = (item = {}) => {
