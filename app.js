@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.14";
-const APP_BUILD = "2026.09.29.347";
+const APP_VERSION = "1.8.15";
+const APP_BUILD = "2026.09.29.348";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Совместимость старых CRM BT v18 закреплена отдельным импорт-регрессионным сценарием"
+const APP_RELEASE = "Поля и SVG-иконки получили единую мобильную геометрию и вертикальное выравнивание"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.15",
+    date: "29.09.2026",
+    title: "Ровные поля и иконки",
+    items: [
+      "Высота и вертикальная посадка input/select выровнены в заявке, складе, финансах, прайсе, документах и системных формах.",
+      "SVG-иконки в кнопках и ссылках больше не зависят от текстовой baseline браузера и держат единый центр на Android.",
+      "Небольшие межстрочные отступы редакторов унифицированы без увеличения карточек и без изменения логики."
+    ]
+  },
   {
     version: "1.8.14",
     date: "29.09.2026",

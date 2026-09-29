@@ -23555,3 +23555,127 @@
     color: #ff8068 !important;
   }
 }
+
+
+/* 1.8.15 · Единая геометрия полей и вертикальный центр иконок */
+@media screen and (max-width: 520px) {
+  /* Заявка: после поздних визуальных override высота и line-height снова совпадают. */
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) input.field:not([type="checkbox"]):not([type="radio"]),
+  .order-editor-modal .legacy-payment-grid input.field:not([type="checkbox"]):not([type="radio"]),
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) select.field,
+  .order-editor-modal .legacy-payment-grid select.field {
+    box-sizing: border-box !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) input.field:not([type="checkbox"]):not([type="radio"]),
+  .order-editor-modal .legacy-payment-grid input.field:not([type="checkbox"]):not([type="radio"]) {
+    line-height: 46px !important;
+  }
+
+  .order-editor-modal input[type="date"].field::-webkit-datetime-edit,
+  .order-editor-modal input[type="time"].field::-webkit-datetime-edit {
+    min-height: 46px !important;
+    padding: 0 !important;
+  }
+
+  /* Остальные редакторы: одна и та же 46 px ось вместо браузерной плавающей высоты. */
+  .stock-editor-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-editor-modal select.field,
+  .stock-adjust-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-adjust-modal select.field,
+  .legacy-finance-entry-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-finance-entry-backdrop select.field,
+  .legacy-service-editor-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-service-editor-backdrop select.field,
+  .legacy-price-editor input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-price-editor select.field,
+  .legacy-act-control select.field {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .stock-editor-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-adjust-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-finance-entry-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-service-editor-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-price-editor input.field:not([type="checkbox"]):not([type="radio"]) {
+    line-height: 44px !important;
+  }
+
+  /* Компактные системные формы и фильтры — ровно 44 px, без лишнего вертикального padding. */
+  .settings-profile-card .legacy-settings-grid .field,
+  .source-manager-row .field,
+  .source-manager-add .field,
+  .warranty-manager-row .field,
+  .warranty-manager-add .field,
+  .warranty-manager-tech .field,
+  .legacy-price-filters .field,
+  .legacy-warehouse-filter .field,
+  .legacy-goods-order-source .field,
+  .legacy-editor-title .field,
+  .legacy-goods-target .field {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .source-manager-row input.field,
+  .source-manager-add input.field,
+  .warranty-manager-row input.field,
+  .warranty-manager-add input.field,
+  .settings-profile-card .legacy-settings-grid input.field,
+  .legacy-editor-title input.field,
+  .legacy-goods-target input.field {
+    line-height: 42px !important;
+  }
+
+  /* Поиск: одинаковая посадка текста, но главная заявок сохраняет увеличенную 52 px высоту. */
+  .legacy-warehouse-search .search,
+  .legacy-client-search .search,
+  .legacy-price-search .search {
+    box-sizing: border-box !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 44px !important;
+  }
+
+  .legacy-orders-page .legacy-order-search .search {
+    box-sizing: border-box !important;
+    min-height: 52px !important;
+    height: 52px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 50px !important;
+  }
+
+  /* SVG не участвуют в текстовой baseline и не дают визуального сдвига на Android. */
+  button > .ui-icon,
+  a > .ui-icon,
+  button > span > .ui-icon,
+  a > span > .ui-icon,
+  summary > .ui-icon {
+    display: block !important;
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    vertical-align: middle !important;
+  }
+
+  .order-editor-modal .form-grid,
+  .stock-editor-modal .form-grid,
+  .legacy-finance-entry-backdrop .form-grid,
+  .legacy-service-editor-backdrop .form-grid {
+    row-gap: 8px !important;
+  }
+}
