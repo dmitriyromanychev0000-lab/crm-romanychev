@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T16:52:39.328Z",
-  "testedSha": "8b108d65258d6285b01f4ab9d9992a4d5b50c291",
+  "generatedAt": "2026-09-29T16:55:54.501Z",
+  "testedSha": "352cd02903d9cbf19bde460976d6419a7f3a01ad",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -386,15 +386,7 @@
       "modalOpen": true,
       "tooSmall": [],
       "clippedFieldLabels": [],
-      "misalignedActionIcons": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
+      "misalignedActionIcons": []
     },
     {
       "label": "tool-editor",
@@ -449,15 +441,7 @@
       "modalOpen": true,
       "tooSmall": [],
       "clippedFieldLabels": [],
-      "misalignedActionIcons": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
+      "misalignedActionIcons": []
     },
     {
       "label": "tool-editor-existing",
@@ -1359,15 +1343,7 @@
       "modalOpen": true,
       "tooSmall": [],
       "clippedFieldLabels": [],
-      "misalignedActionIcons": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
+      "misalignedActionIcons": []
     },
     {
       "label": "tool-editor",
@@ -1422,15 +1398,7 @@
       "modalOpen": true,
       "tooSmall": [],
       "clippedFieldLabels": [],
-      "misalignedActionIcons": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
+      "misalignedActionIcons": []
     },
     {
       "label": "tool-editor-existing",
@@ -1938,7 +1906,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T16:53:12.030Z"
+      "fallbackCreatedAt": "2026-09-29T16:56:30.998Z"
     },
     {
       "label": "pwa-offline",
@@ -1952,62 +1920,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "misaligned-action-icon",
-      "label": "goods-editor",
-      "items": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
-    },
-    {
-      "width": 320,
-      "type": "misaligned-action-icon",
-      "label": "goods-editor-existing",
-      "items": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
-    },
-    {
-      "width": 390,
-      "type": "misaligned-action-icon",
-      "label": "goods-editor",
-      "items": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
-    },
-    {
-      "width": 390,
-      "type": "misaligned-action-icon",
-      "label": "goods-editor-existing",
-      "items": [
-        {
-          "text": "Прайс товаров",
-          "delta": 3,
-          "actionHeight": 44,
-          "iconHeight": 17,
-          "className": ""
-        }
-      ]
-    }
-  ]
+  "failures": []
 }
