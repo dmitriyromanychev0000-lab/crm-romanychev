@@ -2458,7 +2458,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           firstCardBackground: firstCard ? getComputedStyle(firstCard).backgroundColor : "missing",
           firstPanelRadius: firstPanel ? parseFloat(getComputedStyle(firstPanel).borderRadius) : 0,
           workCardBackground: workCard ? getComputedStyle(workCard).backgroundColor : "missing",
-          workPanelRadius: workPanel ? parseFloat(getComputedStyle(workPanel).borderRadius) : 0
+          workPanelRadius: workPanel ? parseFloat(getComputedStyle(workPanel).borderRadius) : 0,
+          lowerIconBorder: (() => { const node = document.querySelector(".analytics-content .panel-title > .badge-icon"); return node ? parseFloat(getComputedStyle(node).borderTopWidth) || 0 : 999; })(),
+          lowerIconBackground: (() => { const node = document.querySelector(".analytics-content .panel-title > .badge-icon"); return node ? getComputedStyle(node).backgroundColor : "missing"; })()
         };
       });
       if (analyticsRestoredSurface.firstCards !== 6
@@ -2466,6 +2468,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsRestoredSurface.focusBlocks !== 0
         || analyticsRestoredSurface.firstCardBackground !== "rgb(23, 30, 35)"
         || analyticsRestoredSurface.workCardBackground !== "rgb(20, 27, 32)"
+        || analyticsRestoredSurface.lowerIconBorder !== 0
+        || analyticsRestoredSurface.lowerIconBackground !== "rgba(255, 118, 92, 0.075)"
         || analyticsRestoredSurface.firstPanelRadius < 16
         || analyticsRestoredSurface.workPanelRadius < 16) {
         report.failures.push({ width, type: "analytics-first-version-surface", analyticsRestoredSurface });

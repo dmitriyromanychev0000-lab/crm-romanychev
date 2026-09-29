@@ -23528,3 +23528,30 @@
     color: #8f9aa1 !important;
   }
 }
+
+
+/* 1.8.13 · Мягкие иконки аналитики */
+@media screen and (max-width: 520px) {
+  .analytics-content .panel-title > .badge-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+    box-shadow: none !important;
+  }
+
+  .analytics-content .panel-title > .badge-icon .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 1.8 !important;
+  }
+
+  .analytics-list-panel .badge-icon,
+  .analytics-ranking .badge-icon,
+  .analytics-stock-summary .badge-icon,
+  .analytics-chart-panel .badge-icon,
+  .analytics-work .badge-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+  }
+}
