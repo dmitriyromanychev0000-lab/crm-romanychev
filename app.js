@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.95";
-const APP_BUILD = "2026.09.29.327";
+const APP_VERSION = "1.7.96";
+const APP_BUILD = "2026.09.29.328";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Заявки и редактор возвращены к визуальному ритму первой версии; цены услуг снова подгоняются автоматически после изменения итоговой суммы"
+const APP_RELEASE = "Аналитика возвращена к визуальному языку первой версии"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.96",
+    date: "29.09.2026",
+    title: "Аналитика как в первой версии",
+    items: [
+      "Главные показатели снова собраны в шесть спокойных карточек 2×3 без лишних цветных иконок.",
+      "Фокус внимания убран; вместо него вернулась компактная Работа сейчас с текущими заявками и суммой в работе.",
+      "Периоды и навигация по датам оставлены в нынешнем удобном виде, подробная аналитика ниже сохранена."
+    ]
+  },
   {
     version: "1.7.95",
     date: "29.09.2026",
@@ -3854,49 +3864,29 @@ function analyticsPage() {
       <button type="button" class="analytics-arrow" data-analytics-shift="1" aria-label="Следующий период" ${analyticsPeriod === "all" || analyticsPeriod === "custom" || analyticsOffset >= 0 ? "disabled" : ""}>${icon("chevron")}</button>
     </div>
 
-    <section class="panel analytics-kpi-panel">
-      <div class="panel-title"><span class="badge-icon analytics-gem">${icon("gem")}</span><span>Главные показатели<small>${escapeHtml(analyticsPeriodTitle(range))}</small></span></div>
-      <div class="analytics-kpis">
-        <div class="analytics-kpi revenue"><span class="analytics-kpi-icon green">${icon("finance")}</span><div><span>Получено от клиентов</span><strong>${money(finance.received)}</strong><small>${finance.ordinaryClosed.length} ремонтов · ${finance.declined.length} отказов${finance.warrantyFinished.length ? ` · ${finance.warrantyFinished.length} гарантийных` : ""}</small></div></div>
-        <div class="analytics-kpi expenses"><span class="analytics-kpi-icon red">${icon("shopping")}</span><div><span>Потрачено</span><strong class="red">${money(finance.spent)}</strong><small>белый расход + общие расходы</small></div></div>
-        <div class="analytics-kpi result"><span class="analytics-kpi-icon blue">${icon("chart")}</span><div><span>Заработал</span><strong class="${finance.earned >= 0 ? "green" : "red"}">${money(finance.earned)}</strong><small>по формуле заявок</small></div></div>
-        <div class="analytics-kpi average"><span class="analytics-kpi-icon purple">${icon("tools")}</span><div><span>Средний чек</span><strong class="yellow">${money(finance.average)}</strong><small>только закрытые ремонты</small></div></div>
+    <section class="panel analytics-kpi-panel analytics-first-kpi">
+      <div class="analytics-first-title"><span class="analytics-first-gem">${icon("gem")}</span><strong>Главные показатели</strong><small>по платным закрытым заявкам</small></div>
+      <div class="analytics-kpis analytics-first-grid">
+        <div class="analytics-kpi analytics-first-card closed"><span>Закрыто</span><strong>${finance.ordinaryClosed.length}</strong><small>${previous ? analyticsDelta(finance.ordinaryClosed.length, previous.ordinaryClosed.length) + " к прошлому" : "новое значение"}</small></div>
+        <div class="analytics-kpi analytics-first-card revenue"><span>Выручка клиентов</span><strong class="blue">${money(finance.received)}</strong><small>${previous ? analyticsDelta(finance.received, previous.received) + " к прошлому" : "новое значение"}</small></div>
+        <div class="analytics-kpi analytics-first-card earned"><span>Получил чистыми</span><strong class="${finance.earned >= 0 ? "green" : "red"}">${money(finance.earned)}</strong><small>${previous ? analyticsDelta(finance.earned, previous.earned) + " к прошлому" : "новое значение"}</small></div>
+        <div class="analytics-kpi analytics-first-card spent"><span>Потратил всего</span><strong class="red">${money(finance.spent)}</strong><small>${previous ? analyticsDelta(finance.spent, previous.spent) + " к прошлому" : "новое значение"}</small></div>
+        <div class="analytics-kpi analytics-first-card cash"><span>Осталось денег</span><strong class="${finance.cashNet >= 0 ? "green" : "red"}">${money(finance.cashNet)}</strong><small>${previous ? analyticsDelta(finance.cashNet, previous.cashNet) + " к прошлому" : "новое значение"}</small></div>
+        <div class="analytics-kpi analytics-first-card average"><span>Средний чек</span><strong class="yellow">${money(finance.average)}</strong><small>${previous ? analyticsDelta(finance.average, previous.average) + " к прошлому" : "новое значение"}</small></div>
       </div>
-      <div class="analytics-summary-strip">
-        <span><small>Чистыми в кармане</small><b class="${finance.cashNet >= 0 ? "green" : "red"}">${money(finance.cashNet)}</b></span>
-        <span><small>Общие расходы вне заявок</small><b class="red">${money(finance.outsideSpent)}</b></span>
-        <span><small>Белые расходы заявок</small><b>${money(finance.whiteSpent)}</b></span>
-        <span><small>Прочие доходы</small><b class="green">${money(finance.extraIncome)}</b></span>
-      </div>
-      ${comparison}
     </section>
 
-    <section class="panel analytics-work">
-      <div class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Заявки<small>создано и доведено до ремонта</small></span></div>
-      <div class="analytics-work-grid">
-        <div class="metric"><div class="metric-label">Создано</div><div class="metric-value">${leadOrders.length}</div></div>
-        <div class="metric"><div class="metric-label">Закрыто</div><div class="metric-value green">${convertedCreated}</div></div>
-        <div class="metric"><div class="metric-label">Конверсия</div><div class="metric-value blue">${Math.round(conversion)}%</div></div>
-      </div>
-      <div class="analytics-weekdays">${weekdayStats.map((item) => `<span><small>${item.name}</small><b>${item.count}</b></span>`).join("")}</div>
-    </section>
-
-    <section class="panel analytics-focus">
-      <div class="panel-title"><span class="badge-icon">${icon("warning")}</span><span>Фокус внимания<small>что требует проверки сейчас</small></span></div>
-      <div class="analytics-focus-list">
-        <div class="analytics-focus-row"><span class="analytics-focus-icon red">${icon("calendar")}</span><span><b>Просроченные визиты</b><small>назначенная дата уже прошла</small></span><strong>${overdueVisits}</strong></div>
-        <div class="analytics-focus-row"><span class="analytics-focus-icon yellow">${icon("box")}</span><span><b>Заканчивается на складе</b><small>доступный остаток достиг минимума</small></span><strong>${lowStock}</strong></div>
-        <div class="analytics-focus-row"><span class="analytics-focus-icon blue">${icon("history")}</span><span><b>Самая старая заявка</b><small>дней находится в работе</small></span><strong>${oldestActiveDays}</strong></div>
-      </div>
-      <div class="analytics-work-grid compact">
-        <div class="metric"><div class="metric-label">В работе</div><div class="metric-value">${activeOrders.length}</div></div>
-        <div class="metric"><div class="metric-label">Сумма в работе</div><div class="metric-value blue">${money(activeSum)}</div></div>
+    <section class="panel analytics-work analytics-work-now">
+      <div class="analytics-now-title"><span>${icon("tools")}</span><strong>Работа сейчас</strong></div>
+      <div class="analytics-now-grid">
+        <div><span>В работе</span><strong>${activeOrders.length}</strong><small>активных заявок</small></div>
+        <div><span>Сумма в работе</span><strong class="green">${money(activeSum)}</strong><small>по открытым заявкам</small></div>
       </div>
     </section>
 
     <section class="panel analytics-chart-panel"><div class="panel-title"><span class="badge-icon">${icon("analytics")}</span><span>Деньги от клиентов<small>по датам завершения</small></span></div>${bars.length ? `<div class="bars">${bars.map(([label, value]) => `<div class="bar-wrap"><span>${money(value)}</span><div class="bar" style="height:${Math.max(6, value / max * 84)}px"></div><span>${label}</span></div>`).join("")}</div>` : `<div class="empty">Пока нет данных для графика</div>`}</section>
 
-    <details class="panel analytics-collapsible analytics-list-panel" open><summary><span class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Источники заявок<small>сколько заявок и денег принёс каждый источник</small></span></span>${icon("chevron")}</summary>${sourceStats.length ? `<div class="goods-list">${sourceStats.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · закрыто ${item.closed}${item.declined ? ` · отказов ${item.declined}` : ""}</small></span><b class="green">${money(item.received)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет заявок за период</div>`}</details>
+    <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("orders")}</span><span>Источники заявок<small>сколько заявок и денег принёс каждый источник</small></span></span>${icon("chevron")}</summary>${sourceStats.length ? `<div class="goods-list">${sourceStats.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} заявок · закрыто ${item.closed}${item.declined ? ` · отказов ${item.declined}` : ""}</small></span><b class="green">${money(item.received)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет заявок за период</div>`}</details>
 
     <details class="panel analytics-collapsible analytics-list-panel"><summary><span class="panel-title"><span class="badge-icon">${icon("tools")}</span><span>По типам техники<small>закрытые ремонты без отказов</small></span></span>${icon("chevron")}</summary>${techStats.length ? `<div class="goods-list">${techStats.map((item) => `<div class="goods-sheet"><span><strong>${escapeHtml(item.name)}</strong><small>${item.count} ремонтов · получено ${money(item.received)}</small></span><b class="${item.earned >= 0 ? "green" : "red"}">${money(item.earned)}</b><span></span></div>`).join("")}</div>` : `<div class="empty">Нет закрытых ремонтов за период</div>`}</details>
 

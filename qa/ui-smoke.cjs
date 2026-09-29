@@ -2427,8 +2427,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               ]));
               return values;
             });
-            if (warrantyAnalytics["Получено от клиентов"] !== 11400
-              || warrantyAnalytics["Заработал"] !== 6050
+            if (warrantyAnalytics["Выручка клиентов"] !== 11400
+              || warrantyAnalytics["Получил чистыми"] !== 6050
               || warrantyAnalytics["Средний чек"] !== 8900) {
               report.failures.push({ width, type: "warranty-appeal-analytics", warrantyAnalytics });
             }
@@ -2440,40 +2440,54 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
 
       await setState(page, uiState({ activePage: "analytics" }));
-      const analyticsPageSurfaces = await page.evaluate(() => ({
-        panel: getComputedStyle(document.querySelector(".analytics-content .panel")).backgroundColor,
-        kpi: getComputedStyle(document.querySelector(".analytics-kpi")).backgroundColor,
-        focusList: getComputedStyle(document.querySelector(".analytics-focus-list")).backgroundColor,
-        focus: getComputedStyle(document.querySelector(".analytics-focus-row")).backgroundColor
-      }));
-      if (analyticsPageSurfaces.panel !== "rgb(7, 12, 16)"
-        || analyticsPageSurfaces.kpi !== "rgb(9, 15, 20)"
-        || analyticsPageSurfaces.focusList !== "rgb(6, 11, 15)"
-        || analyticsPageSurfaces.focus !== "rgb(6, 11, 15)") {
-        report.failures.push({ width, type: "analytics-deep-dark-page", analyticsPageSurfaces });
+      const analyticsRestoredSurface = await page.evaluate(() => {
+        const firstPanel = document.querySelector(".analytics-first-kpi");
+        const firstCard = document.querySelector(".analytics-first-card");
+        const workPanel = document.querySelector(".analytics-work-now");
+        const workCard = document.querySelector(".analytics-now-grid > div");
+        return {
+          firstCards: document.querySelectorAll(".analytics-first-card").length,
+          workCards: document.querySelectorAll(".analytics-now-grid > div").length,
+          focusBlocks: document.querySelectorAll(".analytics-focus").length,
+          firstCardBackground: firstCard ? getComputedStyle(firstCard).backgroundColor : "missing",
+          firstPanelRadius: firstPanel ? parseFloat(getComputedStyle(firstPanel).borderRadius) : 0,
+          workCardBackground: workCard ? getComputedStyle(workCard).backgroundColor : "missing",
+          workPanelRadius: workPanel ? parseFloat(getComputedStyle(workPanel).borderRadius) : 0
+        };
+      });
+      if (analyticsRestoredSurface.firstCards !== 6
+        || analyticsRestoredSurface.workCards !== 2
+        || analyticsRestoredSurface.focusBlocks !== 0
+        || analyticsRestoredSurface.firstCardBackground !== "rgb(23, 30, 35)"
+        || analyticsRestoredSurface.workCardBackground !== "rgb(20, 27, 32)"
+        || analyticsRestoredSurface.firstPanelRadius < 16
+        || analyticsRestoredSurface.workPanelRadius < 16) {
+        report.failures.push({ width, type: "analytics-first-version-surface", analyticsRestoredSurface });
       }
+
       const analyticsDensity = await page.evaluate(() => {
-        const kpi = document.querySelector(".analytics-kpi");
-        const workMetric = document.querySelector(".analytics-work .metric");
-        const focusRow = document.querySelector(".analytics-focus-row");
-        const panel = document.querySelector(".analytics-content .panel");
+        const kpi = document.querySelector(".analytics-first-card");
+        const workCard = document.querySelector(".analytics-now-grid > div");
+        const panel = document.querySelector(".analytics-first-kpi");
         const panelStyle = panel ? getComputedStyle(panel) : null;
         const px = (value) => Number.parseFloat(value || "0") || 0;
         return {
           kpiHeight: Math.round(kpi?.getBoundingClientRect().height || 0),
-          workMetricHeight: Math.round(workMetric?.getBoundingClientRect().height || 0),
-          focusHeight: Math.round(focusRow?.getBoundingClientRect().height || 0),
+          workHeight: Math.round(workCard?.getBoundingClientRect().height || 0),
           panelPaddingTop: panelStyle ? px(panelStyle.paddingTop) : 999,
           panelMarginBottom: panelStyle ? px(panelStyle.marginBottom) : 999
         };
       });
-      if (analyticsDensity.kpiHeight > 90
-        || analyticsDensity.workMetricHeight > 74
-        || analyticsDensity.focusHeight > 58
-        || analyticsDensity.panelPaddingTop > 10
+      if (analyticsDensity.kpiHeight < 82
+        || analyticsDensity.kpiHeight > 94
+        || analyticsDensity.workHeight < 72
+        || analyticsDensity.workHeight > 82
+        || analyticsDensity.panelPaddingTop < 10
+        || analyticsDensity.panelPaddingTop > 15
         || analyticsDensity.panelMarginBottom > 8) {
-        report.failures.push({ width, type: "analytics-compact-density", analyticsDensity });
+        report.failures.push({ width, type: "analytics-first-version-density", analyticsDensity });
       }
+
       const analyticsHeaderDensity = await page.evaluate(() => {
         const rangeNav = document.querySelector(".analytics-range-nav");
         const firstPanel = document.querySelector(".analytics-content .panel");
@@ -2495,24 +2509,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsHeaderDensity.firstPanelTop > 282) {
         report.failures.push({ width, type: "analytics-compact-header", analyticsHeaderDensity });
       }
+
       const analyticsModelState = await page.evaluate(() => {
         const numberFrom = (value) => Number(String(value || "").replace(/[^0-9-]/g, "")) || 0;
-        const cards = [...document.querySelectorAll(".analytics-kpi")];
+        const cards = [...document.querySelectorAll(".analytics-first-card")];
         const values = Object.fromEntries(cards.map((card) => [
-          card.querySelector("span:not(.analytics-kpi-icon)")?.textContent?.trim() || "",
+          card.querySelector(":scope > span")?.textContent?.trim() || "",
+          numberFrom(card.querySelector(":scope > strong")?.textContent)
+        ]));
+        const work = [...document.querySelectorAll(".analytics-now-grid > div")];
+        const workValues = Object.fromEntries(work.map((card) => [
+          card.querySelector("span")?.textContent?.trim() || "",
           numberFrom(card.querySelector("strong")?.textContent)
         ]));
-        const metrics = [...document.querySelectorAll(".analytics-work .metric")];
-        const conversionMetric = metrics.find((metric) => metric.querySelector(".metric-label")?.textContent?.trim() === "Конверсия");
         const expenseButton = document.querySelector(".analytics-add-expense");
         const expenseRect = expenseButton?.getBoundingClientRect();
         return {
           values,
-          conversion: numberFrom(conversionMetric?.querySelector(".metric-value")?.textContent),
-          weekdays: document.querySelectorAll(".analytics-weekdays > span").length,
+          workValues,
           bars: document.querySelectorAll(".analytics-chart-panel .bar-wrap").length,
           barWidths: [...document.querySelectorAll(".analytics-chart-panel .bar")].map((bar) => Math.round(bar.getBoundingClientRect().width)),
           hasSources: Boolean([...document.querySelectorAll(".analytics-list-panel .panel-title")].find((node) => node.textContent.includes("Источники заявок"))),
+          sourceOpen: Boolean(document.querySelector(".analytics-list-panel[open]")),
           expenseButtonHeight: expenseRect ? Math.round(expenseRect.height) : 0,
           expenseButtonWidth: expenseRect ? Math.round(expenseRect.width) : 0,
           expenseButtonBackground: expenseButton ? getComputedStyle(expenseButton).backgroundColor : "missing",
@@ -2523,20 +2541,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           pageTitleClientWidth: document.querySelector(".analytics-content .page-head h1")?.clientWidth || 0,
           pageTitleFontSize: parseFloat(getComputedStyle(document.querySelector(".analytics-content .page-head h1")).fontSize) || 0,
           pageLead: document.querySelector(".analytics-content .page-head .lead")?.textContent?.trim() || "",
-          comparisonItems: document.querySelectorAll(".analytics-comparison-strip > span").length,
-          comparisonEmptyText: document.querySelector(".analytics-comparison-empty")?.textContent?.replace(/\s+/g, " ").trim() || "",
-          comparisonEmptyHeight: Math.round(document.querySelector(".analytics-comparison-empty")?.getBoundingClientRect().height || 0)
+          comparisonBlocks: document.querySelectorAll(".analytics-comparison-strip, .analytics-comparison-empty").length
         };
       });
-      if (analyticsModelState.values["Получено от клиентов"] !== 10400
-        || analyticsModelState.values["Потрачено"] !== 4100
-        || analyticsModelState.values["Заработал"] !== 5050
+      if (analyticsModelState.values["Выручка клиентов"] !== 10400
+        || analyticsModelState.values["Потратил всего"] !== 4100
+        || analyticsModelState.values["Получил чистыми"] !== 5050
         || analyticsModelState.values["Средний чек"] !== 8900
-        || analyticsModelState.conversion !== 33
-        || analyticsModelState.weekdays !== 7
+        || Object.keys(analyticsModelState.values).length !== 6
+        || Object.keys(analyticsModelState.workValues).length !== 2
         || analyticsModelState.bars !== 2
         || analyticsModelState.barWidths.some((widthValue) => widthValue < 20 || widthValue > 36)
         || !analyticsModelState.hasSources
+        || analyticsModelState.sourceOpen
         || analyticsModelState.expenseButtonHeight < 44
         || analyticsModelState.expenseButtonWidth < 44
         || analyticsModelState.expenseButtonWidth > 50
@@ -2547,10 +2564,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsModelState.expenseButtonColor !== "rgb(255, 118, 92)"
         || analyticsModelState.pageTitle !== "Аналитический центр"
         || analyticsModelState.pageLead !== "Финансы, эффективность, клиенты и склад"
-        || analyticsModelState.comparisonItems !== 0
-        || !analyticsModelState.comparisonEmptyText.includes("Нет данных за прошлый период")
-        || analyticsModelState.comparisonEmptyHeight < 44
-        || analyticsModelState.comparisonEmptyHeight > 54) {
+        || analyticsModelState.comparisonBlocks !== 0) {
         report.failures.push({ width, type: "analytics-product-model", analyticsModelState });
       }
 
