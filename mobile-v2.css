@@ -20889,8 +20889,8 @@
 
 /* 1.7.92 · Заявка: единая вертикальная посадка полей и пиктограмм. */
 @media screen and (max-width: 520px) {
-  .order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]),
-  .order-editor-modal .form-grid .form-group > select.field {
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > input.field:not([type="checkbox"]):not([type="radio"]),
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > select.field {
     box-sizing: border-box !important;
     min-height: 46px !important;
     height: 46px !important;
@@ -20899,11 +20899,11 @@
     vertical-align: middle !important;
   }
 
-  .order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]) {
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > input.field:not([type="checkbox"]):not([type="radio"]) {
     line-height: 44px !important;
   }
 
-  .order-editor-modal .form-grid .form-group > select.field {
+  .order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > select.field {
     line-height: 1.2 !important;
   }
 

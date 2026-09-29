@@ -1672,7 +1672,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           issueHeight: Math.round(issue?.getBoundingClientRect().height || 0),
           diagnosisHeight: Math.round(diagnosis?.getBoundingClientRect().height || 0),
           defectsHeight: Math.round(defects?.getBoundingClientRect().height || 0),
-          primaryControls: [...document.querySelectorAll('.order-editor-modal .form-grid .form-group > input.field:not([type="checkbox"]):not([type="radio"]), .order-editor-modal .form-grid .form-group > select.field')].map((node) => {
+          primaryControls: [...document.querySelectorAll('.order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > input.field:not([type="checkbox"]):not([type="radio"]), .order-editor-modal .form-grid:not(.legacy-payment-grid) .form-group > select.field')].map((node) => {
             const style = getComputedStyle(node);
             return {
               height: Math.round(node.getBoundingClientRect().height),
