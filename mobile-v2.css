@@ -24017,3 +24017,12 @@
     appearance: none !important;
   }
 }
+
+
+/* 1.8.29 · Прайс товаров: иконка и заголовок на одной оси */
+@media screen and (max-width: 520px) {
+  .legacy-goods-editor .legacy-product-price > summary .legacy-section-title {
+    margin-bottom: 0 !important;
+    align-items: center !important;
+  }
+}

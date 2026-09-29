@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.28";
-const APP_BUILD = "2026.09.29.363";
+const APP_VERSION = "1.8.29";
+const APP_BUILD = "2026.09.29.364";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Числовые поля очищены от нативных стрелок браузера на мобильном экране"
+const APP_RELEASE = "Иконка и заголовок «Прайс товаров» выровнены по одной вертикальной оси"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.29",
+    date: "29.09.2026",
+    title: "Ровная иконка прайса товаров",
+    items: [
+      "В редакторе товарника заголовок «Прайс товаров» больше не тянет иконку на несколько пикселей вверх.",
+      "Убрано унаследованное нижнее поле у заголовка внутри раскрывающейся строки.",
+      "Размеры карточки, touch-зоны и логика товарника не менялись."
+    ]
+  },
   {
     version: "1.8.28",
     date: "29.09.2026",
