@@ -22975,3 +22975,109 @@
     gap: 7px 12px !important;
   }
 }
+
+
+/* 1.8.5 · Утончённый редактор заявки */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .direct-expense-card {
+    padding: 10px 11px !important;
+    border-color: #303a41 !important;
+    border-radius: 14px !important;
+    background: #11181d !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-card-head {
+    grid-template-columns: minmax(0,1fr) 42px !important;
+    gap: 9px !important;
+    align-items: start !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-name-field {
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 2px 4px !important;
+    border: 0 !important;
+    border-bottom: 1px solid #344047 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-name-field:focus {
+    border-bottom-color: #ff8068 !important;
+    background: transparent !important;
+    box-shadow: inset 0 -1px #ff8068 !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-card-head small {
+    margin-top: 4px !important;
+    color: #879198 !important;
+    font-size: 9.5px !important;
+    font-weight: 430 !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-remove {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: rgba(255,113,123,.075) !important;
+    color: #ff7b84 !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .direct-expense-controls {
+    gap: 8px !important;
+  }
+
+  .order-editor-modal .direct-expense-controls .field {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #e8ecee !important;
+  }
+
+  .order-editor-modal .order-photo-details {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .order-editor-modal .order-photo-static-head {
+    border-bottom-color: #29343b !important;
+  }
+
+  .order-editor-modal .order-photo-static-head .order-extra-summary-icon {
+    border: 0 !important;
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .order-photo-add {
+    border-color: #39434a !important;
+    background: #141b20 !important;
+    color: #e5eaec !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .order-photo-add .ui-icon {
+    color: #ff8068 !important;
+  }
+
+  .order-editor-modal .order-photo-add b {
+    color: #eef2f4 !important;
+    font-weight: 600 !important;
+  }
+
+  .order-editor-modal .order-photo-add small,
+  .order-editor-modal .order-photo-picker > .small {
+    color: #8b959b !important;
+  }
+}

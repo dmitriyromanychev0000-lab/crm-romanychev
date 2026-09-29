@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.4";
-const APP_BUILD = "2026.09.29.336";
+const APP_VERSION = "1.8.5";
+const APP_BUILD = "2026.09.29.337";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки заявок возвращены к композиции первой версии"
+const APP_RELEASE = "Редактор заявки получил мягкие расходы без склада и фотографии без синего и красного визуального шума"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.5",
+    date: "29.09.2026",
+    title: "Утончённый редактор заявки",
+    items: [
+      "Расход без склада стал спокойнее: название больше не выглядит отдельной тяжёлой чёрной плашкой, а удаление оформлено мягким смысловым акцентом.",
+      "Блок фотографий переведён с синего и красного визуального шума на мягкую графитово-оранжевую систему.",
+      "QA обновлён под карточки первой версии: адрес сознательно не дублируется в списке заявок, длинная модель сокращается в одну аккуратную строку."
+    ]
+  },
   {
     version: "1.8.4",
     date: "29.09.2026",

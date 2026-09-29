@@ -4909,12 +4909,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             if (orderTextState.nameWhiteSpace === "nowrap"
               || orderTextState.nameLineClamp !== "2"
               || orderTextState.nameTextOverflow === "ellipsis"
-              || orderTextState.modelWhiteSpace === "nowrap"
-              || orderTextState.modelLineClamp !== "2"
-              || orderTextState.modelTextOverflow === "ellipsis"
-              || orderTextState.addressWhiteSpace === "nowrap"
-              || orderTextState.addressTextOverflow === "ellipsis"
-              || orderTextState.addressHeight < 44) {
+              || orderTextState.modelWhiteSpace !== "nowrap"
+              || orderTextState.modelTextOverflow !== "ellipsis"
+              || orderTextState.addressWhiteSpace !== "missing"
+              || orderTextState.addressTextOverflow !== "missing"
+              || orderTextState.addressHeight !== 0) {
               report.failures.push({ width, type: "stress-order-readable-text", orderTextState });
             }
           }
