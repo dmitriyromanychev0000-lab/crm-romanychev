@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T05:44:53.131Z",
-  "testedSha": "ecc19d548ed0e8e70be2b7815fa75a4631c7137d",
+  "generatedAt": "2026-09-29T05:48:11.901Z",
+  "testedSha": "1c428a8af7177a2df8e3d0ffe94ef167ac335cea",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,125 +1600,19 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T05:45:27.012Z"
+      "fallbackCreatedAt": "2026-09-29T05:48:49.327Z"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "order-payment-grid-two-columns",
-      "paymentGridLayout": {
-        "gridWidth": 296,
-        "columns": "144px 144px",
-        "rowGap": 6,
-        "fieldHeights": [
-          46,
-          46,
-          46,
-          46,
-          46,
-          46,
-          46
-        ],
-        "sum": {
-          "left": 12,
-          "top": 1690,
-          "width": 144
-        },
-        "prepay": {
-          "left": 164,
-          "top": 1690,
-          "width": 144
-        },
-        "discount": {
-          "left": 12,
-          "top": 1756,
-          "width": 144
-        },
-        "percent": {
-          "left": 164,
-          "top": 1756,
-          "width": 144
-        },
-        "gray": {
-          "left": 12,
-          "top": 1822,
-          "width": 144
-        },
-        "white": {
-          "left": 164,
-          "top": 1822,
-          "width": 144
-        },
-        "tag": {
-          "left": 12,
-          "top": 1900,
-          "width": 144
-        }
-      },
-      "paymentPairsAligned": true,
-      "tagCompact": true,
-      "paymentControlsCompact": false
-    },
-    {
-      "width": 390,
-      "type": "order-payment-grid-two-columns",
-      "paymentGridLayout": {
-        "gridWidth": 366,
-        "columns": "179px 179px",
-        "rowGap": 6,
-        "fieldHeights": [
-          46,
-          46,
-          46,
-          46,
-          46,
-          46,
-          46
-        ],
-        "sum": {
-          "left": 12,
-          "top": 1686,
-          "width": 179
-        },
-        "prepay": {
-          "left": 199,
-          "top": 1686,
-          "width": 179
-        },
-        "discount": {
-          "left": 12,
-          "top": 1753,
-          "width": 179
-        },
-        "percent": {
-          "left": 199,
-          "top": 1753,
-          "width": 179
-        },
-        "gray": {
-          "left": 12,
-          "top": 1820,
-          "width": 179
-        },
-        "white": {
-          "left": 199,
-          "top": 1820,
-          "width": 179
-        },
-        "tag": {
-          "left": 12,
-          "top": 1899,
-          "width": 179
-        }
-      },
-      "paymentPairsAligned": true,
-      "tagCompact": true,
-      "paymentControlsCompact": false
-    },
-    {
-      "type": "fatal",
-      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
-    }
-  ]
+  "failures": []
 }
