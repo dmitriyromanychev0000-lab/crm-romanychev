@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T05:42:25.628Z",
-  "testedSha": "5b7064fa068970139b4669ea2b142db19b81517a",
+  "generatedAt": "2026-09-29T05:44:53.131Z",
+  "testedSha": "ecc19d548ed0e8e70be2b7815fa75a4631c7137d",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,18 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T05:43:03.790Z"
-    },
-    {
-      "label": "pwa-offline",
-      "width": 390,
-      "bodyScrollWidth": null,
-      "viewportWidth": 390,
-      "overflow": 0,
-      "modalOpen": false,
-      "tooSmall": [],
-      "serviceWorkerReady": true,
-      "offlineLoaded": true
+      "fallbackCreatedAt": "2026-09-29T05:45:27.012Z"
     }
   ],
   "failures": [
@@ -1726,6 +1715,10 @@
       "paymentPairsAligned": true,
       "tagCompact": true,
       "paymentControlsCompact": false
+    },
+    {
+      "type": "fatal",
+      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
     }
   ]
 }
