@@ -2977,10 +2977,21 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.keyboard.press("Escape");
       await page.locator('[data-action="new-stock"]').click();
       const stockEditorSurface = await page.evaluate(() => {
-        const minimum = document.querySelector('.stock-editor-modal [name="min"]')?.closest(".form-group");
-        const stockTech = document.querySelector('.stock-editor-modal [name="stockTech"]')?.closest(".form-group");
-        const category = document.querySelector('.stock-editor-modal [name="category"]')?.closest(".form-group");
+        const group = (name) => document.querySelector(`.stock-editor-modal [name="${name}"]`)?.closest(".form-group");
+        const rect = (name) => {
+          const box = group(name)?.getBoundingClientRect();
+          return box ? { left: Math.round(box.left), top: Math.round(box.top), width: Math.round(box.width), height: Math.round(box.height) } : null;
+        };
+        const minimum = group("min");
         const grid = minimum?.closest(".form-grid");
+        const fullName = rect("name");
+        const locationNode = document.querySelector('.stock-editor-modal [name="initialLocationId"]')?.closest(".form-group")
+          || document.querySelector(".stock-editor-modal .stock-field-location");
+        const locationRect = locationNode?.getBoundingClientRect();
+        const labelFit = [".stock-field-storage-unit > label",".stock-field-consume-unit > label",".stock-field-min > label"].map((selector) => {
+          const node = document.querySelector(`.stock-editor-modal ${selector}`);
+          return { selector, scrollWidth: node?.scrollWidth || 0, clientWidth: node?.clientWidth || 0 };
+        });
         return {
           modal: getComputedStyle(document.querySelector(".stock-editor-modal")).backgroundColor,
           section: getComputedStyle(document.querySelector(".stock-editor-section")).backgroundColor,
@@ -2988,10 +2999,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           compat: getComputedStyle(document.querySelector(".stock-editor-compat-details")).backgroundColor,
           hasStockTech: Boolean(document.querySelector('.stock-editor-modal [name="stockTech"]')),
           categoryRequired: Boolean(document.querySelector('.stock-editor-modal [name="category"]')?.required),
-          minimumWidth: Math.round(minimum?.getBoundingClientRect().width || 0),
-          stockTechWidth: Math.round(stockTech?.getBoundingClientRect().width || 0),
-          categoryWidth: Math.round(category?.getBoundingClientRect().width || 0),
-          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
+          gridWidth: Math.round(grid?.getBoundingClientRect().width || 0),
+          fullName,
+          location: locationRect ? { left: Math.round(locationRect.left), top: Math.round(locationRect.top), width: Math.round(locationRect.width), height: Math.round(locationRect.height) } : null,
+          stockTech: rect("stockTech"),
+          category: rect("category"),
+          storageUnit: rect("unit"),
+          consumeUnit: rect("consumeUnit"),
+          quantity: rect("quantity"),
+          minimum: rect("min"),
+          price: rect("price"),
+          cost: rect("initialPurchaseTotal") || rect("lastPurchasePrice"),
+          labelFit
         };
       });
       if (stockEditorSurface.modal !== "rgb(7, 12, 15)"
@@ -3000,9 +3019,28 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorSurface.compat !== "rgb(17, 24, 29)"
         || !stockEditorSurface.hasStockTech
         || !stockEditorSurface.categoryRequired
-        || stockEditorSurface.minimumWidth < stockEditorSurface.gridWidth * 0.92
-        || stockEditorSurface.stockTechWidth < stockEditorSurface.gridWidth * 0.92
-        || stockEditorSurface.categoryWidth < stockEditorSurface.gridWidth * 0.92) {
+        || !stockEditorSurface.fullName
+        || !stockEditorSurface.location
+        || stockEditorSurface.fullName.width < stockEditorSurface.gridWidth * 0.92
+        || stockEditorSurface.location.width < stockEditorSurface.gridWidth * 0.92
+        || !stockEditorSurface.stockTech
+        || !stockEditorSurface.category
+        || !stockEditorSurface.storageUnit
+        || !stockEditorSurface.consumeUnit
+        || !stockEditorSurface.quantity
+        || !stockEditorSurface.minimum
+        || !stockEditorSurface.price
+        || !stockEditorSurface.cost
+        || Math.abs(stockEditorSurface.stockTech.top - stockEditorSurface.category.top) > 2
+        || stockEditorSurface.category.left <= stockEditorSurface.stockTech.left
+        || Math.abs(stockEditorSurface.storageUnit.top - stockEditorSurface.consumeUnit.top) > 2
+        || stockEditorSurface.consumeUnit.left <= stockEditorSurface.storageUnit.left
+        || Math.abs(stockEditorSurface.quantity.top - stockEditorSurface.minimum.top) > 2
+        || stockEditorSurface.minimum.left <= stockEditorSurface.quantity.left
+        || Math.abs(stockEditorSurface.price.top - stockEditorSurface.cost.top) > 2
+        || stockEditorSurface.cost.left <= stockEditorSurface.price.left
+        || [stockEditorSurface.stockTech, stockEditorSurface.category, stockEditorSurface.storageUnit, stockEditorSurface.consumeUnit, stockEditorSurface.quantity, stockEditorSurface.minimum, stockEditorSurface.price, stockEditorSurface.cost].some((item) => item.width < 110)
+        || stockEditorSurface.labelFit.some((item) => item.scrollWidth > item.clientWidth + 1)) {
         report.failures.push({ width, type: "stock-editor-deep-dark", stockEditorSurface });
       }
 
@@ -3020,7 +3058,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           bodyGap: bodyStyle ? px(bodyStyle.gap) : 999,
           sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
-          compatHeight: Math.round(compat?.getBoundingClientRect().height || 0)
+          compatHeight: Math.round(compat?.getBoundingClientRect().height || 0),
+          firstSectionHeight: Math.round(section?.getBoundingClientRect().height || 999)
         };
       });
       if (stockEditorDensity.headHeight > 66
@@ -3029,7 +3068,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorDensity.fieldHeight < 44
         || stockEditorDensity.fieldHeight > 48
         || stockEditorDensity.compatHeight < 44
-        || stockEditorDensity.compatHeight > 48) {
+        || stockEditorDensity.compatHeight > 48
+        || stockEditorDensity.firstSectionHeight > (width <= 340 ? 430 : 410)) {
         report.failures.push({ width, type: "stock-editor-compact-density", stockEditorDensity });
       }
       await assertPairedFooter(page, width, ".stock-editor-modal .modal-actions", "stock-editor-actions-two-columns");

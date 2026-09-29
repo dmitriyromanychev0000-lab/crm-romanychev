@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.26";
-const APP_BUILD = "2026.09.29.359";
+const APP_VERSION = "1.8.27";
+const APP_BUILD = "2026.09.29.360";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Всплывающие сообщения больше не перекрывают рабочие кнопки внутри редакторов"
+const APP_RELEASE = "Редактор склада стал заметно короче за счёт компактных пар полей"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.27",
+    date: "29.09.2026",
+    title: "Компактный редактор склада",
+    items: [
+      "Тип и категория, единицы хранения и списания, количество и минимальный остаток собраны в компактные пары.",
+      "Название и место хранения остаются полноширинными, поэтому длинные значения не зажаты.",
+      "Высота полей и нижние кнопки не уменьшались; редактор требует заметно меньше прокрутки."
+    ]
+  },
   {
     version: "1.8.26",
     date: "29.09.2026",
@@ -7340,25 +7350,25 @@ function stockModal(existing = null) {
     <section class="stock-editor-section">
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("box")}</span><span>Основное</span></div>
     <div class="form-grid">
-      <div class="form-group full"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
-      <div class="form-group"><label>Тип техники</label><select class="field" name="stockTech">${stockTechOptions.map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
-      <div class="form-group"><label>Категория</label><input class="field" id="stock-category-input" name="category" list="stock-category-options" value="${escapeHtml(initialStockCategory || "Запчасти")}" required placeholder="Например, датчики" /><datalist id="stock-category-options">${[...new Set([...stockCategoriesForTech(initialStockTech).map((entry) => entry.name), initialStockCategory].filter(Boolean))].map((value) => `<option value="${escapeHtml(value)}"></option>`).join("")}</datalist></div>
-      <div class="form-group"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
-      <div class="form-group"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
-      <div class="form-group"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
-      ${existing ? `<div class="form-group"><label>Места хранения</label><div class="field readonly-field">${stockLocationsForItem(item).length || 0} мест · через карточку склада</div></div>` : `<div class="form-group"><label>Начальное место</label><select class="field" name="initialLocationId">${activeStorageLocations().map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===String(initialLocationId)?"selected":""}>${escapeHtml(location.name)}</option>`).join("")}</select></div>`}
-      <div class="form-group full"><label>Минимальный остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
+      <div class="form-group full stock-field-name"><label>Название</label><input class="field" name="name" value="${escapeHtml(item.name || "")}" required placeholder="Например, компрессор" /></div>
+      <div class="form-group stock-field-tech"><label>Тип техники</label><select class="field" name="stockTech">${stockTechOptions.map((value)=>`<option value="${escapeHtml(value)}" ${stockTechForItem(item)===value?"selected":""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group stock-field-category"><label>Категория</label><input class="field" id="stock-category-input" name="category" list="stock-category-options" value="${escapeHtml(initialStockCategory || "Запчасти")}" required placeholder="Например, датчики" /><datalist id="stock-category-options">${[...new Set([...stockCategoriesForTech(initialStockTech).map((entry) => entry.name), initialStockCategory].filter(Boolean))].map((value) => `<option value="${escapeHtml(value)}"></option>`).join("")}</datalist></div>
+      <div class="form-group stock-field-storage-unit"><label>Единица хранения</label><select class="field" name="unit" id="stock-storage-unit">${storageUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentStorageUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group stock-field-consume-unit"><label>Единица списания</label><select class="field" name="consumeUnit" id="stock-consume-unit">${allowedCurrentConsumeUnits.map((value) => `<option value="${escapeHtml(value)}" ${currentConsumeUnit === value ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}</select></div>
+      <div class="form-group stock-field-quantity"><label>${existing ? "Текущий остаток" : "Количество"}</label><input class="field" name="quantity" type="number" min="0" step="0.001" value="${Number(item.quantity) || 0}" ${existing ? "readonly" : ""} /></div>
+      <div class="form-group stock-field-min"><label>Мин. остаток</label><input class="field" name="min" type="number" min="0" step="0.001" value="${Number(item.min) || 0}" /></div>
+      ${existing ? `<div class="form-group full stock-field-location"><label>Места хранения</label><div class="field readonly-field">${stockLocationsForItem(item).length || 0} мест · через карточку склада</div></div>` : `<div class="form-group full stock-field-location"><label>Начальное место</label><select class="field" name="initialLocationId">${activeStorageLocations().map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===String(initialLocationId)?"selected":""}>${escapeHtml(location.name)}</option>`).join("")}</select></div>`}
     </div>
     </section>
 
     <section class="stock-editor-section">
     <div class="stock-editor-section-title"><span class="stock-editor-section-icon">${icon("finance")}</span><span>Цены и учёт</span></div>
     <div class="form-grid">
-      <div class="form-group"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
+      <div class="form-group stock-field-price"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
       ${existing
-        ? `<div class="form-group"><label>Текущая себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="0.01" value="${Number(item.lastPurchasePrice) || 0}" /><small>Только для будущих закупок; старые партии не меняются.</small></div>`
-        : `<div class="form-group"><label>Сумма первой закупки</label><input class="field" name="initialPurchaseTotal" type="number" min="0" step="1" value="0" inputmode="decimal" /><small id="stock-initial-unit-cost">Себестоимость: 0 ₽ / ед.</small></div>`}
-      <div class="form-group full"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
+        ? `<div class="form-group stock-field-cost"><label>Текущая себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="0.01" value="${Number(item.lastPurchasePrice) || 0}" /><small>Только для будущих закупок; старые партии не меняются.</small></div>`
+        : `<div class="form-group stock-field-cost"><label>Сумма первой закупки</label><input class="field" name="initialPurchaseTotal" type="number" min="0" step="1" value="0" inputmode="decimal" /><small id="stock-initial-unit-cost">Себестоимость: 0 ₽ / ед.</small></div>`}
+      <div class="form-group full stock-field-tracking"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
     </div>
     </section>
 

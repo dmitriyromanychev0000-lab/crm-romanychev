@@ -23939,3 +23939,49 @@
     bottom: calc(164px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+
+/* 1.8.27 · Компактные пары редактора склада */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal .stock-editor-section .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    column-gap: 7px !important;
+    row-gap: 7px !important;
+  }
+
+  .stock-editor-modal .stock-editor-section .form-group.full,
+  .stock-editor-modal .stock-field-name,
+  .stock-editor-modal .stock-field-location,
+  .stock-editor-modal .stock-field-tracking {
+    grid-column: 1 / -1 !important;
+  }
+
+  .stock-editor-modal .stock-field-tech,
+  .stock-editor-modal .stock-field-category,
+  .stock-editor-modal .stock-field-storage-unit,
+  .stock-editor-modal .stock-field-consume-unit,
+  .stock-editor-modal .stock-field-quantity,
+  .stock-editor-modal .stock-field-min,
+  .stock-editor-modal .stock-field-price,
+  .stock-editor-modal .stock-field-cost {
+    min-width: 0 !important;
+  }
+
+  .stock-editor-modal .stock-field-tech .field,
+  .stock-editor-modal .stock-field-category .field,
+  .stock-editor-modal .stock-field-storage-unit .field,
+  .stock-editor-modal .stock-field-consume-unit .field,
+  .stock-editor-modal .stock-field-quantity .field,
+  .stock-editor-modal .stock-field-min .field,
+  .stock-editor-modal .stock-field-price .field,
+  .stock-editor-modal .stock-field-cost .field {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .stock-editor-modal .stock-field-storage-unit > label,
+  .stock-editor-modal .stock-field-consume-unit > label {
+    font-size: 8.5px !important;
+    letter-spacing: .025em !important;
+  }
+}
