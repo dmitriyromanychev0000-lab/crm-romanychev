@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T07:25:30.601Z",
-  "testedSha": "0bcaf82c8b8483c4e8e6fa381bbaa4ce142c44a8",
+  "generatedAt": "2026-09-29T07:50:14.468Z",
+  "testedSha": "ccc816e45ad82d481fa9c706d864aa1697dcaa26",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T07:26:09.625Z"
+      "fallbackCreatedAt": "2026-09-29T07:50:45.325Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,60 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "stock-detail-hierarchy",
+      "stockDetailSurface": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(11, 17, 21)",
+        "primaryKpi": "rgb(7, 17, 12)",
+        "reservedKpi": "rgb(12, 18, 22)",
+        "minimumKpi": "rgb(19, 16, 6)",
+        "incoming": "rgb(7, 19, 13)",
+        "outgoing": "rgb(22, 9, 12)",
+        "transfer": "rgb(12, 18, 22)",
+        "correct": "rgb(16, 13, 6)",
+        "archive": "rgb(12, 18, 22)",
+        "incomingWidth": 147,
+        "outgoingWidth": 147,
+        "transferWidth": 147,
+        "correctWidth": 147,
+        "archiveWidth": 300,
+        "incomingTop": 542,
+        "outgoingTop": 542,
+        "transferTop": 596,
+        "correctTop": 596,
+        "archiveTop": 648,
+        "correctTextOverflow": 0
+      }
+    },
+    {
+      "width": 390,
+      "type": "stock-detail-hierarchy",
+      "stockDetailSurface": {
+        "modal": "rgb(3, 7, 10)",
+        "hero": "rgb(11, 17, 21)",
+        "primaryKpi": "rgb(7, 17, 12)",
+        "reservedKpi": "rgb(12, 18, 22)",
+        "minimumKpi": "rgb(19, 16, 6)",
+        "incoming": "rgb(7, 19, 13)",
+        "outgoing": "rgb(22, 9, 12)",
+        "transfer": "rgb(12, 18, 22)",
+        "correct": "rgb(16, 13, 6)",
+        "archive": "rgb(12, 18, 22)",
+        "incomingWidth": 179,
+        "outgoingWidth": 179,
+        "transferWidth": 179,
+        "correctWidth": 179,
+        "archiveWidth": 364,
+        "incomingTop": 464,
+        "outgoingTop": 464,
+        "transferTop": 520,
+        "correctTop": 520,
+        "archiveTop": 572,
+        "correctTextOverflow": 0
+      }
+    }
+  ]
 }
