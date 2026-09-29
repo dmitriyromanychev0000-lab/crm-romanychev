@@ -705,6 +705,25 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.waitForTimeout(30);
       await page.locator("#price-category-tech").selectOption({ label: "Холодильник" });
       await page.waitForTimeout(20);
+      const managerHelpMetrics = await page.evaluate(() => {
+        const node = document.querySelector(".price-categories-modal .manager-help");
+        const style = node ? getComputedStyle(node) : null;
+        return {
+          fontSize: parseFloat(style?.fontSize || "0") || 0,
+          lineHeight: parseFloat(style?.lineHeight || "0") || 0,
+          marginTop: parseFloat(style?.marginTop || "999") || 999,
+          marginBottom: parseFloat(style?.marginBottom || "999") || 999,
+          height: Math.round(node?.getBoundingClientRect().height || 999)
+        };
+      });
+      if (managerHelpMetrics.fontSize < 12.5
+        || managerHelpMetrics.fontSize > 13
+        || managerHelpMetrics.lineHeight > 18
+        || managerHelpMetrics.marginTop > 8
+        || managerHelpMetrics.marginBottom > 7
+        || managerHelpMetrics.height > (width <= 340 ? 72 : 56)) {
+        report.failures.push({ width, type: "manager-help-compact-density", managerHelpMetrics });
+      }
       const diagnosticCategory = page.locator("[data-price-category-id]").filter({
         has: page.locator('[data-price-category-name][value="Диагностика"]')
       }).first();

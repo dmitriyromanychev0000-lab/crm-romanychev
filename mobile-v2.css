@@ -23920,3 +23920,14 @@
     margin-top: 2px !important;
   }
 }
+
+
+/* 1.8.25 · Компактные пояснения справочников */
+@media screen and (max-width: 520px) {
+  .manager-help {
+    margin: 7px 14px 6px !important;
+    color: #9aa4aa !important;
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+  }
+}
