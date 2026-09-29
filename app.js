@@ -8,9 +8,9 @@ const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.8.35";
-const APP_BUILD = "2026.09.30.370";
+const APP_BUILD = "2026.09.30.371";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Пустая история позиции склада больше не оставляет лишний вертикальный блок"
+const APP_RELEASE = "Пустая история склада стала компактнее"
 const APP_CHANGELOG = [
   {
     version: "1.8.35",

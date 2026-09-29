@@ -24155,6 +24155,13 @@
 
 /* 1.8.35 · Пустая история склада без лишней высоты */
 @media screen and (max-width: 520px) {
+  .stock-detail-history {
+    display: block !important;
+    min-height: 0 !important;
+    height: auto !important;
+    align-self: start !important;
+  }
+
   .stock-detail-history > .detail-empty {
     margin: 2px 0 0 !important;
     padding: 0 !important;
