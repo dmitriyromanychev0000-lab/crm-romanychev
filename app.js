@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.7.97";
-const APP_BUILD = "2026.09.29.329";
+const APP_VERSION = "1.7.98";
+const APP_BUILD = "2026.09.29.330";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Меню «Ещё» возвращено к мягкому визуальному стилю первой версии"
+const APP_RELEASE = "Склад получил единую тёплую акцентную систему без чужеродных синих иконок"
 const APP_CHANGELOG = [
+  {
+    version: "1.7.98",
+    date: "29.09.2026",
+    title: "Единые акценты склада",
+    items: [
+      "Синие пиктограммы групп склада заменены на мягкий оранжевый акцент без жёсткой обводки.",
+      "Деталка позиции больше не использует синюю тему для резерва, перемещения и архива — они стали нейтральными графитовыми.",
+      "Кнопка корректировки остатка больше не режет длинную подпись на мобильном экране."
+    ]
+  },
   {
     version: "1.7.97",
     date: "29.09.2026",

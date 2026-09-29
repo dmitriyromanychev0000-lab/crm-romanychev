@@ -2654,6 +2654,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const stockTitleRect = stockTitle?.getBoundingClientRect();
         return {
           group: getComputedStyle(document.querySelector(".legacy-warehouse-group")).backgroundColor,
+          groupIcon: getComputedStyle(document.querySelector(".warehouse-tech-group > summary .legacy-folder-icon")).color,
+          groupIconBackground: getComputedStyle(document.querySelector(".warehouse-tech-group > summary .legacy-folder-icon")).backgroundColor,
           stock: getComputedStyle(document.querySelector(".legacy-stock-card-v2")).backgroundColor,
           action: getComputedStyle(document.querySelector(".legacy-stock-actions-v2 button")).backgroundColor,
           actionWidths: actionRects.map((rect) => Math.round(rect.width)),
@@ -2698,6 +2700,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (warehousePageSurfaces.group !== "rgb(7, 12, 16)"
+        || warehousePageSurfaces.groupIcon !== "rgb(255, 128, 103)"
+        || warehousePageSurfaces.groupIconBackground !== "rgba(255, 118, 92, 0.075)"
         || warehousePageSurfaces.stock !== "rgb(6, 11, 15)"
         || warehousePageSurfaces.action !== "rgb(9, 15, 20)"
         || !warehousePageSurfaces.filters.includes("out")
@@ -2818,19 +2822,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           outgoingTop: outgoingRect ? Math.round(outgoingRect.top) : 0,
           transferTop: transferRect ? Math.round(transferRect.top) : 0,
           correctTop: correctRect ? Math.round(correctRect.top) : 0,
-          archiveTop: archiveRect ? Math.round(archiveRect.top) : 0
+          archiveTop: archiveRect ? Math.round(archiveRect.top) : 0,
+          correctTextOverflow: correct?.querySelector("b") ? Math.max(0, correct.querySelector("b").scrollWidth - correct.querySelector("b").clientWidth) : 999
         };
       });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
         || stockDetailSurface.hero !== "rgb(6, 11, 15)"
         || stockDetailSurface.primaryKpi !== "rgb(7, 17, 12)"
-        || stockDetailSurface.reservedKpi !== "rgb(8, 16, 25)"
+        || stockDetailSurface.reservedKpi !== "rgb(12, 18, 22)"
         || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
         || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
         || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
-        || stockDetailSurface.transfer !== "rgb(7, 17, 26)"
+        || stockDetailSurface.transfer !== "rgb(12, 18, 22)"
         || stockDetailSurface.correct !== "rgb(16, 13, 6)"
-        || stockDetailSurface.archive !== "rgb(8, 16, 25)"
+        || stockDetailSurface.archive !== "rgb(12, 18, 22)"
         || stockDetailSurface.incomingWidth < 100
         || Math.abs(stockDetailSurface.incomingWidth - stockDetailSurface.outgoingWidth) > 2
         || Math.abs(stockDetailSurface.transferWidth - stockDetailSurface.correctWidth) > 2
@@ -2840,7 +2845,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(stockDetailSurface.transferTop - stockDetailSurface.correctTop) > 2
         || stockDetailSurface.transferTop <= stockDetailSurface.incomingTop
         || stockDetailSurface.archiveTop <= stockDetailSurface.transferTop
-        || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8) {
+        || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8
+        || stockDetailSurface.correctTextOverflow > 1) {
         report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
 
