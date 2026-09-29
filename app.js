@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.45";
-const APP_BUILD = "2026.09.30.380";
+const APP_VERSION = "1.8.46";
+const APP_BUILD = "2026.09.30.381";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор документов стал компактнее"
+const APP_RELEASE = "Черновики показывают больше данных"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.46",
+    date: "30.09.2026",
+    title: "Больше данных в карточке черновика",
+    items: [
+      "Техника и бренд отделены от телефона и даты, поэтому важные данные больше не исчезают в одной длинной строке.",
+      "Карточка остаётся компактной, а действия Продолжить и Удалить сохраняют удобные touch-зоны.",
+      "Пустой раздел Черновиков получил компактную иконку, заголовок и пояснение в общем стиле."
+    ]
+  },
   {
     version: "1.8.45",
     date: "30.09.2026",
@@ -5497,17 +5507,21 @@ function draftsPage() {
       <button type="button" class="legacy-back-button" data-action="more-back" aria-label="Назад">${icon("back")}</button>
       <div><h1>Черновики</h1><p>Незавершённые заявки</p></div>
     </div>
-    <div class="legacy-service-note">Сохранённые незавершённые заявки. Продолжи работу или удали ненужное.</div>
+    <div class="legacy-service-note">Незавершённые заявки — продолжи или удали ненужное.</div>
     ${drafts.length ? `<div class="legacy-service-list">${drafts.map((record) => {
       const view = draftSummary(record.value);
-      const meta = [view.tech, view.brand, view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
+      const metaPrimary = [view.tech, view.brand].filter(Boolean).join(" · ");
+      const metaSecondary = [view.phone, view.date ? shortDate(view.date) : ""].filter(Boolean).join(" · ");
+      const metaHtml = metaPrimary || metaSecondary
+        ? `${metaPrimary ? `<span>${escapeHtml(metaPrimary)}</span>` : ""}${metaSecondary ? `<span>${escapeHtml(metaSecondary)}</span>` : ""}`
+        : "<span>Старый формат черновика</span>";
       return `<article class="legacy-draft-card">
         <span class="legacy-draft-icon">${icon("drafts")}</span>
-        <div class="legacy-draft-copy"><em>ЧЕРНОВИК</em><strong>${escapeHtml(view.title)}</strong><small>${escapeHtml(meta || "Старый формат черновика")}</small></div>
+        <div class="legacy-draft-copy"><em>ЧЕРНОВИК</em><strong>${escapeHtml(view.title)}</strong><small>${metaHtml}</small></div>
         ${view.sum ? `<b>${money(view.sum)}</b>` : ""}
         <div class="legacy-draft-actions"><button type="button" data-action="continue-draft" data-key="${escapeHtml(record.key)}">${icon("edit")}<span>Продолжить</span></button><button type="button" class="danger" data-action="delete-draft" data-key="${escapeHtml(record.key)}">${icon("trash")}<span>Удалить</span></button></div>
       </article>`;
-    }).join("")}</div>` : `<div class="legacy-service-empty">Черновиков пока нет.</div>`}
+    }).join("")}</div>` : `<div class="legacy-service-empty legacy-draft-empty"><span class="legacy-draft-empty-icon">${icon("drafts")}</span><strong>Черновиков пока нет</strong><small>Незавершённые заявки появятся здесь автоматически.</small></div>`}
   </main>`;
 }
 

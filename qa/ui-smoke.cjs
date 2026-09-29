@@ -4880,6 +4880,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const removeRect = remove?.getBoundingClientRect();
         const cardRect = card?.getBoundingClientRect();
         const noteRect = note?.getBoundingClientRect();
+        const meta = card?.querySelector(".legacy-draft-copy small");
+        const metaLines = [...(meta?.querySelectorAll(":scope > span") || [])];
+        const secondMeta = metaLines[1];
         return {
           card: card ? getComputedStyle(card).backgroundColor : "missing",
           note: note ? getComputedStyle(note).backgroundColor : "missing",
@@ -4888,7 +4891,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           cardHeight: cardRect ? Math.round(cardRect.height) : 0,
           noteHeight: noteRect ? Math.round(noteRect.height) : 0,
           nextHeight: nextRect ? Math.round(nextRect.height) : 0,
-          removeHeight: removeRect ? Math.round(removeRect.height) : 0
+          removeHeight: removeRect ? Math.round(removeRect.height) : 0,
+          noteText: note?.textContent?.trim() || "",
+          metaLineCount: metaLines.length,
+          metaFirst: metaLines[0]?.textContent?.trim() || "",
+          metaSecond: secondMeta?.textContent?.trim() || "",
+          metaSecondOverflow: secondMeta ? Math.max(0, secondMeta.scrollWidth - secondMeta.clientWidth) : 999
         };
       });
       if (draftSurface.card !== "rgb(17, 24, 29)"
@@ -4896,10 +4904,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || draftSurface.next !== "rgb(21, 29, 35)"
         || draftSurface.remove !== "rgb(21, 29, 35)"
         || draftSurface.nextHeight < 44
-        || draftSurface.removeHeight < 44) {
+        || draftSurface.removeHeight < 44
+        || draftSurface.noteText !== "Незавершённые заявки — продолжи или удали ненужное."
+        || draftSurface.metaLineCount !== 2
+        || !draftSurface.metaFirst.includes("Посудомоечная машина")
+        || !draftSurface.metaSecond.includes("+79991112233")
+        || draftSurface.metaSecondOverflow > 1) {
         report.failures.push({ width, type: "drafts-workflow-hierarchy", draftSurface });
       }
-      const draftHeightLimit = width <= 320 ? 126 : 110;
+      const draftHeightLimit = width <= 320 ? 132 : 120;
       if (!draftSurface.cardHeight
         || draftSurface.cardHeight > draftHeightLimit
         || !draftSurface.noteHeight
@@ -5069,7 +5082,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Редактор документов стал компактнее"
+        || settingsSurface.versionSummaryFit.text !== "Черновики показывают больше данных"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5529,9 +5542,35 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           ["empty-clients", uiState({ activePage: "more", moreSection: "clients" })],
           ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })],
           ["empty-tools", uiState({ activePage: "more", moreSection: "tools" })],
-          ["empty-receipts", uiState({ activePage: "more", moreSection: "receipts" })]
+          ["empty-receipts", uiState({ activePage: "more", moreSection: "receipts" })],
+          ["empty-drafts", uiState({ activePage: "more", moreSection: "drafts" })]
         ]) {
           await setState(page, emptyState);
+          if (emptyLabel === "empty-drafts") {
+            const draftEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".legacy-draft-empty");
+              const icon = root?.querySelector(".legacy-draft-empty-icon");
+              const title = root?.querySelector("strong");
+              const copy = root?.querySelector("small");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const lineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                copyLines: copy && lineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / lineHeight) : 0
+              };
+            });
+            if (draftEmptyState.height < 100
+              || draftEmptyState.height > 120
+              || draftEmptyState.iconWidth !== 36
+              || draftEmptyState.iconHeight !== 36
+              || draftEmptyState.title !== "Черновиков пока нет"
+              || draftEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-drafts-layout", draftEmptyState });
+            }
+          }
           if (emptyLabel === "empty-receipts") {
             const receiptEmptyState = await page.evaluate(() => {
               const root = document.querySelector(".legacy-receipt-empty");
