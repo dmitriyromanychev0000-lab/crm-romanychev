@@ -4967,7 +4967,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Длинные услуги в прайсе читаются лучше"
+        || settingsSurface.versionSummaryFit.text !== "Пустые Клиенты оформлены единообразно"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5444,6 +5444,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             || emptySurface.borderStyle !== "dashed"
             || parseFloat(emptySurface.radius) < 12) {
             report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
+          }
+          if (emptyLabel === "empty-clients") {
+            const clientEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".legacy-client-empty");
+              const icon = root?.querySelector(".legacy-client-empty-icon");
+              const title = root?.querySelector("strong");
+              const copy = root?.querySelector("small");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const copyLineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                titleFont: title ? parseFloat(getComputedStyle(title).fontSize) || 0 : 0,
+                copyLines: copy && copyLineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / copyLineHeight) : 0
+              };
+            });
+            if (clientEmptyState.height < 100
+              || clientEmptyState.height > 124
+              || clientEmptyState.iconWidth !== 36
+              || clientEmptyState.iconHeight !== 36
+              || clientEmptyState.title !== "Клиентов пока нет"
+              || clientEmptyState.titleFont < 12.5
+              || clientEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-client-layout", clientEmptyState });
+            }
           }
           const emptyResult = await shot(page, width, emptyLabel, true);
           report.results.push(emptyResult);

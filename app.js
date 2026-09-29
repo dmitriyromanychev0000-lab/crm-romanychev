@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.38";
-const APP_BUILD = "2026.09.30.373";
+const APP_VERSION = "1.8.39";
+const APP_BUILD = "2026.09.30.374";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Длинный тип техники полностью читается на 320 px"
+const APP_RELEASE = "Пустые Клиенты оформлены единообразно"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.39",
+    date: "30.09.2026",
+    title: "Аккуратное пустое состояние клиентов",
+    items: [
+      "Пустой экран клиентов теперь оформлен как компактное состояние с иконкой, заголовком и пояснением.",
+      "Поиск без результата использует тот же визуальный язык с отдельной поисковой иконкой.",
+      "Карточка остаётся компактной и не создаёт лишний высокий пустой блок."
+    ]
+  },
   {
     version: "1.8.38",
     date: "30.09.2026",
@@ -4517,8 +4527,8 @@ function clientsPage() {
         </div>
       </article>`;
     }).join("")}</div>` : (query
-      ? `<div class="legacy-client-empty">Клиент не найден. Попробуй изменить поиск.</div>`
-      : `<div class="legacy-client-empty">Клиенты появятся после создания или импорта заявок.</div>`)}
+      ? `<div class="legacy-client-empty"><span class="legacy-client-empty-icon">${icon("search")}</span><strong>Клиент не найден</strong><small>Попробуй изменить поиск.</small></div>`
+      : `<div class="legacy-client-empty"><span class="legacy-client-empty-icon">${icon("clients")}</span><strong>Клиентов пока нет</strong><small>Появятся после создания или импорта заявок.</small></div>`)}
   </main>`;
 }
 function financePage() {
