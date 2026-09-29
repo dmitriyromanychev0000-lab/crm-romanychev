@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.16";
-const APP_BUILD = "2026.09.29.349";
+const APP_VERSION = "1.8.17";
+const APP_BUILD = "2026.09.29.350";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Служебные редакторы больше не растягивают пустое место до нижних кнопок"
+const APP_RELEASE = "Компактные редакторы получили чистый непрозрачный фон без просвечивания списка"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.17",
+    date: "29.09.2026",
+    title: "Чистый фон редакторов",
+    items: [
+      "Под компактными окнами финансов, прайса, документов и инструментов больше не просвечивает предыдущий экран.",
+      "Фон стал цельным тёмным слоем без лишнего blur, поэтому текст и иконки за модалкой не создают визуальный шум.",
+      "Размеры полей, плотность формы и доступность кнопок не менялись."
+    ]
+  },
   {
     version: "1.8.16",
     date: "29.09.2026",

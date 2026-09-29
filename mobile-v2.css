@@ -23739,3 +23739,14 @@
     margin: 0 -12px !important;
   }
 }
+
+
+/* 1.8.17 · Чистый фон компактных редакторов */
+@media screen and (max-width: 520px) {
+  .legacy-finance-entry-backdrop,
+  .legacy-service-editor-backdrop,
+  .legacy-price-editor-backdrop {
+    background: #020507 !important;
+    backdrop-filter: none !important;
+  }
+}

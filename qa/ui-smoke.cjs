@@ -2591,6 +2591,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const rangeRects = [...(rangeGrid?.querySelectorAll("label") || [])].map((node) => node.getBoundingClientRect());
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
+          backdrop: getComputedStyle(document.querySelector(".legacy-finance-entry-backdrop")).backgroundColor,
           field: field ? getComputedStyle(field).backgroundColor : "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
@@ -3468,6 +3469,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (financeEditorState.modal !== "rgb(7, 12, 15)"
+        || financeEditorState.backdrop !== "rgb(2, 5, 7)"
         || financeEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(financeEditorState.fieldFont) < 13.5
         || financeEditorState.closeWidth < 44
@@ -3632,6 +3634,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const actionRect = action?.getBoundingClientRect();
         const field = document.querySelector(".legacy-price-editor .field");
         return {
+          backdrop: getComputedStyle(document.querySelector(".legacy-price-editor-backdrop")).backgroundColor,
           card: getComputedStyle(document.querySelector(".legacy-price-editor-card")).backgroundColor,
           field: getComputedStyle(field).backgroundColor,
           fieldFont: getComputedStyle(field).fontSize,
@@ -3648,7 +3651,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           viewportHeight: window.innerHeight
         };
       });
-      if (priceEditorState.card !== "rgb(17, 24, 29)"
+      if (priceEditorState.backdrop !== "rgb(2, 5, 7)"
+        || priceEditorState.card !== "rgb(17, 24, 29)"
         || priceEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(priceEditorState.fieldFont) < 13.5
         || priceEditorState.secondary !== "rgb(21, 29, 35)"
@@ -4280,6 +4284,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const gridStyle = getComputedStyle(document.querySelector(".tool-editor-modal .form-grid"));
         return {
           modal: getComputedStyle(document.querySelector(".tool-editor-modal")).backgroundColor,
+          backdrop: getComputedStyle(document.querySelector(".tool-editor-backdrop")).backgroundColor,
           field: getComputedStyle(field).backgroundColor,
           fieldFont: getComputedStyle(field).fontSize,
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
@@ -4297,6 +4302,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (toolEditorState.modal !== "rgb(7, 12, 15)"
+        || toolEditorState.backdrop !== "rgb(2, 5, 7)"
         || toolEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(toolEditorState.fieldFont) < 13.5
         || toolEditorState.closeWidth < 44
@@ -4401,6 +4407,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const gridStyle = getComputedStyle(document.querySelector(".receipt-editor-modal .form-grid"));
         return {
           modal: getComputedStyle(document.querySelector(".receipt-editor-modal")).backgroundColor,
+          backdrop: getComputedStyle(document.querySelector(".receipt-editor-backdrop")).backgroundColor,
           field: getComputedStyle(field).backgroundColor,
           fieldFont: getComputedStyle(field).fontSize,
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
@@ -4416,6 +4423,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       if (receiptEditorState.modal !== "rgb(7, 12, 15)"
+        || receiptEditorState.backdrop !== "rgb(2, 5, 7)"
         || receiptEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(receiptEditorState.fieldFont) < 13.5
         || receiptEditorState.closeWidth < 44
