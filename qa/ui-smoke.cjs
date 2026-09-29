@@ -2741,9 +2741,6 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         return {
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
           field: field ? getComputedStyle(field).backgroundColor : "missing",
-          commentFontSize: parseFloat(commentStyle?.fontSize || "0") || 0,
-          commentFontWeight: parseFloat(commentStyle?.fontWeight || "0") || 0,
-          commentTextAlign: commentStyle?.textAlign || "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
@@ -3212,6 +3209,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           modal: modal ? getComputedStyle(modal).backgroundColor : "missing",
           balance: balance ? getComputedStyle(balance).backgroundColor : "missing",
           field: field ? getComputedStyle(field).backgroundColor : "missing",
+          commentFontSize: parseFloat(commentStyle?.fontSize || "0") || 0,
+          commentFontWeight: parseFloat(commentStyle?.fontWeight || "0") || 0,
+          commentTextAlign: commentStyle?.textAlign || "missing",
           cancel: cancel ? getComputedStyle(cancel).backgroundColor : "missing",
           closeWidth: closeRect ? Math.round(closeRect.width) : 0,
           closeHeight: closeRect ? Math.round(closeRect.height) : 0
