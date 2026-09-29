@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:36:22.867Z",
-  "testedSha": "1730c11ce19afed83613eaea78064cd9f2aab572",
+  "generatedAt": "2026-09-29T08:41:35.078Z",
+  "testedSha": "8266c30f30ec3c657c1a35b9e3212270dfeb3fd0",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -946,7 +946,14 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 42,
+          "h": 42
+        }
+      ]
     },
     {
       "label": "order-editor-restored",
@@ -1600,7 +1607,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:36:55.110Z"
+      "fallbackCreatedAt": "2026-09-29T08:42:10.279Z"
     },
     {
       "label": "pwa-offline",
@@ -1616,19 +1623,17 @@
   ],
   "failures": [
     {
-      "width": 320,
-      "type": "stress-order-readable-text",
-      "orderTextState": {
-        "nameWhiteSpace": "normal",
-        "nameLineClamp": "2",
-        "nameTextOverflow": "clip",
-        "modelWhiteSpace": "nowrap",
-        "modelLineClamp": "2",
-        "modelTextOverflow": "ellipsis",
-        "addressWhiteSpace": "missing",
-        "addressTextOverflow": "missing",
-        "addressHeight": 0
-      }
+      "width": 390,
+      "type": "small-touch-target",
+      "label": "order-editor-direct-expense",
+      "items": [
+        {
+          "tag": "BUTTON",
+          "text": "Удалить",
+          "w": 42,
+          "h": 42
+        }
+      ]
     }
   ]
 }
