@@ -22307,3 +22307,138 @@
     color: #c9a096 !important;
   }
 }
+
+
+/* 1.8.0 · Мягкие ежедневные экраны */
+@media screen and (max-width: 520px) {
+  .legacy-finance-summary .finance-result-hero,
+  .legacy-finance-summary .finance-result-hero.positive,
+  .legacy-finance-summary .finance-result-hero.negative,
+  .legacy-finance-summary > .income,
+  .legacy-finance-summary > .expense {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.055) !important;
+  }
+
+  .legacy-finance-row,
+  .legacy-finance-row.income,
+  .legacy-finance-row.expense {
+    border-color: #29343b !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+  }
+
+  .legacy-finance-kind,
+  .legacy-finance-row.income .legacy-finance-kind,
+  .legacy-finance-row.expense .legacy-finance-kind {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-finance-actions > button,
+  .legacy-finance-actions > button[data-type="income"],
+  .legacy-finance-actions > button[data-type="expense"] {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-card,
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-client-avatar {
+    border: 0 !important;
+    background: rgba(92,169,255,.075) !important;
+    color: #78b5ef !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-meta {
+    border-color: #29343b !important;
+  }
+
+  .legacy-client-actions a,
+  .legacy-client-actions button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-actions a .ui-icon,
+  .legacy-client-actions button .ui-icon {
+    color: #ff8068 !important;
+  }
+
+  .shopping-summary {
+    border-color: #34372d !important;
+    background-color: #15170f !important;
+    background-image: radial-gradient(circle at 100% 0, rgba(231,180,80,.055), transparent 112px) !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .shopping-summary-icon {
+    border: 0 !important;
+    background: rgba(231,180,80,.09) !important;
+    color: #d9af58 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-page-actions .secondary-button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-page-actions .secondary-button .ui-icon {
+    color: #ff8068 !important;
+  }
+
+  .shopping-card.low {
+    border-color: #35372f !important;
+    background-color: #151611 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(231,180,80,.035), transparent 112px) !important;
+  }
+
+  .shopping-card.critical {
+    border-color: #3b3033 !important;
+    background-color: #171316 !important;
+    background-image: radial-gradient(circle at 0 50%, rgba(255,102,112,.035), transparent 112px) !important;
+  }
+
+  .shopping-card.low .shopping-item-icon,
+  .shopping-card.critical .shopping-item-icon,
+  .shopping-card.manual .shopping-item-icon {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .shopping-card.low .shopping-item-icon {
+    background: rgba(231,180,80,.085) !important;
+    color: #d9af58 !important;
+  }
+
+  .shopping-card.critical .shopping-item-icon {
+    background: rgba(255,102,112,.085) !important;
+    color: #ff7a84 !important;
+  }
+
+  .shopping-content .legacy-shopping-card.manual {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+  }
+
+  .shopping-card.manual .shopping-item-icon {
+    background: rgba(255,118,92,.075) !important;
+    color: #ff8068 !important;
+  }
+}

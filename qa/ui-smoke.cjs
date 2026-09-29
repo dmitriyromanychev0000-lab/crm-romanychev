@@ -3348,6 +3348,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           critical: card?.classList.contains("critical") || false,
           needBackground: need ? getComputedStyle(need).backgroundColor : "missing",
           needWidth: needRect ? Math.round(needRect.width) : 0,
+          secondaryActionBackgrounds: [...document.querySelectorAll(".shopping-page-actions .secondary-button")].map((node) => getComputedStyle(node).backgroundColor),
+          secondaryActionIcons: [...document.querySelectorAll(".shopping-page-actions .secondary-button .ui-icon")].map((node) => getComputedStyle(node).color),
           titleStyle: (() => {
             const node = card?.querySelector(".stock-name");
             const style = node ? getComputedStyle(node) : null;
@@ -3359,17 +3361,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           })()
         };
       });
-      if (shoppingSurface.summary !== "rgb(16, 13, 6)"
+      if (shoppingSurface.summary !== "rgb(21, 23, 15)"
         || shoppingSurface.summaryHeight < 56
         || shoppingSurface.summaryHeight > 60
         || shoppingSurface.summaryIconWidth < 36
         || shoppingSurface.summaryIconWidth > 37
         || shoppingSurface.summaryIconHeight < 36
         || shoppingSurface.summaryIconHeight > 37
-        || shoppingSurface.card !== "rgb(22, 9, 12)"
+        || shoppingSurface.card !== "rgb(23, 19, 22)"
         || !shoppingSurface.critical
         || shoppingSurface.needBackground !== "rgba(255, 102, 112, 0.067)"
         || shoppingSurface.needWidth < 60
+        || shoppingSurface.secondaryActionBackgrounds.length < 2
+        || shoppingSurface.secondaryActionBackgrounds.some((value) => value !== "rgb(21, 29, 35)")
+        || shoppingSurface.secondaryActionIcons.some((value) => value !== "rgb(255, 128, 104)")
         || shoppingSurface.titleStyle.whiteSpace === "nowrap"
         || shoppingSurface.titleStyle.textOverflow === "ellipsis"
         || shoppingSurface.titleStyle.lineClamp !== "2") {
@@ -3400,20 +3405,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         }),
         rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
       }));
-      if (financePageSurface.result !== "rgb(7, 12, 16)"
-        || financePageSurface.income !== "rgb(7, 12, 16)"
-        || financePageSurface.expense !== "rgb(7, 12, 16)"
-        || financePageSurface.incomeRow !== "rgb(7, 12, 16)"
-        || financePageSurface.expenseRow !== "rgb(7, 12, 16)"
-        || financePageSurface.incomeAction !== "rgb(13, 20, 25)"
-        || financePageSurface.expenseAction !== "rgb(13, 20, 25)"
-        || financePageSurface.incomeActionBorder !== "rgb(39, 52, 60)"
-        || financePageSurface.expenseActionBorder !== "rgb(39, 52, 60)"
+      if (financePageSurface.result !== "rgb(17, 24, 29)"
+        || financePageSurface.income !== "rgb(17, 24, 29)"
+        || financePageSurface.expense !== "rgb(17, 24, 29)"
+        || financePageSurface.incomeRow !== "rgb(17, 24, 29)"
+        || financePageSurface.expenseRow !== "rgb(17, 24, 29)"
+        || financePageSurface.incomeAction !== "rgb(21, 29, 35)"
+        || financePageSurface.expenseAction !== "rgb(21, 29, 35)"
+        || financePageSurface.incomeActionBorder !== "rgb(48, 59, 66)"
+        || financePageSurface.expenseActionBorder !== "rgb(48, 59, 66)"
         || financePageSurface.incomeActionColor !== "rgb(101, 217, 149)"
         || financePageSurface.expenseActionColor !== "rgb(255, 113, 123)"
-        || financePageSurface.resultBorder !== "rgb(31, 86, 62)"
-        || financePageSurface.incomeBorder !== "rgb(36, 81, 58)"
-        || financePageSurface.expenseBorder !== "rgb(99, 50, 58)"
+        || financePageSurface.resultBorder !== "rgb(48, 58, 65)"
+        || financePageSurface.incomeBorder !== "rgb(48, 58, 65)"
+        || financePageSurface.expenseBorder !== "rgb(48, 58, 65)"
         || financePageSurface.actionRects.length !== 2
         || financePageSurface.actionRects.some((rect) => rect.width < 120 || rect.height < 48 || rect.height > 49)
         || Math.abs(financePageSurface.actionRects[0].width - financePageSurface.actionRects[1].width) > 2
@@ -3722,13 +3727,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         actionWidths: [...document.querySelectorAll(".legacy-client-actions > *")].slice(0,2).map((node) => Math.round(node.getBoundingClientRect().width)),
         totalColor: getComputedStyle(document.querySelector(".legacy-client-side > b")).color
       }));
-      if (clientPageSurface.background !== "rgb(7, 12, 16)"
-        || clientPageSurface.primaryStat !== "rgb(7, 12, 16)"
-        || clientPageSurface.activeStat !== "rgb(7, 12, 16)"
-        || clientPageSurface.closedStat !== "rgb(7, 12, 16)"
+      if (clientPageSurface.background !== "rgb(17, 24, 29)"
+        || clientPageSurface.primaryStat !== "rgb(17, 24, 29)"
+        || clientPageSurface.activeStat !== "rgb(17, 24, 29)"
+        || clientPageSurface.closedStat !== "rgb(17, 24, 29)"
         || parseFloat(clientPageSurface.titleFont) < 11.5
-        || clientPageSurface.actionBackgrounds.some((value) => value !== "rgb(13, 20, 25)")
-        || clientPageSurface.actionBorders.some((value) => value !== "rgb(39, 52, 60)")
+        || clientPageSurface.actionBackgrounds.some((value) => value !== "rgb(21, 29, 35)")
+        || clientPageSurface.actionBorders.some((value) => value !== "rgb(48, 59, 66)")
         || clientPageSurface.actionWidths.length !== 2
         || Math.abs(clientPageSurface.actionWidths[0] - clientPageSurface.actionWidths[1]) > 2
         || clientPageSurface.totalColor !== "rgb(255, 138, 112)") {
