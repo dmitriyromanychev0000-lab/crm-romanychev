@@ -23612,9 +23612,7 @@
   /* Компактные системные формы и фильтры — ровно 44 px, без лишнего вертикального padding. */
   .settings-profile-card .legacy-settings-grid .field,
   .source-manager-row .field,
-  .source-manager-add .field,
   .warranty-manager-row .field,
-  .warranty-manager-add .field,
   .warranty-manager-tech .field,
   .legacy-price-filters .field,
   .legacy-warehouse-filter .field,
@@ -23629,13 +23627,26 @@
   }
 
   .source-manager-row input.field,
-  .source-manager-add input.field,
   .warranty-manager-row input.field,
-  .warranty-manager-add input.field,
   .settings-profile-card .legacy-settings-grid input.field,
   .legacy-editor-title input.field,
   .legacy-goods-target input.field {
     line-height: 42px !important;
+  }
+
+
+  .source-manager-add .field,
+  .warranty-manager-add .field {
+    box-sizing: border-box !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .source-manager-add input.field,
+  .warranty-manager-add input.field {
+    line-height: 46px !important;
   }
 
   /* Поиск: одинаковая посадка текста, но главная заявок сохраняет увеличенную 52 px высоту. */
@@ -23673,9 +23684,12 @@
   }
 
   .order-editor-modal .form-grid,
-  .stock-editor-modal .form-grid,
+  .stock-editor-modal .form-grid {
+    row-gap: 8px !important;
+  }
+
   .legacy-finance-entry-backdrop .form-grid,
   .legacy-service-editor-backdrop .form-grid {
-    row-gap: 8px !important;
+    row-gap: 7px !important;
   }
 }
