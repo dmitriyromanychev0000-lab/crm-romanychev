@@ -23096,3 +23096,36 @@
     min-height: 44px !important;
   }
 }
+
+
+/* 1.8.7 · Меню «Ещё»: финальная мягкая доводка под первую версию */
+@media screen and (max-width: 520px) {
+  .legacy-more-list {
+    gap: 7px !important;
+  }
+
+  .legacy-more-list .menu-item {
+    min-height: 76px !important;
+    padding: 10px 11px !important;
+    border-color: rgba(124,143,154,.14) !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-more-list .menu-name {
+    font-weight: 560 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .legacy-more-list .menu-description {
+    color: #89949a !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-more-list .menu-item {
+    min-height: 76px !important;
+    padding: 9px 10px !important;
+  }
+}

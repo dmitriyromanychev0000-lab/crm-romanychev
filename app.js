@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.6";
-const APP_BUILD = "2026.09.29.338";
+const APP_VERSION = "1.8.7";
+const APP_BUILD = "2026.09.29.339";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор заявки доведён по touch-зонам: удаление расхода без склада теперь не меньше 44 px"
+const APP_RELEASE = "Меню «Ещё» получило финальную мягкую доводку рамок, плотности и типографики"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.7",
+    date: "29.09.2026",
+    title: "Финальная доводка меню «Ещё»",
+    items: [
+      "Карточки меню стали чуть плотнее и спокойнее: мягче внешняя граница и без лишнего градиентного шума.",
+      "Название пункта стало легче по начертанию, ближе к первой версии, при этом размер и читаемость сохранены.",
+      "Мягкие полупрозрачные цветные иконки сохранены без обводки."
+    ]
+  },
   {
     version: "1.8.6",
     date: "29.09.2026",
