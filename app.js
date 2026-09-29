@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.19";
-const APP_BUILD = "2026.09.29.352";
+const APP_VERSION = "1.8.20";
+const APP_BUILD = "2026.09.29.353";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Узкие экраны больше не режут подписи реквизитов и сумму в документах"
+const APP_RELEASE = "Длинные названия документов и инструмента читаются до двух строк на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.20",
+    date: "29.09.2026",
+    title: "Длинные названия без раннего многоточия",
+    items: [
+      "В документах и инструментах длинные названия на 320 px могут занимать две строки.",
+      "Стоимость и стрелка остаются на своей оси и не налезают на текст.",
+      "Высота карточек остаётся в прежнем компактном лимите."
+    ]
+  },
   {
     version: "1.8.19",
     date: "29.09.2026",

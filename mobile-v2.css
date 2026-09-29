@@ -23824,3 +23824,26 @@
     padding-left: 5px !important;
   }
 }
+
+
+/* 1.8.20 · Длинные названия документов и инструмента на 320 px */
+@media screen and (max-width: 340px) {
+  .legacy-document-row.receipt > span:nth-child(2) > strong,
+  .legacy-document-row.tool > span:nth-child(2) > strong {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    line-height: 1.12 !important;
+  }
+
+  .legacy-document-row.receipt > span:nth-child(2) > small,
+  .legacy-document-row.tool > span:nth-child(2) > small {
+    display: block !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+}

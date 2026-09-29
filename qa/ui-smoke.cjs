@@ -4237,7 +4237,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           amountRight: Math.round(amountRect?.right || 0),
           amountCenter: amountRect ? Math.round(amountRect.top + amountRect.height / 2) : 0,
           rowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
-          chevronLeft: Math.round(chevronRect?.left || 0)
+          chevronLeft: Math.round(chevronRect?.left || 0),
+          titleWrap: (() => {
+            const node = row?.querySelector(":scope > span:nth-child(2) > strong");
+            const style = node ? getComputedStyle(node) : null;
+            return { whiteSpace: style?.whiteSpace || "missing", lineClamp: style?.webkitLineClamp || "missing", textOverflow: style?.textOverflow || "missing" };
+          })()
         };
       });
       if (toolsPageSurface.totalStat !== "rgb(17, 24, 29)"
@@ -4249,6 +4254,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(toolsPageSurface.rowTitleFont) < 11.5
         || (width <= 340 && (
           toolsPageSurface.rowHeight > 72
+          || toolsPageSurface.titleWrap.whiteSpace === "nowrap"
+          || toolsPageSurface.titleWrap.lineClamp !== "2"
+          || toolsPageSurface.titleWrap.textOverflow === "ellipsis"
           || toolsPageSurface.amountLeft < toolsPageSurface.copyRight - 2
           || toolsPageSurface.chevronLeft < toolsPageSurface.amountRight
           || Math.abs(toolsPageSurface.amountCenter - toolsPageSurface.rowCenter) > 10
@@ -4358,7 +4366,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           amountRight: Math.round(amountRect?.right || 0),
           amountCenter: amountRect ? Math.round(amountRect.top + amountRect.height / 2) : 0,
           rowCenter: rowRect ? Math.round(rowRect.top + rowRect.height / 2) : 0,
-          chevronLeft: Math.round(chevronRect?.left || 0)
+          chevronLeft: Math.round(chevronRect?.left || 0),
+          titleWrap: (() => {
+            const node = row?.querySelector(":scope > span:nth-child(2) > strong");
+            const style = node ? getComputedStyle(node) : null;
+            return { whiteSpace: style?.whiteSpace || "missing", lineClamp: style?.webkitLineClamp || "missing", textOverflow: style?.textOverflow || "missing" };
+          })()
         };
       });
       if (receiptsPageSurface.total !== "rgb(17, 24, 29)"
@@ -4377,6 +4390,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || parseFloat(receiptsPageSurface.rowTitleFont) < 11.5
         || (width <= 340 && (
           receiptsPageSurface.rowHeight > 72
+          || receiptsPageSurface.titleWrap.whiteSpace === "nowrap"
+          || receiptsPageSurface.titleWrap.lineClamp !== "2"
+          || receiptsPageSurface.titleWrap.textOverflow === "ellipsis"
           || receiptsPageSurface.amountLeft < receiptsPageSurface.copyRight - 2
           || receiptsPageSurface.chevronLeft < receiptsPageSurface.amountRight
           || Math.abs(receiptsPageSurface.amountCenter - receiptsPageSurface.rowCenter) > 10
