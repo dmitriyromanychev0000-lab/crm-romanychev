@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T23:01:44.034Z",
-  "testedSha": "8b5ab7313e4761cf8d5240ef16c4b9ec701de72e",
+  "generatedAt": "2026-09-29T05:42:25.628Z",
+  "testedSha": "5b7064fa068970139b4669ea2b142db19b81517a",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-28T23:02:21.575Z"
+      "fallbackCreatedAt": "2026-09-29T05:43:03.790Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,118 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "order-payment-grid-two-columns",
+      "paymentGridLayout": {
+        "gridWidth": 296,
+        "columns": "144px 144px",
+        "rowGap": 6,
+        "fieldHeights": [
+          46,
+          46,
+          46,
+          46,
+          46,
+          46,
+          46
+        ],
+        "sum": {
+          "left": 12,
+          "top": 1690,
+          "width": 144
+        },
+        "prepay": {
+          "left": 164,
+          "top": 1690,
+          "width": 144
+        },
+        "discount": {
+          "left": 12,
+          "top": 1756,
+          "width": 144
+        },
+        "percent": {
+          "left": 164,
+          "top": 1756,
+          "width": 144
+        },
+        "gray": {
+          "left": 12,
+          "top": 1822,
+          "width": 144
+        },
+        "white": {
+          "left": 164,
+          "top": 1822,
+          "width": 144
+        },
+        "tag": {
+          "left": 12,
+          "top": 1900,
+          "width": 144
+        }
+      },
+      "paymentPairsAligned": true,
+      "tagCompact": true,
+      "paymentControlsCompact": false
+    },
+    {
+      "width": 390,
+      "type": "order-payment-grid-two-columns",
+      "paymentGridLayout": {
+        "gridWidth": 366,
+        "columns": "179px 179px",
+        "rowGap": 6,
+        "fieldHeights": [
+          46,
+          46,
+          46,
+          46,
+          46,
+          46,
+          46
+        ],
+        "sum": {
+          "left": 12,
+          "top": 1686,
+          "width": 179
+        },
+        "prepay": {
+          "left": 199,
+          "top": 1686,
+          "width": 179
+        },
+        "discount": {
+          "left": 12,
+          "top": 1753,
+          "width": 179
+        },
+        "percent": {
+          "left": 199,
+          "top": 1753,
+          "width": 179
+        },
+        "gray": {
+          "left": 12,
+          "top": 1820,
+          "width": 179
+        },
+        "white": {
+          "left": 199,
+          "top": 1820,
+          "width": 179
+        },
+        "tag": {
+          "left": 12,
+          "top": 1899,
+          "width": 179
+        }
+      },
+      "paymentPairsAligned": true,
+      "tagCompact": true,
+      "paymentControlsCompact": false
+    }
+  ]
 }
