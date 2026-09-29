@@ -24026,3 +24026,39 @@
     align-items: center !important;
   }
 }
+
+
+/* 1.8.30 · Аналитика: чистая шапка KPI на 320 px */
+@media screen and (max-width: 340px) {
+  .analytics-first-title {
+    grid-template-columns: 26px minmax(0,1fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 6px !important;
+    row-gap: 1px !important;
+    align-items: center !important;
+  }
+
+  .analytics-first-gem {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+    align-self: center !important;
+  }
+
+  .analytics-first-title > strong {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .analytics-first-title > small {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    text-align: left !important;
+    line-height: 1.05 !important;
+  }
+}

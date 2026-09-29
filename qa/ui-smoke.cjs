@@ -2587,7 +2587,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           workCardBackground: workCard ? getComputedStyle(workCard).backgroundColor : "missing",
           workPanelRadius: workPanel ? parseFloat(getComputedStyle(workPanel).borderRadius) : 0,
           lowerIconBorder: (() => { const node = document.querySelector(".analytics-content .panel-title > .badge-icon"); return node ? parseFloat(getComputedStyle(node).borderTopWidth) || 0 : 999; })(),
-          lowerIconBackground: (() => { const node = document.querySelector(".analytics-content .panel-title > .badge-icon"); return node ? getComputedStyle(node).backgroundColor : "missing"; })()
+          lowerIconBackground: (() => { const node = document.querySelector(".analytics-content .panel-title > .badge-icon"); return node ? getComputedStyle(node).backgroundColor : "missing"; })(),
+          firstTitleLayout: (() => {
+            const title = document.querySelector(".analytics-first-title");
+            const strong = title?.querySelector(":scope > strong");
+            const small = title?.querySelector(":scope > small");
+            const titleRect = title?.getBoundingClientRect();
+            const strongRect = strong?.getBoundingClientRect();
+            const smallRect = small?.getBoundingClientRect();
+            return {
+              titleHeight: Math.round(titleRect?.height || 0),
+              strongBottom: Math.round(strongRect?.bottom || 0),
+              smallTop: Math.round(smallRect?.top || 0),
+              smallScrollWidth: small?.scrollWidth || 0,
+              smallClientWidth: small?.clientWidth || 0,
+              smallDisplay: small ? getComputedStyle(small).display : "missing"
+            };
+          })()
         };
       });
       if (analyticsRestoredSurface.firstCards !== 6
@@ -2598,7 +2614,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || analyticsRestoredSurface.lowerIconBorder !== 0
         || analyticsRestoredSurface.lowerIconBackground !== "rgba(255, 118, 92, 0.075)"
         || analyticsRestoredSurface.firstPanelRadius < 16
-        || analyticsRestoredSurface.workPanelRadius < 16) {
+        || analyticsRestoredSurface.workPanelRadius < 16
+        || (width <= 340 && (
+          analyticsRestoredSurface.firstTitleLayout.smallDisplay === "none"
+          || analyticsRestoredSurface.firstTitleLayout.smallTop < analyticsRestoredSurface.firstTitleLayout.strongBottom - 1
+          || analyticsRestoredSurface.firstTitleLayout.smallScrollWidth > analyticsRestoredSurface.firstTitleLayout.smallClientWidth + 1
+          || analyticsRestoredSurface.firstTitleLayout.titleHeight > 34
+        ))) {
         report.failures.push({ width, type: "analytics-first-version-surface", analyticsRestoredSurface });
       }
 

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.29";
-const APP_BUILD = "2026.09.29.364";
+const APP_VERSION = "1.8.30";
+const APP_BUILD = "2026.09.29.365";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Иконка и заголовок «Прайс товаров» выровнены по одной вертикальной оси"
+const APP_RELEASE = "Пояснение в шапке главных показателей аналитики больше не налезает на заголовок"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.30",
+    date: "29.09.2026",
+    title: "Чистая шапка аналитики",
+    items: [
+      "На 320 px пояснение «по платным закрытым заявкам» перенесено под заголовок «Главные показатели».",
+      "Текст больше не заходит на заголовок и границу блока.",
+      "KPI, расчёты и высота карточек не менялись."
+    ]
+  },
   {
     version: "1.8.29",
     date: "29.09.2026",
