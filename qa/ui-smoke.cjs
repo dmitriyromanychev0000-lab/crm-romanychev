@@ -5624,6 +5624,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             || parseFloat(emptySurface.radius) < 12) {
             report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
           }
+          if (emptyLabel === "empty-warehouse") {
+            const warehouseEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".warehouse-list-empty");
+              const icon = root?.querySelector(".empty-icon");
+              const title = root?.querySelector("h2");
+              const copy = root?.querySelector("p");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const copyLineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                titleFont: title ? parseFloat(getComputedStyle(title).fontSize) || 0 : 0,
+                copyLines: copy && copyLineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / copyLineHeight) : 0
+              };
+            });
+            if (warehouseEmptyState.height < 100
+              || warehouseEmptyState.height > 120
+              || warehouseEmptyState.iconWidth !== 36
+              || warehouseEmptyState.iconHeight !== 36
+              || warehouseEmptyState.title !== "Ничего не найдено"
+              || warehouseEmptyState.titleFont < 12.5
+              || warehouseEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-warehouse-layout", warehouseEmptyState });
+            }
+          }
           if (emptyLabel === "empty-clients") {
             const clientEmptyState = await page.evaluate(() => {
               const root = document.querySelector(".legacy-client-empty");

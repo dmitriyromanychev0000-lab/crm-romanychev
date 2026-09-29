@@ -4072,7 +4072,7 @@ function warehousePage() {
           <summary><span class="legacy-folder-icon">${icon("warehouse")}</span><span class="legacy-group-copy"><strong>${escapeHtml(tech)}</strong><small>${count} поз.${low?` · мало: ${low}`:""}</small></span><span class="legacy-group-chevron">${icon("chevron")}</span></summary>
           <div class="warehouse-category-list">${categories.map(([category,group])=>`<section class="warehouse-category-block"><div class="warehouse-category-title"><strong>${escapeHtml(category)}</strong><small>${group.length}</small></div><div class="legacy-stock-list">${group.map(renderStockCard).join("")}</div></section>`).join("")}</div>
         </details>`;
-      }).join(""):`<div class="panel empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Ничего не найдено</h2><p>${query?"Измени поиск или фильтры.":"Добавь первую позицию."}</p></div>`}
+      }).join(""):`<div class="panel empty warehouse-list-empty"><div class="empty-icon">${icon("warehouse")}</div><h2>Ничего не найдено</h2><p>${query?"Измени поиск или фильтры.":"Добавь первую позицию."}</p></div>`}
     </section>
   </main>`;
 }
