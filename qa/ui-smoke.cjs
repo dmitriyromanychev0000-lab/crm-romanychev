@@ -1379,11 +1379,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const orderFieldSurfaces = await page.evaluate(() => ({
         input: getComputedStyle(document.querySelector('.order-editor-modal input[name="name"]')).backgroundColor,
         textarea: getComputedStyle(document.querySelector('.order-editor-modal textarea[name="issue"]')).backgroundColor,
-        select: getComputedStyle(document.querySelector('.order-editor-modal select[name="tech"]')).backgroundColor
+        select: getComputedStyle(document.querySelector('.order-editor-modal select[name="tech"]')).backgroundColor,
+        numberAppearance: getComputedStyle(document.querySelector('.order-editor-modal input[type="number"]')).appearance
       }));
       if (orderFieldSurfaces.input !== "rgb(9, 15, 20)"
         || orderFieldSurfaces.textarea !== "rgb(9, 15, 20)"
-        || orderFieldSurfaces.select !== "rgb(9, 15, 20)") {
+        || orderFieldSurfaces.select !== "rgb(9, 15, 20)"
+        || !["textfield","none"].includes(orderFieldSurfaces.numberAppearance)) {
         report.failures.push({ width, type: "order-editor-field-surfaces", orderFieldSurfaces });
       }
       await page.keyboard.press("Escape");

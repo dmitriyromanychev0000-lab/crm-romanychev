@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.27";
-const APP_BUILD = "2026.09.29.362";
+const APP_VERSION = "1.8.28";
+const APP_BUILD = "2026.09.29.363";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Редактор склада стал заметно короче за счёт компактных пар полей"
+const APP_RELEASE = "Числовые поля очищены от нативных стрелок браузера на мобильном экране"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.28",
+    date: "29.09.2026",
+    title: "Чистые числовые поля",
+    items: [
+      "Нативные стрелки увеличения и уменьшения числа больше не торчат внутри мобильных полей.",
+      "Заявки, склад, прайс, финансы и товарник используют одинаковый спокойный вид числового ввода.",
+      "Тип поля, числовая клавиатура и логика расчётов не менялись."
+    ]
+  },
   {
     version: "1.8.27",
     date: "29.09.2026",
