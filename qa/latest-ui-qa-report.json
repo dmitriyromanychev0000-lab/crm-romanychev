@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T22:03:31.652Z",
-  "testedSha": "ec2bb575b957e311fe9044d31cc4e3890d1a024c",
+  "generatedAt": "2026-09-29T22:10:12.655Z",
+  "testedSha": "6af88a3c6e2ee1dd3ab93e9d9b61bfd83944634b",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -373,6 +373,17 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods-product-price",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
       "tooSmall": [],
       "clippedFieldLabels": [],
       "misalignedActionIcons": []
@@ -1335,6 +1346,17 @@
       "misalignedActionIcons": []
     },
     {
+      "label": "goods-product-price",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
       "label": "goods-editor",
       "width": 390,
       "bodyScrollWidth": 390,
@@ -1906,7 +1928,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T22:04:11.833Z"
+      "fallbackCreatedAt": "2026-09-29T22:10:49.284Z"
     },
     {
       "label": "pwa-offline",
