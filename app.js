@@ -8,7 +8,7 @@ const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
 const APP_VERSION = "1.8.27";
-const APP_BUILD = "2026.09.29.360";
+const APP_BUILD = "2026.09.29.361";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Редактор склада стал заметно короче за счёт компактных пар полей"
 const APP_CHANGELOG = [
@@ -7367,8 +7367,8 @@ function stockModal(existing = null) {
       <div class="form-group stock-field-price"><label>Цена продажи</label><input class="field" name="price" type="number" min="0" step="1" value="${Number(item.price) || 0}" /></div>
       ${existing
         ? `<div class="form-group stock-field-cost"><label>Текущая себестоимость</label><input class="field" name="lastPurchasePrice" type="number" min="0" step="0.01" value="${Number(item.lastPurchasePrice) || 0}" /><small>Только для будущих закупок; старые партии не меняются.</small></div>`
-        : `<div class="form-group stock-field-cost"><label>Сумма первой закупки</label><input class="field" name="initialPurchaseTotal" type="number" min="0" step="1" value="0" inputmode="decimal" /><small id="stock-initial-unit-cost">Себестоимость: 0 ₽ / ед.</small></div>`}
-      <div class="form-group full stock-field-tracking"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный — списывать количество</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>По наличию — без точного расхода</option></select></div>
+        : `<div class="form-group stock-field-cost"><label>Сумма первой закупки</label><input class="field" name="initialPurchaseTotal" type="number" min="0" step="1" value="0" inputmode="decimal" /><small id="stock-initial-unit-cost">Себестоимость: 0 ₽/ед.</small></div>`}
+      <div class="form-group full stock-field-tracking"><label>Учёт расхода</label><select class="field" name="tracking"><option value="exact" ${item.tracking !== "presence" ? "selected" : ""}>Точный учёт количества</option><option value="presence" ${item.tracking === "presence" ? "selected" : ""}>Только наличие</option></select></div>
     </div>
     </section>
 
@@ -7422,7 +7422,7 @@ function stockModal(existing = null) {
     if (!initialPurchaseTotalInput || !initialUnitCostPreview) return;
     const qty = Math.max(0, Number(initialQuantityInput?.value) || 0);
     const total = Math.max(0, Number(initialPurchaseTotalInput.value) || 0);
-    initialUnitCostPreview.textContent = `Себестоимость: ${money(qty > 0 ? total / qty : 0)} / ${normalizeStockUnit(storageUnitSelect?.value || "шт")}`;
+    initialUnitCostPreview.textContent = `Себестоимость: ${money(qty > 0 ? total / qty : 0)}/${normalizeStockUnit(storageUnitSelect?.value || "шт")}`;
   };
   initialQuantityInput?.addEventListener("input", syncInitialUnitCost);
   initialPurchaseTotalInput?.addEventListener("input", syncInitialUnitCost);

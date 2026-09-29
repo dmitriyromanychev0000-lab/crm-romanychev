@@ -23985,3 +23985,19 @@
     letter-spacing: .025em !important;
   }
 }
+
+
+/* 1.8.27 fix · плотнее вертикальная геометрия склада */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal .stock-editor-section-title {
+    margin-bottom: 5px !important;
+  }
+
+  .stock-editor-modal .stock-editor-section .form-grid {
+    row-gap: 6px !important;
+  }
+
+  .stock-editor-modal .stock-editor-section .form-group > label {
+    margin-bottom: 2px !important;
+  }
+}
