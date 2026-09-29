@@ -3533,7 +3533,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || pricePageSurface.custom !== "rgb(17, 24, 29)"
         || parseFloat(pricePageSurface.rowTitleFont) < 11.5
         || pricePageSurface.searchBackground !== "rgb(21, 29, 35)"
-        || pricePageSurface.searchBorder !== "rgb(48, 59, 66)"
+        || pricePageSurface.searchBorder !== "rgb(32, 45, 53)"
         || pricePageSurface.searchShadow !== "none"
         || Math.abs(pricePageSurface.addWidth - pricePageSurface.searchWidth) > 2
         || pricePageSurface.addHeight < 48
