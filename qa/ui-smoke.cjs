@@ -3644,7 +3644,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           rowGap: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-grid")).rowGap) || 0,
           cardPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-card")).paddingTop) || 0,
           modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
-          blankGap: footerRect && cardRect ? Math.round(footerRect.top - cardRect.bottom) : 999
+          blankGap: footerRect && cardRect ? Math.round(footerRect.top - cardRect.bottom) : 999,
+          viewportHeight: window.innerHeight
         };
       });
       if (priceEditorState.card !== "rgb(17, 24, 29)"
@@ -3654,7 +3655,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || priceEditorState.backWidth < 44
         || priceEditorState.backHeight < 44
         || priceEditorState.actionHeight < 48
-        || priceEditorState.modalBottom > window.innerHeight + 1
+        || priceEditorState.modalBottom > priceEditorState.viewportHeight + 1
         || priceEditorState.blankGap > 20) {
         report.failures.push({ width, type: "price-editor-deep-dark", priceEditorState });
       }
