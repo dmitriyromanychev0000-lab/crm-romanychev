@@ -23356,3 +23356,101 @@
     box-shadow: none !important;
   }
 }
+
+
+/* 1.8.11 · Спокойные карточки клиента и склада */
+@media screen and (max-width: 520px) {
+  .legacy-client-profile-backdrop .client-profile-actions > a:first-child,
+  .legacy-client-profile-backdrop .client-profile-actions > button:last-child {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-actions > a:first-child {
+    color: #65d995 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-actions > button:last-child {
+    color: #ff8068 !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-actions > a:first-child .ui-icon,
+  .legacy-client-profile-backdrop .client-profile-actions > button:last-child .ui-icon {
+    color: currentColor !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(1),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(2),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(3),
+  .legacy-client-profile-backdrop .client-profile-kpis > div:nth-child(4) {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-kpis > .primary,
+  .stock-detail-kpis > .reserved,
+  .stock-detail-kpis > .minimum,
+  .stock-detail-kpis > .minimum:last-child {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-actions .incoming,
+  .stock-detail-actions .outgoing,
+  .stock-detail-actions .stock-detail-transfer,
+  .stock-detail-actions .stock-detail-correct,
+  .stock-detail-actions .stock-detail-archive {
+    border-color: #303b42 !important;
+    background-color: #151d23 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  .stock-detail-actions .incoming {
+    color: #65d995 !important;
+  }
+
+  .stock-detail-actions .outgoing {
+    color: #ff717b !important;
+  }
+
+  .stock-detail-actions .stock-detail-correct {
+    color: #dfb45d !important;
+  }
+
+  .stock-detail-actions .stock-detail-transfer,
+  .stock-detail-actions .stock-detail-archive {
+    color: #d7dfe3 !important;
+  }
+
+  .stock-detail-actions .incoming .stock-action-icon {
+    background: rgba(89,216,137,.085) !important;
+    color: #65d995 !important;
+  }
+
+  .stock-detail-actions .outgoing .stock-action-icon {
+    background: rgba(255,113,123,.075) !important;
+    color: #ff717b !important;
+  }
+
+  .stock-detail-actions .stock-detail-transfer > .ui-icon {
+    color: #aeb8be !important;
+  }
+
+  .stock-detail-actions .stock-detail-correct > .ui-icon {
+    color: #dfb45d !important;
+  }
+
+  .stock-detail-actions .stock-detail-archive > .ui-icon {
+    color: #aeb8be !important;
+  }
+
+  .stock-detail-actions small {
+    color: #8c969d !important;
+  }
+}

@@ -2834,14 +2834,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
         || stockDetailSurface.hero !== "rgb(11, 17, 21)"
-        || stockDetailSurface.primaryKpi !== "rgb(7, 17, 12)"
-        || stockDetailSurface.reservedKpi !== "rgb(12, 18, 22)"
-        || stockDetailSurface.minimumKpi !== "rgb(19, 16, 6)"
-        || stockDetailSurface.incoming !== "rgb(7, 19, 13)"
-        || stockDetailSurface.outgoing !== "rgb(22, 9, 12)"
-        || stockDetailSurface.transfer !== "rgb(12, 18, 22)"
-        || stockDetailSurface.correct !== "rgb(16, 13, 6)"
-        || stockDetailSurface.archive !== "rgb(12, 18, 22)"
+        || stockDetailSurface.primaryKpi !== "rgb(17, 24, 29)"
+        || stockDetailSurface.reservedKpi !== "rgb(17, 24, 29)"
+        || stockDetailSurface.minimumKpi !== "rgb(17, 24, 29)"
+        || stockDetailSurface.incoming !== "rgb(21, 29, 35)"
+        || stockDetailSurface.outgoing !== "rgb(21, 29, 35)"
+        || stockDetailSurface.transfer !== "rgb(21, 29, 35)"
+        || stockDetailSurface.correct !== "rgb(21, 29, 35)"
+        || stockDetailSurface.archive !== "rgb(21, 29, 35)"
         || stockDetailSurface.incomingWidth < 100
         || Math.abs(stockDetailSurface.incomingWidth - stockDetailSurface.outgoingWidth) > 2
         || Math.abs(stockDetailSurface.transferWidth - stockDetailSurface.correctWidth) > 2
@@ -3824,6 +3824,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           totalKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(4)")).backgroundColor,
           closedKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(2)")).backgroundColor,
           activeKpi: getComputedStyle(document.querySelector(".client-profile-kpis > div:nth-child(3)")).backgroundColor,
+          callAction: getComputedStyle(document.querySelector(".client-profile-actions > a:first-child")).backgroundColor,
+          newOrderAction: getComputedStyle(document.querySelector(".client-profile-actions > button:last-child")).backgroundColor,
           headHeight: Math.round(head?.height || 0),
           heroHeight: Math.round(hero?.height || 0),
           addressHeight: Math.round(address?.height || 0),
@@ -3842,9 +3844,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (clientProfileState.modal !== "rgb(3, 7, 10)"
         || clientProfileState.hero !== "rgb(7, 12, 16)"
-        || clientProfileState.totalKpi !== "rgb(9, 15, 20)"
-        || clientProfileState.closedKpi !== "rgb(9, 15, 20)"
-        || clientProfileState.activeKpi !== "rgb(9, 15, 20)") {
+        || clientProfileState.totalKpi !== "rgb(17, 24, 29)"
+        || clientProfileState.closedKpi !== "rgb(17, 24, 29)"
+        || clientProfileState.activeKpi !== "rgb(17, 24, 29)"
+        || clientProfileState.callAction !== "rgb(21, 29, 35)"
+        || clientProfileState.newOrderAction !== "rgb(21, 29, 35)") {
         report.failures.push({ width, type: "client-profile-semantic-hierarchy", clientProfileState });
       }
       if (clientProfileState.headHeight > 60

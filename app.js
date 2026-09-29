@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.10";
-const APP_BUILD = "2026.09.29.343";
+const APP_VERSION = "1.8.11";
+const APP_BUILD = "2026.09.29.344";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Служебные редакторы переведены с глухого чёрного на мягкие графитовые поверхности"
+const APP_RELEASE = "Профиль клиента и карточка склада очищены от тяжёлых цветных заливок"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.11",
+    date: "29.09.2026",
+    title: "Спокойные карточки клиента и склада",
+    items: [
+      "В профиле клиента кнопки звонка и новой заявки используют одну мягкую графитовую поверхность; зелёный и коралловый остались только смысловыми акцентами.",
+      "В деталке склада KPI доступности, резерва и минимума больше не залиты зелёным, синим и жёлтым — значения сохранили свои цвета.",
+      "Приход, списание и корректировка остатка стали графитовыми кнопками с цветными иконками, поэтому экран меньше рябит и выглядит цельнее."
+    ]
+  },
   {
     version: "1.8.10",
     date: "29.09.2026",
