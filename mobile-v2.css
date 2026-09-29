@@ -24554,3 +24554,29 @@
     padding-bottom: 5px !important;
   }
 }
+
+
+
+/* 1.8.48 · Каталог услуг: Android без native checkbox focus-jump */
+@media screen and (max-width: 520px) {
+  .catalog-modal .catalog-service-option {
+    width: 100% !important;
+    min-width: 0 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    color: inherit !important;
+    font: inherit !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+  }
+
+  .catalog-modal .catalog-service-option:focus {
+    outline: none !important;
+  }
+
+  .catalog-modal .catalog-service-option:focus-visible {
+    outline: 2px solid rgba(255,128,104,.38) !important;
+    outline-offset: -2px !important;
+  }
+}

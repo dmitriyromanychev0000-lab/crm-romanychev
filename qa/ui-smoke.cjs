@@ -1953,12 +1953,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       await page.locator(".catalog-service-option").last().scrollIntoViewIfNeeded();
       await page.locator(".catalog-service-option").last().click();
       await page.waitForTimeout(60);
-      const serviceSelection = await page.evaluate(() => ({
-        selectedRows: document.querySelectorAll(".catalog-service-option.selected").length,
-        checkedIcons: document.querySelectorAll(".catalog-service-option.selected .catalog-check .ui-icon").length,
-        countText: document.querySelector("#catalog-selected-count")?.textContent || ""
-      }));
-      if (serviceSelection.selectedRows !== 1 || serviceSelection.checkedIcons !== 1 || !serviceSelection.countText.startsWith("1 ")) {
+      const serviceSelection = await page.evaluate(() => {
+        const option = document.querySelector(".catalog-service-option.selected");
+        return {
+          selectedRows: document.querySelectorAll(".catalog-service-option.selected").length,
+          checkedIcons: document.querySelectorAll(".catalog-service-option.selected .catalog-check .ui-icon").length,
+          countText: document.querySelector("#catalog-selected-count")?.textContent || "",
+          nativeCheckboxes: document.querySelectorAll('.catalog-service-option input[type="checkbox"]').length,
+          optionTag: option?.tagName || "",
+          pressed: option?.getAttribute("aria-pressed") || ""
+        };
+      });
+      if (serviceSelection.selectedRows !== 1
+        || serviceSelection.checkedIcons !== 1
+        || !serviceSelection.countText.startsWith("1 ")
+        || serviceSelection.nativeCheckboxes !== 0
+        || serviceSelection.optionTag !== "BUTTON"
+        || serviceSelection.pressed !== "true") {
         report.failures.push({ width, type: "service-selection-feedback", serviceSelection });
       }
       const catalogAfterSelection = await page.evaluate(() => {
@@ -5082,7 +5093,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Черновики плотнее на 320 px"
+        || settingsSurface.versionSummaryFit.text !== "Выбор услуг больше не прыгает"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.47";
-const APP_BUILD = "2026.09.30.382";
+const APP_VERSION = "1.8.48";
+const APP_BUILD = "2026.09.30.383";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Черновики плотнее на 320 px"
+const APP_RELEASE = "Выбор услуг больше не прыгает"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.48",
+    date: "30.09.2026",
+    title: "Стабильный выбор услуг после прокрутки",
+    items: [
+      "Строки каталога услуг больше не используют нативный checkbox внутри label, который мог перехватывать focus на Android.",
+      "После выбора услуги каталог остаётся открыт на той же позиции прокрутки; Отмена и Применить остаются доступными.",
+      "Выбор и снятие выбора работают через обычную кнопочную строку без изменения данных заявки."
+    ]
+  },
   {
     version: "1.8.47",
     date: "30.09.2026",
@@ -6366,12 +6376,11 @@ function openServiceCatalog(orderModal, serviceCatalog) {
         ${entries.map(({ item, index }) => {
           const active = selected.has(index);
           const value = selected.get(index) || item;
-          return `<label class="catalog-service-option ${active ? "selected" : ""}">
-            <input type="checkbox" data-service-index="${index}" ${active ? "checked" : ""} />
+          return `<button type="button" class="catalog-service-option ${active ? "selected" : ""}" data-service-index="${index}" aria-pressed="${active ? "true" : "false"}">
             <span class="catalog-check">${active ? icon("check") : ""}</span>
             <span class="catalog-service-copy"><strong>${escapeHtml(item.name || "Услуга")}</strong><small>${escapeHtml(item.tech || item.category || "")}</small></span>
             <span class="catalog-service-price">${money(value.price || 0)}</span>
-          </label>`;
+          </button>`;
         }).join("")}
       </section>`).join("") : `<div class="empty">Услуги не найдены</div>`;
     list.scrollTop = Math.max(0, list.scrollTop || 0);
@@ -6394,13 +6403,18 @@ function openServiceCatalog(orderModal, serviceCatalog) {
   };
 
   search.addEventListener("input", renderCatalog);
-  list.addEventListener("change", (event) => {
-    const checkbox = event.target.closest("[data-service-index]");
-    if (!checkbox) return;
-    const index = Number(checkbox.dataset.serviceIndex);
+  list.addEventListener("click", (event) => {
+    const option = event.target.closest(".catalog-service-option[data-service-index]");
+    if (!option || !list.contains(option)) return;
+    event.preventDefault();
+
+    const index = Number(option.dataset.serviceIndex);
     const item = serviceCatalog[index];
     if (!item) return;
-    if (checkbox.checked) {
+
+    const scrollTop = list.scrollTop;
+    const nextSelected = !selected.has(index);
+    if (nextSelected) {
       const existing = currentByName.get(String(item.name || "").trim().toLowerCase());
       selected.set(index, existing
         ? { ...item, ...existing, basePrice: Number(existing.basePrice) || Number(item.price) || 0 }
@@ -6409,16 +6423,19 @@ function openServiceCatalog(orderModal, serviceCatalog) {
       selected.delete(index);
     }
 
-    const option = checkbox.closest(".catalog-service-option");
-    if (option) {
-      option.classList.toggle("selected", checkbox.checked);
-      const check = option.querySelector(".catalog-check");
-      if (check) check.innerHTML = checkbox.checked ? icon("check") : "";
-      const price = option.querySelector(".catalog-service-price");
-      const value = selected.get(index) || item;
-      if (price) price.textContent = money(value.price || 0);
-    }
+    option.classList.toggle("selected", nextSelected);
+    option.setAttribute("aria-pressed", nextSelected ? "true" : "false");
+    const check = option.querySelector(".catalog-check");
+    if (check) check.innerHTML = nextSelected ? icon("check") : "";
+    const price = option.querySelector(".catalog-service-price");
+    const value = selected.get(index) || item;
+    if (price) price.textContent = money(value.price || 0);
+
     updateSummary();
+    list.scrollTop = scrollTop;
+    requestAnimationFrame(() => {
+      if (list.isConnected) list.scrollTop = scrollTop;
+    });
   });
   modal.querySelector(".catalog-close").addEventListener("click", closeCatalog);
   modal.querySelector(".catalog-cancel").addEventListener("click", closeCatalog);
