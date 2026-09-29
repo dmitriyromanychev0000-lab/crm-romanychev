@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.42";
-const APP_BUILD = "2026.09.30.377";
+const APP_VERSION = "1.8.43";
+const APP_BUILD = "2026.09.30.378";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Стрелка прайса показывает раскрытие"
+const APP_RELEASE = "Карточки инструментов читаются лучше"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.43",
+    date: "30.09.2026",
+    title: "Читаемые карточки инструментов",
+    items: [
+      "Категория, состояние и серийный номер в карточке инструмента теперь могут занимать до двух строк вместо раннего многоточия.",
+      "Карточки остаются компактными и сохраняют цену справа.",
+      "Пустой раздел инструментов получил компактную иконку, заголовок и пояснение в общем визуальном языке."
+    ]
+  },
   {
     version: "1.8.42",
     date: "30.09.2026",
@@ -5572,7 +5582,7 @@ function toolsPage() {
         <b>${item.price || item.purchasePrice ? money(item.price || item.purchasePrice) : ""}</b>
         <span class="chevron">${icon("chevron")}</span>
       </button>`;
-    }).join("")}</div>` : `<div class="legacy-service-empty">Инструментов пока нет.</div>`}
+    }).join("")}</div>` : `<div class="legacy-service-empty legacy-tool-empty"><span class="legacy-tool-empty-icon">${icon("tools")}</span><strong>Инструментов пока нет</strong><small>Добавь первый инструмент или оборудование для учёта.</small></div>`}
   </main>`;
 }
 

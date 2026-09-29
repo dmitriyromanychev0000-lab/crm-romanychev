@@ -4539,6 +4539,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             const node = row?.querySelector(":scope > span:nth-child(2) > strong");
             const style = node ? getComputedStyle(node) : null;
             return { whiteSpace: style?.whiteSpace || "missing", lineClamp: style?.webkitLineClamp || "missing", textOverflow: style?.textOverflow || "missing" };
+          })(),
+          metaWrap: (() => {
+            const node = row?.querySelector(":scope > span:nth-child(2) > small");
+            const style = node ? getComputedStyle(node) : null;
+            const lineHeight = style ? parseFloat(style.lineHeight) || 0 : 0;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              lineClamp: style?.webkitLineClamp || "missing",
+              textOverflow: style?.textOverflow || "missing",
+              lines: node && lineHeight > 0 ? Math.round(node.getBoundingClientRect().height / lineHeight) : 0
+            };
           })()
         };
       });
@@ -4549,6 +4560,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolsPageSurface.addWidth < toolsPageSurface.pageWidth - 34
         || toolsPageSurface.addHeight < 48
         || parseFloat(toolsPageSurface.rowTitleFont) < 11.5
+        || toolsPageSurface.metaWrap.whiteSpace === "nowrap"
+        || toolsPageSurface.metaWrap.lineClamp !== "2"
+        || toolsPageSurface.metaWrap.textOverflow === "ellipsis"
+        || toolsPageSurface.metaWrap.lines > 2
         || (width <= 340 && (
           toolsPageSurface.rowHeight > 72
           || toolsPageSurface.titleWrap.whiteSpace === "nowrap"
@@ -4999,7 +5014,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Стрелка прайса показывает раскрытие"
+        || settingsSurface.versionSummaryFit.text !== "Карточки инструментов читаются лучше"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5457,7 +5472,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           ["empty-orders", uiState({ activePage: "orders" })],
           ["empty-warehouse", uiState({ activePage: "warehouse", warehouseSection: "list" })],
           ["empty-clients", uiState({ activePage: "more", moreSection: "clients" })],
-          ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })]
+          ["empty-goods", uiState({ activePage: "more", moreSection: "goods" })],
+          ["empty-tools", uiState({ activePage: "more", moreSection: "tools" })]
         ]) {
           await setState(page, emptyState);
           const emptySurface = await page.evaluate(() => {
@@ -5530,6 +5546,31 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               || goodsEmptyState.copyLines > 2) {
               report.failures.push({ width, type: "empty-goods-layout", goodsEmptyState });
             }
+          if (emptyLabel === "empty-tools") {
+            const toolsEmptyState = await page.evaluate(() => {
+              const root = document.querySelector(".legacy-tool-empty");
+              const icon = root?.querySelector(".legacy-tool-empty-icon");
+              const title = root?.querySelector("strong");
+              const copy = root?.querySelector("small");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const copyLineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                title: title?.textContent?.trim() || "",
+                copyLines: copy && copyLineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / copyLineHeight) : 0
+              };
+            });
+            if (toolsEmptyState.height < 100
+              || toolsEmptyState.height > 120
+              || toolsEmptyState.iconWidth !== 36
+              || toolsEmptyState.iconHeight !== 36
+              || toolsEmptyState.title !== "Инструментов пока нет"
+              || toolsEmptyState.copyLines > 2) {
+              report.failures.push({ width, type: "empty-tools-layout", toolsEmptyState });
+            }
+          }
           }
           const emptyResult = await shot(page, width, emptyLabel, true);
           report.results.push(emptyResult);
