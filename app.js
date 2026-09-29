@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.13";
-const APP_BUILD = "2026.09.29.346";
+const APP_VERSION = "1.8.14";
+const APP_BUILD = "2026.09.29.347";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Иконки нижних блоков аналитики переведены на мягкие полузаливки без рамок"
+const APP_RELEASE = "Совместимость старых CRM BT v18 закреплена отдельным импорт-регрессионным сценарием"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.14",
+    date: "29.09.2026",
+    title: "Проверка старого CRM BT v18",
+    items: [
+      "Структура реального бэкапа CRM BT v18 от 10.09 проверена локально: обязательные разделы на месте, блокирующих дублей ID нет.",
+      "Mobile UI QA теперь импортирует отдельный синтетический v18-файл без новых справочников и прогоняет все текущие миграции склада.",
+      "Отдельно защищён старый сценарий исторического материала, у которого складская позиция уже отсутствует; личные данные реального бэкапа в репозиторий не добавлялись."
+    ]
+  },
   {
     version: "1.8.13",
     date: "29.09.2026",

@@ -5416,6 +5416,126 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
     report.failures.push({ type: "backup-intervals", backupIntervals });
   }
 
+  const legacyV18 = structuredClone(seed);
+  legacyV18.date = "2026-09-10T19:33:48.333Z";
+  legacyV18.orders = legacyV18.orders.map((order, index) => ({
+    ...order,
+    status: index === 2 ? "Отказ" : "Закрыта",
+    completed: order.completed || "2026-09-10T18:00:00.000Z"
+  }));
+  legacyV18.orders[0].materials = [
+    ...(legacyV18.orders[0].materials || []),
+    {
+      id: "legacy-detached-material",
+      warehouseId: "legacy-removed-stock",
+      name: "Исторический материал",
+      qty: "1",
+      unit: "шт.",
+      unitCost: 123,
+      writeOff: false
+    }
+  ];
+  [
+    "goods_sheets", "order_sources", "client_profiles", "appliance_types",
+    "price_categories", "stock_categories", "warranty_options", "warranty_results",
+    "shopping_manual", "shopping_overrides", "storage_locations"
+  ].forEach((key) => delete legacyV18[key]);
+  legacyV18.settings = {
+    name: "Тестовый мастер",
+    inn: "",
+    phone: "+70000000000",
+    autoBackup: false,
+    autoPriceAdjust: true,
+    companyName: "CRM by Romanychev",
+    companyAddress: "",
+    receiptShowCompany: true,
+    receiptShowExecutor: true,
+    receiptShowStamp: false,
+    receiptShowSignature: false,
+    autoBackupDays: 7
+  };
+
+  await writeSeed(utilityPage, seed);
+  await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
+  await utilityPage.locator("#backup-file").setInputFiles({
+    name: "CRM_BT_backup_v18_legacy.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(legacyV18))
+  });
+  await utilityPage.locator("[data-confirm-primary]").waitFor({ state: "visible", timeout: 5000 });
+  const legacyImportPrompt = (await utilityPage.locator(".crm-confirm-modal").innerText()).trim();
+  await utilityPage.locator("[data-confirm-primary]").click();
+  await utilityPage.locator("#toast.show").waitFor({ state: "visible", timeout: 5000 });
+  const legacyImportToast = (await utilityPage.locator("#toast").innerText()).trim();
+  const legacyStored = await readStoredData(utilityPage);
+  const legacyRollback = await readIdbKey(utilityPage, "crm-pre-import-data");
+  const detachedMaterial = legacyStored.orders
+    ?.flatMap((order) => Array.isArray(order.materials) ? order.materials : [])
+    .find((material) => material.id === "legacy-detached-material");
+  const migratedWarehouse = Array.isArray(legacyStored.warehouse) ? legacyStored.warehouse : [];
+  const batchModelOk = migratedWarehouse.every((item) => {
+    const qty = Math.max(0, Number(item.quantity) || 0);
+    const batches = Array.isArray(item.batches) ? item.batches : [];
+    const batchQty = batches.reduce((sum, batch) => sum + Math.max(0, Number(batch.remainingQty) || 0), 0);
+    return qty <= 1e-9 ? batches.length === 0 : Math.abs(batchQty - qty) <= 1e-7;
+  });
+  const locationModelOk = migratedWarehouse.every((item) => {
+    const qty = Math.max(0, Number(item.quantity) || 0);
+    const balances = Array.isArray(item.locationBalances) ? item.locationBalances : [];
+    const locationQty = balances.reduce((sum, entry) => sum + Math.max(0, Number(entry.qty) || 0), 0);
+    return Math.abs(locationQty - qty) <= 1e-7;
+  });
+  const legacyV18ImportOk = /Бэкап успешно восстановлен/i.test(legacyImportToast)
+    && legacyImportPrompt.includes(String(legacyV18.orders.length))
+    && legacyStored.version === 18
+    && legacyStored.orders?.length === legacyV18.orders.length
+    && legacyStored.warehouse?.length === legacyV18.warehouse.length
+    && legacyStored.receipt_prices?.length === legacyV18.receipt_prices.length
+    && legacyStored.settings?.stockReservationModel === 1
+    && legacyStored.settings?.stockBatchModel === 1
+    && legacyStored.settings?.stockLocationModel === 2
+    && Array.isArray(legacyStored.goods_sheets)
+    && Array.isArray(legacyStored.order_sources)
+    && Array.isArray(legacyStored.storage_locations)
+    && detachedMaterial?.name === "Исторический материал"
+    && detachedMaterial?.writeOff === false
+    && detachedMaterial?.warehouseId === "legacy-removed-stock"
+    && legacyRollback?.orders?.length === seed.orders.length
+    && batchModelOk
+    && locationModelOk;
+  if (!legacyV18ImportOk) {
+    report.failures.push({
+      type: "backup-legacy-v18-import",
+      legacyImportToast,
+      legacyV18ImportOk,
+      stockModels: legacyStored.settings ? {
+        reservation: legacyStored.settings.stockReservationModel,
+        batch: legacyStored.settings.stockBatchModel,
+        location: legacyStored.settings.stockLocationModel
+      } : null,
+      detachedMaterial: detachedMaterial ? {
+        name: detachedMaterial.name,
+        writeOff: detachedMaterial.writeOff,
+        warehouseId: detachedMaterial.warehouseId
+      } : null,
+      batchModelOk,
+      locationModelOk
+    });
+  }
+  report.results.push({
+    label: "backup-legacy-v18-import",
+    width: 320,
+    bodyScrollWidth: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)),
+    viewportWidth: 320,
+    overflow: await utilityPage.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - window.innerWidth),
+    modalOpen: false,
+    tooSmall: [],
+    legacyV18ImportOk
+  });
+
+  await writeSeed(utilityPage, seed);
+  await setState(utilityPage, uiState({ activePage: "more", moreSection: "backup" }));
+
   const fallbackSeed = structuredClone(seed);
   fallbackSeed.settings = { ...fallbackSeed.settings, autoBackup: true, autoBackupDays: 1, lastBackupAt: "2020-01-01T00:00:00.000Z" };
   await writeSeed(utilityPage, fallbackSeed);
