@@ -5626,6 +5626,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             || parseFloat(emptySurface.radius) < 12) {
             report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
           }
+          if (emptyLabel === "empty-movements" || emptyLabel === "empty-shopping") {
+            const supportEmptyState = await page.evaluate((label) => {
+              const root = label === "empty-movements"
+                ? document.querySelector(".warehouse-support-empty")
+                : document.querySelector(".shopping-empty-state");
+              const icon = root?.querySelector(".empty-icon");
+              const title = root?.querySelector("h2");
+              const copy = root?.querySelector("p");
+              const copyStyle = copy ? getComputedStyle(copy) : null;
+              const copyLineHeight = copyStyle ? parseFloat(copyStyle.lineHeight) || 0 : 0;
+              return {
+                height: Math.round(root?.getBoundingClientRect().height || 0),
+                iconWidth: Math.round(icon?.getBoundingClientRect().width || 0),
+                iconHeight: Math.round(icon?.getBoundingClientRect().height || 0),
+                titleFont: title ? parseFloat(getComputedStyle(title).fontSize) || 0 : 0,
+                copyLines: copy && copyLineHeight > 0 ? Math.round(copy.getBoundingClientRect().height / copyLineHeight) : 0
+              };
+            }, emptyLabel);
+            const heightLimit = emptyLabel === "empty-movements" ? 120 : 145;
+            const minHeight = emptyLabel === "empty-movements" ? 100 : 118;
+            const maxCopyLines = emptyLabel === "empty-movements" ? 2 : 4;
+            if (supportEmptyState.height < minHeight
+              || supportEmptyState.height > heightLimit
+              || supportEmptyState.iconWidth !== 36
+              || supportEmptyState.iconHeight !== 36
+              || supportEmptyState.titleFont < 12.5
+              || supportEmptyState.copyLines > maxCopyLines) {
+              report.failures.push({ width, type: `${emptyLabel}-layout`, supportEmptyState, heightLimit });
+            }
+          }
           if (emptyLabel === "empty-orders") {
             const ordersEmptyState = await page.evaluate(() => {
               const root = document.querySelector(".orders-empty-state");

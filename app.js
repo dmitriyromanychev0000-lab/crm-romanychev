@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.49";
-const APP_BUILD = "2026.09.30.384";
+const APP_VERSION = "1.8.50";
+const APP_BUILD = "2026.09.30.385";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Выбор услуг больше не прыгает"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.50",
+    date: "30.09.2026",
+    title: "Пустые движения и покупки плотнее",
+    items: [
+      "Пустая история движений склада стала компактной и больше не занимает высокий пустой прямоугольник.",
+      "Пустой список покупок получил ту же компактную 36 px иконку и более плотные отступы.",
+      "Пояснение в покупках остаётся читаемым в несколько строк; действия страницы и логика списка не менялись."
+    ]
+  },
   {
     version: "1.8.49",
     date: "30.09.2026",
@@ -5891,7 +5901,7 @@ function shoppingPage(backAction = "more-menu") {
       return `<article class="shopping-card legacy-shopping-card ${available <= 0 ? "critical" : "low"}"><span class="shopping-item-icon">${icon("box")}</span><div><div class="stock-name">${escapeHtml(item.name || "Позиция")}</div><div class="small">${escapeHtml(item.category || "Без категории")} · доступно ${new Intl.NumberFormat("ru-RU",{maximumFractionDigits:3}).format(available)} ${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</div></div><label class="shopping-need shopping-qty-editor"><span>КУПИТЬ</span><input class="field" data-shopping-auto-qty="${escapeHtml(item.id)}" type="number" min="${min}" step="0.001" value="${need}" inputmode="decimal" aria-label="Количество к покупке" /><small>${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</small></label></article>`;
     }).join("")}</div>` : ""}
     ${manualItems.length ? `<section class="shopping-manual-section"><h2>Добавлено вручную</h2><div class="shopping-list">${manualItems.map((item)=>`<article class="shopping-card legacy-shopping-card manual"><span class="shopping-item-icon">${icon("shopping")}</span><div><div class="stock-name">${escapeHtml(item.name)}</div><div class="small">Ручная позиция</div></div><label class="shopping-need shopping-qty-editor"><span>КУПИТЬ</span><input class="field" data-shopping-manual-qty="${escapeHtml(item.id)}" type="number" min="0.001" step="0.001" value="${Number(item.qty)||1}" inputmode="decimal" aria-label="Количество к покупке" /><small>${escapeHtml(normalizeStockUnit(item.unit || "шт"))}</small></label><button type="button" class="shopping-remove" data-action="delete-shopping-manual" data-id="${escapeHtml(item.id)}" aria-label="Удалить">${icon("trash")}</button></article>`).join("")}</div></section>` : ""}
-    ${!totalCount ? emptyState("shopping", "Покупать пока нечего", "Все складские позиции выше минимального остатка. Можно добавить произвольную покупку вручную.") : ""}
+    ${!totalCount ? `<div class="panel empty shopping-empty-state"><div class="empty-icon">${icon("shopping")}</div><h2>Покупать пока нечего</h2><p>Все складские позиции выше минимального остатка. Можно добавить произвольную покупку вручную.</p></div>` : ""}
   </main>`;
 }
 
