@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.7";
-const APP_BUILD = "2026.09.29.339";
+const APP_VERSION = "1.8.8";
+const APP_BUILD = "2026.09.29.340";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Меню «Ещё» получило финальную мягкую доводку рамок, плотности и типографики"
+const APP_RELEASE = "Поля и пиктограммы редакторов получили единое вертикальное выравнивание"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.8",
+    date: "29.09.2026",
+    title: "Ровные поля и пиктограммы",
+    items: [
+      "Текст в однострочных полях склада, финансов, документов, инструментов и прайса выровнен по вертикали так же аккуратно, как в редакторе заявки.",
+      "Иконки в шапках редакторов и кнопках закрытия центрируются единообразно без визуального съезда.",
+      "Высоты touch-зон и рабочая логика не менялись."
+    ]
+  },
   {
     version: "1.8.7",
     date: "29.09.2026",

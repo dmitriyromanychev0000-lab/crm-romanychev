@@ -23129,3 +23129,89 @@
     padding: 9px 10px !important;
   }
 }
+
+
+/* 1.8.8 · Единая посадка полей и иконок редакторов */
+@media screen and (max-width: 520px) {
+  .stock-editor-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-editor-modal select.field,
+  .stock-adjust-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-adjust-modal select.field,
+  .legacy-finance-entry-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-finance-entry-backdrop select.field,
+  .legacy-service-editor-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-service-editor-backdrop select.field,
+  .legacy-price-editor input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-price-editor select.field {
+    box-sizing: border-box !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    vertical-align: middle !important;
+  }
+
+  .stock-editor-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .stock-adjust-modal input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-finance-entry-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-service-editor-backdrop input.field:not([type="checkbox"]):not([type="radio"]),
+  .legacy-price-editor input.field:not([type="checkbox"]):not([type="radio"]) {
+    line-height: 42px !important;
+  }
+
+  .stock-editor-modal select.field,
+  .stock-adjust-modal select.field,
+  .legacy-finance-entry-backdrop select.field,
+  .legacy-service-editor-backdrop select.field,
+  .legacy-price-editor select.field {
+    line-height: 1.2 !important;
+  }
+
+  .stock-editor-modal input[type="date"].field,
+  .stock-editor-modal input[type="time"].field,
+  .stock-adjust-modal input[type="date"].field,
+  .stock-adjust-modal input[type="time"].field,
+  .legacy-finance-entry-backdrop input[type="date"].field,
+  .legacy-service-editor-backdrop input[type="date"].field,
+  .legacy-price-editor input[type="date"].field {
+    padding-right: 10px !important;
+  }
+
+  .stock-editor-modal input[type="date"].field::-webkit-calendar-picker-indicator,
+  .stock-editor-modal input[type="time"].field::-webkit-calendar-picker-indicator,
+  .stock-adjust-modal input[type="date"].field::-webkit-calendar-picker-indicator,
+  .stock-adjust-modal input[type="time"].field::-webkit-calendar-picker-indicator,
+  .legacy-finance-entry-backdrop input[type="date"].field::-webkit-calendar-picker-indicator,
+  .legacy-service-editor-backdrop input[type="date"].field::-webkit-calendar-picker-indicator,
+  .legacy-price-editor input[type="date"].field::-webkit-calendar-picker-indicator {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: .88 !important;
+  }
+
+  .stock-editor-head-icon,
+  .stock-editor-close,
+  .finance-entry-head-icon,
+  .finance-entry-close,
+  .service-editor-head-icon,
+  .receipt-editor-close,
+  .tool-editor-close,
+  .legacy-price-editor .legacy-editor-head-icon,
+  .legacy-price-editor .legacy-editor-close {
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .stock-editor-head-icon .ui-icon,
+  .stock-editor-close .ui-icon,
+  .finance-entry-head-icon .ui-icon,
+  .finance-entry-close .ui-icon,
+  .service-editor-head-icon .ui-icon,
+  .receipt-editor-close .ui-icon,
+  .tool-editor-close .ui-icon,
+  .legacy-price-editor .legacy-editor-head-icon .ui-icon,
+  .legacy-price-editor .legacy-editor-close .ui-icon {
+    display: block !important;
+    margin: 0 !important;
+  }
+}
