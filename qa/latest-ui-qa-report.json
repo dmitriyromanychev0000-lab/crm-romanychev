@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T15:40:10.825Z",
-  "testedSha": "2a02f8d7aa805e3df2305d27c649546287882fe2",
+  "generatedAt": "2026-09-29T15:44:38.088Z",
+  "testedSha": "faa327cc3e4cd5d6b36e46810de2b8b226097b51",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -10,7 +10,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse",
@@ -19,7 +20,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "movements",
@@ -28,7 +30,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "shopping",
@@ -37,7 +40,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics",
@@ -46,7 +50,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "more",
@@ -55,7 +60,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "calendar",
@@ -64,7 +70,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance",
@@ -73,7 +80,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "clients",
@@ -82,7 +90,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "prices",
@@ -91,7 +100,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods",
@@ -100,7 +110,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tools",
@@ -109,7 +120,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipts",
@@ -118,7 +130,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "drafts",
@@ -127,7 +140,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "settings",
@@ -136,7 +150,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "backup",
@@ -145,7 +160,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "act",
@@ -154,7 +170,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor",
@@ -163,7 +180,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "service-catalog",
@@ -172,7 +190,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "service-catalog-selected",
@@ -181,7 +200,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "material-catalog",
@@ -190,7 +210,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "material-catalog-selected",
@@ -199,7 +220,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-detail",
@@ -208,7 +230,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-actions",
@@ -217,7 +240,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics-range",
@@ -226,7 +250,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-detail",
@@ -235,7 +260,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-editor",
@@ -244,7 +270,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-adjust",
@@ -253,7 +280,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse-movements",
@@ -262,7 +290,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse-shopping",
@@ -271,7 +300,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance-editor",
@@ -280,7 +310,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "price-editor",
@@ -289,7 +320,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "client-profile",
@@ -298,7 +330,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "release-notes",
@@ -307,7 +340,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods-editor",
@@ -316,7 +350,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tool-editor",
@@ -325,7 +360,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipt-editor",
@@ -334,7 +370,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "price-editor-existing",
@@ -343,7 +380,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "custom-price-editor-existing",
@@ -352,7 +390,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods-editor-existing",
@@ -361,7 +400,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tool-editor-existing",
@@ -370,7 +410,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipt-editor-existing",
@@ -379,7 +420,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "diagnostics-modal",
@@ -388,7 +430,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "confirm-dialog",
@@ -397,7 +440,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stress-orders",
@@ -406,7 +450,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stress-warehouse",
@@ -415,7 +460,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stress-prices",
@@ -424,7 +470,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stress-order-detail",
@@ -433,7 +480,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "empty-orders",
@@ -442,7 +490,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "empty-warehouse",
@@ -451,7 +500,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "empty-clients",
@@ -460,7 +510,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "empty-goods",
@@ -469,7 +520,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "toast-feedback",
@@ -478,7 +530,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "archived-orders",
@@ -487,7 +540,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "archived-warehouse",
@@ -496,7 +550,8 @@
       "viewportWidth": 320,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "orders",
@@ -505,7 +560,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse",
@@ -514,7 +570,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "movements",
@@ -523,7 +580,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "shopping",
@@ -532,7 +590,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics",
@@ -541,7 +600,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "more",
@@ -550,7 +610,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "calendar",
@@ -559,7 +620,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance",
@@ -568,7 +630,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "clients",
@@ -577,7 +640,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "prices",
@@ -586,7 +650,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods",
@@ -595,7 +660,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tools",
@@ -604,7 +670,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipts",
@@ -613,7 +680,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "drafts",
@@ -622,7 +690,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "settings",
@@ -631,7 +700,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "backup",
@@ -640,7 +710,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "act",
@@ -649,7 +720,8 @@
       "viewportWidth": 360,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "source-manager",
@@ -658,7 +730,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "appliance-type-manager",
@@ -667,7 +740,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "price-category-manager",
@@ -676,7 +750,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-category-manager",
@@ -685,7 +760,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warranty-manager",
@@ -694,7 +770,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warranty-result-manager",
@@ -703,7 +780,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor-warranty",
@@ -712,7 +790,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "calendar-selected-day",
@@ -721,7 +800,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "orders",
@@ -730,7 +810,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse",
@@ -739,7 +820,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "movements",
@@ -748,7 +830,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "shopping",
@@ -757,7 +840,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics",
@@ -766,7 +850,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "more",
@@ -775,7 +860,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "calendar",
@@ -784,7 +870,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance",
@@ -793,7 +880,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "clients",
@@ -802,7 +890,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "prices",
@@ -811,7 +900,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods",
@@ -820,7 +910,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tools",
@@ -829,7 +920,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipts",
@@ -838,7 +930,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "drafts",
@@ -847,7 +940,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "settings",
@@ -856,7 +950,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "backup",
@@ -865,7 +960,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "act",
@@ -874,7 +970,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "shopping-manual",
@@ -883,7 +980,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor",
@@ -892,7 +990,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "service-catalog",
@@ -901,7 +1000,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "service-catalog-selected",
@@ -910,7 +1010,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "material-catalog",
@@ -919,7 +1020,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "material-catalog-selected",
@@ -928,7 +1030,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor-material-row",
@@ -937,7 +1040,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor-direct-expense",
@@ -946,7 +1050,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-editor-restored",
@@ -955,7 +1060,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "photo-viewer",
@@ -964,7 +1070,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-detail",
@@ -973,7 +1080,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "order-actions",
@@ -982,7 +1090,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics-range",
@@ -991,7 +1100,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-detail",
@@ -1000,7 +1110,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-editor",
@@ -1009,7 +1120,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-adjust",
@@ -1018,7 +1130,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-transfer",
@@ -1027,7 +1140,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "stock-correction",
@@ -1036,7 +1150,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse-movements",
@@ -1045,7 +1160,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse-shopping",
@@ -1054,7 +1170,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance-editor",
@@ -1063,7 +1180,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "price-editor",
@@ -1072,7 +1190,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "client-profile",
@@ -1081,7 +1200,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "release-notes",
@@ -1090,7 +1210,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods-editor",
@@ -1099,7 +1220,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tool-editor",
@@ -1108,7 +1230,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipt-editor",
@@ -1117,7 +1240,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "price-editor-existing",
@@ -1126,7 +1250,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "custom-price-editor-existing",
@@ -1135,7 +1260,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods-editor-existing",
@@ -1144,7 +1270,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tool-editor-existing",
@@ -1153,7 +1280,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipt-editor-existing",
@@ -1162,7 +1290,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "diagnostics-modal",
@@ -1171,7 +1300,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "confirm-dialog",
@@ -1180,7 +1310,8 @@
       "viewportWidth": 390,
       "overflow": 0,
       "modalOpen": true,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "orders",
@@ -1189,7 +1320,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "warehouse",
@@ -1198,7 +1330,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "movements",
@@ -1207,7 +1340,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "shopping",
@@ -1216,7 +1350,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "analytics",
@@ -1225,7 +1360,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "more",
@@ -1234,7 +1370,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "calendar",
@@ -1243,7 +1380,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "finance",
@@ -1252,7 +1390,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "clients",
@@ -1261,7 +1400,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "prices",
@@ -1270,7 +1410,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "goods",
@@ -1279,7 +1420,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "tools",
@@ -1288,7 +1430,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "receipts",
@@ -1297,7 +1440,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "drafts",
@@ -1306,7 +1450,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "settings",
@@ -1315,7 +1460,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "backup",
@@ -1324,7 +1470,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "act",
@@ -1333,7 +1480,8 @@
       "viewportWidth": 430,
       "overflow": 0,
       "modalOpen": false,
-      "tooSmall": []
+      "tooSmall": [],
+      "clippedFieldLabels": []
     },
     {
       "label": "keyboard-order-editor",
@@ -1610,7 +1758,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T15:40:45.283Z"
+      "fallbackCreatedAt": "2026-09-29T15:45:12.768Z"
     },
     {
       "label": "pwa-offline",
