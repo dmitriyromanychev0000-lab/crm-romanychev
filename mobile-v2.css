@@ -24169,3 +24169,26 @@
     line-height: 1.25 !important;
   }
 }
+
+
+/* 1.8.36 · Пустая история склада занимает только содержимое */
+@media screen and (max-width: 520px) {
+  .stock-detail-history:has(> .detail-empty) {
+    min-height: 0 !important;
+    height: auto !important;
+    margin-top: 6px !important;
+    padding: 6px 10px !important;
+  }
+
+  .stock-detail-history:has(> .detail-empty) h3 {
+    margin: 0 0 2px !important;
+    line-height: 1.15 !important;
+  }
+
+  .stock-detail-history:has(> .detail-empty) > .detail-empty {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+  }
+}
