@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.17";
-const APP_BUILD = "2026.09.29.350";
+const APP_VERSION = "1.8.18";
+const APP_BUILD = "2026.09.29.351";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактные редакторы получили чистый непрозрачный фон без просвечивания списка"
+const APP_RELEASE = "Длинные реквизиты исполнителя больше не обрезаются на узких экранах"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.18",
+    date: "29.09.2026",
+    title: "Реквизиты без обрезания",
+    items: [
+      "Название и ФИО исполнителя полностью помещаются в компактной двухколоночной сетке на 320–430 px.",
+      "Телефон, ИНН и адрес сохранили прежнюю плотную компоновку.",
+      "Высота полей и touch-зоны не уменьшались."
+    ]
+  },
   {
     version: "1.8.17",
     date: "29.09.2026",
@@ -5134,7 +5144,7 @@ function settingsPage() {
       <div class="legacy-section-title"><span class="legacy-section-icon">${icon("settings")}</span><h2>Реквизиты исполнителя</h2></div>
       <div class="legacy-settings-grid">
         <label class="settings-company-name"><span>НАЗВАНИЕ</span><input class="field" name="companyName" value="${escapeHtml(settings.companyName || "")}" placeholder="Ремонт бытовой техники" /></label>
-        <label><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
+        <label class="settings-provider-name"><span>ИСПОЛНИТЕЛЬ</span><input class="field" name="name" value="${escapeHtml(settings.name || "")}" placeholder="ФИО" /></label>
         <label><span>ТЕЛЕФОН</span><input class="field" name="phone" value="${escapeHtml(normalizeRussianPhone(settings.phone || "") || settings.phone || "")}" inputmode="tel" autocomplete="tel" maxlength="12" placeholder="+7XXXXXXXXXX" /></label>
         <label class="settings-inn"><span>ИНН</span><input class="field" name="inn" value="${escapeHtml(settings.inn || "")}" inputmode="numeric" /></label>
         <label class="full"><span>АДРЕС</span><input class="field" name="companyAddress" value="${escapeHtml(settings.companyAddress || "")}" /></label>

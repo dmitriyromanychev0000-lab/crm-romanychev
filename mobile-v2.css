@@ -23761,3 +23761,24 @@
     backdrop-filter: none !important;
   }
 }
+
+
+/* 1.8.18 · Реквизиты без обрезания длинных значений */
+@media screen and (max-width: 520px) {
+  .settings-profile-card .settings-company-name .field,
+  .settings-profile-card .settings-provider-name .field {
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+    font-size: 13px !important;
+    letter-spacing: -.015em !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .settings-profile-card .settings-company-name .field,
+  .settings-profile-card .settings-provider-name .field {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    font-size: 12.5px !important;
+  }
+}

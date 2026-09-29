@@ -4542,6 +4542,20 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           phone: field("phone"),
           companyAddress: field("companyAddress"),
           inn: field("inn"),
+          profileTextFit: ["companyName","name"].map((name) => {
+            const node = document.querySelector(`.settings-profile-card [name="${name}"]`);
+            if (!node) return { name, required: 999, available: 0, fontSize: 0 };
+            const style = getComputedStyle(node);
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            return {
+              name,
+              required: Math.ceil(ctx.measureText(node.value || "").width),
+              available: Math.floor(node.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0) - 2),
+              fontSize: parseFloat(style.fontSize) || 0
+            };
+          }),
           longLinkTitle: (() => {
             const node = document.querySelector('[data-action="manage-warranty-results"] strong');
             const style = node ? getComputedStyle(node) : null;
@@ -4630,6 +4644,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.name.width < 120
         || settingsSurface.phone.width < 120
         || settingsSurface.inn.width < 120
+        || settingsSurface.profileTextFit.length !== 2
+        || settingsSurface.profileTextFit.some((item) => item.required > item.available + 1 || item.fontSize < 12.5)
         || settingsSurface.companyAddress.width < settingsSurface.gridWidth - 2
         || settingsSurface.companyAddress.top <= settingsSurface.phone.top
         || settingsSurface.longLinkTitle.whiteSpace === "nowrap"
