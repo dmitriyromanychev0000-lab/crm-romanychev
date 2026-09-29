@@ -23693,3 +23693,49 @@
     row-gap: 7px !important;
   }
 }
+
+
+/* 1.8.16 · Служебные редакторы без пустого вертикального провала */
+@media screen and (max-width: 520px) {
+  .legacy-finance-entry-backdrop > form.modal.compact-modal.finance-entry-modal,
+  .legacy-service-editor-backdrop > form.modal.compact-modal.receipt-editor-modal,
+  .legacy-service-editor-backdrop > form.modal.compact-modal.tool-editor-modal {
+    height: max-content !important;
+    max-height: calc(100dvh - 20px) !important;
+    align-self: flex-start !important;
+    margin-top: max(8px, env(safe-area-inset-top)) !important;
+    margin-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .legacy-finance-entry-backdrop .form-grid,
+  .legacy-service-editor-backdrop .form-grid {
+    padding-bottom: 8px !important;
+  }
+
+  .legacy-price-editor-backdrop > form.modal.legacy-price-editor {
+    display: grid !important;
+    grid-template-rows: auto minmax(0,1fr) auto !important;
+    box-sizing: border-box !important;
+    height: max-content !important;
+    min-height: 0 !important;
+    max-height: calc(100dvh - 20px) !important;
+    margin: max(8px, env(safe-area-inset-top)) auto max(8px, env(safe-area-inset-bottom)) !important;
+    padding: 0 12px !important;
+    align-self: flex-start !important;
+    overflow: hidden !important;
+  }
+
+  .legacy-price-editor-card {
+    min-height: 0 !important;
+    margin-bottom: 8px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .legacy-price-editor-actions {
+    position: static !important;
+    margin: 0 -12px !important;
+  }
+}

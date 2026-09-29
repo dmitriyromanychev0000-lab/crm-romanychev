@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.15";
-const APP_BUILD = "2026.09.29.348";
+const APP_VERSION = "1.8.16";
+const APP_BUILD = "2026.09.29.349";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Поля и SVG-иконки получили единую мобильную геометрию и вертикальное выравнивание"
+const APP_RELEASE = "Служебные редакторы больше не растягивают пустое место до нижних кнопок"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.16",
+    date: "29.09.2026",
+    title: "Меньше пустоты в редакторах",
+    items: [
+      "Финансы, прайс, документы и инструменты больше не растягиваются пустым блоком на весь экран.",
+      "Кнопки действий идут сразу после содержимого, а при экранной клавиатуре форма остаётся прокручиваемой и доступной.",
+      "Геометрия полей и центрирование иконок из предыдущего обновления сохранены."
+    ]
+  },
   {
     version: "1.8.15",
     date: "29.09.2026",

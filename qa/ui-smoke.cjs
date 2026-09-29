@@ -3444,6 +3444,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const field = document.querySelector(".finance-entry-modal .field");
         const footer = document.querySelector(".finance-entry-modal .modal-actions");
         const footerRect = footer?.getBoundingClientRect();
+        const modalRect = modal?.getBoundingClientRect();
+        const gridRect = document.querySelector(".finance-entry-modal .form-grid")?.getBoundingClientRect();
         const close = document.querySelector(".finance-entry-close");
         const closeRect = close?.getBoundingClientRect();
         const action = footer?.querySelector("button");
@@ -3460,6 +3462,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
           rowGap: parseFloat(getComputedStyle(document.querySelector(".finance-entry-modal .form-grid")).rowGap) || 0,
           footerBottom: footerRect ? Math.round(footerRect.bottom) : 0,
+          modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
+          blankGap: footerRect && gridRect ? Math.round(footerRect.top - gridRect.bottom) : 999,
           viewportHeight: window.innerHeight
         };
       });
@@ -3469,7 +3473,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || financeEditorState.closeWidth < 44
         || financeEditorState.closeHeight < 44
         || financeEditorState.actionHeight < 48
-        || financeEditorState.footerBottom < financeEditorState.viewportHeight - 24) {
+        || financeEditorState.modalBottom > financeEditorState.viewportHeight + 1
+        || financeEditorState.blankGap > 20) {
         report.failures.push({ width, type: "finance-editor-layout", financeEditorState });
       }
       if (financeEditorState.headHeight > 60
@@ -3619,7 +3624,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const priceEditorState = await page.evaluate(() => {
         const back = document.querySelector(".legacy-price-editor .legacy-back-button");
         const backRect = back?.getBoundingClientRect();
-        const action = document.querySelector(".legacy-price-editor-actions button");
+        const footer = document.querySelector(".legacy-price-editor-actions");
+        const footerRect = footer?.getBoundingClientRect();
+        const modalRect = document.querySelector(".legacy-price-editor")?.getBoundingClientRect();
+        const cardRect = document.querySelector(".legacy-price-editor-card")?.getBoundingClientRect();
+        const action = footer?.querySelector("button");
         const actionRect = action?.getBoundingClientRect();
         const field = document.querySelector(".legacy-price-editor .field");
         return {
@@ -3633,7 +3642,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           headHeight: Math.round(document.querySelector(".legacy-price-editor .legacy-editor-head")?.getBoundingClientRect().height || 0),
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
           rowGap: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-grid")).rowGap) || 0,
-          cardPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-card")).paddingTop) || 0
+          cardPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-card")).paddingTop) || 0,
+          modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
+          blankGap: footerRect && cardRect ? Math.round(footerRect.top - cardRect.bottom) : 999
         };
       });
       if (priceEditorState.card !== "rgb(17, 24, 29)"
@@ -3642,7 +3653,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || priceEditorState.secondary !== "rgb(21, 29, 35)"
         || priceEditorState.backWidth < 44
         || priceEditorState.backHeight < 44
-        || priceEditorState.actionHeight < 48) {
+        || priceEditorState.actionHeight < 48
+        || priceEditorState.modalBottom > window.innerHeight + 1
+        || priceEditorState.blankGap > 20) {
         report.failures.push({ width, type: "price-editor-deep-dark", priceEditorState });
       }
       if (priceEditorState.headHeight > 60
@@ -4253,6 +4266,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const toolEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".tool-editor-modal .modal-actions");
         const rect = footer?.getBoundingClientRect();
+        const modalRect = document.querySelector(".tool-editor-modal")?.getBoundingClientRect();
+        const gridRect = document.querySelector(".tool-editor-modal .form-grid")?.getBoundingClientRect();
         const field = document.querySelector(".tool-editor-modal .field");
         const close = document.querySelector(".tool-editor-close");
         const closeRect = close?.getBoundingClientRect();
@@ -4275,6 +4290,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           closeHeight: closeRect ? Math.round(closeRect.height) : 0,
           actionHeight: actionRect ? Math.round(actionRect.height) : 0,
           footerBottom: rect ? Math.round(rect.bottom) : 0,
+          modalBottom: modalRect ? Math.round(modalRect.bottom) : 0,
+          blankGap: rect && gridRect ? Math.round(rect.top - gridRect.bottom) : 999,
           viewportHeight: window.innerHeight
         };
       });
@@ -4284,7 +4301,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolEditorState.closeWidth < 44
         || toolEditorState.closeHeight < 44
         || toolEditorState.actionHeight < 48
-        || toolEditorState.footerBottom < toolEditorState.viewportHeight - 2) {
+        || toolEditorState.modalBottom > toolEditorState.viewportHeight + 1
+        || toolEditorState.blankGap > 20) {
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
       }
       if (toolEditorState.headHeight > 60
@@ -4369,6 +4387,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const receiptEditorState = await page.evaluate(() => {
         const footer = document.querySelector(".receipt-editor-modal .modal-actions");
         const rect = footer?.getBoundingClientRect();
+        const modalRect = document.querySelector(".receipt-editor-modal")?.getBoundingClientRect();
+        const gridRect = document.querySelector(".receipt-editor-modal .form-grid")?.getBoundingClientRect();
         const field = document.querySelector(".receipt-editor-modal .field");
         const close = document.querySelector(".receipt-editor-close");
         const closeRect = close?.getBoundingClientRect();
@@ -4400,7 +4420,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptEditorState.closeWidth < 44
         || receiptEditorState.closeHeight < 44
         || receiptEditorState.actionHeight < 48
-        || receiptEditorState.footerBottom < receiptEditorState.viewportHeight - 2) {
+        || receiptEditorState.modalBottom > receiptEditorState.viewportHeight + 1
+        || receiptEditorState.blankGap > 20) {
         report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
       }
       if (receiptEditorState.headHeight > 60
