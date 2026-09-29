@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.9";
-const APP_BUILD = "2026.09.29.341";
+const APP_VERSION = "1.8.10";
+const APP_BUILD = "2026.09.29.342";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Добавление результата гарантии теперь отображается мгновенно, без ожидания записи в хранилище"
+const APP_RELEASE = "Служебные редакторы переведены с глухого чёрного на мягкие графитовые поверхности"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.10",
+    date: "29.09.2026",
+    title: "Мягкие поверхности редакторов",
+    items: [
+      "Редакторы склада, финансов, документов, инструментов и прайса больше не выглядят сплошным чёрным экраном.",
+      "Секции и однострочные поля получили те же мягкие графитовые поверхности, что и основные экраны.",
+      "Геометрия, фиксированные кнопки, touch-зоны и рабочая логика не менялись."
+    ]
+  },
   {
     version: "1.8.9",
     date: "29.09.2026",

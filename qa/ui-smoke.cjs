@@ -2914,10 +2914,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           gridWidth: Math.round(grid?.getBoundingClientRect().width || 0)
         };
       });
-      if (stockEditorSurface.modal !== "rgb(3, 7, 10)"
-        || stockEditorSurface.section !== "rgb(6, 11, 15)"
-        || stockEditorSurface.field !== "rgb(9, 15, 20)"
-        || stockEditorSurface.compat !== "rgb(9, 15, 20)"
+      if (stockEditorSurface.modal !== "rgb(7, 12, 15)"
+        || stockEditorSurface.section !== "rgb(17, 24, 29)"
+        || stockEditorSurface.field !== "rgb(21, 29, 35)"
+        || stockEditorSurface.compat !== "rgb(17, 24, 29)"
         || !stockEditorSurface.hasStockTech
         || !stockEditorSurface.categoryRequired
         || stockEditorSurface.minimumWidth < stockEditorSurface.gridWidth * 0.92
@@ -3459,8 +3459,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           viewportHeight: window.innerHeight
         };
       });
-      if (financeEditorState.modal !== "rgb(3, 7, 10)"
-        || financeEditorState.field !== "rgb(9, 15, 20)"
+      if (financeEditorState.modal !== "rgb(7, 12, 15)"
+        || financeEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(financeEditorState.fieldFont) < 13.5
         || financeEditorState.closeWidth < 44
         || financeEditorState.closeHeight < 44
@@ -3632,10 +3632,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           cardPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-price-editor-card")).paddingTop) || 0
         };
       });
-      if (priceEditorState.card !== "rgb(6, 11, 15)"
-        || priceEditorState.field !== "rgb(9, 15, 20)"
+      if (priceEditorState.card !== "rgb(17, 24, 29)"
+        || priceEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(priceEditorState.fieldFont) < 13.5
-        || priceEditorState.secondary !== "rgb(10, 17, 22)"
+        || priceEditorState.secondary !== "rgb(21, 29, 35)"
         || priceEditorState.backWidth < 44
         || priceEditorState.backHeight < 44
         || priceEditorState.actionHeight < 48) {
@@ -4270,8 +4270,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           viewportHeight: window.innerHeight
         };
       });
-      if (toolEditorState.modal !== "rgb(3, 7, 10)"
-        || toolEditorState.field !== "rgb(9, 15, 20)"
+      if (toolEditorState.modal !== "rgb(7, 12, 15)"
+        || toolEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(toolEditorState.fieldFont) < 13.5
         || toolEditorState.closeWidth < 44
         || toolEditorState.closeHeight < 44
@@ -4386,8 +4386,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           viewportHeight: window.innerHeight
         };
       });
-      if (receiptEditorState.modal !== "rgb(3, 7, 10)"
-        || receiptEditorState.field !== "rgb(9, 15, 20)"
+      if (receiptEditorState.modal !== "rgb(7, 12, 15)"
+        || receiptEditorState.field !== "rgb(21, 29, 35)"
         || parseFloat(receiptEditorState.fieldFont) < 13.5
         || receiptEditorState.closeWidth < 44
         || receiptEditorState.closeHeight < 44

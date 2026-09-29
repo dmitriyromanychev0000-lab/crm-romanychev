@@ -23215,3 +23215,91 @@
     margin: 0 !important;
   }
 }
+
+
+/* 1.8.10 · Мягкие поверхности служебных редакторов */
+@media screen and (max-width: 520px) {
+  .stock-editor-backdrop > form.modal.compact-modal.stock-editor-modal,
+  .legacy-finance-entry-backdrop .finance-entry-modal,
+  .legacy-service-editor-backdrop .receipt-editor-modal,
+  .legacy-service-editor-backdrop .tool-editor-modal,
+  .legacy-price-editor {
+    background-color: #070c0f !important;
+    background-image: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-head,
+  .stock-editor-modal .stock-editor-intro,
+  .legacy-finance-entry-backdrop .finance-entry-head,
+  .legacy-service-editor-backdrop .receipt-editor-head,
+  .legacy-service-editor-backdrop .tool-editor-head,
+  .legacy-price-editor .legacy-editor-head {
+    border-color: #29343b !important;
+    background: #070c0f !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-section,
+  .legacy-price-editor .legacy-price-editor-card {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .field,
+  .stock-adjust-modal .field,
+  .legacy-finance-entry-backdrop .field,
+  .legacy-service-editor-backdrop .field,
+  .legacy-price-editor .field {
+    border-color: #303b42 !important;
+    background-color: #151d23 !important;
+    background-image: none !important;
+    color: #eef2f4 !important;
+  }
+
+  .stock-editor-modal .field:focus,
+  .stock-adjust-modal .field:focus,
+  .legacy-finance-entry-backdrop .field:focus,
+  .legacy-service-editor-backdrop .field:focus,
+  .legacy-price-editor .field:focus {
+    border-color: rgba(255,104,74,.62) !important;
+    background-color: #171f25 !important;
+    box-shadow: 0 0 0 2px rgba(255,104,74,.065) !important;
+    outline: 0 !important;
+  }
+
+  .stock-editor-modal .stock-editor-compat-details,
+  .stock-editor-modal .stock-editor-compat label,
+  .stock-editor-modal .stock-editor-toggle,
+  .finance-entry-type,
+  .receipt-editor-type,
+  .tool-editor-hero {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: none !important;
+  }
+
+  .stock-editor-modal .stock-editor-compat-content {
+    border-top-color: #29343b !important;
+    background: #11181d !important;
+  }
+
+  .stock-editor-modal .modal-actions,
+  .legacy-finance-entry-backdrop .modal-actions,
+  .legacy-service-editor-backdrop .modal-actions,
+  .legacy-price-editor-actions {
+    border-top-color: #29343b !important;
+    background: rgba(7,12,15,.99) !important;
+    box-shadow: 0 -8px 22px rgba(0,0,0,.14) !important;
+  }
+
+  .stock-editor-modal .modal-actions .secondary-button,
+  .legacy-finance-entry-backdrop .modal-actions .secondary-button,
+  .legacy-service-editor-backdrop .modal-actions .secondary-button,
+  .legacy-price-editor-actions .legacy-dark-button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #e3e8ea !important;
+    box-shadow: none !important;
+  }
+}
