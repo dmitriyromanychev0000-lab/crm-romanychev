@@ -22474,3 +22474,142 @@
     color: #ff8068 !important;
   }
 }
+
+
+/* 1.8.1 · Мягкие служебные экраны */
+@media screen and (max-width: 520px) {
+  .calendar-month-card,
+  .calendar-day-card {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .calendar-month-head button,
+  .calendar-full-day-toggle {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #d7dee2 !important;
+    box-shadow: none !important;
+  }
+
+  .calendar-full-day-toggle .ui-icon {
+    color: #ff8068 !important;
+  }
+
+  .calendar-all-day {
+    border-color: #303a41 !important;
+    background: #151d23 !important;
+  }
+
+  .calendar-hour-row {
+    border-top-color: #29343b !important;
+  }
+
+  .calendar-day.selected {
+    outline-color: rgba(255,118,92,.62) !important;
+  }
+
+  .calendar-day i {
+    background: rgba(255,118,92,.13) !important;
+    color: #ffc0b2 !important;
+  }
+
+  .calendar-event,
+  .calendar-event.closed,
+  .calendar-event.declined {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .calendar-event > strong {
+    color: #ff9a82 !important;
+  }
+
+  .calendar-event.closed > strong {
+    color: #65d995 !important;
+  }
+
+  .calendar-event.declined > strong {
+    color: #ff717b !important;
+  }
+
+  .tools-stats > .service-stat-primary,
+  .tools-stats > div:nth-child(2) {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-document-row.tool,
+  .legacy-document-row.tool.available,
+  .legacy-document-row.tool.busy,
+  .legacy-document-row.tool.retired {
+    border-color: #303a41 !important;
+    background-color: #11181d !important;
+    background-image: none !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.045) !important;
+  }
+
+  .legacy-document-row.tool .legacy-document-icon,
+  .legacy-document-row.tool.available .legacy-document-icon,
+  .legacy-document-row.tool.busy .legacy-document-icon,
+  .legacy-document-row.tool.retired .legacy-document-icon {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-document-row.tool.available .legacy-document-icon {
+    background: rgba(89,216,137,.085) !important;
+    color: #65d995 !important;
+  }
+
+  .legacy-document-row.tool.busy .legacy-document-icon {
+    background: rgba(231,180,80,.085) !important;
+    color: #dfb45d !important;
+  }
+
+  .legacy-document-row.tool.retired .legacy-document-icon {
+    background: rgba(255,102,112,.08) !important;
+    color: #ff717b !important;
+  }
+
+  .legacy-settings-page .settings-profile-card,
+  .legacy-settings-page .settings-app-card,
+  .legacy-settings-page .settings-data-card {
+    border-color: #303a41 !important;
+    background: #11181d !important;
+    box-shadow: 0 7px 20px rgba(0,0,0,.05) !important;
+  }
+
+  .legacy-settings-page .legacy-settings-grid .field {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #eef2f4 !important;
+  }
+
+  .legacy-settings-page .legacy-settings-links > button,
+  .legacy-settings-page .legacy-settings-links > button[data-more="tools"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="backup"],
+  .legacy-settings-page .settings-links > button[data-more="receipts"],
+  .legacy-settings-page .legacy-settings-links > button[data-more="drafts"] {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-page .legacy-section-icon,
+  .legacy-settings-page .settings-link-icon {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-settings-page .legacy-settings-row > button:not(.toggle) {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+}

@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.0";
-const APP_BUILD = "2026.09.29.332";
+const APP_VERSION = "1.8.1";
+const APP_BUILD = "2026.09.29.333";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Финансы, клиенты и покупки приведены к мягкой визуальной системе первой версии"
+const APP_RELEASE = "Календарь, инструменты и настройки получили более мягкие графитовые поверхности"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.1",
+    date: "29.09.2026",
+    title: "Мягкие служебные экраны",
+    items: [
+      "Календарь стал светлее и спокойнее: месяц, расписание и служебные кнопки отделены мягкими графитовыми поверхностями.",
+      "Инструменты больше не раскрашивают целые карточки по статусу — цвет остался только в небольших смысловых акцентах.",
+      "Настройки получили менее резкие карточки и поля, при этом цветные пиктограммы справочников сохранены как мягкие ориентиры."
+    ]
+  },
   {
     version: "1.8.0",
     date: "29.09.2026",

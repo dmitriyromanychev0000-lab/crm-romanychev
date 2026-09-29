@@ -4208,10 +4208,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           chevronLeft: Math.round(chevronRect?.left || 0)
         };
       });
-      if (toolsPageSurface.totalStat !== "rgb(7, 12, 16)"
-        || toolsPageSurface.activeStat !== "rgb(7, 12, 16)"
-        || toolsPageSurface.available !== "rgb(9, 15, 20)"
-        || toolsPageSurface.busy !== "rgb(9, 15, 20)"
+      if (toolsPageSurface.totalStat !== "rgb(17, 24, 29)"
+        || toolsPageSurface.activeStat !== "rgb(17, 24, 29)"
+        || toolsPageSurface.available !== "rgb(17, 24, 29)"
+        || toolsPageSurface.busy !== "rgb(17, 24, 29)"
         || toolsPageSurface.addWidth < toolsPageSurface.pageWidth - 34
         || toolsPageSurface.addHeight < 48
         || parseFloat(toolsPageSurface.rowTitleFont) < 11.5
@@ -4552,12 +4552,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           })
         };
       });
-      if (settingsSurface.profile !== "rgb(7, 12, 16)"
-        || settingsSurface.app !== "rgb(7, 12, 16)"
-        || settingsSurface.data !== "rgb(7, 12, 16)"
-        || settingsSurface.field !== "rgb(9, 15, 20)"
-        || settingsSurface.toolsLink !== "rgb(13, 20, 25)"
-        || settingsSurface.backupLink !== "rgb(13, 20, 25)"
+      if (settingsSurface.profile !== "rgb(17, 24, 29)"
+        || settingsSurface.app !== "rgb(17, 24, 29)"
+        || settingsSurface.data !== "rgb(17, 24, 29)"
+        || settingsSurface.field !== "rgb(21, 29, 35)"
+        || settingsSurface.toolsLink !== "rgb(21, 29, 35)"
+        || settingsSurface.backupLink !== "rgb(21, 29, 35)"
         || JSON.stringify(settingsSurface.linkIconBackgrounds) !== JSON.stringify([
           "rgb(13, 24, 34)",
           "rgb(22, 17, 36)",
