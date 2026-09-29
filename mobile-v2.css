@@ -23862,3 +23862,46 @@
     line-height: 1.12 !important;
   }
 }
+
+
+/* 1.8.23 · Сводка позиции склада в одну строку */
+@media screen and (max-width: 520px) {
+  .stock-detail-kpis {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .stock-detail-kpis > .primary,
+  .stock-detail-kpis > .reserved,
+  .stock-detail-kpis > .minimum,
+  .stock-detail-kpis > .minimum:last-child {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+
+  .stock-detail-kpis > div {
+    min-height: 62px !important;
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+  }
+
+  .stock-detail-kpis strong {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  .stock-detail-kpis small {
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .stock-detail-kpis > div {
+    padding-right: 4px !important;
+    padding-left: 4px !important;
+  }
+
+  .stock-detail-kpis strong {
+    font-size: 11.5px !important;
+  }
+}

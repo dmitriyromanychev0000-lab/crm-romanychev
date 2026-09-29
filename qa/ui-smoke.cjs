@@ -2833,6 +2833,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const archive = document.querySelector(".stock-detail-actions .stock-detail-archive");
         const incomingRect = incoming?.getBoundingClientRect();
         const outgoingRect = outgoing?.getBoundingClientRect();
+        const kpiGrid = document.querySelector(".stock-detail-kpis");
+        const kpiGridRect = kpiGrid?.getBoundingClientRect();
+        const kpiRects = [...document.querySelectorAll(".stock-detail-kpis > div")].map((node) => node.getBoundingClientRect());
         const transferRect = transfer?.getBoundingClientRect();
         const correctRect = correct?.getBoundingClientRect();
         const archiveRect = archive?.getBoundingClientRect();
@@ -2842,6 +2845,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           primaryKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .primary")).backgroundColor,
           reservedKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .reserved")).backgroundColor,
           minimumKpi: getComputedStyle(document.querySelector(".stock-detail-kpis > .minimum")).backgroundColor,
+          kpiGridHeight: Math.round(kpiGridRect?.height || 0),
+          kpiRects: kpiRects.map((rect) => ({ left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) })),
           incoming: incoming ? getComputedStyle(incoming).backgroundColor : "missing",
           outgoing: outgoing ? getComputedStyle(outgoing).backgroundColor : "missing",
           transfer: transfer ? getComputedStyle(transfer).backgroundColor : "missing",
@@ -2865,6 +2870,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailSurface.primaryKpi !== "rgb(17, 24, 29)"
         || stockDetailSurface.reservedKpi !== "rgb(17, 24, 29)"
         || stockDetailSurface.minimumKpi !== "rgb(17, 24, 29)"
+        || stockDetailSurface.kpiRects.length !== 3
+        || stockDetailSurface.kpiGridHeight > 66
+        || Math.max(...stockDetailSurface.kpiRects.map((item) => item.top)) - Math.min(...stockDetailSurface.kpiRects.map((item) => item.top)) > 2
+        || stockDetailSurface.kpiRects.some((item) => item.width < 80 || item.height < 58 || item.height > 66)
+        || stockDetailSurface.kpiRects[1].left <= stockDetailSurface.kpiRects[0].left
+        || stockDetailSurface.kpiRects[2].left <= stockDetailSurface.kpiRects[1].left
         || stockDetailSurface.incoming !== "rgb(21, 29, 35)"
         || stockDetailSurface.outgoing !== "rgb(21, 29, 35)"
         || stockDetailSurface.transfer !== "rgb(21, 29, 35)"

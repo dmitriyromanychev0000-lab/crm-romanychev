@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.22";
-const APP_BUILD = "2026.09.29.355";
+const APP_VERSION = "1.8.23";
+const APP_BUILD = "2026.09.29.356";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Подсказки полей заявки больше не режутся в двухколоночной сетке на 320 px"
+const APP_RELEASE = "Сводка позиции склада стала плотнее без пустых половин строки"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.23",
+    date: "29.09.2026",
+    title: "Плотная сводка склада",
+    items: [
+      "Доступно, в резерве и минимум теперь стоят одной строкой из трёх KPI.",
+      "Убрана пустая половина строки и лишний вертикальный блок в деталке позиции.",
+      "Значения, подписи и рабочие действия не менялись."
+    ]
+  },
   {
     version: "1.8.22",
     date: "29.09.2026",
