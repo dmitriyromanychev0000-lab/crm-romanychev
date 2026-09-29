@@ -2987,7 +2987,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           transferTop: transferRect ? Math.round(transferRect.top) : 0,
           correctTop: correctRect ? Math.round(correctRect.top) : 0,
           archiveTop: archiveRect ? Math.round(archiveRect.top) : 0,
-          correctTextOverflow: correct?.querySelector("b") ? Math.max(0, correct.querySelector("b").scrollWidth - correct.querySelector("b").clientWidth) : 999
+          correctTextOverflow: correct?.querySelector("b") ? Math.max(0, correct.querySelector("b").scrollWidth - correct.querySelector("b").clientWidth) : 999,
+          correctWordBreak: correct?.querySelector("b") ? getComputedStyle(correct.querySelector("b")).wordBreak : "missing",
+          correctOverflowWrap: correct?.querySelector("b") ? getComputedStyle(correct.querySelector("b")).overflowWrap : "missing"
         };
       });
       if (stockDetailSurface.modal !== "rgb(3, 7, 10)"
@@ -3016,7 +3018,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockDetailSurface.transferTop <= stockDetailSurface.incomingTop
         || stockDetailSurface.archiveTop <= stockDetailSurface.transferTop
         || stockDetailSurface.archiveWidth < stockDetailSurface.incomingWidth * 1.8
-        || stockDetailSurface.correctTextOverflow > 1) {
+        || stockDetailSurface.correctTextOverflow > 1
+        || (width <= 340 && stockDetailSurface.correctWordBreak !== "normal")
+        || (width <= 340 && stockDetailSurface.correctOverflowWrap !== "normal")) {
         report.failures.push({ width, type: "stock-detail-hierarchy", stockDetailSurface });
       }
 

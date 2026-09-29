@@ -24126,3 +24126,28 @@
     font-size: 9.5px !important;
   }
 }
+
+
+/* 1.8.34 · Целые слова в действиях склада на узких экранах */
+@media screen and (max-width: 360px) {
+  .stock-detail-actions .stock-detail-transfer,
+  .stock-detail-actions .stock-detail-correct {
+    grid-template-columns: 24px minmax(0,1fr) !important;
+    gap: 6px !important;
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+  }
+
+  .stock-detail-actions .stock-detail-transfer > .ui-icon,
+  .stock-detail-actions .stock-detail-correct > .ui-icon {
+    justify-self: center !important;
+  }
+
+  .stock-detail-actions .stock-detail-transfer b,
+  .stock-detail-actions .stock-detail-correct b {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    line-height: 1.1 !important;
+  }
+}

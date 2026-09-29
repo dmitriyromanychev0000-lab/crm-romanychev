@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.33";
-const APP_BUILD = "2026.09.29.368";
+const APP_VERSION = "1.8.34";
+const APP_BUILD = "2026.09.30.369";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Адрес клиента без обрезания"
+const APP_RELEASE = "Действия склада больше не рвут слова на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.34",
+    date: "30.09.2026",
+    title: "Целые слова в действиях склада",
+    items: [
+      "На 320 px «Корректировать остаток» больше не разрывается посередине слова.",
+      "Для «Переместить» и корректировки используется реальная ширина маленькой SVG-иконки, поэтому тексту остаётся больше места.",
+      "Высота кнопок, сетка действий и touch-зоны не менялись."
+    ]
+  },
   {
     version: "1.8.33",
     date: "29.09.2026",
