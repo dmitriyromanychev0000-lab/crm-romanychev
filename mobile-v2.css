@@ -24083,3 +24083,46 @@
     text-align: left !important;
   }
 }
+
+
+/* 1.8.32 · Адрес клиента без обрезанной служебной строки */
+@media screen and (max-width: 520px) {
+  .legacy-client-profile-backdrop .client-profile-address .client-profile-address-meta {
+    display: flex !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-address-meta > span {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-address-meta > em {
+    flex: 0 0 auto !important;
+    color: #a4adb3 !important;
+    font-size: 10px !important;
+    font-style: normal !important;
+    font-weight: 560 !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-client-profile-backdrop .client-profile-address .client-profile-address-meta {
+    gap: 5px !important;
+  }
+
+  .legacy-client-profile-backdrop .client-profile-address-meta > em {
+    font-size: 9.5px !important;
+  }
+}

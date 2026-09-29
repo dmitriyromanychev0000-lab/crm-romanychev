@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.31";
-const APP_BUILD = "2026.09.29.366";
+const APP_VERSION = "1.8.32";
+const APP_BUILD = "2026.09.29.367";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Комментарии в складских действиях больше не выглядят как крупные числовые поля"
+const APP_RELEASE = "Подпись адреса клиента больше не обрезает действие открытия карты"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.32",
+    date: "29.09.2026",
+    title: "Чистая строка адреса клиента",
+    items: [
+      "В профиле клиента «Последний адрес» и «Открыть карту» теперь разделены и полностью читаются на 320 px.",
+      "Сам адрес по-прежнему может занимать до двух строк.",
+      "Высота карточки и touch-зона ссылки не увеличивались."
+    ]
+  },
   {
     version: "1.8.31",
     date: "29.09.2026",
@@ -7088,7 +7098,7 @@ function clientModal(clientKey) {
         <div><h2>${escapeHtml(client.name || "Клиент")}</h2><p>${escapeHtml(client.phone || "Телефон не указан")}</p></div>
       </section>
 
-      ${client.address ? `<a class="client-profile-address" href="${escapeHtml(yandexMapsUrl(client.address))}" target="_blank" rel="noopener">${icon("location")}<span><small>Последний адрес · открыть в Яндекс Картах</small><strong>${escapeHtml(client.address)}</strong></span></a>` : ""}
+      ${client.address ? `<a class="client-profile-address" href="${escapeHtml(yandexMapsUrl(client.address))}" target="_blank" rel="noopener">${icon("location")}<span><small class="client-profile-address-meta"><span>Последний адрес</span><em>Открыть карту</em></small><strong>${escapeHtml(client.address)}</strong></span></a>` : ""}
 
       <div class="client-profile-actions">
         ${client.phone ? `<a href="tel:${escapeHtml(client.phone)}">${icon("phone")}<span>Позвонить</span></a>` : `<button type="button" disabled>${icon("phone")}<span>Нет телефона</span></button>`}

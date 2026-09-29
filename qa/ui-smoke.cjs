@@ -4072,6 +4072,23 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           headHeight: Math.round(head?.height || 0),
           heroHeight: Math.round(hero?.height || 0),
           addressHeight: Math.round(address?.height || 0),
+          addressMeta: (() => {
+            const meta = document.querySelector(".client-profile-address-meta");
+            const label = meta?.querySelector(":scope > span");
+            const actionText = meta?.querySelector(":scope > em");
+            const labelRect = label?.getBoundingClientRect();
+            const actionRect = actionText?.getBoundingClientRect();
+            return {
+              labelText: label?.textContent?.trim() || "",
+              actionText: actionText?.textContent?.trim() || "",
+              labelScrollWidth: label?.scrollWidth || 0,
+              labelClientWidth: label?.clientWidth || 0,
+              actionScrollWidth: actionText?.scrollWidth || 0,
+              actionClientWidth: actionText?.clientWidth || 0,
+              labelRight: Math.round(labelRect?.right || 0),
+              actionLeft: Math.round(actionRect?.left || 0)
+            };
+          })(),
           actionHeight: Math.round(action?.height || 0),
           kpiHeight: Math.round(kpi?.height || 0),
           noteTag: note?.tagName || "",
@@ -4097,6 +4114,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (clientProfileState.headHeight > 60
         || clientProfileState.heroHeight > 72
         || (clientProfileState.addressHeight && clientProfileState.addressHeight > 60)
+        || (clientProfileState.addressHeight && (
+          clientProfileState.addressMeta.labelText !== "Последний адрес"
+          || clientProfileState.addressMeta.actionText !== "Открыть карту"
+          || clientProfileState.addressMeta.labelScrollWidth > clientProfileState.addressMeta.labelClientWidth + 1
+          || clientProfileState.addressMeta.actionScrollWidth > clientProfileState.addressMeta.actionClientWidth + 1
+          || clientProfileState.addressMeta.actionLeft < clientProfileState.addressMeta.labelRight + 4
+        ))
         || clientProfileState.actionHeight < 44
         || clientProfileState.kpiHeight > 60
         || clientProfileState.noteTag !== "DETAILS"
