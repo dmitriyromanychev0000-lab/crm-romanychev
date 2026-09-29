@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T22:13:51.469Z",
-  "testedSha": "8f71efdf69eb0dd1d4867b09c28324834fea897f",
+  "generatedAt": "2026-09-29T22:23:58.141Z",
+  "testedSha": "63263734105681897a05014365a97b2a9ef7887f",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -577,6 +577,17 @@
     },
     {
       "label": "empty-goods",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "empty-tools",
       "width": 320,
       "bodyScrollWidth": 320,
       "viewportWidth": 320,
@@ -1928,7 +1939,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T22:14:30.174Z"
+      "fallbackCreatedAt": "2026-09-29T22:24:37.712Z"
     },
     {
       "label": "pwa-offline",
