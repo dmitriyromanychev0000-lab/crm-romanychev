@@ -21019,3 +21019,134 @@
     margin: 0 !important;
   }
 }
+
+
+/* 1.7.94 · real-device polish */
+@media screen and (max-width: 520px) {
+  .analytics-content .panel-title > .badge-icon {
+    display: grid !important;
+    width: 30px !important;
+    height: 30px !important;
+    flex: 0 0 30px !important;
+    place-items: center !important;
+    border: 1px solid #2b3942 !important;
+    border-radius: 9px !important;
+    background: #0c1318 !important;
+    color: #ff765c !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.025) !important;
+  }
+
+  .analytics-content .panel-title > .badge-icon .ui-icon,
+  .analytics-kpi-icon .ui-icon,
+  .analytics-focus-icon .ui-icon {
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: auto !important;
+  }
+
+  .analytics-kpi-icon {
+    display: grid !important;
+    width: 30px !important;
+    height: 30px !important;
+    place-items: center !important;
+    border: 1px solid #2b3942 !important;
+    border-radius: 9px !important;
+    background: #0c1318 !important;
+    color: #aab4ba !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.025) !important;
+  }
+
+  .analytics-kpi-icon.green,
+  .analytics-kpi-icon.red,
+  .analytics-kpi-icon.blue,
+  .analytics-kpi-icon.purple {
+    border-color: #2b3942 !important;
+    background: #0c1318 !important;
+    color: #aab4ba !important;
+  }
+
+  .analytics-kpi,
+  .analytics-kpi.primary {
+    align-items: center !important;
+  }
+
+  .analytics-focus-icon {
+    display: grid !important;
+    width: 30px !important;
+    height: 30px !important;
+    place-items: center !important;
+    border: 1px solid #2b3942 !important;
+    border-radius: 9px !important;
+    background: #0c1318 !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.025) !important;
+  }
+
+  .analytics-focus-icon.red {
+    background: #0c1318 !important;
+    color: #ff727b !important;
+  }
+
+  .analytics-focus-icon.yellow {
+    background: #0c1318 !important;
+    color: #dfb45d !important;
+  }
+
+  .analytics-focus-icon.blue {
+    background: #0c1318 !important;
+    color: #6faaf1 !important;
+  }
+
+  .order-editor-modal .direct-expense-card {
+    border-color: #2b3942 !important;
+    background: #11181e !important;
+    background-image: none !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.02) !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-name-field {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0 9px !important;
+    border: 0 !important;
+    border-bottom: 1px solid #33424b !important;
+    border-radius: 8px !important;
+    outline: none !important;
+    background: #0b1217 !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+    font-weight: 720 !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-name-field:focus {
+    border-bottom-color: #ff765c !important;
+    background: #0d151a !important;
+    box-shadow: inset 0 -1px #ff765c !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-name-field::placeholder {
+    color: #68747c !important;
+    font-weight: 560 !important;
+    opacity: 1 !important;
+  }
+
+  .order-editor-modal .direct-expense-card .material-card-head small {
+    color: #7f8a91 !important;
+  }
+
+  .order-editor-modal .direct-expense-controls .field {
+    border-color: #2b3942 !important;
+    background: #0b1217 !important;
+  }
+
+  .order-editor-modal .photo-open-icon {
+    display: none !important;
+  }
+
+  .order-editor-modal .photo-caption {
+    padding-right: 10px !important;
+  }
+}
