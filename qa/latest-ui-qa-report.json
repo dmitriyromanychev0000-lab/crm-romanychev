@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T11:09:49.813Z",
-  "testedSha": "40881e8323f1c57ad5435f2f617df78e30aecec8",
+  "generatedAt": "2026-09-29T11:58:22.676Z",
+  "testedSha": "8f5c1a05d3c7007cd62ca4700ee404377c2fc12e",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1610,7 +1610,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T11:10:29.269Z"
+      "fallbackCreatedAt": "2026-09-29T11:59:01.424Z"
     },
     {
       "label": "pwa-offline",
@@ -1624,5 +1624,249 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "settings-semantic-hierarchy",
+      "settingsSurface": {
+        "profile": "rgb(17, 24, 29)",
+        "app": "rgb(17, 24, 29)",
+        "data": "rgb(17, 24, 29)",
+        "field": "rgb(21, 29, 35)",
+        "toolsLink": "rgb(21, 29, 35)",
+        "backupLink": "rgb(21, 29, 35)",
+        "linkIconBackgrounds": [
+          "rgb(13, 24, 34)",
+          "rgb(22, 17, 36)",
+          "rgb(13, 24, 34)",
+          "rgb(13, 29, 21)",
+          "rgb(13, 29, 21)",
+          "rgb(27, 23, 12)",
+          "rgb(27, 23, 12)",
+          "rgb(12, 25, 28)",
+          "rgb(28, 17, 13)"
+        ],
+        "rowTitleFont": "11.5px",
+        "gridWidth": 274,
+        "companyName": {
+          "left": 23,
+          "top": 200,
+          "width": 274,
+          "height": 44
+        },
+        "name": {
+          "left": 23,
+          "top": 250,
+          "width": 274,
+          "height": 44
+        },
+        "phone": {
+          "left": 23,
+          "top": 300,
+          "width": 133,
+          "height": 62
+        },
+        "companyAddress": {
+          "left": 23,
+          "top": 368,
+          "width": 274,
+          "height": 62
+        },
+        "inn": {
+          "left": 164,
+          "top": 300,
+          "width": 133,
+          "height": 62
+        },
+        "profileLabelFit": [
+          {
+            "selector": ".settings-company-name > span",
+            "scrollWidth": 96,
+            "clientWidth": 96
+          },
+          {
+            "selector": ".settings-provider-name > span",
+            "scrollWidth": 99,
+            "clientWidth": 96
+          }
+        ],
+        "profileTextFit": [
+          {
+            "name": "companyName",
+            "required": 138,
+            "available": 152,
+            "fontSize": 13
+          },
+          {
+            "name": "name",
+            "required": 141,
+            "available": 152,
+            "fontSize": 13
+          }
+        ],
+        "longLinkTitle": {
+          "whiteSpace": "normal",
+          "lineClamp": "2",
+          "textOverflow": "clip",
+          "scrollWidth": 173,
+          "clientWidth": 173
+        },
+        "longLinkDescription": {
+          "whiteSpace": "normal",
+          "lineClamp": "2"
+        },
+        "longLinkHeight": 64,
+        "appRowWidths": [
+          274,
+          274,
+          274,
+          274
+        ],
+        "appRowHeights": [
+          58,
+          53,
+          53,
+          53
+        ],
+        "appActionWidths": [
+          80,
+          80,
+          80,
+          80
+        ],
+        "appActionHeights": [
+          44,
+          44,
+          44,
+          44
+        ],
+        "appCardHeight": 284,
+        "profileCardHeight": 353,
+        "profileFields": [
+          {
+            "height": 44,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "lineHeight": 42
+          },
+          {
+            "height": 44,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "lineHeight": 42
+          },
+          {
+            "height": 44,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "lineHeight": 42
+          },
+          {
+            "height": 44,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "lineHeight": 42
+          },
+          {
+            "height": 44,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "lineHeight": 42
+          }
+        ],
+        "linkAlignment": [
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          },
+          {
+            "iconDelta": 0,
+            "copyDelta": 0,
+            "countDelta": 0,
+            "chevronDelta": 0,
+            "copyRight": 243,
+            "countLeft": 248,
+            "countRight": 264,
+            "chevronLeft": 269
+          }
+        ]
+      }
+    }
+  ]
 }
