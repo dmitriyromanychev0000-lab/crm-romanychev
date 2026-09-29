@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T08:51:22.836Z",
-  "testedSha": "3799d5de6aa31bd61bf34f0576eb77905afd507b",
+  "generatedAt": "2026-09-29T09:11:34.957Z",
+  "testedSha": "326033179e703f3773d16374734bffc06eaa788c",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T08:52:01.818Z"
+      "fallbackCreatedAt": "2026-09-29T09:12:10.105Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,18 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "warranty-result-manager-add",
+      "warrantyResultsAdded": {
+        "rows": 3,
+        "names": [
+          "Гарантия не подтверждена",
+          "Гарантия подтверждена",
+          "Неисправность не выявлена"
+        ]
+      }
+    }
+  ]
 }
