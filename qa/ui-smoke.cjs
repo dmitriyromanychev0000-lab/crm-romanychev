@@ -3059,7 +3059,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
           compatHeight: Math.round(compat?.getBoundingClientRect().height || 0),
-          firstSectionHeight: Math.round(section?.getBoundingClientRect().height || 999)
+          firstSectionHeight: Math.round(section?.getBoundingClientRect().height || 999),
+          initialCostHint: (() => {
+            const node = document.querySelector("#stock-initial-unit-cost");
+            return node ? { scrollWidth: node.scrollWidth, clientWidth: node.clientWidth, whiteSpace: getComputedStyle(node).whiteSpace } : null;
+          })()
         };
       });
       if (stockEditorDensity.headHeight > 66
@@ -3069,7 +3073,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || stockEditorDensity.fieldHeight > 48
         || stockEditorDensity.compatHeight < 44
         || stockEditorDensity.compatHeight > 48
-        || stockEditorDensity.firstSectionHeight > (width <= 340 ? 430 : 410)) {
+        || stockEditorDensity.firstSectionHeight > (width <= 340 ? 430 : 410)
+        || (stockEditorDensity.initialCostHint && stockEditorDensity.initialCostHint.scrollWidth > stockEditorDensity.initialCostHint.clientWidth + 1)) {
         report.failures.push({ width, type: "stock-editor-compact-density", stockEditorDensity });
       }
       await assertPairedFooter(page, width, ".stock-editor-modal .modal-actions", "stock-editor-actions-two-columns");
