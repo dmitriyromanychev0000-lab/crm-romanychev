@@ -200,6 +200,23 @@ async function inspect(page, label, width) {
       })
       .filter((item) => item.w < 44 || item.h < 44)
       .slice(0, 30);
+    const clippedFieldLabels = [...document.querySelectorAll(
+      ".form-group > label, .legacy-settings-grid label > span, .warehouse-filter-control > small, .warranty-manager-tech label > span"
+    )]
+      .filter(visible)
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        return {
+          text: (node.textContent || "").trim().replace(/\\s+/g, " ").slice(0, 80),
+          width: Math.round(rect.width),
+          scrollWidth: Math.round(node.scrollWidth || 0),
+          whiteSpace: style.whiteSpace,
+          overflow: style.overflow
+        };
+      })
+      .filter((item) => item.text && item.scrollWidth > item.width + 1)
+      .slice(0, 30);
     return {
       label: labelValue,
       width: widthValue,
@@ -207,7 +224,8 @@ async function inspect(page, label, width) {
       viewportWidth: window.innerWidth,
       overflow,
       modalOpen: body.classList.contains("modal-open"),
-      tooSmall
+      tooSmall,
+      clippedFieldLabels
     };
   }, { labelValue: label, widthValue: width });
 }
@@ -216,6 +234,9 @@ async function shot(page, width, label, fullPage = true) {
   const result = await inspect(page, label, width);
   if (result.tooSmall.length) {
     report.failures.push({ width, type: "small-touch-target", label, items: result.tooSmall });
+  }
+  if (result.clippedFieldLabels.length) {
+    report.failures.push({ width, type: "clipped-field-label", label, items: result.clippedFieldLabels });
   }
   await page.screenshot({ path: outDir + "/" + width + "-" + label + ".png", fullPage });
   return result;
