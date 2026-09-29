@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.8";
-const APP_BUILD = "2026.09.29.340";
+const APP_VERSION = "1.8.9";
+const APP_BUILD = "2026.09.29.341";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Поля и пиктограммы редакторов получили единое вертикальное выравнивание"
+const APP_RELEASE = "Добавление результата гарантии теперь отображается мгновенно, без ожидания записи в хранилище"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.9",
+    date: "29.09.2026",
+    title: "Мгновенное добавление результата гарантии",
+    items: [
+      "Новый результат гарантийного обращения появляется в списке сразу после нажатия «Добавить».",
+      "Запись в IndexedDB выполняется следом и больше не задерживает визуальное обновление интерфейса.",
+      "Исправление подтверждается повторным Mobile UI QA на проблемной ширине 390 px."
+    ]
+  },
   {
     version: "1.8.8",
     date: "29.09.2026",
@@ -4860,8 +4870,8 @@ function warrantyResultsModal() {
     }
     data.warranty_results.push({ id: crypto.randomUUID(), name, archived: false });
     input.value = "";
-    await saveData();
     renderList();
+    await saveData();
   });
   renderList();
   syncModalScrollLock();
