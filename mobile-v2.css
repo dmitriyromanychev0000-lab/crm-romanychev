@@ -23454,3 +23454,77 @@
     color: #8c969d !important;
   }
 }
+
+
+/* 1.8.12 · Спокойные справочники */
+@media screen and (max-width: 520px) {
+  .source-manager-modal,
+  .warranty-manager-modal {
+    border-color: #303a41 !important;
+    background: #10171b !important;
+    box-shadow: 0 18px 52px rgba(0,0,0,.38) !important;
+  }
+
+  .source-manager-head,
+  .warranty-manager-head {
+    border-bottom-color: #29343b !important;
+    background: #11181d !important;
+  }
+
+  .source-manager-head > button,
+  .warranty-manager-head > button {
+    border-color: #303b42 !important;
+    background: #171f25 !important;
+    color: #dfe5e8 !important;
+    box-shadow: none !important;
+  }
+
+  .source-manager-list,
+  .warranty-manager-list {
+    background: #10171b !important;
+  }
+
+  .source-manager-row .field,
+  .warranty-manager-row .field,
+  .source-manager-add .field,
+  .warranty-manager-add .field,
+  .warranty-manager-tech .field {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #eef2f4 !important;
+    box-shadow: none !important;
+  }
+
+  .source-manager-row .field:focus,
+  .warranty-manager-row .field:focus,
+  .source-manager-add .field:focus,
+  .warranty-manager-add .field:focus,
+  .warranty-manager-tech .field:focus {
+    border-color: rgba(255,118,92,.58) !important;
+    box-shadow: 0 0 0 2px rgba(255,118,92,.055) !important;
+  }
+
+  .source-manager-row > button,
+  .warranty-manager-row > button {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #aeb8be !important;
+    box-shadow: none !important;
+  }
+
+  .source-manager-add,
+  .warranty-manager-add {
+    border-top-color: #29343b !important;
+    background: #11181d !important;
+  }
+
+  .manager-help {
+    color: #9aa4aa !important;
+  }
+
+  .warranty-manager-empty {
+    border-color: #39444b !important;
+    background: #141b20 !important;
+    color: #8f9aa1 !important;
+  }
+}

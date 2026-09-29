@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.11";
-const APP_BUILD = "2026.09.29.344";
+const APP_VERSION = "1.8.12";
+const APP_BUILD = "2026.09.29.345";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Профиль клиента и карточка склада очищены от тяжёлых цветных заливок"
+const APP_RELEASE = "Справочники и менеджеры получили мягкие графитовые поля и кнопки"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.12",
+    date: "29.09.2026",
+    title: "Спокойные справочники",
+    items: [
+      "Источники заявок, типы техники, категории прайса и склада, гарантии и результаты гарантии приведены к одной мягкой графитовой палитре.",
+      "Поля добавления больше не выглядят красными или проваленными в чёрный фон; коралловый появляется только при фокусе и в основном действии.",
+      "Кнопки архива и удаления сохраняют 44 px touch-зону, но их рамки и фон стали менее резкими."
+    ]
+  },
   {
     version: "1.8.11",
     date: "29.09.2026",
