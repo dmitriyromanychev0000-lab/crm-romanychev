@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T06:08:03.902Z",
-  "testedSha": "b490851d1af18aa3fadbbc1e0889beed29f9c46e",
+  "generatedAt": "2026-09-29T07:03:50.651Z",
+  "testedSha": "81f95545d93120360d9f532131c43225468669e3",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1600,7 +1600,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T06:08:35.167Z"
+      "fallbackCreatedAt": "2026-09-29T07:04:26.520Z"
     },
     {
       "label": "pwa-offline",
@@ -1614,5 +1614,440 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 320,
+      "type": "orders-deep-dark-page",
+      "orderPageSurfaces": {
+        "card": "rgba(0, 0, 0, 0)",
+        "money": "rgb(20, 27, 32)",
+        "action": "rgb(20, 27, 32)",
+        "addWidth": 0,
+        "addHeight": 0,
+        "pageWidth": 320,
+        "addText": "",
+        "searchHeight": 52,
+        "filtersHeight": 44,
+        "filterButtonHeight": 44,
+        "visitHeight": 48,
+        "gapAddSearch": 999,
+        "gapSearchFilters": 5,
+        "gapFiltersVisit": 5
+      }
+    },
+    {
+      "width": 320,
+      "type": "orders-density",
+      "orderDensity": {
+        "paddingTop": 13,
+        "paddingBottom": 11,
+        "listGap": 10,
+        "deviceHeight": 44,
+        "moneyHeight": 60,
+        "actionHeight": 50,
+        "actionsMarginTop": 10,
+        "actionsPaddingTop": 9
+      }
+    },
+    {
+      "width": 320,
+      "type": "order-payment-grid-two-columns",
+      "paymentGridLayout": {
+        "gridWidth": 296,
+        "columns": "144px 144px",
+        "rowGap": 9,
+        "fieldHeights": [
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48
+        ],
+        "sum": {
+          "left": 12,
+          "top": 1593,
+          "width": 144
+        },
+        "prepay": {
+          "left": 164,
+          "top": 1593,
+          "width": 144
+        },
+        "discount": {
+          "left": 12,
+          "top": 1663,
+          "width": 144
+        },
+        "percent": {
+          "left": 164,
+          "top": 1663,
+          "width": 144
+        },
+        "gray": {
+          "left": 12,
+          "top": 1732,
+          "width": 144
+        },
+        "white": {
+          "left": 164,
+          "top": 1732,
+          "width": 144
+        },
+        "tag": {
+          "left": 12,
+          "top": 1814,
+          "width": 144
+        }
+      },
+      "paymentPairsAligned": true,
+      "tagCompact": true,
+      "paymentControlsCompact": false
+    },
+    {
+      "width": 320,
+      "type": "order-calculation-summary-compact",
+      "calculationSummaryLayout": {
+        "gridWidth": 0,
+        "columns": "",
+        "cards": [],
+        "button": null
+      }
+    },
+    {
+      "width": 320,
+      "type": "order-editor-compact-density",
+      "orderEditorDensity": {
+        "bodyPaddingTop": 10,
+        "sectionMarginBottom": 16,
+        "titleMarginBottom": 10,
+        "fieldHeight": 46,
+        "textareaHeight": 48,
+        "issueHeight": 48,
+        "diagnosisHeight": 48,
+        "defectsHeight": 44,
+        "primaryControls": [
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          }
+        ],
+        "headerIconDelta": 0,
+        "closeIconDelta": 0,
+        "sectionIconDeltas": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "catalogIconDelta": 0
+      }
+    },
+    {
+      "width": 320,
+      "type": "service-price-auto-fit",
+      "servicePriceBeforeFit": {
+        "readonly": true,
+        "basePrice": 1800,
+        "currentPrice": 1800
+      },
+      "servicePriceAfterFit": {
+        "total": 1800,
+        "readonly": true,
+        "basePrice": 1800
+      }
+    },
+    {
+      "width": 320,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(17, 24, 29)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 61,
+        "costWidth": 105,
+        "footerWidth": 320,
+        "footerInnerWidth": 304,
+        "footerCoverage": 0.931,
+        "footerButtonGap": 6,
+        "secondaryWidth": 122,
+        "primaryWidth": 176,
+        "secondaryTop": 843,
+        "primaryTop": 843
+      }
+    },
+    {
+      "width": 390,
+      "type": "orders-deep-dark-page",
+      "orderPageSurfaces": {
+        "card": "rgba(0, 0, 0, 0)",
+        "money": "rgb(20, 27, 32)",
+        "action": "rgb(20, 27, 32)",
+        "addWidth": 0,
+        "addHeight": 0,
+        "pageWidth": 390,
+        "addText": "",
+        "searchHeight": 52,
+        "filtersHeight": 44,
+        "filterButtonHeight": 44,
+        "visitHeight": 48,
+        "gapAddSearch": 999,
+        "gapSearchFilters": 5,
+        "gapFiltersVisit": 5
+      }
+    },
+    {
+      "width": 390,
+      "type": "orders-density",
+      "orderDensity": {
+        "paddingTop": 13,
+        "paddingBottom": 11,
+        "listGap": 10,
+        "deviceHeight": 44,
+        "moneyHeight": 60,
+        "actionHeight": 50,
+        "actionsMarginTop": 10,
+        "actionsPaddingTop": 9
+      }
+    },
+    {
+      "width": 390,
+      "type": "order-payment-grid-two-columns",
+      "paymentGridLayout": {
+        "gridWidth": 366,
+        "columns": "179px 179px",
+        "rowGap": 9,
+        "fieldHeights": [
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48
+        ],
+        "sum": {
+          "left": 12,
+          "top": 1564,
+          "width": 179
+        },
+        "prepay": {
+          "left": 199,
+          "top": 1564,
+          "width": 179
+        },
+        "discount": {
+          "left": 12,
+          "top": 1634,
+          "width": 179
+        },
+        "percent": {
+          "left": 199,
+          "top": 1634,
+          "width": 179
+        },
+        "gray": {
+          "left": 12,
+          "top": 1704,
+          "width": 179
+        },
+        "white": {
+          "left": 199,
+          "top": 1704,
+          "width": 179
+        },
+        "tag": {
+          "left": 12,
+          "top": 1786,
+          "width": 179
+        }
+      },
+      "paymentPairsAligned": true,
+      "tagCompact": true,
+      "paymentControlsCompact": false
+    },
+    {
+      "width": 390,
+      "type": "order-calculation-summary-compact",
+      "calculationSummaryLayout": {
+        "gridWidth": 0,
+        "columns": "",
+        "cards": [],
+        "button": null
+      }
+    },
+    {
+      "width": 390,
+      "type": "order-editor-compact-density",
+      "orderEditorDensity": {
+        "bodyPaddingTop": 10,
+        "sectionMarginBottom": 16,
+        "titleMarginBottom": 10,
+        "fieldHeight": 46,
+        "textareaHeight": 48,
+        "issueHeight": 48,
+        "diagnosisHeight": 48,
+        "defectsHeight": 44,
+        "primaryControls": [
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          },
+          {
+            "height": 46,
+            "paddingTop": 0,
+            "paddingBottom": 0
+          }
+        ],
+        "headerIconDelta": 0,
+        "closeIconDelta": 0,
+        "sectionIconDeltas": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "catalogIconDelta": 0
+      }
+    },
+    {
+      "width": 390,
+      "type": "service-price-auto-fit",
+      "servicePriceBeforeFit": {
+        "readonly": true,
+        "basePrice": 1800,
+        "currentPrice": 1800
+      },
+      "servicePriceAfterFit": {
+        "total": 1800,
+        "readonly": true,
+        "basePrice": 1800
+      }
+    },
+    {
+      "width": 390,
+      "type": "order-editor-polish",
+      "editorSurfaceState": {
+        "material": "rgb(17, 24, 29)",
+        "materialField": "rgb(9, 15, 20)",
+        "secondaryAction": "rgb(10, 17, 22)",
+        "serviceMatchCount": 0,
+        "clippedMaterialLabels": [],
+        "qtyWidth": 80,
+        "costWidth": 128,
+        "footerWidth": 390,
+        "footerInnerWidth": 366,
+        "footerCoverage": 0.923,
+        "footerButtonGap": 6,
+        "secondaryWidth": 148,
+        "primaryWidth": 212,
+        "secondaryTop": 843,
+        "primaryTop": 843
+      }
+    }
+  ]
 }
