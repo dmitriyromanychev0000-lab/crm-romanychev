@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.50";
-const APP_BUILD = "2026.09.30.385";
+const APP_VERSION = "1.8.51";
+const APP_BUILD = "2026.09.30.386";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
 const APP_RELEASE = "Выбор услуг больше не прыгает"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.51",
+    date: "30.09.2026",
+    title: "Понятные disabled-кнопки покупок",
+    items: [
+      "Недоступные «Поделиться» и «Копировать» больше не выглядят как приглушённые активные кнопки.",
+      "Обе disabled-кнопки используют одинаковую нейтральную поверхность, текст и иконки.",
+      "Активные действия и логика списка покупок не менялись."
+    ]
+  },
   {
     version: "1.8.50",
     date: "30.09.2026",

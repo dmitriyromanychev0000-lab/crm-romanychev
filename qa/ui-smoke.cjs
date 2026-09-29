@@ -5626,6 +5626,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             || parseFloat(emptySurface.radius) < 12) {
             report.failures.push({ width, type: "empty-state-surface", label: emptyLabel, emptySurface });
           }
+          if (emptyLabel === "empty-shopping") {
+            const disabledShoppingActions = await page.evaluate(() => {
+              const buttons = [...document.querySelectorAll(".shopping-page-actions-primary > button:disabled")];
+              return buttons.map((node) => {
+                const style = getComputedStyle(node);
+                const icon = node.querySelector(".ui-icon");
+                return {
+                  background: style.backgroundColor,
+                  color: style.color,
+                  opacity: parseFloat(style.opacity) || 0,
+                  iconColor: icon ? getComputedStyle(icon).color : "missing"
+                };
+              });
+            });
+            if (disabledShoppingActions.length !== 2
+              || disabledShoppingActions.some((item) =>
+                item.background !== "rgb(13, 20, 25)"
+                || item.color !== "rgb(111, 123, 131)"
+                || item.opacity < 0.99
+                || item.iconColor !== "rgb(102, 114, 122)"
+              )) {
+              report.failures.push({ width, type: "empty-shopping-disabled-actions", disabledShoppingActions });
+            }
+          }
           if (emptyLabel === "empty-movements" || emptyLabel === "empty-shopping") {
             const supportEmptyState = await page.evaluate((label) => {
               const root = label === "empty-movements"

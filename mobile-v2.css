@@ -24772,3 +24772,19 @@
     max-width: 260px !important;
   }
 }
+
+
+/* 1.8.51 · Нейтральные disabled-действия покупок */
+@media screen and (max-width: 520px) {
+  .shopping-page-actions-primary > button:disabled {
+    border-color: #263139 !important;
+    background: #0d1419 !important;
+    color: #6f7b83 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  .shopping-page-actions-primary > button:disabled .ui-icon {
+    color: #66727a !important;
+  }
+}
