@@ -24544,3 +24544,13 @@
     line-height: 1.3 !important;
   }
 }
+
+
+
+/* 1.8.47 · Черновики: вернуть плотность карточки на 320 px */
+@media screen and (max-width: 340px) {
+  .legacy-draft-card {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+}

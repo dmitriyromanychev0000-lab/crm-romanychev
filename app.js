@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.46";
-const APP_BUILD = "2026.09.30.381";
+const APP_VERSION = "1.8.47";
+const APP_BUILD = "2026.09.30.382";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Черновики показывают больше данных"
+const APP_RELEASE = "Черновики плотнее на 320 px"
 const APP_CHANGELOG = [
+  {
+    version: "1.8.47",
+    date: "30.09.2026",
+    title: "Плотный черновик на 320 px",
+    items: [
+      "На 320 px карточка черновика стала ниже без потери второй строки с телефоном и датой.",
+      "Кнопки Продолжить и Удалить сохранили touch-зоны 44 px.",
+      "Логика и данные черновиков не менялись."
+    ]
+  },
   {
     version: "1.8.46",
     date: "30.09.2026",
