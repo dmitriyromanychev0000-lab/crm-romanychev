@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T16:29:23.178Z",
-  "testedSha": "2db5a64f510cf0b941dbb64e51f507eb4ae1b602",
+  "generatedAt": "2026-09-29T16:31:42.099Z",
+  "testedSha": "83677aaf7293f2c0ddcf5e4b6caaf497ea74de7c",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1758,7 +1758,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T16:30:01.542Z"
+      "fallbackCreatedAt": "2026-09-29T16:32:22.792Z"
     },
     {
       "label": "pwa-offline",
@@ -1772,34 +1772,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "act-semantic-hierarchy",
-      "actScreenSurface": {
-        "control": "rgb(7, 12, 16)",
-        "field": "rgb(9, 15, 20)",
-        "selected": "rgb(13, 20, 25)",
-        "primary": "rgb(255, 113, 79)",
-        "preview": "rgb(5, 9, 12)",
-        "sheet": "rgb(255, 255, 255)",
-        "headers": [
-          "п/п",
-          "Наименование работ",
-          "Стоимость",
-          "Кол-во",
-          "Сумма"
-        ],
-        "contract": "по договору №0060 от «26» сентябрь 2026 г.",
-        "saveButton": "Сохранить картинку",
-        "bottomNavCount": 0,
-        "backButtonCount": 1,
-        "actSelectFit": {
-          "text": "№0060 · Анна Смирнова · 26.09.2026",
-          "required": 271,
-          "available": 230
-        }
-      }
-    }
-  ]
+  "failures": []
 }
