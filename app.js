@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.55";
-const APP_BUILD = "2026.09.30.390";
+const APP_VERSION = "1.8.56";
+const APP_BUILD = "2026.09.30.391";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Адрес заявки снова читается полностью";
+const APP_RELEASE = "Карточки заявок снова выглядят как в потерянной версии";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.56",
+    date: "30.09.2026",
+    title: "Карточки заявок снова как в потерянной версии",
+    items: [
+      "Вернул архивные радиус, фон и внутренние отступы карточки заявки.",
+      "Денежные блоки и быстрые действия снова отделены теми же поверхностями, что были в сохранённой версии.",
+      "Адрес в две строки, текущие быстрые действия и новая логика заявок сохранены."
+    ]
+  },
   {
     version: "1.8.55",
     date: "30.09.2026",
