@@ -1714,6 +1714,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           metaHeight: Math.round(meta?.getBoundingClientRect().height || 999),
           moneyHeight: Math.round(card?.querySelector(".legacy-order-money")?.getBoundingClientRect().height || 0),
           actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          actionCount: actions?.querySelectorAll(":scope > button, :scope > a").length || 0,
+          actionIconTops: [...(actions?.querySelectorAll(":scope > button .ui-icon, :scope > a .ui-icon") || [])].map((node) => Math.round(node.getBoundingClientRect().top)),
+          actionLabelTops: [...(actions?.querySelectorAll(":scope > button > span, :scope > a > span") || [])].map((node) => Math.round(node.getBoundingClientRect().top)),
+          actionLabelFont: parseFloat(action ? getComputedStyle(action).fontSize : "0"),
           actionsMarginTop: parseFloat(actionsStyle?.marginTop || "999"),
           actionsPaddingTop: parseFloat(actionsStyle?.paddingTop || "999")
         };
@@ -1733,6 +1737,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDensity.moneyHeight > 63
         || orderDensity.actionHeight < 47
         || orderDensity.actionHeight > 48
+        || orderDensity.actionCount !== 4
+        || orderDensity.actionIconTops.length !== 4
+        || Math.max(...orderDensity.actionIconTops) - Math.min(...orderDensity.actionIconTops) > 1
+        || orderDensity.actionLabelTops.length !== 4
+        || Math.max(...orderDensity.actionLabelTops) - Math.min(...orderDensity.actionLabelTops) > 1
+        || orderDensity.actionLabelFont < (width <= 340 ? 7.5 : 8)
         || orderDensity.actionsMarginTop > 11
         || orderDensity.actionsPaddingTop > 10) {
         report.failures.push({ width, type: "orders-density", orderDensity });
