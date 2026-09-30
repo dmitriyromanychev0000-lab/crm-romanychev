@@ -25672,3 +25672,11 @@
     font-size: 12px !important;
   }
 }
+
+/* 1.8.68 · Редактор заявки: подпись количества материала не обрезается на 320 px */
+@media screen and (max-width: 340px) {
+  .order-editor-modal .material-card-controls,
+  .order-editor-modal .material-card-controls:nth-child(n) {
+    grid-template-columns: minmax(64px,.66fr) minmax(100px,1fr) minmax(92px,.92fr) !important;
+  }
+}
