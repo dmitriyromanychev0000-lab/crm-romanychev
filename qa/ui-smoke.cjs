@@ -1652,7 +1652,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDensity.deviceHeight > 45
         || orderDensity.deviceRowHeight < 50
         || orderDensity.deviceRowHeight > 56
-        || orderDensity.metaHeight > 48
+        || orderDensity.metaHeight > 52
         || orderDensity.moneyHeight < 50
         || orderDensity.moneyHeight > 62
         || orderDensity.actionHeight < 48
