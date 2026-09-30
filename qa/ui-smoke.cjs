@@ -5235,6 +5235,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.longLinkDescription.whiteSpace === "nowrap"
         || settingsSurface.longLinkDescription.lineClamp !== "2"
         || settingsSurface.longLinkHeight < 60
+        || (width <= 340 && settingsSurface.longLinkHeight > 62)
         || settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
         || settingsSurface.appActionWidths.some((value) => value < 78 || value > 90)
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
@@ -5272,7 +5273,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       const settingsRowLimit = 64;
-      const settingsLinkLimit = width <= 340 ? 70 : 60;
+      const settingsLinkLimit = width <= 340 ? 56 : 60;
       if (settingsDensity.cardPaddingTop > 10
         || settingsDensity.rowHeight > settingsRowLimit
         || settingsDensity.linkHeight < 54

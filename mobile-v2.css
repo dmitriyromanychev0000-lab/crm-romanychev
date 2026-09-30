@@ -25783,3 +25783,17 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* 1.8.77 · Настройки: убрать лишнюю высоту рабочих ссылок на 320 px */
+@media screen and (max-width: 340px) {
+  .legacy-settings-links > button {
+    min-height: 54px !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+
+  .legacy-settings-links > button[data-action="manage-warranty-results"] {
+    min-height: 60px !important;
+  }
+}

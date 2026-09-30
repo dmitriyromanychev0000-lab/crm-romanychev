@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.76";
-const APP_BUILD = "2026.09.30.411";
+const APP_VERSION = "1.8.77";
+const APP_BUILD = "2026.09.30.412";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактные действия товарника";
+const APP_RELEASE = "Плотнее рабочие данные в настройках";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.77",
+    date: "30.09.2026",
+    title: "Плотнее рабочие данные в настройках",
+    items: [
+      "На 320 px переходы в блоке «Рабочие данные» стали ниже без уменьшения текста.",
+      "Обычные строки занимают 54 px, длинная строка результатов гарантии — 60 px.",
+      "Иконки, счётчики, стрелки и touch-зоны сохранены."
+    ]
+  },
   {
     version: "1.8.76",
     date: "30.09.2026",
