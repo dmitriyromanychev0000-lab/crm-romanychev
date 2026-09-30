@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.61";
-const APP_BUILD = "2026.09.30.396";
+const APP_VERSION = "1.8.62";
+const APP_BUILD = "2026.09.30.397";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Архивная шапка снова компактная";
+const APP_RELEASE = "Заголовок главной снова в масштабе потерянной версии";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.62",
+    date: "30.09.2026",
+    title: "Заголовок главной снова в масштабе потерянной версии",
+    items: [
+      "Уменьшил «Заявки» с 30 px до архивных 23 px.",
+      "Подзаголовок вернул к 10 px и более спокойному серому тону.",
+      "Поджал вертикальный ритм верхней части, не меняя кнопку новой заявки и рабочие фильтры."
+    ]
+  },
   {
     version: "1.8.61",
     date: "30.09.2026",

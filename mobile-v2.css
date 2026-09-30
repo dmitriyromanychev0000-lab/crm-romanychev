@@ -25509,3 +25509,39 @@
     min-height: calc(68px + env(safe-area-inset-top)) !important;
   }
 }
+
+/* 1.8.62 · Главная заявок: заголовок и подзаголовок в масштабе архивной версии 70c1a300 */
+@media screen and (max-width: 520px) {
+  .legacy-orders-page {
+    padding-top: 7px !important;
+  }
+
+  .legacy-orders-head {
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-orders-head h1 {
+    font-size: 23px !important;
+    font-weight: 720 !important;
+    line-height: 1.08 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .legacy-orders-head p {
+    margin-top: 4px !important;
+    color: #8c9298 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    line-height: 1.15 !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-orders-head h1 {
+    font-size: 22px !important;
+  }
+
+  .legacy-orders-head p {
+    font-size: 9.5px !important;
+  }
+}
