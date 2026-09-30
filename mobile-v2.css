@@ -25545,3 +25545,10 @@
     font-size: 9.5px !important;
   }
 }
+
+/* 1.8.63 · Главная заявок: переопределить старый content-селектор и убрать лишний 1 px сверху */
+@media screen and (max-width: 520px) {
+  .content.legacy-orders-page {
+    padding-top: 7px !important;
+  }
+}
