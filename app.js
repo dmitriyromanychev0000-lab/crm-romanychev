@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.73";
-const APP_BUILD = "2026.09.30.408";
+const APP_VERSION = "1.8.74";
+const APP_BUILD = "2026.09.30.409";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Уведомления исчезают без шлейфа";
+const APP_RELEASE = "Материал добавляется без лишней плашки";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.74",
+    date: "30.09.2026",
+    title: "Материал добавляется без лишней плашки",
+    items: [
+      "После выбора материала строка появляется сразу без toast «Материал добавлен» поверх следующего блока.",
+      "Сам материал, количество, себестоимость, место и списание со склада работают как раньше.",
+      "Ошибки остатка и увеличение уже выбранного материала по-прежнему показывают полезные уведомления."
+    ]
+  },
   {
     version: "1.8.73",
     date: "30.09.2026",
@@ -6815,7 +6825,6 @@ function openMaterialCatalog(orderModal) {
       }));
       const added = orderModal.querySelector(`[data-material-row][data-warehouse-id="${CSS.escape(String(item.id))}"]`);
       added?.querySelector('[data-line="qty"]')?.dispatchEvent(new Event("input", { bubbles:true }));
-      toast("Материал добавлен");
     }
     render();
   });

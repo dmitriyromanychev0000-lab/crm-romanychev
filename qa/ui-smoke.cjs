@@ -2359,20 +2359,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       }
       if (width === 390) {
         await page.locator("#material-lines [data-material-row]").scrollIntoViewIfNeeded();
-        const toastSafeState = await page.evaluate(() => {
-          const toast = document.querySelector("#toast.toast.show");
-          const footer = document.querySelector(".order-editor-modal .modal-actions");
-          const tr = toast?.getBoundingClientRect();
-          const fr = footer?.getBoundingClientRect();
+        const materialToastState = await page.evaluate(() => {
+          const toast = document.querySelector("#toast.toast");
           return {
-            visible: Boolean(toast),
-            toastBottom: tr ? Math.round(tr.bottom) : 0,
-            footerTop: fr ? Math.round(fr.top) : 0,
-            gap: tr && fr ? Math.round(fr.top - tr.bottom) : -999
+            show: toast?.classList.contains("show") || false,
+            opacity: toast ? Number.parseFloat(getComputedStyle(toast).opacity || "0") : 0,
+            text: toast?.textContent?.trim() || ""
           };
         });
-        if (!toastSafeState.visible || toastSafeState.gap < 12) {
-          report.failures.push({ width, type: "modal-toast-overlap", toastSafeState });
+        if (materialToastState.show || materialToastState.opacity > 0.05 || materialToastState.text === "Материал добавлен") {
+          report.failures.push({ width, type: "material-added-toast", materialToastState });
         }
         report.results.push(await shot(page, width, "order-editor-material-row", false));
       }
