@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.66";
-const APP_BUILD = "2026.09.30.401";
+const APP_VERSION = "1.8.67";
+const APP_BUILD = "2026.09.30.402";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Быстрые действия карточки выровнены";
+const APP_RELEASE = "Редактор заявки снова компактнее";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.67",
+    date: "30.09.2026",
+    title: "Редактор заявки снова компактнее",
+    items: [
+      "Вернул рабочим полям высоту 46 px вместо раздутых 48 px.",
+      "Секционные иконки уменьшены до 28 px, а вертикальные отступы секций и подписей поджаты.",
+      "Логика формы, автоподстановка, каталоги, гарантия и расчёты не менялись."
+    ]
+  },
   {
     version: "1.8.66",
     date: "30.09.2026",

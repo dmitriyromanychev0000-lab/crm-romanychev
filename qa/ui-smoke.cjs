@@ -1895,8 +1895,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         return {
           bodyPaddingTop: bodyStyle ? px(bodyStyle.paddingTop) : 999,
           sectionMarginBottom: sectionStyle ? px(sectionStyle.marginBottom) : 999,
+          sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
+          sectionPaddingBottom: sectionStyle ? px(sectionStyle.paddingBottom) : 999,
           titleMarginBottom: titleStyle ? px(titleStyle.marginBottom) : 999,
+          sectionIconSize: Math.round(sectionIcons[0]?.getBoundingClientRect().width || 0),
           fieldHeight: Math.round(field?.getBoundingClientRect().height || 0),
+          fieldFont: parseFloat(field ? getComputedStyle(field).fontSize : "0"),
+          labelMarginBottom: (() => {
+            const label = document.querySelector(".order-editor-section .form-group label");
+            return label ? px(getComputedStyle(label).marginBottom) : 999;
+          })(),
           textareaHeight: Math.round(textarea?.getBoundingClientRect().height || 0),
           issueHeight: Math.round(issue?.getBoundingClientRect().height || 0),
           diagnosisHeight: Math.round(diagnosis?.getBoundingClientRect().height || 0),
@@ -1917,9 +1925,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (orderEditorDensity.bodyPaddingTop > 12
         || orderEditorDensity.sectionMarginBottom > 18
-        || orderEditorDensity.titleMarginBottom > 10
-        || orderEditorDensity.fieldHeight < 44
+        || orderEditorDensity.sectionPaddingTop > 10
+        || orderEditorDensity.sectionPaddingBottom > 10
+        || orderEditorDensity.titleMarginBottom > 7
+        || orderEditorDensity.sectionIconSize !== 28
+        || orderEditorDensity.fieldHeight < 46
         || orderEditorDensity.fieldHeight > 48
+        || orderEditorDensity.fieldFont < 12
+        || orderEditorDensity.labelMarginBottom > 3
         || orderEditorDensity.textareaHeight > 50
         || orderEditorDensity.issueHeight < 46
         || orderEditorDensity.issueHeight > 50
