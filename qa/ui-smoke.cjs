@@ -1607,6 +1607,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filters = document.querySelector(".legacy-order-filters")?.getBoundingClientRect();
         const filterButton = document.querySelector(".legacy-order-filters button")?.getBoundingClientRect();
         const visit = document.querySelector(".legacy-visit-filter .field")?.getBoundingClientRect();
+        const nearest = document.querySelector(".legacy-nearest-visit")?.getBoundingClientRect();
+        const head = document.querySelector(".legacy-orders-head")?.getBoundingClientRect();
         const card = document.querySelector(".legacy-order-card");
         const money = card?.querySelector(".legacy-order-money");
         const address = card?.querySelector(".legacy-order-meta .address");
@@ -1633,6 +1635,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           filtersHeight: Math.round(filters?.height || 0),
           filterButtonHeight: Math.round(filterButton?.height || 0),
           visitHeight: Math.round(visit?.height || 0),
+          searchWidth: Math.round(search?.width || 0),
+          filtersWidth: Math.round(filters?.width || 0),
+          visitWidth: Math.round(visit?.width || 0),
+          nearestWidth: Math.round(nearest?.width || 0),
+          headWidth: Math.round(head?.width || 0),
+          cardWidth: Math.round(card?.getBoundingClientRect().width || 0),
           gapAddSearch: addRect && search ? Math.round(search.top - addRect.bottom) : 999,
           gapSearchFilters: search && filters ? Math.round(filters.top - search.bottom) : 999,
           gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999,
@@ -1661,6 +1669,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && orderPageSurfaces.subtitleFont <= (width <= 340 ? 10 : 10.5)
         && orderPageSurfaces.headMarginBottom <= 7
         && orderPageSurfaces.pagePaddingTop <= 7
+        && Math.abs(orderPageSurfaces.searchWidth - orderPageSurfaces.cardWidth) <= 1
+        && Math.abs(orderPageSurfaces.filtersWidth - orderPageSurfaces.cardWidth) <= 1
+        && Math.abs(orderPageSurfaces.visitWidth - orderPageSurfaces.cardWidth) <= 1
+        && (!orderPageSurfaces.nearestWidth || Math.abs(orderPageSurfaces.nearestWidth - orderPageSurfaces.cardWidth) <= 1)
+        && Math.abs(orderPageSurfaces.headWidth - orderPageSurfaces.cardWidth) <= 1
         && orderPageSurfaces.addLabel.includes("Новая заявка");
       if (!restoredOrdersLayout
         || orderPageSurfaces.moneyBlocks !== 1

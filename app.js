@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.64";
-const APP_BUILD = "2026.09.30.399";
+const APP_VERSION = "1.8.65";
+const APP_BUILD = "2026.09.30.400";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Список заявок использует больше ширины экрана";
+const APP_RELEASE = "Главная заявок выровнена по одной рабочей ширине";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.65",
+    date: "30.09.2026",
+    title: "Главная заявок выровнена по одной рабочей ширине",
+    items: [
+      "Заголовок, ближайшие визиты, поиск и фильтры теперь выровнены по ширине карточек.",
+      "Убраны лишние внутренние боковые margin, из-за которых поля выглядели уже списка.",
+      "Высоты touch-зон и внутренности карточек не менялись."
+    ]
+  },
   {
     version: "1.8.64",
     date: "30.09.2026",
