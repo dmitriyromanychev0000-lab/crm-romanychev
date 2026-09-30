@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.62";
-const APP_BUILD = "2026.09.30.397";
+const APP_VERSION = "1.8.63";
+const APP_BUILD = "2026.09.30.398";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Заголовок главной снова в масштабе потерянной версии";
+const APP_RELEASE = "Верх главной доведён до архивной плотности";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.63",
+    date: "30.09.2026",
+    title: "Верх главной доведён до архивной плотности",
+    items: [
+      "Исправил старый более сильный селектор, который оставлял лишний 1 px сверху.",
+      "Фактический верхний отступ главной теперь 7 px, как зафиксировано в новом QA.",
+      "Остальная геометрия 1.8.62 не изменялась."
+    ]
+  },
   {
     version: "1.8.62",
     date: "30.09.2026",
