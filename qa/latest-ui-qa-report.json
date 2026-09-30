@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T11:23:44.911Z",
-  "testedSha": "55ef2878727bf8bf6fa028e7caaa211cb728796c",
+  "generatedAt": "2026-09-30T11:28:19.485Z",
+  "testedSha": "1149f2019864a21a017609ed370ec12f81a0854a",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T11:24:18.580Z"
+      "fallbackCreatedAt": "2026-09-30T11:29:00.470Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,29 +1997,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "order-editor-polish",
-      "editorSurfaceState": {
-        "material": "rgb(17, 24, 29)",
-        "materialField": "rgb(9, 15, 20)",
-        "secondaryAction": "rgb(10, 17, 22)",
-        "serviceMatchCount": 0,
-        "clippedMaterialLabels": [
-          "Кол-во · шт"
-        ],
-        "qtyWidth": 58,
-        "costWidth": 100,
-        "footerWidth": 320,
-        "footerInnerWidth": 304,
-        "footerCoverage": 0.931,
-        "footerButtonGap": 6,
-        "secondaryWidth": 122,
-        "primaryWidth": 176,
-        "secondaryTop": 843,
-        "primaryTop": 843
-      }
-    }
-  ]
+  "failures": []
 }
