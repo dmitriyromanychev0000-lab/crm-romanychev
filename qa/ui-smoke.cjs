@@ -1511,6 +1511,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         headers: [...document.querySelectorAll(".act-work-table th")].map((node) => node.textContent.trim()),
         contract: document.querySelector(".act-contract-line")?.textContent || "",
         saveButton: document.querySelector('[data-action="save-act-image"]')?.textContent || "",
+        printButton: document.querySelector('[data-action="print-act"]')?.textContent || "",
+        actActionCount: document.querySelectorAll(".legacy-act-control-actions > button").length,
+        actActionColumns: getComputedStyle(document.querySelector(".legacy-act-control-actions")).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length,
         bottomNavCount: document.querySelectorAll(".bottom-nav").length,
         backButtonCount: document.querySelectorAll(".legacy-act-head .legacy-back-button").length,
         actSelectFit: (() => {
@@ -1537,7 +1540,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || actScreenSurface.headers.length !== 5
         || actScreenSurface.headers.includes("Гарантия")
         || !actScreenSurface.contract.includes("№0060")
-        || !actScreenSurface.saveButton.includes("Сохранить картинку")
+        || !actScreenSurface.saveButton.includes("Картинка")
+        || !actScreenSurface.printButton.includes("Печать / PDF")
+        || actScreenSurface.actActionCount !== 2
+        || actScreenSurface.actActionColumns !== 2
         || actScreenSurface.bottomNavCount !== 0
         || actScreenSurface.backButtonCount !== 1
         || actScreenSurface.actSelectFit.text.includes("Холодильник")
@@ -1612,6 +1618,36 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || actPreviewState.tableRight > actPreviewState.previewRight + 1
         || actPreviewState.titleOverflow > 1) {
         report.failures.push({ width, type: "act-mobile-preview-fit", actPreviewState });
+      }
+
+      await page.emulateMedia({ media: "print" });
+      const actPrintState = await page.evaluate(() => {
+        const sheet = document.querySelector(".act-sheet");
+        const table = document.querySelector(".act-work-table");
+        const control = document.querySelector(".legacy-act-control");
+        const sr = sheet?.getBoundingClientRect();
+        const tr = table?.getBoundingClientRect();
+        const style = sheet ? getComputedStyle(sheet) : null;
+        return {
+          sheetWidth: sr ? Math.round(sr.width) : 0,
+          sheetHeight: sr ? Math.round(sr.height) : 0,
+          tableRight: tr ? Math.round(tr.right) : 0,
+          sheetRight: sr ? Math.round(sr.right) : 0,
+          background: style?.backgroundColor || "missing",
+          fontFamily: style?.fontFamily || "missing",
+          controlDisplay: control ? getComputedStyle(control).display : "missing"
+        };
+      });
+      await page.emulateMedia({ media: "screen" });
+      if (actPrintState.sheetWidth < 716
+        || actPrintState.sheetWidth > 720
+        || actPrintState.sheetHeight < 1045
+        || actPrintState.sheetHeight > 1050
+        || actPrintState.tableRight > actPrintState.sheetRight + 1
+        || actPrintState.background !== "rgb(255, 255, 255)"
+        || !actPrintState.fontFamily.toLowerCase().includes("times")
+        || actPrintState.controlDisplay !== "none") {
+        report.failures.push({ width, type: "act-a4-print-layout", actPrintState });
       }
 
       await setState(page, uiState({ activePage: "orders" }));

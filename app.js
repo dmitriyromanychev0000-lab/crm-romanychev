@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.79";
-const APP_BUILD = "2026.09.30.414";
+const APP_VERSION = "1.8.80";
+const APP_BUILD = "2026.09.30.415";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Ровные кнопки добавления в справочниках";
+const APP_RELEASE = "Печать акта в PDF и A4";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.80",
+    date: "30.09.2026",
+    title: "Печать акта в PDF и A4",
+    items: [
+      "В разделе «Акт» появилась отдельная кнопка «Печать / PDF» рядом с сохранением картинки.",
+      "Кнопка открывает системную печать: акт можно отправить на принтер или сохранить как PDF.",
+      "Печатный режим проверяется как A4: служебный интерфейс скрыт, таблица остаётся внутри листа."
+    ]
+  },
   {
     version: "1.8.79",
     date: "30.09.2026",
@@ -5058,14 +5068,15 @@ function actPage() {
     </div>
 
     <section class="legacy-act-control no-print">
-      <div class="legacy-act-control-title"><span>${icon("document")}</span><div><h2>Акт выполненных работ</h2><small>Предпросмотр · сохранение картинкой</small></div></div>
+      <div class="legacy-act-control-title"><span>${icon("document")}</span><div><h2>Акт выполненных работ</h2><small>Предпросмотр · печать / PDF / картинка</small></div></div>
       <label><span>ВЫБЕРИТЕ ЗАЯВКУ</span><select class="field" id="act-order-select"><option value="">— Заявка —</option>${orders.map((item) => `<option value="${escapeHtml(item.id)}" ${String(item.id) === String(selectedActOrderId) ? "selected" : ""}>№${escapeHtml(item.id)} · ${escapeHtml(item.name || "Без имени")}</option>`).join("")}</select></label>
       ${order ? `<div class="legacy-act-selected">
         <span class="legacy-act-selected-icon">${icon(applianceIconName(order.tech))}</span>
         <span><small>В АКТЕ</small><strong>№${escapeHtml(order.id || "—")} · ${escapeHtml(order.name || "Клиент")}</strong><em>${escapeHtml([order.tech, order.brand].filter(Boolean).join(" · ") || "Техника")} · ${money(actTotal)}</em></span>
       </div>` : ""}
-      <div class="legacy-act-control-actions single">
-        <button type="button" class="legacy-orange-button" data-action="save-act-image" ${order ? "" : "disabled"}>${icon("download")}<span>Сохранить картинку</span></button>
+      <div class="legacy-act-control-actions">
+        <button type="button" class="legacy-dark-button" data-action="print-act" ${order ? "" : "disabled"}>${icon("printer")}<span>Печать / PDF</span></button>
+        <button type="button" class="legacy-orange-button" data-action="save-act-image" ${order ? "" : "disabled"}>${icon("download")}<span>Картинка</span></button>
       </div>
     </section>
 
@@ -9010,6 +9021,11 @@ app.addEventListener("click", async (event) => {
     const id = event.target.closest("[data-action]").dataset.id;
     const sheet = (data.goods_sheets || []).find((item) => String(item.id) === String(id));
     if (sheet) return goodsModal(sheet);
+  }
+  if (action === "print-act") {
+    if (!document.querySelector(".act-sheet")) return toast("Сначала выбери заявку");
+    window.print();
+    return;
   }
   if (action === "save-act-image") return saveActAsImage();
   if (action === "toggle-auto") {

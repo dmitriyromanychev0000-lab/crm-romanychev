@@ -25840,3 +25840,41 @@
     line-height: 1 !important;
   }
 }
+
+
+/* 1.8.80 · Акт: печать/PDF и картинка в одной компактной строке */
+@media screen and (max-width: 520px) {
+  .legacy-act-control-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 6px !important;
+  }
+
+  .legacy-act-control-actions > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 6px 5px !important;
+    justify-self: stretch !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-act-control-actions [data-action="print-act"] {
+    border-color: #303b42 !important;
+    background: #151d23 !important;
+    color: #e8edef !important;
+    box-shadow: none !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-act-control-actions > button {
+    gap: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .legacy-act-control-actions > button .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
