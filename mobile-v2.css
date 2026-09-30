@@ -24788,3 +24788,37 @@
     color: #66727a !important;
   }
 }
+
+
+
+/* 1.8.53 · Главная заявок: вернуть информационную структуру потерянной версии */
+@media screen and (max-width: 520px) {
+  .legacy-order-device {
+    grid-template-columns: 44px minmax(0,1fr) !important;
+  }
+
+  .legacy-order-money {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .legacy-order-meta .address {
+    flex: 1 1 150px !important;
+    max-width: none !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-device {
+    grid-template-columns: 40px minmax(0,1fr) !important;
+  }
+
+  .legacy-order-money {
+    gap: 6px !important;
+  }
+
+  .legacy-order-money > div {
+    padding-right: 7px !important;
+    padding-left: 7px !important;
+  }
+}

@@ -1573,10 +1573,17 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const filters = document.querySelector(".legacy-order-filters")?.getBoundingClientRect();
         const filterButton = document.querySelector(".legacy-order-filters button")?.getBoundingClientRect();
         const visit = document.querySelector(".legacy-visit-filter .field")?.getBoundingClientRect();
+        const card = document.querySelector(".legacy-order-card");
+        const money = card?.querySelector(".legacy-order-money");
+        const address = card?.querySelector(".legacy-order-meta .address");
+        const moneyLabels = [...(money?.querySelectorAll("span") || [])].map((node) => node.textContent.trim());
         return {
-          card: getComputedStyle(document.querySelector(".legacy-order-card")).backgroundColor,
-          sumColor: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-sum")).color,
-          moneyBlocks: document.querySelectorAll(".legacy-order-card .legacy-order-money").length,
+          card: getComputedStyle(card).backgroundColor,
+          moneyBlocks: card?.querySelectorAll(".legacy-order-money").length || 0,
+          moneyCells: money?.children.length || 0,
+          moneyLabels,
+          addressText: address?.textContent?.trim() || "",
+          addressDisplay: address ? getComputedStyle(address).display : "missing",
           action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor,
           addWidth: Math.round(addRect?.width || 0),
           addHeight: Math.round(addRect?.height || 0),
@@ -1606,8 +1613,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && orderPageSurfaces.gapFiltersVisit <= 8
         && orderPageSurfaces.addLabel.includes("Новая заявка");
       if (!restoredOrdersLayout
-        || orderPageSurfaces.moneyBlocks !== 0
-        || orderPageSurfaces.sumColor !== "rgb(241, 243, 244)"
+        || orderPageSurfaces.moneyBlocks !== 1
+        || orderPageSurfaces.moneyCells !== 2
+        || !orderPageSurfaces.moneyLabels.some((label) => label.includes("СУММА КЛИЕНТА"))
+        || !orderPageSurfaces.moneyLabels.some((label) => label.includes("НА РУКИ"))
+        || !orderPageSurfaces.addressText.includes("Санкт-Петербург")
+        || !["flex","inline-flex"].includes(orderPageSurfaces.addressDisplay)
         || orderPageSurfaces.action !== "rgb(20, 27, 32)") {
         report.failures.push({ width, type: "orders-restored-layout", orderPageSurfaces, restoredOrdersLayout });
       }
@@ -1629,6 +1640,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           deviceHeight: Math.round(device?.getBoundingClientRect().height || 999),
           deviceRowHeight: Math.round(deviceRow?.getBoundingClientRect().height || 999),
           metaHeight: Math.round(meta?.getBoundingClientRect().height || 999),
+          moneyHeight: Math.round(card?.querySelector(".legacy-order-money")?.getBoundingClientRect().height || 0),
           actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
           actionsMarginTop: parseFloat(actionsStyle?.marginTop || "999"),
           actionsPaddingTop: parseFloat(actionsStyle?.paddingTop || "999")
@@ -1640,7 +1652,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDensity.deviceHeight > 45
         || orderDensity.deviceRowHeight < 50
         || orderDensity.deviceRowHeight > 56
-        || orderDensity.metaHeight > 38
+        || orderDensity.metaHeight > 58
+        || orderDensity.moneyHeight < 50
+        || orderDensity.moneyHeight > 62
         || orderDensity.actionHeight < 48
         || orderDensity.actionHeight > 51
         || orderDensity.actionsMarginTop > 11
@@ -5427,9 +5441,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               || orderTextState.nameTextOverflow === "ellipsis"
               || orderTextState.modelWhiteSpace !== "nowrap"
               || orderTextState.modelTextOverflow !== "ellipsis"
-              || orderTextState.addressWhiteSpace !== "missing"
-              || orderTextState.addressTextOverflow !== "missing"
-              || orderTextState.addressHeight !== 0) {
+              || orderTextState.addressWhiteSpace === "missing"
+              || orderTextState.addressHeight < 44
+              || orderTextState.addressHeight > 60) {
               report.failures.push({ width, type: "stress-order-readable-text", orderTextState });
             }
           }
