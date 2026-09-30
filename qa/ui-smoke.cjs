@@ -1693,6 +1693,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           paddingTop: parseFloat(cardStyle?.paddingTop || "999"),
           paddingBottom: parseFloat(cardStyle?.paddingBottom || "999"),
           listGap: parseFloat(listStyle?.rowGap || listStyle?.gap || "999"),
+          pagePaddingLeft: parseFloat(getComputedStyle(document.querySelector(".legacy-orders-page")).paddingLeft || "999"),
+          pagePaddingRight: parseFloat(getComputedStyle(document.querySelector(".legacy-orders-page")).paddingRight || "999"),
+          cardWidth: Math.round(card?.getBoundingClientRect().width || 0),
           deviceHeight: Math.round(device?.getBoundingClientRect().height || 999),
           deviceRowHeight: Math.round(deviceRow?.getBoundingClientRect().height || 999),
           metaHeight: Math.round(meta?.getBoundingClientRect().height || 999),
@@ -1704,7 +1707,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (orderDensity.paddingTop > 14
         || orderDensity.paddingBottom > 12
-        || orderDensity.listGap > 11
+        || orderDensity.listGap > (width <= 340 ? 6 : 7)
+        || orderDensity.pagePaddingLeft > (width <= 340 ? 5 : 6)
+        || orderDensity.pagePaddingRight > (width <= 340 ? 5 : 6)
+        || orderDensity.cardWidth < width - (width <= 340 ? 10 : 12)
         || orderDensity.deviceHeight < 47
         || orderDensity.deviceHeight > 48
         || orderDensity.deviceRowHeight < 47
