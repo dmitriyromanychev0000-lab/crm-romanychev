@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T07:38:56.952Z",
-  "testedSha": "695c7af49770b19de3e2b5db10b9ae5841688ee7",
+  "generatedAt": "2026-09-30T07:42:04.452Z",
+  "testedSha": "c6937a5a4fd8220f36257fc226546bd2b7488ea1",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T07:39:37.679Z"
+      "fallbackCreatedAt": "2026-09-30T07:42:46.304Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,22 +1997,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "orders-density",
-      "orderDensity": {
-        "paddingTop": 13,
-        "paddingBottom": 11,
-        "listGap": 10,
-        "deviceHeight": 44,
-        "deviceRowHeight": 52,
-        "metaHeight": 51,
-        "moneyHeight": 60,
-        "actionHeight": 50,
-        "actionsMarginTop": 9,
-        "actionsPaddingTop": 8
-      }
-    }
-  ]
+  "failures": []
 }
