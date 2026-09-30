@@ -25751,3 +25751,35 @@
     box-shadow: inset 0 -1px #ff8068 !important;
   }
 }
+
+
+/* 1.8.76 · Товарник: три служебных действия одной строкой и на узких телефонах */
+@media screen and (max-width: 360px) {
+  .legacy-goods-editor-actions {
+    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .legacy-goods-editor-actions button {
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 5px 3px !important;
+    gap: 4px !important;
+    font-size: 9.5px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-goods-editor-actions button .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px !important;
+  }
+
+  .legacy-goods-editor-actions button > span {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+}

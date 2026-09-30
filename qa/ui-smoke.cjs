@@ -4599,6 +4599,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const addLineRect = addLine?.getBoundingClientRect();
         const pickerRect = picker?.getBoundingClientRect();
         const addButtonRect = addButton?.getBoundingClientRect();
+        const utilityButtons = [...document.querySelectorAll(".legacy-goods-editor-actions button")];
+        const utilityRects = utilityButtons.map((button) => button.getBoundingClientRect());
+        const utilityLabels = utilityButtons.map((button) => button.querySelector("span"));
         return {
           modal: getComputedStyle(document.querySelector(".legacy-goods-editor")).backgroundColor,
           panel: getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).backgroundColor,
@@ -4621,7 +4624,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           panelPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-editor .legacy-editor-panel")).paddingTop) || 0,
           targetPaddingTop: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-target")).paddingTop) || 0,
           savebarGap: parseFloat(getComputedStyle(document.querySelector(".legacy-goods-savebar")).rowGap) || 0,
-          addButtonHeight: Math.round(addButtonRect?.height || 0)
+          addButtonHeight: Math.round(addButtonRect?.height || 0),
+          utilityCount: utilityButtons.length,
+          utilityColumns: getComputedStyle(document.querySelector(".legacy-goods-editor-actions")).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length,
+          utilityTopSpread: utilityRects.length ? Math.round(Math.max(...utilityRects.map((rect) => rect.top)) - Math.min(...utilityRects.map((rect) => rect.top))) : 999,
+          utilityMinHeight: utilityRects.length ? Math.round(Math.min(...utilityRects.map((rect) => rect.height))) : 0,
+          utilityClippedLabels: utilityLabels.filter((label) => label && label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent.trim()),
+          utilityLabels: utilityLabels.map((label) => label?.textContent?.trim() || "")
         };
       });
       if (goodsEditorState.modal !== "rgb(3, 7, 10)"
@@ -4645,7 +4654,13 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || goodsEditorState.panelPaddingTop > 10
         || goodsEditorState.targetPaddingTop > 9
         || goodsEditorState.savebarGap > 6.5
-        || goodsEditorState.addButtonHeight < 44) {
+        || goodsEditorState.addButtonHeight < 44
+        || goodsEditorState.utilityCount !== 3
+        || goodsEditorState.utilityColumns !== 3
+        || goodsEditorState.utilityTopSpread > 2
+        || goodsEditorState.utilityMinHeight < 48
+        || goodsEditorState.utilityClippedLabels.length
+        || goodsEditorState.utilityLabels.join("|") !== "Подогнать|Сбросить|К итогу") {
         report.failures.push({ width, type: "goods-editor-compact-density", goodsEditorState });
       }
       await assertPairedFooter(page, width, ".legacy-goods-savebar", "goods-editor-actions-two-columns");

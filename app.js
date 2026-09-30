@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.75";
-const APP_BUILD = "2026.09.30.410";
+const APP_VERSION = "1.8.76";
+const APP_BUILD = "2026.09.30.411";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Чистая шапка выбранного материала";
+const APP_RELEASE = "Компактные действия товарника";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.76",
+    date: "30.09.2026",
+    title: "Компактные действия товарника",
+    items: [
+      "«Подогнать», «Сбросить» и «К итогу» теперь стоят одной строкой даже на 320–360 px.",
+      "Touch-зоны остались 48 px, а подписи сокращены без потери смысла.",
+      "Расчёт целевой суммы, восстановление исходных цен и переход к предпросмотру не менялись."
+    ]
+  },
   {
     version: "1.8.75",
     date: "30.09.2026",
@@ -8056,9 +8066,9 @@ function goodsModal(existing = null, seed = null) {
       </div>
 
       <div class="legacy-goods-editor-actions">
-        <button type="button" class="legacy-purple-button" id="adjust-goods-prices">${icon("price")}<span>Подогнать цены</span></button>
-        <button type="button" class="legacy-dark-button" id="restore-goods-prices">${icon("refresh")}<span>Вернуть исходные<br>цены</span></button>
-        <button type="button" class="legacy-orange-button" id="preview-goods">${icon("eye")}<span>К итогу</span></button>
+        <button type="button" class="legacy-purple-button" id="adjust-goods-prices" aria-label="Подогнать цены под целевую сумму" title="Подогнать цены под целевую сумму">${icon("price")}<span>Подогнать</span></button>
+        <button type="button" class="legacy-dark-button" id="restore-goods-prices" aria-label="Вернуть исходные цены" title="Вернуть исходные цены">${icon("refresh")}<span>Сбросить</span></button>
+        <button type="button" class="legacy-orange-button" id="preview-goods" aria-label="Перейти к итогу" title="Перейти к итогу">${icon("eye")}<span>К итогу</span></button>
       </div>
     </section>
 
