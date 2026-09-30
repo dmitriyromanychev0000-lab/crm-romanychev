@@ -1635,7 +1635,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           visitHeight: Math.round(visit?.height || 0),
           gapAddSearch: addRect && search ? Math.round(search.top - addRect.bottom) : 999,
           gapSearchFilters: search && filters ? Math.round(filters.top - search.bottom) : 999,
-          gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999
+          gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999,
+          titleFont: parseFloat(getComputedStyle(document.querySelector(".legacy-orders-head h1")).fontSize || "0"),
+          subtitleFont: parseFloat(getComputedStyle(document.querySelector(".legacy-orders-head p")).fontSize || "0"),
+          headMarginBottom: parseFloat(getComputedStyle(document.querySelector(".legacy-orders-head")).marginBottom || "0"),
+          pagePaddingTop: parseFloat(getComputedStyle(page).paddingTop || "0")
         };
       });
       const restoredOrdersLayout = orderPageSurfaces.addWidth >= 46
@@ -1651,6 +1655,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         && orderPageSurfaces.visitHeight <= 45
         && orderPageSurfaces.gapSearchFilters <= 7
         && orderPageSurfaces.gapFiltersVisit <= 7
+        && orderPageSurfaces.titleFont >= (width <= 340 ? 22 : 23)
+        && orderPageSurfaces.titleFont <= (width <= 340 ? 22.5 : 23.5)
+        && orderPageSurfaces.subtitleFont >= (width <= 340 ? 9.5 : 10)
+        && orderPageSurfaces.subtitleFont <= (width <= 340 ? 10 : 10.5)
+        && orderPageSurfaces.headMarginBottom <= 7
+        && orderPageSurfaces.pagePaddingTop <= 7
         && orderPageSurfaces.addLabel.includes("Новая заявка");
       if (!restoredOrdersLayout
         || orderPageSurfaces.moneyBlocks !== 1
