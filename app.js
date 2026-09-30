@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.71";
-const APP_BUILD = "2026.09.30.406";
+const APP_VERSION = "1.8.72";
+const APP_BUILD = "2026.09.30.407";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Расчёт без перекрывающего уведомления";
+const APP_RELEASE = "Уведомления не мешают продолжать ввод";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.72",
+    date: "30.09.2026",
+    title: "Уведомления не мешают продолжать ввод",
+    items: [
+      "Старое уведомление редактора теперь сразу скрывается, когда пользователь продолжает ввод.",
+      "После добавления материала плашка больше не остаётся поверх полей расчёта.",
+      "Автокоррекция белого расхода и все проверки заявки сохранены."
+    ]
+  },
   {
     version: "1.8.71",
     date: "30.09.2026",
@@ -7118,6 +7128,10 @@ function newOrderModal(existing = null, options = {}) {
     }
   });
   modal.addEventListener("input", (event) => {
+    if (toastElement.classList.contains("show")) {
+      toastElement.classList.remove("show");
+      clearTimeout(toastElement.timer);
+    }
     if (event.target.closest("[data-service-row]")) {
       refitServices();
       return;
