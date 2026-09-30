@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.56";
-const APP_BUILD = "2026.09.30.391";
+const APP_VERSION = "1.8.57";
+const APP_BUILD = "2026.09.30.392";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки заявок снова выглядят как в потерянной версии";
+const APP_RELEASE = "Верх главной заявок снова компактный";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.57",
+    date: "30.09.2026",
+    title: "Верх главной заявок снова компактный",
+    items: [
+      "Кнопка новой заявки уменьшена до компактного формата без потери удобной зоны нажатия.",
+      "Поиск и фильтр даты стали ниже и ближе по ритму к потерянной версии.",
+      "Фильтры статуса уплотнены, но все touch-зоны сохранены не меньше 44 px."
+    ]
+  },
   {
     version: "1.8.56",
     date: "30.09.2026",
