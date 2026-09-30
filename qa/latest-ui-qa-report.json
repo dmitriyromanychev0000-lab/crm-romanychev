@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T11:03:18.330Z",
-  "testedSha": "d9464e4d55b12bc9815f310f8bddca2601824232",
+  "generatedAt": "2026-09-30T11:13:20.323Z",
+  "testedSha": "a1e1b29a123f9bf3022f9348f0dcc0c73552a0ff",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T11:03:59.389Z"
+      "fallbackCreatedAt": "2026-09-30T11:13:59.081Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,82 +1997,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "orders-restored-layout",
-      "orderPageSurfaces": {
-        "card": "rgba(0, 0, 0, 0)",
-        "cardRadius": 15,
-        "moneyCell": "rgb(23, 30, 37)",
-        "moneyBlocks": 1,
-        "moneyCells": 2,
-        "moneyLabels": [
-          "СУММА КЛИЕНТА",
-          "НА РУКИ"
-        ],
-        "addressText": "Санкт-Петербург, проспект Испытателей, 24",
-        "addressDisplay": "grid",
-        "addressTextWhiteSpace": "normal",
-        "addressLineClamp": "2",
-        "metaPhoneClass": true,
-        "metaGuaranteeClass": true,
-        "action": "rgb(23, 30, 37)",
-        "addWidth": 46,
-        "addHeight": 46,
-        "pageWidth": 320,
-        "addLabel": "Новая заявка",
-        "searchHeight": 46,
-        "filtersHeight": 44,
-        "filterButtonHeight": 44,
-        "visitHeight": 44,
-        "gapAddSearch": 7,
-        "gapSearchFilters": 6,
-        "gapFiltersVisit": 6,
-        "titleFont": 22,
-        "subtitleFont": 9.5,
-        "headMarginBottom": 7,
-        "pagePaddingTop": 8
-      },
-      "restoredOrdersLayout": false
-    },
-    {
-      "width": 390,
-      "type": "orders-restored-layout",
-      "orderPageSurfaces": {
-        "card": "rgba(0, 0, 0, 0)",
-        "cardRadius": 15,
-        "moneyCell": "rgb(23, 30, 37)",
-        "moneyBlocks": 1,
-        "moneyCells": 2,
-        "moneyLabels": [
-          "СУММА КЛИЕНТА",
-          "НА РУКИ"
-        ],
-        "addressText": "Санкт-Петербург, проспект Испытателей, 24",
-        "addressDisplay": "grid",
-        "addressTextWhiteSpace": "normal",
-        "addressLineClamp": "2",
-        "metaPhoneClass": true,
-        "metaGuaranteeClass": true,
-        "action": "rgb(23, 30, 37)",
-        "addWidth": 46,
-        "addHeight": 46,
-        "pageWidth": 390,
-        "addLabel": "Новая заявка",
-        "searchHeight": 46,
-        "filtersHeight": 44,
-        "filterButtonHeight": 44,
-        "visitHeight": 44,
-        "gapAddSearch": 7,
-        "gapSearchFilters": 6,
-        "gapFiltersVisit": 6,
-        "titleFont": 23,
-        "subtitleFont": 10,
-        "headMarginBottom": 7,
-        "pagePaddingTop": 8
-      },
-      "restoredOrdersLayout": false
-    }
-  ]
+  "failures": []
 }
