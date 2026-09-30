@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.68";
-const APP_BUILD = "2026.09.30.403";
+const APP_VERSION = "1.8.69";
+const APP_BUILD = "2026.09.30.404";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Подписи материалов не обрезаются на 320 px";
+const APP_RELEASE = "Действия в деталке заявки выровнены";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.69",
+    date: "30.09.2026",
+    title: "Действия в деталке заявки выровнены",
+    items: [
+      "Четыре быстрых действия в деталке теперь используют одинаковую сетку иконка + подпись.",
+      "Иконки и подписи выровнены по одной базовой линии без увеличения высоты кнопок.",
+      "Логика Изменить / Закрыть / Позвонить / Ещё не менялась."
+    ]
+  },
   {
     version: "1.8.68",
     date: "30.09.2026",

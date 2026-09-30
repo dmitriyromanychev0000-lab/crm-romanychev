@@ -2556,7 +2556,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const orderDetailDensity = await page.evaluate(() => {
         const card = document.querySelector(".legacy-expanded-order-card");
         const money = document.querySelector(".legacy-expanded-money > div");
-        const action = document.querySelector(".legacy-expanded-actions > button, .legacy-expanded-actions > a");
+        const actions = [...document.querySelectorAll(".legacy-expanded-actions > button, .legacy-expanded-actions > a")];
+        const action = actions[0];
         const section = document.querySelector(".legacy-detail-section");
         const line = document.querySelector(".legacy-detail-line");
         const px = (value) => Number.parseFloat(value || "0") || 0;
@@ -2566,6 +2567,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           cardPaddingTop: cardStyle ? px(cardStyle.paddingTop) : 999,
           moneyHeight: Math.round(money?.getBoundingClientRect().height || 0),
           actionHeight: Math.round(action?.getBoundingClientRect().height || 0),
+          actionHeights: actions.map((node) => Math.round(node.getBoundingClientRect().height || 0)),
+          actionIconTops: actions.map((node) => Math.round(node.querySelector(".ui-icon")?.getBoundingClientRect().top || 0)),
+          actionLabelTops: actions.map((node) => Math.round(node.querySelector(":scope > span")?.getBoundingClientRect().top || 0)),
+          actionLabels: actions.map((node) => (node.querySelector(":scope > span")?.textContent || "").trim()),
           sectionMarginTop: sectionStyle ? px(sectionStyle.marginTop) : 999,
           sectionPaddingTop: sectionStyle ? px(sectionStyle.paddingTop) : 999,
           lineHeight: Math.round(line?.getBoundingClientRect().height || 0)
@@ -2575,6 +2580,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDetailDensity.moneyHeight > 52
         || orderDetailDensity.actionHeight < 44
         || orderDetailDensity.actionHeight > 48
+        || orderDetailDensity.actionHeights.length !== 4
+        || Math.max(...orderDetailDensity.actionHeights) - Math.min(...orderDetailDensity.actionHeights) > 1
+        || Math.max(...orderDetailDensity.actionIconTops) - Math.min(...orderDetailDensity.actionIconTops) > 1
+        || Math.max(...orderDetailDensity.actionLabelTops) - Math.min(...orderDetailDensity.actionLabelTops) > 1
+        || !["Изменить","Закрыть","Позвонить","Ещё"].every((label) => orderDetailDensity.actionLabels.includes(label))
         || orderDetailDensity.sectionMarginTop > 8
         || orderDetailDensity.sectionPaddingTop > 10
         || orderDetailDensity.lineHeight > 52) {
