@@ -2326,6 +2326,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent),
           qtyWidth: Math.round(document.querySelector('#material-lines [data-line="qty"]')?.getBoundingClientRect().width || 0),
           costWidth: Math.round(document.querySelector('#material-lines [data-line="unit-cost"]')?.getBoundingClientRect().width || 0),
+          locationText: document.querySelector('#material-lines [data-line="location"] option:checked')?.textContent?.trim() || "",
           footerWidth: Math.round(footerRect?.width || 0),
           footerInnerWidth: footerRect && footerStyle
             ? Math.round(footerRect.width - (parseFloat(footerStyle.paddingLeft) || 0) - (parseFloat(footerStyle.paddingRight) || 0))
@@ -2345,6 +2346,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || editorSurfaceState.clippedMaterialLabels.length
         || editorSurfaceState.qtyWidth < 60
         || editorSurfaceState.costWidth < 100
+        || editorSurfaceState.locationText !== "Не выбрано"
         || editorSurfaceState.footerWidth < width - 2
         || editorSurfaceState.footerCoverage < 0.9
         || editorSurfaceState.footerButtonGap < 4

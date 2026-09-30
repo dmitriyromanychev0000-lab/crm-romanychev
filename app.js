@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.69";
-const APP_BUILD = "2026.09.30.404";
+const APP_VERSION = "1.8.70";
+const APP_BUILD = "2026.09.30.405";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Действия в деталке заявки выровнены";
+const APP_RELEASE = "Место материала читается полностью";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.70",
+    date: "30.09.2026",
+    title: "Место материала читается полностью",
+    items: [
+      "В строке материала системное место теперь показывается коротко как «Не выбрано».",
+      "Подпись больше не обрезается даже в трёхколоночной строке на телефоне.",
+      "ID места, остатки, резервирование и логика списания со склада не менялись."
+    ]
+  },
   {
     version: "1.8.69",
     date: "30.09.2026",
@@ -6329,7 +6339,7 @@ const orderMaterialRow = (item = {}) => {
   const locationId = String(item.locationId || bestStockLocationId(warehouseItem));
   const options = activeStorageLocations({includeArchived:true})
     .filter((location)=>!location.archived || String(location.id)===locationId)
-    .map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===locationId?"selected":""}>${escapeHtml(location.name)}</option>`).join("");
+    .map((location)=>`<option value="${escapeHtml(location.id)}" ${String(location.id)===locationId?"selected":""}>${escapeHtml(String(location.id)===UNASSIGNED_LOCATION_ID ? "Не выбрано" : location.name)}</option>`).join("");
   return `<div class="line-item material-line legacy-material-card" data-material-row data-direct-expense="false" data-warehouse-id="${escapeHtml(item.warehouseId || "")}" data-unit="${escapeHtml(consumeUnit)}" data-storage-unit="${escapeHtml(storageUnit)}" data-write-off="${item.writeOff ? "true" : "false"}">
     <div class="material-card-head"><div><input class="field material-name-field" data-line="name" value="${escapeHtml(item.name || "")}" placeholder="Материал" /><small>Материал со склада${storageUnit!==consumeUnit?` · хранение: ${escapeHtml(storageUnit)}`:""}</small></div><button type="button" class="remove-line material-remove" data-remove-line aria-label="Удалить">${icon("trash")}</button></div>
     <div class="material-card-controls">
