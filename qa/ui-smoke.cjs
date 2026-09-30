@@ -1579,6 +1579,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const moneyLabels = [...(money?.querySelectorAll("span") || [])].map((node) => node.textContent.trim());
         return {
           card: getComputedStyle(card).backgroundColor,
+          cardRadius: parseFloat(getComputedStyle(card).borderRadius || "0"),
+          moneyCell: money?.firstElementChild ? getComputedStyle(money.firstElementChild).backgroundColor : "missing",
           moneyBlocks: card?.querySelectorAll(".legacy-order-money").length || 0,
           moneyCells: money?.children.length || 0,
           moneyLabels,
@@ -1627,7 +1629,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderPageSurfaces.addressLineClamp !== "2"
         || !orderPageSurfaces.metaPhoneClass
         || !orderPageSurfaces.metaGuaranteeClass
-        || orderPageSurfaces.action !== "rgb(20, 27, 32)") {
+        || orderPageSurfaces.cardRadius !== 15
+        || orderPageSurfaces.moneyCell !== "rgb(23, 30, 37)"
+        || orderPageSurfaces.action !== "rgb(23, 30, 37)") {
         report.failures.push({ width, type: "orders-restored-layout", orderPageSurfaces, restoredOrdersLayout });
       }
       const orderDensity = await page.evaluate(() => {

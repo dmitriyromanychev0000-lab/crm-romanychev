@@ -24896,3 +24896,26 @@
     -webkit-line-clamp: 2 !important;
   }
 }
+
+
+/* 1.8.56 · Главная заявок: вернуть оболочку карточки из потерянной версии */
+@media screen and (max-width: 520px) {
+  .legacy-order-card {
+    padding: 14px 13px 12px !important;
+    border-color: #2a333b !important;
+    border-radius: 15px !important;
+    background: linear-gradient(180deg,#11181e,#0f151a) !important;
+    box-shadow: none !important;
+  }
+
+  .legacy-order-money > div {
+    border-color: #29323a !important;
+    background: #171e25 !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    border-color: #2b343c !important;
+    background: #171e25 !important;
+  }
+}
