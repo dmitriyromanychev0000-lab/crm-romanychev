@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T10:32:25.505Z",
-  "testedSha": "578cdfc04e8485f34e3c075c5d5116953e7afdc5",
+  "generatedAt": "2026-09-30T10:53:17.099Z",
+  "testedSha": "16a9c2d7db71d5711017b49b11c33378d0cecb24",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,13 +1983,136 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T10:33:07.839Z"
+      "fallbackCreatedAt": "2026-09-30T10:53:55.222Z"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
   "failures": [
     {
-      "type": "fatal",
-      "message": "page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - waiting for navigation until \"domcontentloaded\"\n"
+      "width": 320,
+      "type": "shell-header-nav",
+      "shellSurface": {
+        "headerHeight": 72,
+        "navHeight": 68,
+        "navButtonHeight": 54,
+        "logoDisplay": "grid",
+        "logoWidth": 40,
+        "logoHeight": 40,
+        "headerBorder": "1px",
+        "headerBackground": "rgb(8, 13, 17)",
+        "titleFont": "16.5px",
+        "navBackground": "rgba(9, 13, 16, 0.98)",
+        "navBorder": "rgb(37, 44, 50)",
+        "activeColor": "rgb(255, 114, 85)",
+        "activeIconBackground": "rgba(0, 0, 0, 0)",
+        "activeIconWidth": 28,
+        "activeIconHeight": 28,
+        "activeGlyphWidth": 23,
+        "activeGlyphHeight": 23,
+        "labelSpread": 0
+      }
+    },
+    {
+      "width": 360,
+      "type": "shell-header-nav",
+      "shellSurface": {
+        "headerHeight": 76,
+        "navHeight": 68,
+        "navButtonHeight": 54,
+        "logoDisplay": "grid",
+        "logoWidth": 42,
+        "logoHeight": 42,
+        "headerBorder": "1px",
+        "headerBackground": "rgb(8, 13, 17)",
+        "titleFont": "17px",
+        "navBackground": "rgba(9, 13, 16, 0.98)",
+        "navBorder": "rgb(37, 44, 50)",
+        "activeColor": "rgb(255, 114, 85)",
+        "activeIconBackground": "rgba(0, 0, 0, 0)",
+        "activeIconWidth": 28,
+        "activeIconHeight": 28,
+        "activeGlyphWidth": 23,
+        "activeGlyphHeight": 23,
+        "labelSpread": 0
+      }
+    },
+    {
+      "width": 390,
+      "type": "shell-header-nav",
+      "shellSurface": {
+        "headerHeight": 76,
+        "navHeight": 68,
+        "navButtonHeight": 54,
+        "logoDisplay": "grid",
+        "logoWidth": 42,
+        "logoHeight": 42,
+        "headerBorder": "1px",
+        "headerBackground": "rgb(8, 13, 17)",
+        "titleFont": "17px",
+        "navBackground": "rgba(9, 13, 16, 0.98)",
+        "navBorder": "rgb(37, 44, 50)",
+        "activeColor": "rgb(255, 114, 85)",
+        "activeIconBackground": "rgba(0, 0, 0, 0)",
+        "activeIconWidth": 28,
+        "activeIconHeight": 28,
+        "activeGlyphWidth": 23,
+        "activeGlyphHeight": 23,
+        "labelSpread": 0
+      }
+    },
+    {
+      "width": 390,
+      "type": "analytics-compact-header",
+      "analyticsHeaderDensity": {
+        "chipHeights": [
+          44,
+          44,
+          44,
+          44,
+          44,
+          44
+        ],
+        "arrowHeights": [
+          44,
+          44
+        ],
+        "rangeHeight": 46,
+        "firstPanelTop": 283
+      }
+    },
+    {
+      "width": 430,
+      "type": "shell-header-nav",
+      "shellSurface": {
+        "headerHeight": 76,
+        "navHeight": 68,
+        "navButtonHeight": 54,
+        "logoDisplay": "grid",
+        "logoWidth": 42,
+        "logoHeight": 42,
+        "headerBorder": "1px",
+        "headerBackground": "rgb(8, 13, 17)",
+        "titleFont": "17px",
+        "navBackground": "rgba(9, 13, 16, 0.98)",
+        "navBorder": "rgb(37, 44, 50)",
+        "activeColor": "rgb(255, 114, 85)",
+        "activeIconBackground": "rgba(0, 0, 0, 0)",
+        "activeIconWidth": 28,
+        "activeIconHeight": 28,
+        "activeGlyphWidth": 23,
+        "activeGlyphHeight": 23,
+        "labelSpread": 0
+      }
     }
   ]
 }
