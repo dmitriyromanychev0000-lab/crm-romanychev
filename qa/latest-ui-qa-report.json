@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T11:37:50.284Z",
-  "testedSha": "2cabe5fc1ce911cecd43f27bd5dab98b5a565936",
+  "generatedAt": "2026-09-30T11:44:40.866Z",
+  "testedSha": "67fb540e890f450aa66751896486b932819d4fc5",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T11:38:29.241Z"
+      "fallbackCreatedAt": "2026-09-30T11:45:21.063Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,5 +1997,12 @@
       "offlineLoaded": true
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "width": 390,
+      "type": "direct-expense-white-clamp",
+      "clampedWhite": 3000,
+      "clampToastVisible": 1
+    }
+  ]
 }
