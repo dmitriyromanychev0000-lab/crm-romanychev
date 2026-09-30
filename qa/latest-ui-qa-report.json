@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T10:53:17.099Z",
-  "testedSha": "16a9c2d7db71d5711017b49b11c33378d0cecb24",
+  "generatedAt": "2026-09-30T10:59:52.751Z",
+  "testedSha": "697e3e2f8c41b30510a4c1f2878b3e55cf9e4fab",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T10:53:55.222Z"
+      "fallbackCreatedAt": "2026-09-30T11:00:31.513Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,122 +1997,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 72,
-        "navHeight": 68,
-        "navButtonHeight": 54,
-        "logoDisplay": "grid",
-        "logoWidth": 40,
-        "logoHeight": 40,
-        "headerBorder": "1px",
-        "headerBackground": "rgb(8, 13, 17)",
-        "titleFont": "16.5px",
-        "navBackground": "rgba(9, 13, 16, 0.98)",
-        "navBorder": "rgb(37, 44, 50)",
-        "activeColor": "rgb(255, 114, 85)",
-        "activeIconBackground": "rgba(0, 0, 0, 0)",
-        "activeIconWidth": 28,
-        "activeIconHeight": 28,
-        "activeGlyphWidth": 23,
-        "activeGlyphHeight": 23,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 360,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 76,
-        "navHeight": 68,
-        "navButtonHeight": 54,
-        "logoDisplay": "grid",
-        "logoWidth": 42,
-        "logoHeight": 42,
-        "headerBorder": "1px",
-        "headerBackground": "rgb(8, 13, 17)",
-        "titleFont": "17px",
-        "navBackground": "rgba(9, 13, 16, 0.98)",
-        "navBorder": "rgb(37, 44, 50)",
-        "activeColor": "rgb(255, 114, 85)",
-        "activeIconBackground": "rgba(0, 0, 0, 0)",
-        "activeIconWidth": 28,
-        "activeIconHeight": 28,
-        "activeGlyphWidth": 23,
-        "activeGlyphHeight": 23,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 390,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 76,
-        "navHeight": 68,
-        "navButtonHeight": 54,
-        "logoDisplay": "grid",
-        "logoWidth": 42,
-        "logoHeight": 42,
-        "headerBorder": "1px",
-        "headerBackground": "rgb(8, 13, 17)",
-        "titleFont": "17px",
-        "navBackground": "rgba(9, 13, 16, 0.98)",
-        "navBorder": "rgb(37, 44, 50)",
-        "activeColor": "rgb(255, 114, 85)",
-        "activeIconBackground": "rgba(0, 0, 0, 0)",
-        "activeIconWidth": 28,
-        "activeIconHeight": 28,
-        "activeGlyphWidth": 23,
-        "activeGlyphHeight": 23,
-        "labelSpread": 0
-      }
-    },
-    {
-      "width": 390,
-      "type": "analytics-compact-header",
-      "analyticsHeaderDensity": {
-        "chipHeights": [
-          44,
-          44,
-          44,
-          44,
-          44,
-          44
-        ],
-        "arrowHeights": [
-          44,
-          44
-        ],
-        "rangeHeight": 46,
-        "firstPanelTop": 283
-      }
-    },
-    {
-      "width": 430,
-      "type": "shell-header-nav",
-      "shellSurface": {
-        "headerHeight": 76,
-        "navHeight": 68,
-        "navButtonHeight": 54,
-        "logoDisplay": "grid",
-        "logoWidth": 42,
-        "logoHeight": 42,
-        "headerBorder": "1px",
-        "headerBackground": "rgb(8, 13, 17)",
-        "titleFont": "17px",
-        "navBackground": "rgba(9, 13, 16, 0.98)",
-        "navBorder": "rgb(37, 44, 50)",
-        "activeColor": "rgb(255, 114, 85)",
-        "activeIconBackground": "rgba(0, 0, 0, 0)",
-        "activeIconWidth": 28,
-        "activeIconHeight": 28,
-        "activeGlyphWidth": 23,
-        "activeGlyphHeight": 23,
-        "labelSpread": 0
-      }
-    }
-  ]
+  "failures": []
 }
