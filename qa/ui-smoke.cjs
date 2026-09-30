@@ -2321,6 +2321,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         return {
           material: getComputedStyle(document.querySelector("#material-lines [data-material-row]")).backgroundColor,
           materialField: getComputedStyle(document.querySelector("#material-lines .material-card-controls .field")).backgroundColor,
+          materialNameBackground: getComputedStyle(document.querySelector('#material-lines [data-material-row]:not([data-direct-expense="true"]) .material-name-field')).backgroundColor,
+          materialNameRadius: getComputedStyle(document.querySelector('#material-lines [data-material-row]:not([data-direct-expense="true"]) .material-name-field')).borderRadius,
           secondaryAction: getComputedStyle(document.querySelector(".order-editor-modal .modal-actions .secondary-button")).backgroundColor,
           serviceMatchCount: document.querySelectorAll("#legacy-service-match").length,
           clippedMaterialLabels: labels.filter((label) => label.scrollWidth > label.clientWidth + 1).map((label) => label.textContent),
@@ -2341,6 +2343,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       });
       if (editorSurfaceState.material !== "rgb(17, 24, 29)"
         || editorSurfaceState.materialField !== "rgb(9, 15, 20)"
+        || editorSurfaceState.materialNameBackground !== "rgba(0, 0, 0, 0)"
+        || editorSurfaceState.materialNameRadius !== "0px"
         || editorSurfaceState.secondaryAction !== "rgb(10, 17, 22)"
         || editorSurfaceState.serviceMatchCount !== 0
         || editorSurfaceState.clippedMaterialLabels.length

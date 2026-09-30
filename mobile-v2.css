@@ -25729,3 +25729,25 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* 1.8.75 · Выбранный материал: название без отдельной тёмной плашки */
+@media screen and (max-width: 520px) {
+  .order-editor-modal .legacy-material-card:not(.direct-expense-card) .material-name-field {
+    padding-right: 2px !important;
+    padding-bottom: 3px !important;
+    padding-left: 2px !important;
+    border: 0 !important;
+    border-bottom: 1px solid transparent !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .order-editor-modal .legacy-material-card:not(.direct-expense-card) .material-name-field:focus {
+    border-bottom-color: #ff8068 !important;
+    background: transparent !important;
+    box-shadow: inset 0 -1px #ff8068 !important;
+  }
+}

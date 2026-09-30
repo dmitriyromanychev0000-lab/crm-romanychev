@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.74";
-const APP_BUILD = "2026.09.30.409";
+const APP_VERSION = "1.8.75";
+const APP_BUILD = "2026.09.30.410";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Материал добавляется без лишней плашки";
+const APP_RELEASE = "Чистая шапка выбранного материала";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.75",
+    date: "30.09.2026",
+    title: "Чистая шапка выбранного материала",
+    items: [
+      "Название материала со склада больше не лежит на отдельной чёрной плашке внутри карточки.",
+      "Поле визуально сливается с карточкой и остаётся редактируемым.",
+      "Расход без склада, количество, себестоимость, место и удаление не менялись."
+    ]
+  },
   {
     version: "1.8.74",
     date: "30.09.2026",
