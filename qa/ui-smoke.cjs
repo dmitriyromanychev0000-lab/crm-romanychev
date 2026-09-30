@@ -1161,7 +1161,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         labelSpread: labelTops.length ? Math.max(...labelTops) - Math.min(...labelTops) : 999
       };
     });
-    const expectedHeaderMin = width <= 340 ? 72 : 76;
+    const expectedHeaderMin = 68;
     const expectedLogo = width <= 340 ? 40 : 42;
     if (shellSurface.headerHeight < expectedHeaderMin
       || shellSurface.headerHeight > expectedHeaderMin + 1
@@ -1173,8 +1173,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       || shellSurface.logoHeight !== expectedLogo
       || shellSurface.navHeight < 68
       || shellSurface.navHeight > 69
-      || shellSurface.navButtonHeight < 51
-      || shellSurface.navButtonHeight > 52
+      || shellSurface.navButtonHeight < 54
+      || shellSurface.navButtonHeight > 55
       || !shellSurface.navBackground.startsWith("rgba(9, 13, 16, ")
       || shellSurface.navBorder !== "rgb(37, 44, 50)"
       || shellSurface.activeColor !== "rgb(255, 114, 85)"
