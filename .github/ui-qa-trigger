@@ -1,3 +1,4 @@
 Mobile UI QA trigger
-Release candidate: 1.8.47
+Release candidate: 1.8.78
 Viewport matrix: 320 / 360 / 390 / 430
+Reason: refresh clean report after stale workflow-fatal
