@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.63";
-const APP_BUILD = "2026.09.30.398";
+const APP_VERSION = "1.8.64";
+const APP_BUILD = "2026.09.30.399";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх главной доведён до архивной плотности";
+const APP_RELEASE = "Список заявок использует больше ширины экрана";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.64",
+    date: "30.09.2026",
+    title: "Список заявок использует больше ширины экрана",
+    items: [
+      "Уменьшил боковые поля списка до 6 px, а на 320 px до 5 px.",
+      "Сократил расстояние между карточками с 10 px до 7 px, на 320 px до 6 px.",
+      "Внутренние отступы и содержимое карточек не уменьшались."
+    ]
+  },
   {
     version: "1.8.63",
     date: "30.09.2026",
