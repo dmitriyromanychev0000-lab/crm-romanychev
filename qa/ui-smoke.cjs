@@ -5239,8 +5239,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionWidths.length !== settingsSurface.appRowWidths.length
         || settingsSurface.appActionWidths.some((value) => value < 78 || value > 90)
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
-        || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
-        || settingsSurface.appCardHeight > 305
+        || settingsSurface.appRowHeights.some((value) => value < 48 || value > 53)
+        || settingsSurface.appCardHeight > 285
         || !settingsSurface.versionSummaryFit.text
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"

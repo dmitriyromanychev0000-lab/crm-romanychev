@@ -25797,3 +25797,18 @@
     min-height: 60px !important;
   }
 }
+
+
+/* 1.8.78 · Настройки: служебные строки приложения без лишней вертикальной пустоты */
+@media screen and (max-width: 520px) {
+  .settings-app-card .legacy-settings-row,
+  .settings-app-card .legacy-settings-row:not(.plain) {
+    min-height: 48px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .settings-app-card .legacy-settings-row.app-version-row {
+    min-height: 52px !important;
+  }
+}

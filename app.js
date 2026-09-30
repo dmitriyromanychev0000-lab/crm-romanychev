@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.77";
-const APP_BUILD = "2026.09.30.412";
+const APP_VERSION = "1.8.78";
+const APP_BUILD = "2026.09.30.413";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Плотнее рабочие данные в настройках";
+const APP_RELEASE = "Компактнее служебные настройки";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.78",
+    date: "30.09.2026",
+    title: "Компактнее служебные настройки",
+    items: [
+      "Блок «Приложение» стал ниже: служебные строки занимают 48 px вместо лишней высоты.",
+      "Строка версии остаётся чуть выше для двухстрочного описания, а кнопки справа по-прежнему 44 px.",
+      "Проверка обновлений, диагностика и защита локальных данных работают без изменений."
+    ]
+  },
   {
     version: "1.8.77",
     date: "30.09.2026",
