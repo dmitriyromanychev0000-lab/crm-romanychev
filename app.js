@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.78";
-const APP_BUILD = "2026.09.30.413";
+const APP_VERSION = "1.8.79";
+const APP_BUILD = "2026.09.30.414";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактнее служебные настройки";
+const APP_RELEASE = "Ровные кнопки добавления в справочниках";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.79",
+    date: "30.09.2026",
+    title: "Ровные кнопки добавления в справочниках",
+    items: [
+      "Иконка «+» и подпись «Добавить» теперь центрируются одной группой, а не расходятся по ширине кнопки.",
+      "Исправление действует для типов техники, источников, гарантий, категорий и мест хранения.",
+      "Высота кнопок и логика справочников не менялись."
+    ]
+  },
   {
     version: "1.8.78",
     date: "30.09.2026",

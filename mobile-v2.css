@@ -25812,3 +25812,31 @@
     min-height: 52px !important;
   }
 }
+
+
+/* 1.8.79 · Справочники: иконка и подпись основной кнопки центрируются одной группой */
+@media screen and (max-width: 520px) {
+  .source-manager-add .primary-button,
+  .warranty-manager-add .primary-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    text-align: center !important;
+  }
+
+  .source-manager-add .primary-button > .ui-icon,
+  .warranty-manager-add .primary-button > .ui-icon {
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px !important;
+    margin: 0 !important;
+  }
+
+  .source-manager-add .primary-button > span,
+  .warranty-manager-add .primary-button > span {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+}

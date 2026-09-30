@@ -747,18 +747,35 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         const wr = wrap?.getBoundingClientRect();
         const ir = input?.getBoundingClientRect();
         const br = button?.getBoundingClientRect();
+        const icon = button?.querySelector(".ui-icon");
+        const label = button?.querySelector("span");
+        const xr = icon?.getBoundingClientRect();
+        const lr = label?.getBoundingClientRect();
+        const contentLeft = Math.min(xr?.left || 0, lr?.left || 0);
+        const contentRight = Math.max(xr?.right || 0, lr?.right || 0);
+        const contentCenter = (contentLeft + contentRight) / 2;
+        const buttonCenter = br ? br.left + br.width / 2 : -999;
         return {
           wrapWidth: Math.round(wr?.width || 0),
           inputWidth: Math.round(ir?.width || 0),
           buttonWidth: Math.round(br?.width || 0),
           inputTop: Math.round(ir?.top || 0),
           buttonTop: Math.round(br?.top || 0),
-          inputBottom: Math.round(ir?.bottom || 0)
+          inputBottom: Math.round(ir?.bottom || 0),
+          contentCenterDelta: Math.round(Math.abs(contentCenter - buttonCenter) * 10) / 10,
+          iconTextGap: xr && lr ? Math.round((lr.left - xr.right) * 10) / 10 : -999,
+          iconCenterDelta: xr && br ? Math.round(Math.abs((xr.top + xr.height / 2) - (br.top + br.height / 2)) * 10) / 10 : 999,
+          labelCenterDelta: lr && br ? Math.round(Math.abs((lr.top + lr.height / 2) - (br.top + br.height / 2)) * 10) / 10 : 999
         };
       });
       if (directoryAddLayout.inputWidth < directoryAddLayout.wrapWidth - 30
         || directoryAddLayout.buttonWidth < directoryAddLayout.wrapWidth - 30
-        || directoryAddLayout.buttonTop < directoryAddLayout.inputBottom) {
+        || directoryAddLayout.buttonTop < directoryAddLayout.inputBottom
+        || directoryAddLayout.contentCenterDelta > 2
+        || directoryAddLayout.iconTextGap < 4
+        || directoryAddLayout.iconTextGap > 10
+        || directoryAddLayout.iconCenterDelta > 1
+        || directoryAddLayout.labelCenterDelta > 1) {
         report.failures.push({ width, type: "directory-add-full-width", directoryAddLayout });
       }
       await page.locator("#new-appliance-type-name").fill("Кофемашина");
