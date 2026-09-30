@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T23:36:59.800Z",
-  "testedSha": "0d6a544ca5a2b42582b54aeffc509e84095623bf",
+  "generatedAt": "2026-09-30T07:35:41.373Z",
+  "testedSha": "1144cbe1a95b0fb9ef9e644eecf91c34d30d7bd9",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-29T23:37:39.561Z"
+      "fallbackCreatedAt": "2026-09-30T07:36:22.754Z"
     },
     {
       "label": "pwa-offline",
@@ -1998,6 +1998,22 @@
     }
   ],
   "failures": [
+    {
+      "width": 320,
+      "type": "orders-density",
+      "orderDensity": {
+        "paddingTop": 13,
+        "paddingBottom": 11,
+        "listGap": 10,
+        "deviceHeight": 44,
+        "deviceRowHeight": 52,
+        "metaHeight": 73,
+        "moneyHeight": 60,
+        "actionHeight": 50,
+        "actionsMarginTop": 9,
+        "actionsPaddingTop": 8
+      }
+    },
     {
       "width": 320,
       "type": "settings-semantic-hierarchy",
@@ -2115,7 +2131,7 @@
         ],
         "appCardHeight": 284,
         "versionSummaryFit": {
-          "text": "Подпись версии всегда актуальна",
+          "text": "Карточки заявок как в потерянной версии",
           "clientHeight": 22,
           "scrollHeight": 22,
           "lineClamp": "2"
@@ -2364,9 +2380,9 @@
         ],
         "appCardHeight": 284,
         "versionSummaryFit": {
-          "text": "Подпись версии всегда актуальна",
-          "clientHeight": 12,
-          "scrollHeight": 12,
+          "text": "Карточки заявок как в потерянной версии",
+          "clientHeight": 23,
+          "scrollHeight": 23,
           "lineClamp": "2"
         },
         "profileCardHeight": 321,
