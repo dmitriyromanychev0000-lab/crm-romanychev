@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.54";
-const APP_BUILD = "2026.09.30.389";
+const APP_VERSION = "1.8.55";
+const APP_BUILD = "2026.09.30.390";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Адрес заявки возвращён без лишней высоты";
+const APP_RELEASE = "Адрес заявки снова читается полностью";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.55",
+    date: "30.09.2026",
+    title: "Адрес заявки снова читается полностью",
+    items: [
+      "Телефон и гарантия собраны в одну короткую строку метаданных.",
+      "Адрес вынесен отдельной строкой на всю ширину и может занимать до двух строк без обрезания в одну строку.",
+      "Карточка сохраняет плотность потерянной версии и все нынешние действия."
+    ]
+  },
   {
     version: "1.8.54",
     date: "30.09.2026",
@@ -3929,9 +3939,9 @@ function orderCard(order) {
     </div>
 
     <div class="legacy-order-meta">
-      ${order.phone ? `<span>${icon("phone")}${escapeHtml(order.phone)}</span>` : ""}
-      ${order.address ? `<span class="address">${icon("location")}${escapeHtml(order.address)}</span>` : ""}
-      <span>${icon("shield")}${guaranteeText}</span>
+      ${order.phone ? `<span class="phone">${icon("phone")}${escapeHtml(order.phone)}</span>` : ""}
+      ${order.address ? `<span class="address">${icon("location")}<span class="legacy-order-address-text">${escapeHtml(order.address)}</span></span>` : ""}
+      <span class="guarantee">${icon("shield")}${guaranteeText}</span>
     </div>
     ${nextVisit ? `<div class="legacy-next-visit ${overdueVisit ? "overdue" : ""}">${icon("calendar")}<span>${overdueVisit ? "Визит просрочен" : "Следующий визит"}: ${escapeHtml(nextVisit)}</span></div>` : ""}
     ${photos.length ? `<div class="legacy-order-photos">${photos.map((src,index)=>`<button type="button" class="legacy-order-photo" data-order-action="view" data-id="${escapeHtml(order.id)}" aria-label="Открыть фото ${index+1}"><img src="${src}" alt="" /></button>`).join("")}</div>` : ""}

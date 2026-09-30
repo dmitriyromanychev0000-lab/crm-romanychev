@@ -1584,6 +1584,10 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           moneyLabels,
           addressText: address?.textContent?.trim() || "",
           addressDisplay: address ? getComputedStyle(address).display : "missing",
+          addressTextWhiteSpace: address?.querySelector(".legacy-order-address-text") ? getComputedStyle(address.querySelector(".legacy-order-address-text")).whiteSpace : "missing",
+          addressLineClamp: address?.querySelector(".legacy-order-address-text") ? getComputedStyle(address.querySelector(".legacy-order-address-text")).webkitLineClamp : "missing",
+          metaPhoneClass: Boolean(card?.querySelector(".legacy-order-meta .phone")),
+          metaGuaranteeClass: Boolean(card?.querySelector(".legacy-order-meta .guarantee")),
           action: getComputedStyle(document.querySelector(".legacy-order-card .legacy-order-actions > button, .legacy-order-card .legacy-order-actions > a")).backgroundColor,
           addWidth: Math.round(addRect?.width || 0),
           addHeight: Math.round(addRect?.height || 0),
@@ -1618,7 +1622,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || !orderPageSurfaces.moneyLabels.some((label) => label.includes("СУММА КЛИЕНТА"))
         || !orderPageSurfaces.moneyLabels.some((label) => label.includes("НА РУКИ"))
         || !orderPageSurfaces.addressText.includes("Санкт-Петербург")
-        || !["flex","inline-flex"].includes(orderPageSurfaces.addressDisplay)
+        || orderPageSurfaces.addressDisplay !== "grid"
+        || orderPageSurfaces.addressTextWhiteSpace === "nowrap"
+        || orderPageSurfaces.addressLineClamp !== "2"
+        || !orderPageSurfaces.metaPhoneClass
+        || !orderPageSurfaces.metaGuaranteeClass
         || orderPageSurfaces.action !== "rgb(20, 27, 32)") {
         report.failures.push({ width, type: "orders-restored-layout", orderPageSurfaces, restoredOrdersLayout });
       }

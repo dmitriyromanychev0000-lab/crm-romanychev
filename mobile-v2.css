@@ -24842,3 +24842,57 @@
     align-items: flex-start !important;
   }
 }
+
+
+
+/* 1.8.55 · Главная заявок: телефон/гарантия компактно, адрес читается отдельно */
+@media screen and (max-width: 520px) {
+  .legacy-order-card .legacy-order-meta {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    gap: 5px 10px !important;
+    min-height: 0 !important;
+    align-items: center !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .phone {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .guarantee {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    white-space: nowrap !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .address {
+    display: grid !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    grid-template-columns: 13px minmax(0,1fr) !important;
+    gap: 5px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 !important;
+    align-items: start !important;
+    overflow: visible !important;
+    white-space: normal !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .legacy-order-address-text {
+    display: -webkit-box !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    color: inherit !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+}
