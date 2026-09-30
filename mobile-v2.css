@@ -25587,3 +25587,45 @@
     margin-left: 0 !important;
   }
 }
+
+/* 1.8.66 · Карточка заявки: ровные быстрые действия без роста высоты */
+@media screen and (max-width: 520px) {
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    display: grid !important;
+    grid-template-rows: 18px 10px !important;
+    min-height: 47px !important;
+    align-content: center !important;
+    justify-items: center !important;
+    gap: 3px !important;
+    padding: 5px 2px !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  .legacy-order-actions .ui-icon {
+    width: 18px !important;
+    height: 18px !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+
+  .legacy-order-actions > button > span,
+  .legacy-order-actions > a > span {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 10px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    font-size: 7.5px !important;
+  }
+}
