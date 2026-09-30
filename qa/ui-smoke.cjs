@@ -2418,9 +2418,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('.order-editor-modal [name="expense_white"]').fill("2000");
         await page.locator('.order-editor-modal [name="expense_white"]').evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
         const clampedWhite = Number(await page.locator('.order-editor-modal [name="expense_white"]').inputValue());
-        const clampToastVisible = await page.locator("#toast.toast.show").count();
-        if (clampedWhite !== 3000 || clampToastVisible !== 0) {
-          report.failures.push({ width, type: "direct-expense-white-clamp", clampedWhite, clampToastVisible });
+        const clampToastState = await page.evaluate(() => {
+          const toast = document.querySelector("#toast.toast");
+          return {
+            show: toast?.classList.contains("show") || false,
+            opacity: toast ? Number.parseFloat(getComputedStyle(toast).opacity || "0") : 0
+          };
+        });
+        if (clampedWhite !== 3000 || clampToastState.show || clampToastState.opacity > 0.05) {
+          report.failures.push({ width, type: "direct-expense-white-clamp", clampedWhite, clampToastState });
         }
 
         await page.locator('.order-editor-modal [name="expense_white"]').fill("4000");

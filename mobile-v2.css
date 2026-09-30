@@ -25681,6 +25681,13 @@
   }
 }
 
+/* 1.8.73 · Toast: мгновенное скрытие при продолжении ввода */
+#toast.toast.dismiss-now {
+  opacity: 0 !important;
+  transition: none !important;
+  transform: translate(-50%, 20px) !important;
+}
+
 /* 1.8.69 · Деталка заявки: ровная сетка быстрых действий */
 @media screen and (max-width: 520px) {
   .legacy-expanded-actions {
