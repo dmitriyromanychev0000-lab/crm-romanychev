@@ -25575,3 +25575,15 @@
     gap: 6px !important;
   }
 }
+
+/* 1.8.65 · Главная заявок: единая рабочая ширина от заголовка до карточек */
+@media screen and (max-width: 520px) {
+  .legacy-orders-head,
+  .legacy-orders-page .legacy-nearest-visit,
+  .legacy-orders-page .legacy-order-search,
+  .legacy-orders-page .legacy-order-filters,
+  .legacy-orders-page .legacy-visit-filter {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
