@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.58";
-const APP_BUILD = "2026.09.30.393";
+const APP_VERSION = "1.8.59";
+const APP_BUILD = "2026.09.30.394";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточка заявки снова собрана по архивной геометрии";
+const APP_RELEASE = "Ближайшие визиты снова выглядят как в архивной версии";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.59",
+    date: "30.09.2026",
+    title: "Ближайшие визиты снова как в архивной версии",
+    items: [
+      "Вернул компактную синюю карточку ближайших визитов и однострочную структуру записей.",
+      "Убрал лишнюю тяжесть внутренних карточек, сохранив нажатие по каждому визиту.",
+      "Кнопка календаря и все touch-зоны сохранены не меньше 44 px."
+    ]
+  },
   {
     version: "1.8.58",
     date: "30.09.2026",

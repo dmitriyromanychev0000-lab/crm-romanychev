@@ -632,11 +632,30 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         });
       }
 
-      const nearestVisitState = await page.evaluate(() => ({
-        rows: document.querySelectorAll(".legacy-nearest-visits-list .legacy-nearest-line").length,
-        text: document.querySelector(".legacy-nearest-visit")?.innerText || ""
-      }));
-      if (nearestVisitState.rows < 1 || !nearestVisitState.text.includes("02.01.2030")) {
+      const nearestVisitState = await page.evaluate(() => {
+        const section = document.querySelector(".legacy-nearest-visit");
+        const title = section?.querySelector(".legacy-nearest-title");
+        const calendar = title?.querySelector("button");
+        const rows = [...(section?.querySelectorAll(".legacy-nearest-visits-list .legacy-nearest-line") || [])];
+        return {
+          rows: rows.length,
+          text: section?.innerText || "",
+          sectionRadius: section ? parseFloat(getComputedStyle(section).borderRadius || "0") : 0,
+          sectionBackground: section ? getComputedStyle(section).backgroundColor : "missing",
+          titleHeight: Math.round(title?.getBoundingClientRect().height || 0),
+          calendarHeight: Math.round(calendar?.getBoundingClientRect().height || 0),
+          rowHeights: rows.map((row) => Math.round(row.getBoundingClientRect().height || 0))
+        };
+      });
+      if (nearestVisitState.rows < 1
+        || !nearestVisitState.text.includes("02.01.2030")
+        || nearestVisitState.sectionRadius !== 12
+        || nearestVisitState.sectionBackground !== "rgb(12, 23, 33)"
+        || nearestVisitState.titleHeight < 44
+        || nearestVisitState.titleHeight > 45
+        || nearestVisitState.calendarHeight < 44
+        || nearestVisitState.calendarHeight > 45
+        || nearestVisitState.rowHeights.some((height) => height < 44 || height > 45)) {
         report.failures.push({ width, type: "nearest-visits-three-slot", nearestVisitState });
       }
 
