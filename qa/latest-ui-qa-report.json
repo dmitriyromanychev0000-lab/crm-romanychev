@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T16:03:39.222Z",
-  "testedSha": "5a5f023e05f00bb84320bc2513bdeba6fb935b52",
+  "generatedAt": "2026-09-30T16:09:17.888Z",
+  "testedSha": "7c3566e898e98201a9f88d16e698eede1822adfd",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -1983,7 +1983,7 @@
       "overflow": 0,
       "modalOpen": false,
       "tooSmall": [],
-      "fallbackCreatedAt": "2026-09-30T16:04:18.932Z"
+      "fallbackCreatedAt": "2026-09-30T16:09:57.346Z"
     },
     {
       "label": "pwa-offline",
@@ -1997,38 +1997,5 @@
       "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "act-compact-density",
-      "actDensity": {
-        "controlHeight": 218,
-        "titleHeight": 32,
-        "fieldHeight": 46,
-        "fieldPaddingTop": 0,
-        "fieldPaddingBottom": 0,
-        "selectedHeight": 52,
-        "actionHeight": 48,
-        "titleIconDelta": 0,
-        "selectedIconDelta": 0,
-        "actionIconDelta": 0
-      }
-    },
-    {
-      "width": 390,
-      "type": "act-compact-density",
-      "actDensity": {
-        "controlHeight": 218,
-        "titleHeight": 32,
-        "fieldHeight": 46,
-        "fieldPaddingTop": 0,
-        "fieldPaddingBottom": 0,
-        "selectedHeight": 52,
-        "actionHeight": 48,
-        "titleIconDelta": 0,
-        "selectedIconDelta": 0,
-        "actionIconDelta": 0
-      }
-    }
-  ]
+  "failures": []
 }
