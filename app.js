@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.80";
-const APP_BUILD = "2026.09.30.415";
+const APP_VERSION = "1.8.81";
+const APP_BUILD = "2026.09.30.416";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Печать акта в PDF и A4";
+const APP_RELEASE = "Компактная панель печати акта";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.81",
+    date: "30.09.2026",
+    title: "Компактная панель печати акта",
+    items: [
+      "Кнопки «Печать / PDF» и «Картинка» поджаты до 46 px и больше не раздувают верхний блок акта.",
+      "Обе touch-зоны остаются выше минимальных 44 px.",
+      "A4-печать, системный PDF и сохранение картинки работают без изменений."
+    ]
+  },
   {
     version: "1.8.80",
     date: "30.09.2026",
