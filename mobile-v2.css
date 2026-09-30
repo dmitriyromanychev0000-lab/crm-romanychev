@@ -25013,3 +25013,205 @@
     gap: 4px !important;
   }
 }
+
+/* 1.8.58 · Главная заявок: внутренняя геометрия и акценты из архивной версии 70c1a300 */
+@media screen and (max-width: 520px) {
+  .legacy-order-title > span {
+    color: #ff7255 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+  }
+
+  .legacy-order-title > strong {
+    font-size: 15px !important;
+    font-weight: 720 !important;
+  }
+
+  .legacy-order-head-side {
+    gap: 5px !important;
+  }
+
+  .legacy-order-head-side time {
+    color: #81888e !important;
+    font-size: 8px !important;
+  }
+
+  .legacy-status {
+    padding: 5px 9px !important;
+    border: 1px solid #8d4939 !important;
+    border-radius: 9px !important;
+    background: rgba(255,114,85,.1) !important;
+    color: #ffad98 !important;
+    font-size: 9px !important;
+    font-weight: 650 !important;
+  }
+
+  .legacy-status.closed {
+    border-color: #247749 !important;
+    background: rgba(69,209,124,.09) !important;
+    color: #6de098 !important;
+  }
+
+  .legacy-status.declined {
+    border-color: #7d333a !important;
+    background: rgba(255,92,101,.09) !important;
+    color: #ff7e86 !important;
+  }
+
+  .legacy-order-device {
+    grid-template-columns: 48px minmax(0,1fr) !important;
+    gap: 10px !important;
+    min-height: 47px !important;
+    margin-top: 11px !important;
+  }
+
+  .legacy-device-icon {
+    width: 47px !important;
+    height: 47px !important;
+    border: 1px solid rgba(255,114,85,.25) !important;
+    border-radius: 12px !important;
+    background: rgba(255,114,85,.06) !important;
+    color: #ff8a6f !important;
+  }
+
+  .legacy-device-icon .ui-icon {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .legacy-order-device strong {
+    font-size: 13px !important;
+  }
+
+  .legacy-order-device small {
+    margin-top: 3px !important;
+    color: #858d94 !important;
+    font-size: 9px !important;
+  }
+
+  .legacy-order-money {
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .legacy-order-money > div {
+    min-height: 61px !important;
+    padding: 10px !important;
+    border-color: #29323a !important;
+    border-radius: 11px !important;
+    background: #171e25 !important;
+  }
+
+  .legacy-order-money span {
+    gap: 4px !important;
+    color: #90979d !important;
+    font-size: 7px !important;
+    letter-spacing: .08em !important;
+  }
+
+  .legacy-order-money .legacy-net-label {
+    color: #65d78f !important;
+    font-weight: 800 !important;
+  }
+
+  .legacy-order-money .legacy-net-label .ui-icon {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .legacy-order-money strong {
+    margin-top: 6px !important;
+    font-size: 16px !important;
+  }
+
+  .legacy-order-card .legacy-order-meta {
+    gap: 6px 11px !important;
+    margin-top: 10px !important;
+    padding-top: 9px !important;
+    border-top-color: #222b32 !important;
+    color: #818990 !important;
+    font-size: 8px !important;
+  }
+
+  .legacy-order-card .legacy-order-meta > span {
+    gap: 4px !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .address {
+    color: #aa8be8 !important;
+  }
+
+  .legacy-order-card .legacy-order-meta .ui-icon {
+    width: 12px !important;
+    height: 12px !important;
+    flex: 0 0 12px !important;
+  }
+
+  .legacy-next-visit {
+    gap: 5px !important;
+    margin-top: 6px !important;
+    padding: 0 !important;
+    color: #4f9be7 !important;
+    font-size: 8px !important;
+  }
+
+  .legacy-next-visit .ui-icon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .legacy-order-actions {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+    gap: 5px !important;
+    margin-top: 11px !important;
+    padding-top: 10px !important;
+    border-top-color: #222b32 !important;
+  }
+
+  .legacy-order-actions > button,
+  .legacy-order-actions > a {
+    min-height: 47px !important;
+    gap: 4px !important;
+    padding: 5px 2px !important;
+    border-color: #2b343c !important;
+    border-radius: 10px !important;
+    background: #171e25 !important;
+    color: #858e96 !important;
+    font-size: 7px !important;
+    font-weight: 500 !important;
+  }
+
+  .legacy-order-actions .ui-icon {
+    width: 17px !important;
+    height: 17px !important;
+    color: #ff7255 !important;
+  }
+
+  .legacy-order-actions .action-toggle .ui-icon {
+    color: #4fd584 !important;
+  }
+
+  .legacy-order-actions .action-phone .ui-icon {
+    color: #4aa2ff !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-device {
+    grid-template-columns: 48px minmax(0,1fr) !important;
+    gap: 8px !important;
+  }
+
+  .legacy-order-money > div {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  .legacy-order-card .legacy-order-meta {
+    gap: 5px 8px !important;
+  }
+
+  .legacy-order-actions {
+    gap: 4px !important;
+  }
+}

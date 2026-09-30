@@ -1661,14 +1661,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       if (orderDensity.paddingTop > 14
         || orderDensity.paddingBottom > 12
         || orderDensity.listGap > 11
-        || orderDensity.deviceHeight > 45
-        || orderDensity.deviceRowHeight < 50
-        || orderDensity.deviceRowHeight > 56
+        || orderDensity.deviceHeight < 47
+        || orderDensity.deviceHeight > 48
+        || orderDensity.deviceRowHeight < 47
+        || orderDensity.deviceRowHeight > 49
         || orderDensity.metaHeight > 52
-        || orderDensity.moneyHeight < 50
-        || orderDensity.moneyHeight > 62
-        || orderDensity.actionHeight < 48
-        || orderDensity.actionHeight > 51
+        || orderDensity.moneyHeight < 61
+        || orderDensity.moneyHeight > 63
+        || orderDensity.actionHeight < 47
+        || orderDensity.actionHeight > 48
         || orderDensity.actionsMarginTop > 11
         || orderDensity.actionsPaddingTop > 10) {
         report.failures.push({ width, type: "orders-density", orderDensity });

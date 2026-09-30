@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.57";
-const APP_BUILD = "2026.09.30.392";
+const APP_VERSION = "1.8.58";
+const APP_BUILD = "2026.09.30.393";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Верх главной заявок снова компактный";
+const APP_RELEASE = "Карточка заявки снова собрана по архивной геометрии";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.58",
+    date: "30.09.2026",
+    title: "Карточка заявки снова по архивной геометрии",
+    items: [
+      "Вернул размеры блока техники, денежных ячеек, статуса и быстрых действий из архивной версии.",
+      "Вернул цветовые акценты статусов и иконок, чтобы карточка не выглядела серой.",
+      "Нынешний двухстрочный адрес и четыре актуальных действия сохранены."
+    ]
+  },
   {
     version: "1.8.57",
     date: "30.09.2026",
