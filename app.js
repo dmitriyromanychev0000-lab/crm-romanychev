@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.60";
-const APP_BUILD = "2026.09.30.395";
+const APP_VERSION = "1.8.61";
+const APP_BUILD = "2026.09.30.396";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Общая шапка и нижнее меню снова в стиле потерянной версии";
+const APP_RELEASE = "Архивная шапка снова компактная";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.61",
+    date: "30.09.2026",
+    title: "Архивная шапка снова компактная",
+    items: [
+      "Сохранил архивные цвета, логотип и типографику шапки, но вернул рабочую высоту 68 px.",
+      "Аналитика снова начинается на прежней высоте и не теряет полезное место на экране.",
+      "Фактическая высота нижних кнопок 54 px зафиксирована как нормальная геометрия растянутой архивной сетки."
+    ]
+  },
   {
     version: "1.8.60",
     date: "30.09.2026",
