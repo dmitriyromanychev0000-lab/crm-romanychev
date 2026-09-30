@@ -25494,3 +25494,18 @@
     font-size: 8px !important;
   }
 }
+
+/* 1.8.61 · Регрессия 1.8.60: архивный вид без лишней высоты шапки */
+@media screen and (max-width: 520px) {
+  .legacy-mobile-header {
+    min-height: calc(68px + env(safe-area-inset-top)) !important;
+    padding-top: calc(8px + env(safe-area-inset-top)) !important;
+    padding-bottom: 8px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-mobile-header {
+    min-height: calc(68px + env(safe-area-inset-top)) !important;
+  }
+}
