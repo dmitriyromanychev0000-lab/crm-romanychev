@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.81";
-const APP_BUILD = "2026.09.30.416";
+const APP_VERSION = "1.8.82";
+const APP_BUILD = "2026.09.30.417";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактная панель печати акта";
+const APP_RELEASE = "Периоды финансов в одну строку";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.82",
+    date: "30.09.2026",
+    title: "Периоды финансов в одну строку",
+    items: [
+      "На 320 px фильтры «Всё время / 30 дней / 90 дней / Год» больше не разваливаются на две строки.",
+      "Все четыре периода помещаются в одну строку с touch-зонами не меньше 44 px.",
+      "Расчёты доходов, расходов, результата и выбранный период не менялись."
+    ]
+  },
   {
     version: "1.8.81",
     date: "30.09.2026",

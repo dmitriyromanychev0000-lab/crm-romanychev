@@ -3850,7 +3850,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           const rect = node.getBoundingClientRect();
           return { left: Math.round(rect.left), top: Math.round(rect.top), width: Math.round(rect.width), height: Math.round(rect.height) };
         }),
-        rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize
+        rowTitleFont: getComputedStyle(document.querySelector(".legacy-finance-copy strong")).fontSize,
+        periodGridColumns: getComputedStyle(document.querySelector(".legacy-finance-periods")).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length,
+        periodRects: [...document.querySelectorAll(".legacy-finance-periods button")].map((button) => {
+          const rect = button.getBoundingClientRect();
+          return {
+            top: Math.round(rect.top),
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            clipped: button.scrollWidth > button.clientWidth + 1,
+            text: button.textContent.trim()
+          };
+        })
       }));
       if (financePageSurface.result !== "rgb(17, 24, 29)"
         || financePageSurface.income !== "rgb(17, 24, 29)"
@@ -3872,7 +3883,12 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || Math.abs(financePageSurface.actionRects[0].top - financePageSurface.actionRects[1].top) > 2
         || financePageSurface.actionRects[1].left <= financePageSurface.actionRects[0].left
         || financePageSurface.actionRects[0].width + financePageSurface.actionRects[1].width > financePageSurface.actionsWidth
-        || parseFloat(financePageSurface.rowTitleFont) < 11.5) {
+        || parseFloat(financePageSurface.rowTitleFont) < 11.5
+        || financePageSurface.periodGridColumns !== 4
+        || financePageSurface.periodRects.length !== 4
+        || Math.max(...financePageSurface.periodRects.map((rect) => rect.top)) - Math.min(...financePageSurface.periodRects.map((rect) => rect.top)) > 2
+        || financePageSurface.periodRects.some((rect) => rect.height < 44 || rect.clipped)
+        || financePageSurface.periodRects.map((rect) => rect.text).join("|") !== "Всё время|30 дней|90 дней|Год") {
         report.failures.push({ width, type: "finance-semantic-hierarchy", financePageSurface });
       }
       await page.locator('[data-action="add-finance"][data-type="income"]').click();
