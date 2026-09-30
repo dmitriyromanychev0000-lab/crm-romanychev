@@ -1604,19 +1604,19 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           gapFiltersVisit: filters && visit ? Math.round(visit.top - filters.bottom) : 999
         };
       });
-      const restoredOrdersLayout = orderPageSurfaces.addWidth >= 50
-        && orderPageSurfaces.addWidth <= 55
-        && orderPageSurfaces.addHeight >= 50
-        && orderPageSurfaces.addHeight <= 55
-        && orderPageSurfaces.searchHeight >= 50
-        && orderPageSurfaces.searchHeight <= 53
-        && orderPageSurfaces.filtersHeight <= 46
+      const restoredOrdersLayout = orderPageSurfaces.addWidth >= 46
+        && orderPageSurfaces.addWidth <= 47
+        && orderPageSurfaces.addHeight >= 46
+        && orderPageSurfaces.addHeight <= 47
+        && orderPageSurfaces.searchHeight >= 45
+        && orderPageSurfaces.searchHeight <= 47
+        && orderPageSurfaces.filtersHeight <= 45
         && orderPageSurfaces.filterButtonHeight >= 44
         && orderPageSurfaces.filterButtonHeight <= 45
-        && orderPageSurfaces.visitHeight >= 48
-        && orderPageSurfaces.visitHeight <= 49
-        && orderPageSurfaces.gapSearchFilters <= 8
-        && orderPageSurfaces.gapFiltersVisit <= 8
+        && orderPageSurfaces.visitHeight >= 44
+        && orderPageSurfaces.visitHeight <= 45
+        && orderPageSurfaces.gapSearchFilters <= 7
+        && orderPageSurfaces.gapFiltersVisit <= 7
         && orderPageSurfaces.addLabel.includes("Новая заявка");
       if (!restoredOrdersLayout
         || orderPageSurfaces.moneyBlocks !== 1
