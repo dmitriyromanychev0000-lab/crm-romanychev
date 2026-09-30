@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.53";
-const APP_BUILD = "2026.09.30.388";
+const APP_VERSION = "1.8.54";
+const APP_BUILD = "2026.09.30.389";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Карточки заявок снова показывают адрес и расчёт";
+const APP_RELEASE = "Адрес заявки возвращён без лишней высоты";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.54",
+    date: "30.09.2026",
+    title: "Адрес заявки снова компактный",
+    items: [
+      "Возвращённый адрес больше не получает лишнюю 44 px высоту внутри информационного блока.",
+      "На 320 px длинный адрес переносится, но карточка остаётся плотной.",
+      "Структура потерянной версии — сумма клиента, на руки, телефон, адрес и гарантия — сохранена."
+    ]
+  },
   {
     version: "1.8.53",
     date: "30.09.2026",

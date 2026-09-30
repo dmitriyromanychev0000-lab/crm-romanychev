@@ -24822,3 +24822,23 @@
     padding-left: 7px !important;
   }
 }
+
+
+
+/* 1.8.54 · Адрес в карточке заявки — информационная строка, не отдельная touch-кнопка */
+@media screen and (max-width: 520px) {
+  .legacy-order-card .legacy-order-meta .address {
+    min-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    align-items: center !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-order-card .legacy-order-meta .address {
+    max-height: 34px !important;
+    line-height: 1.2 !important;
+    align-items: flex-start !important;
+  }
+}

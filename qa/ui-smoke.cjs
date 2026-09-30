@@ -1652,7 +1652,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || orderDensity.deviceHeight > 45
         || orderDensity.deviceRowHeight < 50
         || orderDensity.deviceRowHeight > 56
-        || orderDensity.metaHeight > 58
+        || orderDensity.metaHeight > 48
         || orderDensity.moneyHeight < 50
         || orderDensity.moneyHeight > 62
         || orderDensity.actionHeight < 48
@@ -5107,7 +5107,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || settingsSurface.appActionHeights.some((value) => value < 44 || value > 45)
         || settingsSurface.appRowHeights.some((value) => value < 50 || value > 64)
         || settingsSurface.appCardHeight > 305
-        || settingsSurface.versionSummaryFit.text !== "Выбор услуг больше не прыгает"
+        || settingsSurface.versionSummaryFit.text !== "Адрес заявки снова компактный"
         || settingsSurface.versionSummaryFit.scrollHeight > settingsSurface.versionSummaryFit.clientHeight + 1
         || settingsSurface.versionSummaryFit.lineClamp !== "2"
         || settingsSurface.profileCardHeight > (width <= 340 ? 356 : 322)
@@ -5442,8 +5442,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
               || orderTextState.modelWhiteSpace !== "nowrap"
               || orderTextState.modelTextOverflow !== "ellipsis"
               || orderTextState.addressWhiteSpace === "missing"
-              || orderTextState.addressHeight < 44
-              || orderTextState.addressHeight > 60) {
+              || orderTextState.addressHeight < 10
+              || orderTextState.addressHeight > 36) {
               report.failures.push({ width, type: "stress-order-readable-text", orderTextState });
             }
           }
