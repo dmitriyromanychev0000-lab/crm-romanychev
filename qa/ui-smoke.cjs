@@ -2418,8 +2418,9 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         await page.locator('.order-editor-modal [name="expense_white"]').fill("2000");
         await page.locator('.order-editor-modal [name="expense_white"]').evaluate((el) => el.dispatchEvent(new Event("change", { bubbles: true })));
         const clampedWhite = Number(await page.locator('.order-editor-modal [name="expense_white"]').inputValue());
-        if (clampedWhite !== 3000) {
-          report.failures.push({ width, type: "direct-expense-white-clamp", clampedWhite });
+        const clampToastVisible = await page.locator("#toast.toast.show").count();
+        if (clampedWhite !== 3000 || clampToastVisible !== 0) {
+          report.failures.push({ width, type: "direct-expense-white-clamp", clampedWhite, clampToastVisible });
         }
 
         await page.locator('.order-editor-modal [name="expense_white"]').fill("4000");

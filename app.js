@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.70";
-const APP_BUILD = "2026.09.30.405";
+const APP_VERSION = "1.8.71";
+const APP_BUILD = "2026.09.30.406";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Место материала читается полностью";
+const APP_RELEASE = "Расчёт без перекрывающего уведомления";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.71",
+    date: "30.09.2026",
+    title: "Расчёт без перекрывающего уведомления",
+    items: [
+      "Автокоррекция белого расхода больше не показывает плашку поверх полей расчёта.",
+      "Поле по-прежнему автоматически поднимается до суммы расходов без склада.",
+      "Допустимый минимум остаётся виден прямо под полем, поэтому отдельное всплывающее сообщение не требуется."
+    ]
+  },
   {
     version: "1.8.70",
     date: "30.09.2026",
@@ -7121,7 +7131,6 @@ function newOrderModal(existing = null, options = {}) {
     const minimum = syncWhiteExpenseMinimum({ raise: false });
     if ((Number(formElement.elements.expense_white.value) || 0) < minimum) {
       formElement.elements.expense_white.value = String(minimum);
-      toast(`Белый расход не может быть меньше ${money(minimum)}`);
     }
   });
   calculateLines();
