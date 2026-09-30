@@ -1135,10 +1135,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       const logo = document.querySelector(".legacy-mobile-header .logo");
       const labelTops = buttons.map((button) => Math.round(button.querySelector(":scope > span:last-child")?.getBoundingClientRect().top || 0));
       const hr = header?.getBoundingClientRect();
+      const nr = nav?.getBoundingClientRect();
+      const br = active?.getBoundingClientRect();
       const ir = activeIcon?.getBoundingClientRect();
+      const glyph = activeIcon?.querySelector(".ui-icon")?.getBoundingClientRect();
       const lr = logo?.getBoundingClientRect();
       return {
         headerHeight: hr ? Math.round(hr.height) : 0,
+        navHeight: nr ? Math.round(nr.height) : 0,
+        navButtonHeight: br ? Math.round(br.height) : 0,
         logoDisplay: logo ? getComputedStyle(logo).display : "missing",
         logoWidth: lr ? Math.round(lr.width) : 0,
         logoHeight: lr ? Math.round(lr.height) : 0,
@@ -1151,23 +1156,33 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         activeIconBackground: activeIcon ? getComputedStyle(activeIcon).backgroundColor : "missing",
         activeIconWidth: ir ? Math.round(ir.width) : 0,
         activeIconHeight: ir ? Math.round(ir.height) : 0,
+        activeGlyphWidth: glyph ? Math.round(glyph.width) : 0,
+        activeGlyphHeight: glyph ? Math.round(glyph.height) : 0,
         labelSpread: labelTops.length ? Math.max(...labelTops) - Math.min(...labelTops) : 999
       };
     });
-    if (shellSurface.headerHeight < 64
-      || shellSurface.headerHeight > 86
-      || shellSurface.headerBorder !== "0px"
-      || !shellSurface.headerBackground.startsWith("rgba(4, 8, 11, ")
-      || parseFloat(shellSurface.titleFont) < 17
+    const expectedHeaderMin = width <= 340 ? 72 : 76;
+    const expectedLogo = width <= 340 ? 40 : 42;
+    if (shellSurface.headerHeight < expectedHeaderMin
+      || shellSurface.headerHeight > expectedHeaderMin + 1
+      || shellSurface.headerBorder !== "1px"
+      || shellSurface.headerBackground !== "rgb(8, 13, 17)"
+      || parseFloat(shellSurface.titleFont) < (width <= 340 ? 16.5 : 17)
       || shellSurface.logoDisplay === "none"
-      || shellSurface.logoWidth < 40
-      || shellSurface.logoHeight < 40
-      || !shellSurface.navBackground.startsWith("rgba(3, 7, 10, ")
-      || shellSurface.navBorder !== "rgb(21, 31, 37)"
-      || shellSurface.activeColor !== "rgb(255, 118, 92)"
+      || shellSurface.logoWidth !== expectedLogo
+      || shellSurface.logoHeight !== expectedLogo
+      || shellSurface.navHeight < 68
+      || shellSurface.navHeight > 69
+      || shellSurface.navButtonHeight < 51
+      || shellSurface.navButtonHeight > 52
+      || !shellSurface.navBackground.startsWith("rgba(9, 13, 16, ")
+      || shellSurface.navBorder !== "rgb(37, 44, 50)"
+      || shellSurface.activeColor !== "rgb(255, 114, 85)"
       || shellSurface.activeIconBackground !== "rgba(0, 0, 0, 0)"
-      || shellSurface.activeIconWidth < 30
-      || shellSurface.activeIconHeight < 30
+      || shellSurface.activeIconWidth !== 28
+      || shellSurface.activeIconHeight !== 28
+      || shellSurface.activeGlyphWidth !== 23
+      || shellSurface.activeGlyphHeight !== 23
       || shellSurface.labelSpread > 1) {
       report.failures.push({ width, type: "shell-header-nav", shellSurface });
     }
@@ -1181,7 +1196,7 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         iconBackground: icon ? getComputedStyle(icon).backgroundColor : "missing"
       };
     });
-    if (moreNavSurface.color !== "rgb(255, 118, 92)"
+    if (moreNavSurface.color !== "rgb(255, 114, 85)"
       || moreNavSurface.iconBackground !== "rgba(0, 0, 0, 0)") {
       report.failures.push({ width, type: "shell-more-nav-state", moreNavSurface });
     }

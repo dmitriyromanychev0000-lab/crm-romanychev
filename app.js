@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.59";
-const APP_BUILD = "2026.09.30.394";
+const APP_VERSION = "1.8.60";
+const APP_BUILD = "2026.09.30.395";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Ближайшие визиты снова выглядят как в архивной версии";
+const APP_RELEASE = "Общая шапка и нижнее меню снова в стиле потерянной версии";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.60",
+    date: "30.09.2026",
+    title: "Шапка и нижнее меню снова в стиле потерянной версии",
+    items: [
+      "Вернул спокойную тёмную шапку, фирменный логотип и типографику из архивной версии.",
+      "Нижнее меню снова компактнее: меньше тяжёлых эффектов, ровные иконки и единый оранжевый активный акцент.",
+      "Высоту шапки сохранил компактной, а зоны навигации оставил удобными для телефона."
+    ]
+  },
   {
     version: "1.8.59",
     date: "30.09.2026",
