@@ -26001,3 +26001,12 @@
     height: 36px !important;
   }
 }
+
+
+/* 1.8.86 · Клиенты: min-height сводки включает внутренние отступы */
+@media screen and (max-width: 520px) {
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    box-sizing: border-box !important;
+  }
+}

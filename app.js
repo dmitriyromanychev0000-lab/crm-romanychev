@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.85";
-const APP_BUILD = "2026.10.01.420";
+const APP_VERSION = "1.8.86";
+const APP_BUILD = "2026.10.01.421";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Плотнее карточки клиентов";
+const APP_RELEASE = "Точная высота клиентской сводки";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.86",
+    date: "01.10.2026",
+    title: "Точная высота клиентской сводки",
+    items: [
+      "Карточки «Клиентов / В работе / Закрыто» теперь учитывают padding внутри заданной высоты, а не поверх неё.",
+      "Сводка стала реально компактнее без уменьшения текста.",
+      "Карточки клиентов и действия «Позвонить / История» остаются без изменений по логике."
+    ]
+  },
   {
     version: "1.8.85",
     date: "01.10.2026",
