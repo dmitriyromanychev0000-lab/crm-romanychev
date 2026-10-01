@@ -5037,17 +5037,14 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || receiptEditorState.actionHeight < 48
         || receiptEditorState.modalBottom > receiptEditorState.viewportHeight + 1
         || receiptEditorState.blankGap > 20
-        || (width <= 340 && receiptEditorState.gridColumns.split(" ").filter(Boolean).length !== 1)
-        || (width > 340 && (
-          receiptEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
-          || !receiptEditorState.dateBox || !receiptEditorState.amountBox
-          || Math.abs(receiptEditorState.dateBox.top - receiptEditorState.amountBox.top) > 2
-          || Math.abs(receiptEditorState.dateBox.width - receiptEditorState.amountBox.width) > 2
-          || !receiptEditorState.titleBox || !receiptEditorState.numberBox || !receiptEditorState.orderBox || !receiptEditorState.noteBox
-          || receiptEditorState.numberBox.width < receiptEditorState.dateBox.width * 1.9
-          || receiptEditorState.orderBox.width < receiptEditorState.dateBox.width * 1.9
-          || receiptEditorState.noteBox.width < receiptEditorState.dateBox.width * 1.9
-        ))) {
+        || receiptEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
+        || !receiptEditorState.dateBox || !receiptEditorState.amountBox
+        || Math.abs(receiptEditorState.dateBox.top - receiptEditorState.amountBox.top) > 2
+        || Math.abs(receiptEditorState.dateBox.width - receiptEditorState.amountBox.width) > 2
+        || !receiptEditorState.titleBox || !receiptEditorState.numberBox || !receiptEditorState.orderBox || !receiptEditorState.noteBox
+        || receiptEditorState.numberBox.width < receiptEditorState.dateBox.width * 1.9
+        || receiptEditorState.orderBox.width < receiptEditorState.dateBox.width * 1.9
+        || receiptEditorState.noteBox.width < receiptEditorState.dateBox.width * 1.9) {
         report.failures.push({ width, type: "receipt-editor-layout", receiptEditorState });
       }
       if (receiptEditorState.headHeight > 60

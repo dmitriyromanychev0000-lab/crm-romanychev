@@ -25897,3 +25897,24 @@
     white-space: nowrap !important;
   }
 }
+
+
+/* 1.8.83 · Документы: дата и сумма рядом даже на 320–340 px */
+@media screen and (max-width: 340px) {
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    column-gap: 6px !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-modal .form-group.full,
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-number,
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-order {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-date,
+  .legacy-service-editor-backdrop .receipt-editor-modal .receipt-field-amount {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+}
