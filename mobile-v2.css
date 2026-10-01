@@ -26038,3 +26038,32 @@
     line-height: 1.08 !important;
   }
 }
+
+
+/* 1.8.88 · Документы: метаданные читаются в две строки на 320–340 px */
+@media screen and (max-width: 340px) {
+  .legacy-document-row.receipt {
+    box-sizing: border-box !important;
+    min-height: 72px !important;
+    height: 72px !important;
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  .legacy-document-row.receipt > span:nth-child(2) {
+    min-width: 0 !important;
+    align-self: center !important;
+  }
+
+  .legacy-document-row.receipt > span:nth-child(2) > small {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    margin-top: 2px !important;
+    white-space: normal !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.1 !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+}

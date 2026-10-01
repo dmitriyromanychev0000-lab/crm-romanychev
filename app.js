@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.87";
-const APP_BUILD = "2026.10.01.422";
+const APP_VERSION = "1.8.88";
+const APP_BUILD = "2026.10.01.423";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Клиентская сводка 68 px";
+const APP_RELEASE = "Метаданные документов без многоточия";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.88",
+    date: "01.10.2026",
+    title: "Метаданные документов без многоточия",
+    items: [
+      "На 320–340 px номер, дата и привязанная заявка документа теперь читаются максимум в две строки вместо «заяв…».",
+      "Высота строки документа ограничена 72 px, поэтому список остаётся компактным.",
+      "Сумма, название, переход в документ и данные не менялись."
+    ]
+  },
   {
     version: "1.8.87",
     date: "01.10.2026",

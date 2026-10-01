@@ -4951,6 +4951,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
             const node = row?.querySelector(":scope > span:nth-child(2) > strong");
             const style = node ? getComputedStyle(node) : null;
             return { whiteSpace: style?.whiteSpace || "missing", lineClamp: style?.webkitLineClamp || "missing", textOverflow: style?.textOverflow || "missing" };
+          })(),
+          metaWrap: (() => {
+            const node = row?.querySelector(":scope > span:nth-child(2) > small");
+            const style = node ? getComputedStyle(node) : null;
+            const lineHeight = style ? parseFloat(style.lineHeight) || 0 : 0;
+            return {
+              whiteSpace: style?.whiteSpace || "missing",
+              lineClamp: style?.webkitLineClamp || "missing",
+              textOverflow: style?.textOverflow || "missing",
+              lines: node && lineHeight > 0 ? Math.round(node.getBoundingClientRect().height / lineHeight) : 0,
+              text: node?.textContent?.trim() || ""
+            };
           })()
         };
       });
@@ -4973,6 +4985,11 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           || receiptsPageSurface.titleWrap.whiteSpace === "nowrap"
           || receiptsPageSurface.titleWrap.lineClamp !== "2"
           || receiptsPageSurface.titleWrap.textOverflow === "ellipsis"
+          || receiptsPageSurface.metaWrap.whiteSpace === "nowrap"
+          || receiptsPageSurface.metaWrap.lineClamp !== "2"
+          || receiptsPageSurface.metaWrap.textOverflow === "ellipsis"
+          || receiptsPageSurface.metaWrap.lines > 2
+          || !receiptsPageSurface.metaWrap.text.includes("заявка №0059")
           || receiptsPageSurface.amountLeft < receiptsPageSurface.copyRight - 2
           || receiptsPageSurface.chevronLeft < receiptsPageSurface.amountRight
           || Math.abs(receiptsPageSurface.amountCenter - receiptsPageSurface.rowCenter) > 10
