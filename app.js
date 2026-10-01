@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.86";
-const APP_BUILD = "2026.10.01.421";
+const APP_VERSION = "1.8.87";
+const APP_BUILD = "2026.10.01.422";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Точная высота клиентской сводки";
+const APP_RELEASE = "Клиентская сводка 68 px";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.87",
+    date: "01.10.2026",
+    title: "Клиентская сводка 68 px",
+    items: [
+      "Три KPI клиентов теперь имеют одинаковую фактическую высоту 68 px на 320–430 px.",
+      "Внутренние подписи и цифры поджаты по вертикали без уменьшения основного текста.",
+      "Карточки клиентов, суммы, статусы и действия не менялись."
+    ]
+  },
   {
     version: "1.8.86",
     date: "01.10.2026",

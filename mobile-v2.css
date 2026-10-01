@@ -26010,3 +26010,31 @@
     box-sizing: border-box !important;
   }
 }
+
+
+/* 1.8.87 · Клиенты: фактическая высота KPI 68 px без раздувания контентом */
+@media screen and (max-width: 520px) {
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    box-sizing: border-box !important;
+    min-height: 68px !important;
+    height: 68px !important;
+    padding: 5px 7px !important;
+    overflow: hidden !important;
+  }
+
+  .legacy-clients-stats span {
+    line-height: 1.05 !important;
+  }
+
+  .legacy-clients-stats strong,
+  .legacy-clients-stats .clients-stat-primary strong {
+    margin-top: 1px !important;
+    line-height: 1 !important;
+  }
+
+  .legacy-clients-stats small {
+    margin-top: 1px !important;
+    line-height: 1.08 !important;
+  }
+}
