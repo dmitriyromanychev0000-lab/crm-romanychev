@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.83";
-const APP_BUILD = "2026.10.01.418";
+const APP_VERSION = "1.8.84";
+const APP_BUILD = "2026.10.01.419";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактный документ на 320 px";
+const APP_RELEASE = "Компактный инструмент на 320 px";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.84",
+    date: "01.10.2026",
+    title: "Компактный инструмент на 320 px",
+    items: [
+      "В редакторе инструмента «Категория / Состояние» и «Стоимость / Серийный номер» теперь стоят парами даже на 320–340 px.",
+      "Название и комментарий остаются полноширинными, поэтому длинные значения не тесnятся.",
+      "Состояния, стоимость, серийный номер, сохранение и удаление инструмента не менялись."
+    ]
+  },
   {
     version: "1.8.83",
     date: "01.10.2026",

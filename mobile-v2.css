@@ -25918,3 +25918,21 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.8.84 · Инструменты: короткие поля парами даже на 320–340 px */
+@media screen and (max-width: 340px) {
+  .legacy-service-editor-backdrop .tool-editor-modal .form-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    column-gap: 6px !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .form-group.full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .legacy-service-editor-backdrop .tool-editor-modal .form-group:not(.full) {
+    grid-column: auto !important;
+    min-width: 0 !important;
+  }
+}

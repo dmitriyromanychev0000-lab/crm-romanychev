@@ -4888,19 +4888,16 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         || toolEditorState.statusTag !== "SELECT"
         || toolEditorState.statusOptions.length < 4
         || toolEditorState.statusValue !== "В наличии"
-        || (width <= 340 && toolEditorState.gridColumns.split(" ").filter(Boolean).length !== 1)
-        || (width > 340 && (
-          toolEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
-          || !toolEditorState.categoryBox || !toolEditorState.statusBox
-          || !toolEditorState.priceBox || !toolEditorState.serialBox
-          || Math.abs(toolEditorState.categoryBox.top - toolEditorState.statusBox.top) > 2
-          || Math.abs(toolEditorState.priceBox.top - toolEditorState.serialBox.top) > 2
-          || Math.abs(toolEditorState.categoryBox.width - toolEditorState.statusBox.width) > 2
-          || Math.abs(toolEditorState.priceBox.width - toolEditorState.serialBox.width) > 2
-          || !toolEditorState.nameBox || !toolEditorState.noteBox
-          || toolEditorState.nameBox.width < toolEditorState.categoryBox.width * 1.9
-          || toolEditorState.noteBox.width < toolEditorState.categoryBox.width * 1.9
-        ))) {
+        || toolEditorState.gridColumns.split(" ").filter(Boolean).length !== 2
+        || !toolEditorState.categoryBox || !toolEditorState.statusBox
+        || !toolEditorState.priceBox || !toolEditorState.serialBox
+        || Math.abs(toolEditorState.categoryBox.top - toolEditorState.statusBox.top) > 2
+        || Math.abs(toolEditorState.priceBox.top - toolEditorState.serialBox.top) > 2
+        || Math.abs(toolEditorState.categoryBox.width - toolEditorState.statusBox.width) > 2
+        || Math.abs(toolEditorState.priceBox.width - toolEditorState.serialBox.width) > 2
+        || !toolEditorState.nameBox || !toolEditorState.noteBox
+        || toolEditorState.nameBox.width < toolEditorState.categoryBox.width * 1.9
+        || toolEditorState.noteBox.width < toolEditorState.categoryBox.width * 1.9) {
         report.failures.push({ width, type: "tool-editor-layout", toolEditorState });
       }
       if (toolEditorState.headHeight > 60
