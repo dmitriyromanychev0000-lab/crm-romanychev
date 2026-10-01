@@ -4251,15 +4251,15 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
         };
       });
       const clientDensityLimits = width <= 340
-        ? { primary: 86, secondary: 76, main: 104 }
-        : { primary: 86, secondary: 76, main: 78 };
+        ? { primary: 70, secondary: 70, main: 72 }
+        : { primary: 70, secondary: 70, main: 70 };
       if (clientDensity.primaryHeight > clientDensityLimits.primary
         || clientDensity.secondaryHeight > clientDensityLimits.secondary
         || clientDensity.columns.split(" ").filter(Boolean).length !== 3
         || clientDensity.statWidths.length !== 3
         || clientDensity.statWidths.some((value) => value < 80)
         || Math.max(...clientDensity.statWidths) - Math.min(...clientDensity.statWidths) > 2
-        || clientDensity.statHeights.some((value) => value < 70 || value > 82)
+        || clientDensity.statHeights.some((value) => value < 64 || value > 70)
         || Math.max(...clientDensity.statTops) - Math.min(...clientDensity.statTops) > 2
         || clientDensity.mainHeight > clientDensityLimits.main
         || clientDensity.actionHeight < 44) {
@@ -4284,8 +4284,8 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
           sideTop: Math.round(side?.top || 0)
         };
       });
-      if (clientCardDensity.mainHeight > (width <= 340 ? 80 : 76)
-        || clientCardDensity.metaHeight > 30
+      if (clientCardDensity.mainHeight > (width <= 340 ? 72 : 70)
+        || clientCardDensity.metaHeight > 26
         || clientCardDensity.actionHeight < 44
         || clientCardDensity.mainColumns.split(" ").filter(Boolean).length !== 3
         || clientCardDensity.sideLeft <= clientCardDensity.copyLeft

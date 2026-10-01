@@ -7,11 +7,21 @@ const PRE_IMPORT_KEY = "crm-pre-import-data";
 const BACKUP_TEST_KEY = "crm-backup-self-test";
 const AUTO_BACKUP_FALLBACK_KEY = "crm-auto-backup-fallback";
 const DIAGNOSTIC_KEY = "crm-diagnostic-test";
-const APP_VERSION = "1.8.84";
-const APP_BUILD = "2026.10.01.419";
+const APP_VERSION = "1.8.85";
+const APP_BUILD = "2026.10.01.420";
 const APP_URL = "https://dmitriyromanychev0000-lab.github.io/crm-romanychev/";
-const APP_RELEASE = "Компактный инструмент на 320 px";
+const APP_RELEASE = "Плотнее карточки клиентов";
 const APP_CHANGELOG = [
+  {
+    version: "1.8.85",
+    date: "01.10.2026",
+    title: "Плотнее карточки клиентов",
+    items: [
+      "Сводка клиентов стала ниже, поэтому список начинается выше и на экране помещается больше полезной информации.",
+      "Карточки клиентов поджаты по вертикали без уменьшения рабочего текста.",
+      "Телефон, адрес, суммы, статусы и кнопки «Позвонить / История» сохранены; touch-зоны действий остаются 44 px."
+    ]
+  },
   {
     version: "1.8.84",
     date: "01.10.2026",

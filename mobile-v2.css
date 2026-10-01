@@ -25936,3 +25936,68 @@
     min-width: 0 !important;
   }
 }
+
+
+/* 1.8.85 · Клиенты: плотнее сводка и карточки без уменьшения текста */
+@media screen and (max-width: 520px) {
+  .legacy-clients-stats {
+    gap: 5px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .legacy-clients-stats > div,
+  .legacy-clients-stats > .clients-stat-primary {
+    min-height: 66px !important;
+    padding: 6px 8px !important;
+  }
+
+  .legacy-clients-stats strong,
+  .legacy-clients-stats .clients-stat-primary strong {
+    margin-top: 2px !important;
+    font-size: 18px !important;
+    line-height: 1.05 !important;
+  }
+
+  .legacy-clients-stats small {
+    margin-top: 2px !important;
+  }
+
+  .legacy-client-main {
+    grid-template-columns: 36px minmax(0,1fr) max-content !important;
+    gap: 7px !important;
+    min-height: 64px !important;
+    padding: 6px 8px 5px !important;
+  }
+
+  .legacy-client-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .legacy-client-meta {
+    min-height: 22px !important;
+    gap: 3px 7px !important;
+    padding: 3px 8px !important;
+  }
+
+  .legacy-client-actions {
+    gap: 5px !important;
+    padding: 0 8px 6px !important;
+  }
+
+  .legacy-client-actions > * {
+    min-height: 44px !important;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .legacy-client-main {
+    grid-template-columns: 36px minmax(0,1fr) max-content !important;
+    min-height: 66px !important;
+  }
+
+  .legacy-client-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
