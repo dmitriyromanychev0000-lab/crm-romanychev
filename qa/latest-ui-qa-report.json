@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-01T07:52:33.030Z",
-  "testedSha": "71f403f5ba3529755a0341794338d35c6816d0eb",
+  "generatedAt": "2026-10-01T07:56:38.145Z",
+  "testedSha": "724e01b564bae448f121191d02c55d9f13757dee",
   "baseUrl": "http://127.0.0.1:8080/",
   "results": [
     {
@@ -948,80 +948,1054 @@
       "tooSmall": [],
       "clippedFieldLabels": [],
       "misalignedActionIcons": []
+    },
+    {
+      "label": "orders",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "warehouse",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "movements",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "shopping",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "analytics",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "more",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "calendar",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "finance",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "clients",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "prices",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "tools",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "receipts",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "drafts",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "settings",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "backup",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "act",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "shopping-manual",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "service-catalog",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "service-catalog-selected",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "material-catalog",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "material-catalog-selected",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-editor-material-row",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-editor-direct-expense",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-editor-restored",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "photo-viewer",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-detail",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "order-actions",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "analytics-range",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "stock-detail",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "stock-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "stock-adjust",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "stock-transfer",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "stock-correction",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "warehouse-movements",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "warehouse-shopping",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "finance-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "price-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "client-profile",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "release-notes",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods-product-price",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "tool-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "receipt-editor",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "price-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "custom-price-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "tool-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "receipt-editor-existing",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "diagnostics-modal",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "confirm-dialog",
+      "width": 390,
+      "bodyScrollWidth": 390,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "orders",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "warehouse",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "movements",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "shopping",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "analytics",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "more",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "calendar",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "finance",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "clients",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "prices",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "goods",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "tools",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "receipts",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "drafts",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "settings",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "backup",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "act",
+      "width": 430,
+      "bodyScrollWidth": 430,
+      "viewportWidth": 430,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "clippedFieldLabels": [],
+      "misalignedActionIcons": []
+    },
+    {
+      "label": "keyboard-order-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 463,
+        "bottom": 511,
+        "width": 176,
+        "height": 48,
+        "viewportHeight": 520,
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerLeft": 8,
+        "actionsInnerWidth": 304,
+        "actionButtons": [
+          {
+            "width": 122,
+            "height": 48,
+            "left": 8,
+            "top": 463
+          },
+          {
+            "width": 176,
+            "height": 48,
+            "left": 136,
+            "top": 463
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-stock-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 452,
+        "bottom": 500,
+        "width": 142,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 246,
+        "actionButtons": [
+          {
+            "width": 98,
+            "height": 48,
+            "top": 452
+          },
+          {
+            "width": 142,
+            "height": 48,
+            "top": 452
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-finance-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 143,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 248,
+        "actionButtons": [
+          {
+            "width": 99,
+            "height": 48,
+            "top": 453
+          },
+          {
+            "width": 143,
+            "height": 48,
+            "top": 453
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-price-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 157,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 272,
+        "actionButtons": [
+          {
+            "width": 109,
+            "height": 48,
+            "top": 453
+          },
+          {
+            "width": 157,
+            "height": 48,
+            "top": 453
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-goods-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 465,
+        "bottom": 513,
+        "width": 171,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 296,
+        "actionButtons": [
+          {
+            "width": 119,
+            "height": 48,
+            "top": 465
+          },
+          {
+            "width": 171,
+            "height": 48,
+            "top": 465
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-tool-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 145,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 252,
+        "actionButtons": [
+          {
+            "width": 101,
+            "height": 48,
+            "top": 453
+          },
+          {
+            "width": 145,
+            "height": 48,
+            "top": 453
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-receipt-editor",
+      "width": 320,
+      "viewportHeight": 520,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": true,
+      "tooSmall": [],
+      "keyboardReachable": true,
+      "keyboardMetrics": {
+        "top": 453,
+        "bottom": 501,
+        "width": 145,
+        "height": 48,
+        "viewportHeight": 520,
+        "backdropCount": 1,
+        "backdropOverflow": "hidden",
+        "locked": true,
+        "bodyFixed": true,
+        "actionsInnerWidth": 252,
+        "actionButtons": [
+          {
+            "width": 101,
+            "height": 48,
+            "top": 453
+          },
+          {
+            "width": 145,
+            "height": 48,
+            "top": 453
+          }
+        ]
+      }
+    },
+    {
+      "label": "backup-roundtrip",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "backupRoundtripOk": true,
+      "toast": "Бэкап и IndexedDB полностью проверены · 3 заявок · 0 фото · 0.0 МБ"
+    },
+    {
+      "label": "backup-legacy-v18-import",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "legacyV18ImportOk": true
+    },
+    {
+      "label": "backup-local-fallback",
+      "width": 320,
+      "bodyScrollWidth": 320,
+      "viewportWidth": 320,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "fallbackCreatedAt": "2026-10-01T07:57:18.417Z"
+    },
+    {
+      "label": "pwa-offline",
+      "width": 390,
+      "bodyScrollWidth": null,
+      "viewportWidth": 390,
+      "overflow": 0,
+      "modalOpen": false,
+      "tooSmall": [],
+      "serviceWorkerReady": true,
+      "offlineLoaded": true
     }
   ],
-  "failures": [
-    {
-      "width": 320,
-      "type": "analytics-product-model",
-      "analyticsModelState": {
-        "values": {
-          "Закрыто": 0,
-          "Выручка клиентов": 0,
-          "Получил чистыми": 0,
-          "Потратил всего": 0,
-          "Осталось денег": 0,
-          "Средний чек": 0
-        },
-        "workValues": {
-          "В работе": 1,
-          "Сумма в работе": 12400
-        },
-        "bars": 0,
-        "barWidths": [],
-        "hasSources": true,
-        "sourceOpen": false,
-        "expenseButtonHeight": 44,
-        "expenseButtonWidth": 44,
-        "expenseButtonBackground": "rgb(13, 20, 25)",
-        "expenseButtonColor": "rgb(255, 118, 92)",
-        "pageTitle": "Аналитический центр",
-        "pageTitleWhiteSpace": "nowrap",
-        "pageTitleScrollWidth": 240,
-        "pageTitleClientWidth": 240,
-        "pageTitleFontSize": 19,
-        "pageLead": "Финансы, эффективность, клиенты и склад",
-        "comparisonBlocks": 0
-      }
-    },
-    {
-      "width": 390,
-      "type": "calendar-month-day-timeline",
-      "calendarState": {
-        "dayButtons": 31,
-        "weekdayLabels": 7,
-        "selectedText": "",
-        "eventText": "",
-        "timelineRows": 0,
-        "visibleTimelineRows": 0,
-        "hiddenTimelineRows": 0,
-        "fullDayToggle": false,
-        "fullDayExpanded": "",
-        "overflow": 0,
-        "gridWidth": 376,
-        "eventNameStyle": {
-          "whiteSpace": "missing",
-          "textOverflow": "missing",
-          "lineClamp": "missing"
-        }
-      }
-    },
-    {
-      "width": 390,
-      "type": "calendar-compact-density",
-      "calendarDensity": {
-        "pagePaddingTop": 10,
-        "monthMarginBottom": 8,
-        "monthPaddingTop": 9,
-        "dayPaddingTop": 10,
-        "dayHeadMarginBottom": 7,
-        "firstHourHeight": 0,
-        "eventHeight": 0
-      }
-    },
-    {
-      "type": "fatal",
-      "message": "locator.click: Timeout 8000ms exceeded.\nCall log:\n  - waiting for locator('[data-calendar-full-day]')\n"
-    }
-  ]
+  "failures": []
 }
