@@ -1,4 +1,4 @@
 Mobile UI QA trigger
-Release candidate: 1.8.78
+Release candidate: 1.8.86
 Viewport matrix: 320 / 360 / 390 / 430
-Reason: refresh clean report after stale workflow-fatal
+Reason: retry stalled mobile smoke after client summary border-box fix
