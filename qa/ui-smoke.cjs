@@ -410,6 +410,18 @@ const report = { generatedAt: new Date().toISOString(), testedSha: process.env.G
       serviceWorkers: "block"
     });
     await context.addInitScript(() => {
+      const NativeDate = Date;
+      const fixedNow = NativeDate.parse("2026-09-30T12:00:00+03:00");
+      class QaDate extends NativeDate {
+        constructor(...args) {
+          if (args.length === 0) super(fixedNow);
+          else super(...args);
+        }
+        static now() { return fixedNow; }
+      }
+      globalThis.Date = QaDate;
+    });
+    await context.addInitScript(() => {
       const nextState = sessionStorage.getItem("__crm_qa_next_state");
       if (!nextState) return;
       localStorage.setItem("crm-ui-state", nextState);
